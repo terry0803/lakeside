@@ -396,9 +396,10 @@ button, select, textarea, input { font: inherit; color: inherit; }
 /* 11/23 (the user: in the bigger window the contents stayed at the small window's width, a blank band on the right):
    the reading-width caps are for the 460 px window; the 780 px one fills its width */
 .desk.is-big .empty, .desk.is-big .answer, .desk.is-big .card .text, .desk.is-big .card .note, .desk.is-big .how p { max-width: none; }
-/* the How it works diagram is an SVG: at full width (732 px) its words grew 1.8 times (the user: "a bit too big"); at 560 px they
-   are about the size of the body text (15 px), centred like a figure */
-.desk.is-big .arch { max-width: 560px; margin-left: auto; margin-right: auto; }
+/* the How it works diagram is an SVG (viewBox 420 wide): at full width (732 px) its words grew 1.8 times (the user: "a bit
+   too big"), at 560 px they were as big as the body text ("still a bit big"). At 480 px they are 13-14 px, a little smaller
+   than the 15 px text, like the labels of a figure; centred */
+.desk.is-big .arch { max-width: 480px; margin-left: auto; margin-right: auto; }
 .empty h2 { margin: 2px 0 8px; font: 650 19px/1.3 var(--font-head); color: #fff; }
 .empty h2 span { display: block; margin-top: 2px; font: 600 14.5px var(--font-zh); color: var(--tx-2); }
 .empty p { margin: 0 0 8px; font-size: 14px; }
