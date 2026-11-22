@@ -180,12 +180,17 @@ const Minimap = (() => {
     if (motion && M.ready && ((prev === "mini" && M.state === "hidden") || (prev === "hidden" && M.state === "mini")) && foldMini(M.state === "hidden", apply)) return;
     apply();
   }
-  /* 11/22 night (the user: the small map shrinking into the Map button still had the old animation; it was a cut, and the
-     two buttons below jumped up): the same motion as the assistant window folding into its buttons and the big map going
-     small. Shrinking takes 0.44 s on cubic-bezier(.4, 0, .2, 1), growing back 0.54 s on cubic-bezier(.2, .9, .25, 1). The
-     one going away floats where it was and fades over the first 40%; the one coming starts at the same corner and width
-     (the pill as wide as the map, the map as narrow as the pill) under it and settles into place on the same curve, so the
-     two stay together; the two buttons below slide to their new places. Transform and opacity only. */
+  /* The small map and the Map button (11/22 night, the user: the small map shrinking into the Map button had no animation
+     and the two buttons below jumped; 11/23: "the map's animation does not match the assistant's"). The same motion as the
+     assistant window, both ways:
+     - going small = the window folding into its buttons (app.js foldIntoButtons): 0.44 s on cubic-bezier(.4, 0, .2, 1);
+       the map shrinks towards the Map button and fades from 6% to 38%; the button, as wide as the map at first, comes
+       out of its top part (in from 8% to 34%) and shrinks into place. The map's bottom is cut to the button's shape on
+       the way, so it never covers the two buttons sliding up under it;
+     - growing back = the window opening out of its button (app.js splitDesk): 0.56 s on cubic-bezier(.2, .9, .25, 1);
+       the map grows out of the Map button, from its size and corners, at 0.4 opacity and whole by 30%, over the button,
+       which fades in 0.12 s.
+     The two buttons below slide to their new places on the same curve. Transform, opacity and the small map's clip only. */
   function foldMini(toPill, apply) {
     const mini = q("#mmMini"), pill = q("#mmPill"), hide = q("#mmHide"), box = q("#mm");
     const from = toPill ? mini : pill, to = toPill ? pill : mini;
@@ -196,41 +201,46 @@ const Minimap = (() => {
     apply();                                               // the new state; the column takes its new shape at once
     const B = box.getBoundingClientRect(), Tg = to.getBoundingClientRect();
     if (!F.width || !Tg.width || to.offsetParent === null) { from.classList.remove("is-quiet"); to.classList.remove("is-quiet"); return true; }
-    const s = Tg.width / F.width, dx = Tg.left - F.left, dy = Tg.top - F.top;
+    const Mr = toPill ? F : Tg, Pr = toPill ? Tg : F;      // the small map's box and the Map button's
+    const k = Pr.width / Mr.width, dx = Pr.left - Mr.left, dy = Pr.top - Mr.top;
+    const pillR = parseFloat(getComputedStyle(pill).borderTopLeftRadius) || 17;
+    const cut = Math.max(0, Mr.height - Pr.height / k);    // in the map's own units: its height cut to the button's
+    const OPEN = "inset(-30px -30px -30px -30px round 50px)", FULL = "inset(0px 0px 0px 0px round 20px)";
+    const CUT = `inset(0px 0px ${cut.toFixed(1)}px 0px round ${(pillR / k).toFixed(1)}px)`;
+    const mapSmall = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${k.toFixed(4)})`;
+    const pillBig = `translate(${(-dx).toFixed(1)}px, ${(-dy).toFixed(1)}px) scale(${(1 / k).toFixed(4)})`;
     const KEYS = ["position", "left", "top", "width", "height", "margin", "zIndex", "pointerEvents", "transformOrigin", "opacity"];
-    const float = (el, r) => Object.assign(el.style, { position: "absolute", left: `${(r.left - B.left).toFixed(1)}px`, top: `${(r.top - B.top).toFixed(1)}px`,
-      width: `${r.width.toFixed(1)}px`, height: `${r.height.toFixed(1)}px`, margin: "0", zIndex: "3", pointerEvents: "none", transformOrigin: "0 0" });
+    const float = (el, r, z) => Object.assign(el.style, { position: "absolute", left: `${(r.left - B.left).toFixed(1)}px`, top: `${(r.top - B.top).toFixed(1)}px`,
+      width: `${r.width.toFixed(1)}px`, height: `${r.height.toFixed(1)}px`, margin: "0", zIndex: z, pointerEvents: "none", transformOrigin: "0 0" });
     // is-quiet stays on: taking it off restarts the pill's CSS slide-in, which played once more after it had landed (the user:
     // "after shrinking it bounces once more, like the buttons used to"); the dock buttons keep theirs the same way
-    const clean = (el) => { for (const k of KEYS) el.style[k] = ""; };
-    from.hidden = false; float(from, F);
-    to.style.zIndex = "2"; to.style.transformOrigin = "0 0";
-    const T = toPill ? 440 : 540, o = { duration: T, easing: toPill ? "cubic-bezier(.4, 0, .2, 1)" : "cubic-bezier(.2, .9, .25, 1)", fill: "both" };
-    // 11/23: the Map button is now as wide as the small map (same kind of button as the two under it), so the width no
-    // longer shrinks; the small map rolls up from the bottom to the button's height instead (and down again when it comes
-    // back). The cut stays off the shadow at the open end, so nothing changes when the animation lets go.
-    // the cut's corners in the small map's own units, so they match the button's on screen (it is narrower again)
-    const miniClip = (toPill ? F.height - Tg.height / s : Tg.height - F.height * s).toFixed(1);
-    const pillR = parseFloat(getComputedStyle(pill).borderTopLeftRadius) || 16, miniW = (toPill ? F : Tg).width, pillW = (toPill ? Tg : F).width;
-    const OPEN = "inset(-30px -30px -30px -30px round 50px)", FULL = "inset(0px 0px 0px 0px round 20px)",
-      CUT = `inset(0px 0px ${miniClip}px 0px round ${(pillR * miniW / pillW).toFixed(1)}px)`;
-    const fromMove = [{ transform: "none" }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})` }];
-    const toMove = [{ transform: `translate(${(-dx).toFixed(1)}px, ${(-dy).toFixed(1)}px) scale(${(1 / s).toFixed(4)})` }, { transform: "none" }];
-    const anims = [
-      from.animate(fromMove, o),
-      from.animate([{ opacity: 1 }, { opacity: 0, offset: 0.4 }, { opacity: 0 }], { duration: T, fill: "both" }),
-      to.animate(toMove, o),
-      to.animate([{ opacity: 0 }, { opacity: 0, offset: 0.1 }, { opacity: 1, offset: 0.45 }, { opacity: 1 }], { duration: T, fill: "both" }),
-      toPill ? mini.animate([{ clipPath: OPEN }, { clipPath: FULL, offset: 0.12 }, { clipPath: CUT }], o)
-             : mini.animate([{ clipPath: CUT }, { clipPath: FULL, offset: 0.88 }, { clipPath: OPEN }], o),
-    ];
-    if (H0 && H0.width) {                                  // the "−" button rides along with the small map and goes first
-      hide.hidden = false; float(hide, H0);
-      const px = H0.left - F.left, py = H0.top - F.top;
-      anims.push(hide.animate([{ transform: "none" }, { transform: `translate(${(dx + (s - 1) * px).toFixed(1)}px, ${(dy + (s - 1) * py).toFixed(1)}px) scale(${s.toFixed(4)})` }], o));
-      anims.push(hide.animate([{ opacity: 1 }, { opacity: 0, offset: 0.25 }, { opacity: 0 }], { duration: T, fill: "both" }));
+    const clean = (el) => { for (const k_ of KEYS) el.style[k_] = ""; };
+    from.hidden = false; float(from, F, toPill ? "3" : "2");   // the map stays on top: going, it fades over the button; coming, it grows over it
+    to.style.zIndex = toPill ? "2" : "3"; to.style.transformOrigin = "0 0";
+    let anims, o;
+    if (toPill) {
+      o = { duration: 440, easing: "cubic-bezier(.4, 0, .2, 1)", fill: "both" };
+      anims = [
+        mini.animate([{ transform: "none", clipPath: OPEN }, { clipPath: FULL, offset: 0.12 }, { transform: mapSmall, clipPath: CUT }], o),
+        mini.animate([{ opacity: 1 }, { opacity: 1, offset: 0.06 }, { opacity: 0, offset: 0.38 }, { opacity: 0 }], { duration: 440, fill: "both" }),
+        pill.animate([{ transform: pillBig }, { transform: "none" }], o),
+        pill.animate([{ opacity: 0 }, { opacity: 0, offset: 0.08 }, { opacity: 1, offset: 0.34 }, { opacity: 1 }], { duration: 440, fill: "both" }),
+      ];
+      if (H0 && H0.width) {                                // the "−" button rides along with the small map and goes first
+        hide.hidden = false; float(hide, H0, "4");
+        const px = H0.left - F.left, py = H0.top - F.top;
+        anims.push(hide.animate([{ transform: "none" }, { transform: `translate(${(dx + (k - 1) * px).toFixed(1)}px, ${(dy + (k - 1) * py).toFixed(1)}px) scale(${k.toFixed(4)})` }], o));
+        anims.push(hide.animate([{ opacity: 1 }, { opacity: 0, offset: 0.25 }, { opacity: 0 }], { duration: 440, fill: "both" }));
+      }
+    } else {
+      o = { duration: 560, easing: "cubic-bezier(.2, .9, .25, 1)", fill: "both" };
+      anims = [
+        mini.animate([{ transform: mapSmall, clipPath: CUT }, { clipPath: FULL, offset: 0.88 }, { transform: "none", clipPath: OPEN }], o),
+        mini.animate([{ opacity: 0.4 }, { opacity: 1, offset: 0.3 }, { opacity: 1 }], { duration: 560, fill: "both" }),
+        pill.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: "ease-out", fill: "forwards" }),
+      ];
+      hide.style.opacity = "0";                            // it comes in once the map has grown
     }
-    if (!toPill) hide.style.opacity = "0";                // it comes in once the map has grown
     docks.forEach((b, i) => {
       const d0 = before[i] - b.getBoundingClientRect().top;
       if (Math.abs(d0) > 0.5) anims.push(b.animate([{ transform: `translateY(${d0.toFixed(1)}px)` }, { transform: "translateY(0px)" }], o));
