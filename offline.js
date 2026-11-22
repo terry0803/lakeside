@@ -30,7 +30,7 @@
 html.lk-probing body { visibility: hidden; }
 html.lk-probing::after { content: "Connecting\\2026\\A 連線中\\2026"; white-space: pre-wrap; position: fixed; inset: 0; display: grid; place-items: center; padding: 0 24px;
   text-align: center; font: 15px/1.7 system-ui, "Microsoft JhengHei", sans-serif; color: rgba(226, 232, 240, .85); }
-html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\A\\A The IT Assistant and the mini-games run on the presenter\\2019s laptop. If it is off, a saved copy opens in a moment.\\A IT 小幫手和小遊戲跑在報告用的筆電上，筆電沒開的話，等一下會打開存好的離線版。"; }`;
+html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\A\\A The IT Assistant and the mini-games run on the presenter\\2019s laptop. If the laptop or its AI is off, a saved copy opens in a moment.\\A IT 小幫手和小遊戲跑在報告用的筆電上，筆電或 AI 沒開的話，等一下會打開存好的離線版。"; }`;
   document.head.appendChild(css);
   root.classList.add("lk-probing");
 
@@ -44,20 +44,23 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
       w = w.parent;
       try { if (w.LAKESIDE_OFFLINE) return w; } catch { /* another site */ }
     }
-    try { const o = window.opener && window.opener.top; if (o && o.LAKESIDE_OFFLINE) return o; } catch { /* another site */ }
     return null;
   };
+  // a new tab opened from the saved full page (the balloon's Full version): saved copy too. A tab of its own shares that
+  // page's storage anyway, so only the decision is taken from it (and nothing breaks when that page is closed later).
+  const openerOffline = () => { try { const o = window.opener && window.opener.top; return !!(o && o.LAKESIDE_OFFLINE); } catch { return false; } };
   const ancestors = () => { try { return [...(location.ancestorOrigins || [])]; } catch { return []; } };
   const liveOrigin = new URL(LIVE).origin;
   const liveAbove = () => ancestors().includes(liveOrigin);      // the laptop's own page is around this one: it is on
-  // a page around this one that the laptop does not allow to hold its pages (server.py frame-ancestors): going there
-  // would leave a blank window, so the saved copy instead. Origins hidden as "null" are not judged.
-  const OK_AROUND = [liveOrigin, location.origin, "http://127.0.0.1:8780", "http://localhost:8780"];
-  const blockedAbove = () => ancestors().some((o) => o !== "null" && !OK_AROUND.includes(o) && !/^https:\/\/([a-z0-9-]+\.)*istaging\.com$/.test(o));
+  // a page around this one that the laptop does not allow to hold its pages (server.py frame-ancestors: itself, its local
+  // address and *.istaging.com): going there would leave a blank window, so the saved copy instead. "null" is a sandboxed
+  // frame, which frame-ancestors refuses too.
+  const OK_AROUND = [liveOrigin, "http://127.0.0.1:8780", "http://localhost:8780"];
+  const blockedAbove = () => ancestors().some((o) => !OK_AROUND.includes(o) && !/^https:\/\/([a-z0-9-]+\.)+istaging\.com$/.test(o));
 
-  if (params.has("offline")) ss(FORCE, "1");        // asked for the saved copy: this tab stays in it
+  if (params.has("offline")) ss(FORCE, "1");        // asked for the saved copy: this tab stays in it (a new tab goes back)
   const host = offlineHost();
-  if (params.has("offline") || ss(FORCE) === "1" || host) offline(host);
+  if (params.has("offline") || ss(FORCE) === "1" || host || openerOffline()) offline(host);
   else if (liveAbove()) location.replace(liveUrl);
   else if (blockedAbove() || Number(ss(KEY)) > Date.now()) offline(null);
   else probe();
@@ -150,8 +153,8 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
       }
       return sse(evs);
     }
-    const OFF_EN = "I can't answer new questions right now. The AI runs on the presenter's laptop, which is off. In this saved copy you can still read the overview of each place (pick a place on the map and press the button below, or press “Ask the IT Assistant” on a sign in the tour), look at Progress and How it works, and play the four mini-games in the Casebook.";
-    const OFF_ZH = "我現在不能回答新的問題。AI 跑在報告用的筆電上，筆電沒開。這個離線版還可以看每個地點的介紹（在地圖上選地點再按下面的按鈕，或按導覽招牌上的「問 IT 小幫手」），看「進度」和「原理」，也可以玩事件簿裡的四個小遊戲。";
+    const OFF_EN = "I can't answer new questions right now. The AI runs on the presenter's laptop and is not running right now. In this saved copy you can still read the overview of each place (pick a place on the map and press the button below, or press “Ask the IT Assistant” on a sign in the tour), look at Progress and How it works, and play the four mini-games in the Casebook.";
+    const OFF_ZH = "我現在不能回答新的問題。AI 跑在報告用的筆電上，現在沒開。這個離線版還可以看每個地點的介紹（在地圖上選地點再按下面的按鈕，或按導覽招牌上的「問 IT 小幫手」），看「進度」和「原理」，也可以玩事件簿裡的四個小遊戲。";
     const aiOff = (lang) => sse([
       ["start", { session: sessionId(), lang }],
       ["done", { answer: `${OFF_EN}\n${OFF_ZH}`, go: [],
@@ -178,10 +181,13 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
       if (p === "settings" && body.reset) write({ session: sessionId() });   // Start over: places and scores cleared
       if (p === "state" || p === "settings") return json({ session: sessionId(), state: state() });
       if (p === "visit") { visit(body.room); return json({ session: sessionId(), state: state() }); }
-      if (p === "games/result") {                    // the same checks as server.py
-        const score = Number(body.score), tot = Number(body.total);
+      if (p === "games/result") {                    // the same checks as server.py, including Python's int()
+        const pyInt = (v) => (typeof v === "number" && Number.isFinite(v) ? Math.trunc(v)
+          : typeof v === "string" && /^\s*[+-]?\d+\s*$/.test(v) ? parseInt(v, 10) : NaN);
+        const score = pyInt(body.score), tot = pyInt(body.total);
         if (!GAMES.includes(body.game)) return json({ error: "unknown game" }, 400);
-        if (!(Number.isInteger(score) && Number.isInteger(tot) && tot > 0 && tot <= 100 && score >= 0 && score <= tot)) return json({ error: "score out of range" }, 400);
+        if (Number.isNaN(score) || Number.isNaN(tot)) return json({ error: "score and total must be numbers" }, 400);
+        if (!(tot > 0 && tot <= 100 && score >= 0 && score <= tot)) return json({ error: "score out of range" }, 400);
         const s = read(); s.games = s.games || {};
         const old = s.games[body.game] || {};
         s.games[body.game] = { score, total: tot, best: Math.max(score, old.best ?? -1), plays: (old.plays || 0) + 1,

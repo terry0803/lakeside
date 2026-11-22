@@ -29,19 +29,25 @@ event: token
 data: {"text": "」"}
 
 event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "部門"}
+
+event: token
+data: {"text": "海"}
+
+event: token
+data: {"text": "報"}
+
+event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "牆"}
+data: {"text": "內容"}
 
 event: token
-data: {"text": "上"}
-
-event: token
-data: {"text": "貼"}
-
-event: token
-data: {"text": "著"}
+data: {"text": "是"}
 
 event: token
 data: {"text": "各"}
@@ -71,10 +77,10 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "海"}
+data: {"text": "重點"}
 
 event: token
-data: {"text": "報"}
+data: {"text": "在於"}
 
 event: token
 data: {"text": "強調"}
@@ -113,16 +119,7 @@ event: token
 data: {"text": "份"}
 
 event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "並"}
-
-event: token
-data: {"text": "列"}
-
-event: token
-data: {"text": "出了"}
+data: {"text": "。"}
 
 event: token
 data: {"text": "看得"}
@@ -140,9 +137,6 @@ event: token
 data: {"text": "是"}
 
 event: token
-data: {"text": "「"}
-
-event: token
 data: {"text": "資"}
 
 event: token
@@ -155,7 +149,7 @@ event: token
 data: {"text": "訓練"}
 
 event: token
-data: {"text": "」。"}
+data: {"text": "，"}
 
 event: token
 data: {"text": "課程"}
@@ -187,87 +181,6 @@ data: {"text": "系統"}
 event: token
 data: {"text": "。"}
 
-event: token
-data: {"text": "您可以"}
-
-event: token
-data: {"text": "繼續"}
-
-event: token
-data: {"text": "走到"}
-
-event: token
-data: {"text": "「"}
-
-event: token
-data: {"text": "搭"}
-
-event: token
-data: {"text": "熱"}
-
-event: token
-data: {"text": "氣"}
-
-event: token
-data: {"text": "球"}
-
-event: token
-data: {"text": "回家"}
-
-event: token
-data: {"text": "・"}
-
-event: token
-data: {"text": "總"}
-
-event: token
-data: {"text": "複"}
-
-event: token
-data: {"text": "習"}
-
-event: token
-data: {"text": "」"}
-
-event: token
-data: {"text": "或"}
-
-event: token
-data: {"text": "前往"}
-
-event: token
-data: {"text": "「"}
-
-event: token
-data: {"text": "湖"}
-
-event: token
-data: {"text": "心"}
-
-event: token
-data: {"text": "館"}
-
-event: token
-data: {"text": "劇場"}
-
-event: token
-data: {"text": "・"}
-
-event: token
-data: {"text": "頒獎"}
-
-event: token
-data: {"text": "晚"}
-
-event: token
-data: {"text": "會"}
-
-event: token
-data: {"text": "」。"}
-
-event: replace
-data: {"text": "這裡展示的是「劇場前排」，牆上貼著各部門今年資安改善的海報。海報強調資安不只是資訊部的事，每個部門都有份，並列出了看得到的防護措施是「資安意識訓練」。課程概念包含 PDCA 與資訊安全管理系統。你可以繼續走到「搭熱氣球回家・總複習」或前往「湖心館劇場・頒獎晚會」。"}
-
 event: done
-data: {"answer": "這裡展示的是「劇場前排」，牆上貼著各部門今年資安改善的海報。海報強調資安不只是資訊部的事，每個部門都有份，並列出了看得到的防護措施是「資安意識訓練」。課程概念包含 PDCA 與資訊安全管理系統。你可以繼續走到「搭熱氣球回家・總複習」或前往「湖心館劇場・頒獎晚會」。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.11, "total_s": 8.12}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_theater_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_theater_near"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "pav_theater_near", "label": "Room", "en": "Theater · Front Row", "zh": "劇場前排"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}, {"key": "c_pdca", "label": "Concept", "en": "PDCA & the ISMS", "zh": "PDCA 與資訊安全管理系統"}], "edges": [{"a": "c_pdca", "t": "TAUGHT_IN", "b": "pav_theater_near"}, {"a": "awareness_training", "t": "SEEN_IN", "b": "pav_theater_near"}]}, "tool_used": "room_overview", "facts": "房間：劇場前排・部門海報\n代表的資訊主題：各部門今年資安改善的海報。\n重點：資安不只是資訊部的事，每個部門都有份。\n看得到的防護措施：資安意識訓練\n課程概念：PDCA 與資訊安全管理系統\n可以走到：搭熱氣球回家・總複習、湖心館劇場・頒獎晚會", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.11, "load_s": 0.01, "prompt_tokens": 532, "prompt_s": 2.38, "gen_tokens": 88, "gen_s": 5.71, "tok_per_s": 15.4, "first_token_s": 2.4}}, "state": {}}
+data: {"answer": "這裡展示的是「劇場前排」的部門海報，內容是各部門今年資安改善的海報。重點在於強調資安不只是資訊部的事，每個部門都有份。看得到的防護措施是資安意識訓練，課程概念包含 PDCA 與資訊安全管理系統。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.78, "total_s": 7.79}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_theater_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_theater_near"}, "rows": 1, "ms": 5.4}], "graph": {"nodes": [{"key": "pav_theater_near", "label": "Room", "en": "Theater · Front Row", "zh": "劇場前排"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}, {"key": "c_pdca", "label": "Concept", "en": "PDCA & the ISMS", "zh": "PDCA 與資訊安全管理系統"}], "edges": [{"a": "c_pdca", "t": "TAUGHT_IN", "b": "pav_theater_near"}, {"a": "awareness_training", "t": "SEEN_IN", "b": "pav_theater_near"}]}, "tool_used": "room_overview", "facts": "房間：劇場前排・部門海報\n代表的資訊主題：各部門今年資安改善的海報。\n重點：資安不只是資訊部的事，每個部門都有份。\n看得到的防護措施：資安意識訓練\n課程概念：PDCA 與資訊安全管理系統\n可以走到：搭熱氣球回家・總複習、湖心館劇場・頒獎晚會", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.78, "load_s": 0.01, "prompt_tokens": 532, "prompt_s": 2.36, "gen_tokens": 60, "gen_s": 5.33, "tok_per_s": 11.3, "first_token_s": 2.45}}, "state": {}}
 

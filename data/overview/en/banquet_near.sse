@@ -20,7 +20,10 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " Stage"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Stage"}
 
 event: token
 data: {"text": " Close"}
@@ -29,10 +32,25 @@ event: token
 data: {"text": "-up"}
 
 event: token
+data: {"text": " ·"}
+
+event: token
+data: {"text": " Award"}
+
+event: token
+data: {"text": " Programme"}
+
+event: token
+data: {"text": "**"}
+
+event: token
 data: {"text": " ("}
 
 event: token
-data: {"text": "called"}
+data: {"text": "shown"}
+
+event: token
+data: {"text": " as"}
 
 event: token
 data: {"text": " '"}
@@ -68,7 +86,7 @@ event: token
 data: {"text": " which"}
 
 event: token
-data: {"text": " shows"}
+data: {"text": " displays"}
 
 event: token
 data: {"text": " the"}
@@ -77,7 +95,7 @@ event: token
 data: {"text": " stage"}
 
 event: token
-data: {"text": " where"}
+data: {"text": " for"}
 
 event: token
 data: {"text": " tonight"}
@@ -87,12 +105,6 @@ data: {"text": "'s"}
 
 event: token
 data: {"text": " awards"}
-
-event: token
-data: {"text": " are"}
-
-event: token
-data: {"text": " presented"}
 
 event: token
 data: {"text": "."}
@@ -113,7 +125,10 @@ event: token
 data: {"text": " for"}
 
 event: token
-data: {"text": " Security"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Security"}
 
 event: token
 data: {"text": " Awareness"}
@@ -122,19 +137,31 @@ event: token
 data: {"text": " Training"}
 
 event: token
+data: {"text": "**"}
+
+event: token
 data: {"text": " here"}
 
 event: token
 data: {"text": "."}
 
 event: token
-data: {"text": " Ex"}
+data: {"text": " To"}
 
 event: token
-data: {"text": "its"}
+data: {"text": " leave"}
 
 event: token
-data: {"text": " lead"}
+data: {"text": ","}
+
+event: token
+data: {"text": " you"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " go"}
 
 event: token
 data: {"text": " to"}
@@ -143,7 +170,10 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " Ban"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Ban"}
 
 event: token
 data: {"text": "quet"}
@@ -164,13 +194,22 @@ event: token
 data: {"text": " CRM"}
 
 event: token
-data: {"text": " and"}
+data: {"text": "**"}
+
+event: token
+data: {"text": " or"}
 
 event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " Garden"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "G"}
+
+event: token
+data: {"text": "arden"}
 
 event: token
 data: {"text": " Party"}
@@ -188,8 +227,8 @@ event: token
 data: {"text": " OT"}
 
 event: token
-data: {"text": "."}
+data: {"text": "**."}
 
 event: done
-data: {"answer": "This place is the Stage Close-up (called 'Stage · Up Close' in the tour), which shows the stage where tonight's awards are presented. You can see controls for Security Awareness Training here. Exits lead to the Banquet Hall · Events & CRM and the Garden Party · IoT & OT.", "go": [], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.4, "total_s": 6.41}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet_near"}, "rows": 1, "ms": 6.0}], "graph": {"nodes": [{"key": "banquet_near", "label": "Room", "en": "Stage · Up Close", "zh": "舞台近看"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}], "edges": [{"a": "awareness_training", "t": "SEEN_IN", "b": "banquet_near"}]}, "tool_used": "room_overview", "facts": "Room: Stage Close-up · Award Programme (called 'Stage · Up Close' in the tour)\nWhat it shows: The stage where tonight's awards are presented.\nKey lesson: Recognition helps good security habits stick.\nControls you can see: Security Awareness Training\nExits: Banquet Hall · Events & CRM, Garden Party · IoT & OT", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.39, "load_s": 0.01, "prompt_tokens": 515, "prompt_s": 2.5, "gen_tokens": 62, "gen_s": 3.88, "tok_per_s": 16.0, "first_token_s": 2.52}}, "state": {}}
+data: {"answer": "This place is the **Stage Close-up · Award Programme** (shown as 'Stage · Up Close' in the tour), which displays the stage for tonight's awards. You can see controls for **Security Awareness Training** here. To leave, you can go to the **Banquet Hall · Events & CRM** or the **Garden Party · IoT & OT**.", "go": [], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.15, "total_s": 8.17}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet_near"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "banquet_near", "label": "Room", "en": "Stage · Up Close", "zh": "舞台近看"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}], "edges": [{"a": "awareness_training", "t": "SEEN_IN", "b": "banquet_near"}]}, "tool_used": "room_overview", "facts": "Room: Stage Close-up · Award Programme (called 'Stage · Up Close' in the tour)\nWhat it shows: The stage where tonight's awards are presented.\nKey lesson: Recognition helps good security habits stick.\nControls you can see: Security Awareness Training\nExits: Banquet Hall · Events & CRM, Garden Party · IoT & OT", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.15, "load_s": 0.01, "prompt_tokens": 515, "prompt_s": 1.99, "gen_tokens": 75, "gen_s": 6.14, "tok_per_s": 12.2, "first_token_s": 2.02}}, "state": {}}
 

@@ -149,7 +149,7 @@ event: token
 data: {"text": "副本"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "以及"}
 
 event: token
 data: {"text": "事件"}
@@ -164,26 +164,74 @@ event: token
 data: {"text": "計畫"}
 
 event: token
-data: {"text": "及"}
+data: {"text": "。"}
 
 event: token
-data: {"text": "資"}
+data: {"text": "相關"}
 
 event: token
-data: {"text": "安"}
+data: {"text": "防護"}
 
 event: token
-data: {"text": "監控"}
+data: {"text": "重點"}
 
 event: token
-data: {"text": "中心"}
+data: {"text": "與"}
+
+event: token
+data: {"text": "課程"}
+
+event: token
+data: {"text": "概念"}
+
+event: token
+data: {"text": "（"}
+
+event: token
+data: {"text": "如"}
+
+event: token
+data: {"text": " R"}
+
+event: token
+data: {"text": "TO"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "R"}
+
+event: token
+data: {"text": "PO"}
+
+event: token
+data: {"text": "）"}
+
+event: token
+data: {"text": "可在"}
+
+event: token
+data: {"text": "現場"}
+
+event: token
+data: {"text": "資訊"}
+
+event: token
+data: {"text": "主題"}
+
+event: token
+data: {"text": "中"}
+
+event: token
+data: {"text": "確認"}
 
 event: token
 data: {"text": "。"}
 
 event: replace
-data: {"text": "這裡是「夜晚的餐廳」，目前收銀系統因釣魚郵件導致勒索軟體入侵而停擺。你可以看到營運持續與災難復原措施，包括 3-2-1 備份、離線副本、事件應變計畫及資安監控中心。"}
+data: {"text": "這裡是「夜晚的餐廳」，目前收銀系統因釣魚郵件導致勒索軟體入侵而停擺。你可以看到營運持續與災難復原措施，包括 3-2-1 備份、離線副本以及事件應變計畫。相關防護重點與課程概念（如 RTO、RPO）可在現場資訊主題中確認。"}
 
 event: done
-data: {"answer": "這裡是「夜晚的餐廳」，目前收銀系統因釣魚郵件導致勒索軟體入侵而停擺。你可以看到營運持續與災難復原措施，包括 3-2-1 備份、離線副本、事件應變計畫及資安監控中心。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}, {"text": "釣魚郵件要怎麼防？", "en": "How do we prevent phishing email?", "zh": "釣魚郵件要怎麼防？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.33, "total_s": 6.34}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "hallnight", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "hallnight"}, "rows": 1, "ms": 5.7}], "graph": {"nodes": [{"key": "hallnight", "label": "Room", "en": "Restaurant at Night", "zh": "夜晚的餐廳"}, {"key": "phishing", "label": "Threat", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "ransomware", "label": "Threat", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "bcp_dr", "label": "Control", "en": "Business Continuity & Disaster Recovery", "zh": "營運持續與災難復原"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "incident_response", "label": "Control", "en": "Incident Response Plan & SOC", "zh": "事件應變計畫與資安監控中心"}, {"key": "c_bcp", "label": "Concept", "en": "BCP, RTO & RPO", "zh": "營運持續、RTO 與 RPO"}], "edges": [{"a": "phishing", "t": "SHOWN_IN", "b": "hallnight"}, {"a": "ransomware", "t": "SHOWN_IN", "b": "hallnight"}, {"a": "c_bcp", "t": "TAUGHT_IN", "b": "hallnight"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "backup_321"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "bcp_dr"}, {"a": "backup_321", "t": "SEEN_IN", "b": "hallnight"}, {"a": "backup_321", "t": "MITIGATES", "b": "ransomware"}, {"a": "bcp_dr", "t": "SEEN_IN", "b": "hallnight"}, {"a": "bcp_dr", "t": "MITIGATES", "b": "ransomware"}, {"a": "incident_response", "t": "SEEN_IN", "b": "hallnight"}, {"a": "incident_response", "t": "MITIGATES", "b": "phishing"}, {"a": "incident_response", "t": "MITIGATES", "b": "ransomware"}]}, "tool_used": "room_overview", "facts": "房間：夜晚的餐廳・收銀系統停擺\n代表的資訊主題：有人在收銀電腦點了釣魚連結，勒索軟體把系統加密，餐廳沒辦法點餐（壞結局）。\n重點：離線備份、網段隔離和演練過的應變計畫，決定多快能恢復。\n這裡要注意的威脅：釣魚郵件、勒索軟體\n看得到的防護措施：營運持續與災難復原、3-2-1 備份與離線副本、事件應變計畫與資安監控中心\n課程概念：營運持續、RTO 與 RPO\n相關的處理流程：勒索軟體或檔案被加密、點了釣魚連結或輸入了密碼、收銀系統當機\n可以走到：餐廳收銀系統", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.32, "load_s": 0.01, "prompt_tokens": 611, "prompt_s": 2.56, "gen_tokens": 61, "gen_s": 3.74, "tok_per_s": 16.3, "first_token_s": 2.58}}, "state": {}}
+data: {"answer": "這裡是「夜晚的餐廳」，目前收銀系統因釣魚郵件導致勒索軟體入侵而停擺。你可以看到營運持續與災難復原措施，包括 3-2-1 備份、離線副本以及事件應變計畫。相關防護重點與課程概念（如 RTO、RPO）可在現場資訊主題中確認。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}, {"text": "釣魚郵件要怎麼防？", "en": "How do we prevent phishing email?", "zh": "釣魚郵件要怎麼防？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.44, "total_s": 8.45}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "hallnight", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "hallnight"}, "rows": 1, "ms": 5.4}], "graph": {"nodes": [{"key": "hallnight", "label": "Room", "en": "Restaurant at Night", "zh": "夜晚的餐廳"}, {"key": "phishing", "label": "Threat", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "ransomware", "label": "Threat", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "bcp_dr", "label": "Control", "en": "Business Continuity & Disaster Recovery", "zh": "營運持續與災難復原"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "incident_response", "label": "Control", "en": "Incident Response Plan & SOC", "zh": "事件應變計畫與資安監控中心"}, {"key": "c_bcp", "label": "Concept", "en": "BCP, RTO & RPO", "zh": "營運持續、RTO 與 RPO"}], "edges": [{"a": "phishing", "t": "SHOWN_IN", "b": "hallnight"}, {"a": "ransomware", "t": "SHOWN_IN", "b": "hallnight"}, {"a": "c_bcp", "t": "TAUGHT_IN", "b": "hallnight"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "backup_321"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "bcp_dr"}, {"a": "backup_321", "t": "SEEN_IN", "b": "hallnight"}, {"a": "backup_321", "t": "MITIGATES", "b": "ransomware"}, {"a": "bcp_dr", "t": "SEEN_IN", "b": "hallnight"}, {"a": "bcp_dr", "t": "MITIGATES", "b": "ransomware"}, {"a": "incident_response", "t": "SEEN_IN", "b": "hallnight"}, {"a": "incident_response", "t": "MITIGATES", "b": "phishing"}, {"a": "incident_response", "t": "MITIGATES", "b": "ransomware"}]}, "tool_used": "room_overview", "facts": "房間：夜晚的餐廳・收銀系統停擺\n代表的資訊主題：有人在收銀電腦點了釣魚連結，勒索軟體把系統加密，餐廳沒辦法點餐（壞結局）。\n重點：離線備份、網段隔離和演練過的應變計畫，決定多快能恢復。\n這裡要注意的威脅：釣魚郵件、勒索軟體\n看得到的防護措施：營運持續與災難復原、3-2-1 備份與離線副本、事件應變計畫與資安監控中心\n課程概念：營運持續、RTO 與 RPO\n相關的處理流程：勒索軟體或檔案被加密、點了釣魚連結或輸入了密碼、收銀系統當機\n可以走到：餐廳收銀系統", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.44, "load_s": 0.01, "prompt_tokens": 611, "prompt_s": 2.05, "gen_tokens": 77, "gen_s": 6.36, "tok_per_s": 12.1, "first_token_s": 2.07}}, "state": {}}
 

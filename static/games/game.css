@@ -2722,6 +2722,17 @@ body.is-fit .mn-left { position: static; display: flex; flex-direction: column; 
 body.is-fit .mn-left .mn-card { flex: none; }
 body.is-fit .mn-log { flex: 1 1 auto; min-height: 0; max-height: none; overflow: auto; }
 body.is-fit .mn-right { position: static; }
+/* 11/22 review: the row is the night screen's 768 px whatever the laptop needs, so the night log always ends inside the canvas
+   (it scrolls); and the sign-in portal's two waiting states put the button or the number beside the text, so the laptop fits
+   too (those states made it up to 41 px taller, and both columns reached 25 px below the canvas) */
+body.is-fit .mn-play { grid-template-rows: minmax(0, 1fr); }
+body.is-fit .mn-portal-in:not(.is-ok):not(.is-late) { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 14px; align-items: center; }
+body.is-fit .mn-portal-in:not(.is-match):not(.is-ok):not(.is-late) { grid-template-areas: "t b" "d d"; }
+body.is-fit .mn-portal-in.is-match { grid-template-areas: "t m" "d m"; }
+body.is-fit .mn-portal-in .mn-portal-t { grid-area: t; }
+body.is-fit .mn-portal-in .mn-portal-d { grid-area: d; margin-bottom: 0; }
+body.is-fit .mn-portal-in .mn-signin { grid-area: b; }
+body.is-fit .mn-portal-in .mn-match { grid-area: m; margin: 0; }
 /* chapter 3's board: once a question is solved its clues fold up, so the two logs pinned after question 2 fit */
 body.is-fit .cb-cork.is-q1 .mn-poster { min-height: 0; padding: 12px 6px 8px; }
 body.is-fit .cb-cork.is-q1 .mn-poster-line, body.is-fit .cb-cork.is-q1 .mn-poster-foot, body.is-fit .cb-cork.is-q1 .mn-poster-icon { display: none; }

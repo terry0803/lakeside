@@ -71,7 +71,7 @@ event: token
 data: {"text": " It"}
 
 event: token
-data: {"text": " displays"}
+data: {"text": " hosts"}
 
 event: token
 data: {"text": " the"}
@@ -146,50 +146,74 @@ event: token
 data: {"text": " can"}
 
 event: token
-data: {"text": " also"}
-
-event: token
 data: {"text": " see"}
 
 event: token
-data: {"text": " concepts"}
+data: {"text": " Department"}
 
 event: token
-data: {"text": " like"}
+data: {"text": " Post"}
 
 event: token
-data: {"text": " Risk"}
+data: {"text": "ers"}
 
 event: token
-data: {"text": " Treatment"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " PD"}
-
-event: token
-data: {"text": "CA"}
-
-event: token
-data: {"text": " &"}
+data: {"text": " at"}
 
 event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " IS"}
+data: {"text": " front"}
 
 event: token
-data: {"text": "MS"}
+data: {"text": " row"}
 
 event: token
-data: {"text": " here"}
+data: {"text": " and"}
+
+event: token
+data: {"text": " access"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " Resort"}
+
+event: token
+data: {"text": " IT"}
+
+event: token
+data: {"text": " Map"}
+
+event: token
+data: {"text": " via"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " Hot"}
+
+event: token
+data: {"text": "-A"}
+
+event: token
+data: {"text": "ir"}
+
+event: token
+data: {"text": " Bal"}
+
+event: token
+data: {"text": "loon"}
+
+event: token
+data: {"text": " icon"}
 
 event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This place is the **Theater** (shown as 'Lake Pavilion Theater' in the tour). It displays the staff awards night celebrating each department's security work, where the new IT staff member can win Security Champion. You can also see concepts like Risk Treatment, PDCA & the ISMS here.", "go": [{"key": "flight_home", "en": "Flight Home · Recap", "zh": "搭熱氣球回家・總複習", "base_en": "Flight Home", "base_zh": "搭熱氣球回家", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=16", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.13, "total_s": 6.14}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_theater", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_theater"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "pav_theater", "label": "Room", "en": "Lake Pavilion Theater", "zh": "湖心館劇場"}, {"key": "c_risk_treatment", "label": "Concept", "en": "Risk Treatment", "zh": "風險處理"}, {"key": "c_pdca", "label": "Concept", "en": "PDCA & the ISMS", "zh": "PDCA 與資訊安全管理系統"}], "edges": [{"a": "c_risk_treatment", "t": "TAUGHT_IN", "b": "pav_theater"}, {"a": "c_pdca", "t": "TAUGHT_IN", "b": "pav_theater"}]}, "tool_used": "room_overview", "facts": "Room: Theater · Awards Night (called 'Lake Pavilion Theater' in the tour)\nWhat it shows: The staff awards night celebrates each department's security work; the new IT staff member can win Security Champion.\nKey lesson: Security is continual improvement: plan, do, check, act.\nConcepts: Risk Treatment, PDCA & the ISMS\nExits: Lobby · BI Dashboards (called 'Lake Pavilion Lobby' in the tour), Flight Home · Recap, Theater Front Row · Department Posters (called 'Theater · Front Row' in the tour), Resort IT Map (called 'Hot-Air Balloon' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.12, "load_s": 0.0, "prompt_tokens": 577, "prompt_s": 2.31, "gen_tokens": 62, "gen_s": 3.8, "tok_per_s": 16.3, "first_token_s": 2.33}}, "state": {}}
+data: {"answer": "This place is the **Theater** (shown as 'Lake Pavilion Theater' in the tour). It hosts the staff awards night celebrating each department's security work, where the new IT staff member can win Security Champion. You can see Department Posters at the front row and access the Resort IT Map via the Hot-Air Balloon icon.", "go": [{"key": "flight_home", "en": "Flight Home · Recap", "zh": "搭熱氣球回家・總複習", "base_en": "Flight Home", "base_zh": "搭熱氣球回家", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=16", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.94, "total_s": 7.95}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_theater", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_theater"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "pav_theater", "label": "Room", "en": "Lake Pavilion Theater", "zh": "湖心館劇場"}, {"key": "c_risk_treatment", "label": "Concept", "en": "Risk Treatment", "zh": "風險處理"}, {"key": "c_pdca", "label": "Concept", "en": "PDCA & the ISMS", "zh": "PDCA 與資訊安全管理系統"}], "edges": [{"a": "c_risk_treatment", "t": "TAUGHT_IN", "b": "pav_theater"}, {"a": "c_pdca", "t": "TAUGHT_IN", "b": "pav_theater"}]}, "tool_used": "room_overview", "facts": "Room: Theater · Awards Night (called 'Lake Pavilion Theater' in the tour)\nWhat it shows: The staff awards night celebrates each department's security work; the new IT staff member can win Security Champion.\nKey lesson: Security is continual improvement: plan, do, check, act.\nConcepts: Risk Treatment, PDCA & the ISMS\nExits: Lobby · BI Dashboards (called 'Lake Pavilion Lobby' in the tour), Flight Home · Recap, Theater Front Row · Department Posters (called 'Theater · Front Row' in the tour), Resort IT Map (called 'Hot-Air Balloon' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.93, "load_s": 0.01, "prompt_tokens": 577, "prompt_s": 2.27, "gen_tokens": 70, "gen_s": 5.63, "tok_per_s": 12.4, "first_token_s": 2.3}}, "state": {}}
 

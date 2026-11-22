@@ -11,7 +11,7 @@ event: token
 data: {"text": "This"}
 
 event: token
-data: {"text": " room"}
+data: {"text": " place"}
 
 event: token
 data: {"text": " is"}
@@ -26,7 +26,13 @@ event: token
 data: {"text": " Farm"}
 
 event: token
-data: {"text": " ·"}
+data: {"text": ","}
+
+event: token
+data: {"text": " which"}
+
+event: token
+data: {"text": " contains"}
 
 event: token
 data: {"text": " Smart"}
@@ -35,10 +41,10 @@ event: token
 data: {"text": " Sensors"}
 
 event: token
-data: {"text": ","}
+data: {"text": " that"}
 
 event: token
-data: {"text": " where"}
+data: {"text": " send"}
 
 event: token
 data: {"text": " soil"}
@@ -48,12 +54,6 @@ data: {"text": " and"}
 
 event: token
 data: {"text": " weather"}
-
-event: token
-data: {"text": " sensors"}
-
-event: token
-data: {"text": " send"}
 
 event: token
 data: {"text": " data"}
@@ -80,55 +80,43 @@ event: token
 data: {"text": "."}
 
 event: token
-data: {"text": " You"}
+data: {"text": " The"}
 
 event: token
-data: {"text": " can"}
+data: {"text": " area"}
 
 event: token
-data: {"text": " see"}
+data: {"text": " highlights"}
 
 event: token
-data: {"text": " the"}
+data: {"text": " threats"}
 
 event: token
-data: {"text": " **"}
+data: {"text": " related"}
 
 event: token
-data: {"text": "Farm"}
+data: {"text": " to"}
 
 event: token
-data: {"text": " Sensors"}
+data: {"text": " insecure"}
 
 event: token
-data: {"text": " &"}
+data: {"text": " IoT"}
 
 event: token
-data: {"text": " Gateway"}
+data: {"text": " devices"}
 
 event: token
-data: {"text": "**"}
+data: {"text": " and"}
 
 event: token
-data: {"text": " system"}
-
-event: token
-data: {"text": " here"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " which"}
-
-event: token
-data: {"text": " demonstrates"}
+data: {"text": " teaches"}
 
 event: token
 data: {"text": " that"}
 
 event: token
-data: {"text": " IoT"}
+data: {"text": " these"}
 
 event: token
 data: {"text": " devices"}
@@ -143,74 +131,110 @@ event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " changed"}
+data: {"text": " password"}
 
 event: token
-data: {"text": " passwords"}
+data: {"text": " changes"}
 
 event: token
 data: {"text": " like"}
 
 event: token
-data: {"text": " any"}
-
-event: token
-data: {"text": " computer"}
+data: {"text": " computers"}
 
 event: token
 data: {"text": "."}
 
 event: token
-data: {"text": " The"}
+data: {"text": " You"}
 
 event: token
-data: {"text": " threats"}
+data: {"text": " can"}
 
 event: token
-data: {"text": " shown"}
+data: {"text": " see"}
 
 event: token
-data: {"text": " are"}
+data: {"text": " the"}
 
 event: token
-data: {"text": " insecure"}
+data: {"text": " Sensor"}
 
 event: token
-data: {"text": " IoT"}
+data: {"text": " Gateway"}
 
 event: token
-data: {"text": " devices"}
+data: {"text": " at"}
 
 event: token
-data: {"text": ","}
+data: {"text": " '"}
 
 event: token
-data: {"text": " covering"}
+data: {"text": "Farm"}
 
 event: token
-data: {"text": " IT"}
+data: {"text": " ·"}
 
 event: token
-data: {"text": ","}
+data: {"text": " Up"}
 
 event: token
-data: {"text": " OT"}
+data: {"text": " Close"}
 
 event: token
-data: {"text": ","}
+data: {"text": "'"}
 
 event: token
-data: {"text": " and"}
+data: {"text": " or"}
 
 event: token
-data: {"text": " IoT"}
+data: {"text": " exit"}
 
 event: token
-data: {"text": " concepts"}
+data: {"text": " via"}
 
 event: token
-data: {"text": "."}
+data: {"text": " '"}
+
+event: token
+data: {"text": "L"}
+
+event: token
+data: {"text": "akes"}
+
+event: token
+data: {"text": "ide"}
+
+event: token
+data: {"text": " Patio"}
+
+event: token
+data: {"text": "'"}
+
+event: token
+data: {"text": " or"}
+
+event: token
+data: {"text": " '"}
+
+event: token
+data: {"text": "Market"}
+
+event: token
+data: {"text": " Square"}
+
+event: token
+data: {"text": " ·"}
+
+event: token
+data: {"text": " Online"}
+
+event: token
+data: {"text": " Sales"}
+
+event: token
+data: {"text": "'."}
 
 event: done
-data: {"answer": "This room is Lavender Farm · Smart Sensors, where soil and weather sensors send data through a gateway to resort systems. You can see the **Farm Sensors & Gateway** system here, which demonstrates that IoT devices need updates and changed passwords like any computer. The threats shown are insecure IoT devices, covering IT, OT, and IoT concepts.", "go": [], "followups": [{"text": "What does the Farm Sensors & Gateway do?", "en": "What does the Farm Sensors & Gateway do?", "zh": "農莊感測器與閘道器是做什麼的？"}, {"text": "How do we prevent insecure IoT devices?", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.02, "total_s": 10.03}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "farm", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "farm"}, "rows": 1, "ms": 7.9}], "graph": {"nodes": [{"key": "farm", "label": "Room", "en": "Lavender Farm", "zh": "薰衣草農莊"}, {"key": "farm_iot", "label": "System", "en": "Farm Sensors & Gateway", "zh": "農莊感測器與閘道器"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "farm_iot", "t": "LOCATED_IN", "b": "farm"}, {"a": "iot_default", "t": "TARGETS", "b": "farm_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "farm"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "farm"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "farm_iot"}]}, "tool_used": "room_overview", "facts": "Room: Lavender Farm · Smart Sensors\nWhat it shows: Soil and weather sensors send data through a gateway to the resort's systems.\nKey lesson: IoT devices need updates and changed passwords like any computer.\nSystems here: Farm Sensors & Gateway\nThreats shown here: Insecure IoT Devices\nConcepts: IT, OT & IoT\nExits: Farm Close-up · Sensor Gateway (called 'Farm · Up Close' in the tour), Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), Market Square · Online Sales", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.01, "load_s": 0.01, "prompt_tokens": 558, "prompt_s": 2.74, "gen_tokens": 69, "gen_s": 6.35, "tok_per_s": 10.9, "first_token_s": 3.67}}, "state": {}}
+data: {"answer": "This place is Lavender Farm, which contains Smart Sensors that send soil and weather data through a gateway to resort systems. The area highlights threats related to insecure IoT devices and teaches that these devices need updates and password changes like computers. You can see the Sensor Gateway at 'Farm · Up Close' or exit via 'Lakeside Patio' or 'Market Square · Online Sales'.", "go": [], "followups": [{"text": "What does the Farm Sensors & Gateway do?", "en": "What does the Farm Sensors & Gateway do?", "zh": "農莊感測器與閘道器是做什麼的？"}, {"text": "How do we prevent insecure IoT devices?", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.95, "total_s": 8.97}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "farm", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "farm"}, "rows": 1, "ms": 6.4}], "graph": {"nodes": [{"key": "farm", "label": "Room", "en": "Lavender Farm", "zh": "薰衣草農莊"}, {"key": "farm_iot", "label": "System", "en": "Farm Sensors & Gateway", "zh": "農莊感測器與閘道器"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "farm_iot", "t": "LOCATED_IN", "b": "farm"}, {"a": "iot_default", "t": "TARGETS", "b": "farm_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "farm"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "farm"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "farm_iot"}]}, "tool_used": "room_overview", "facts": "Room: Lavender Farm · Smart Sensors\nWhat it shows: Soil and weather sensors send data through a gateway to the resort's systems.\nKey lesson: IoT devices need updates and changed passwords like any computer.\nSystems here: Farm Sensors & Gateway\nThreats shown here: Insecure IoT Devices\nConcepts: IT, OT & IoT\nExits: Farm Close-up · Sensor Gateway (called 'Farm · Up Close' in the tour), Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), Market Square · Online Sales", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.95, "load_s": 0.01, "prompt_tokens": 558, "prompt_s": 1.94, "gen_tokens": 77, "gen_s": 6.2, "tok_per_s": 12.4, "first_token_s": 2.75}}, "state": {}}
 

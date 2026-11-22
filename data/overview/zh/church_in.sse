@@ -32,7 +32,10 @@ event: token
 data: {"text": "導覽"}
 
 event: token
-data: {"text": "稱"}
+data: {"text": "名稱"}
+
+event: token
+data: {"text": "："}
 
 event: token
 data: {"text": "湖畔"}
@@ -44,6 +47,12 @@ event: token
 data: {"text": "），"}
 
 event: token
+data: {"text": "主要"}
+
+event: token
+data: {"text": "展示"}
+
+event: token
 data: {"text": "彩"}
 
 event: token
@@ -53,7 +62,7 @@ event: token
 data: {"text": "玻璃"}
 
 event: token
-data: {"text": "展示"}
+data: {"text": "上的"}
 
 event: token
 data: {"text": "個"}
@@ -71,10 +80,10 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "\n看得"}
+data: {"text": "\n可見"}
 
 event: token
-data: {"text": "到的"}
+data: {"text": "的"}
 
 event: token
 data: {"text": "防護"}
@@ -131,16 +140,55 @@ event: token
 data: {"text": "\n相關"}
 
 event: token
-data: {"text": "流程"}
+data: {"text": "概念"}
 
 event: token
 data: {"text": "涵蓋"}
 
 event: token
-data: {"text": "客人"}
+data: {"text": "資料"}
 
 event: token
-data: {"text": "要求"}
+data: {"text": "生命"}
+
+event: token
+data: {"text": "週"}
+
+event: token
+data: {"text": "期"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "個"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "保護"}
+
+event: token
+data: {"text": "原則"}
+
+event: token
+data: {"text": "及"}
+
+event: token
+data: {"text": "個人資料"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "並"}
+
+event: token
+data: {"text": "說明"}
+
+event: token
+data: {"text": "客人"}
 
 event: token
 data: {"text": "查詢"}
@@ -164,50 +212,11 @@ event: token
 data: {"text": "資"}
 
 event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "並"}
-
-event: token
-data: {"text": "可"}
-
-event: token
-data: {"text": "前往"}
-
-event: token
-data: {"text": "港口"}
-
-event: token
-data: {"text": "廣場"}
-
-event: token
-data: {"text": "・"}
-
-event: token
-data: {"text": "供應商"}
-
-event: token
-data: {"text": "或"}
-
-event: token
-data: {"text": "近"}
-
-event: token
-data: {"text": "看"}
-
-event: token
-data: {"text": "個"}
-
-event: token
-data: {"text": "資"}
-
-event: token
-data: {"text": "原則"}
+data: {"text": "的流程"}
 
 event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是「隱私小教堂」（導覽稱湖畔教堂），彩繪玻璃展示個資保護原則。\n看得到的防護措施包括資料分級與處理規則、資料最小化與保存期限。\n相關流程涵蓋客人要求查詢、更正或刪除個資，並可前往港口廣場・供應商或近看個資原則。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.86, "total_s": 7.87}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "church_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "church_in"}, "rows": 1, "ms": 7.1}], "graph": {"nodes": [{"key": "church_in", "label": "Room", "en": "Lakeside Chapel", "zh": "湖畔教堂"}, {"key": "data_classification", "label": "Control", "en": "Data Classification & Handling", "zh": "資料分級與處理規則"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}, {"key": "c_data_lifecycle", "label": "Concept", "en": "Data Lifecycle", "zh": "資料生命週期"}, {"key": "c_privacy_principles", "label": "Concept", "en": "Privacy Principles", "zh": "個資保護原則"}, {"key": "c_personal_data", "label": "Concept", "en": "Personal Data", "zh": "個人資料"}], "edges": [{"a": "c_personal_data", "t": "TAUGHT_IN", "b": "church_in"}, {"a": "c_privacy_principles", "t": "TAUGHT_IN", "b": "church_in"}, {"a": "c_privacy_principles", "t": "RELATED_TO", "b": "retention_deletion"}, {"a": "c_data_lifecycle", "t": "TAUGHT_IN", "b": "church_in"}, {"a": "c_data_lifecycle", "t": "RELATED_TO", "b": "retention_deletion"}, {"a": "c_data_lifecycle", "t": "RELATED_TO", "b": "data_classification"}, {"a": "data_classification", "t": "SEEN_IN", "b": "church_in"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "church_in"}]}, "tool_used": "room_overview", "facts": "房間：隱私小教堂（導覽裡的名稱：湖畔教堂）\n代表的資訊主題：彩繪玻璃畫的是個資保護的原則。\n重點：個資只用在當初的目的、保持正確、保管好、時間到就刪。\n看得到的防護措施：資料分級與處理規則、資料最小化與保存期限\n課程概念：資料生命週期、個資保護原則、個人資料\n相關的處理流程：客人要求查詢、更正或刪除個資\n可以走到：港口廣場・供應商、教堂近看・個資原則", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.85, "load_s": 0.0, "prompt_tokens": 567, "prompt_s": 2.53, "gen_tokens": 70, "gen_s": 5.3, "tok_per_s": 13.2, "first_token_s": 2.55}}, "state": {}}
+data: {"answer": "這裡是「隱私小教堂」（導覽名稱：湖畔教堂），主要展示彩繪玻璃上的個資保護原則。\n可見的防護措施包括資料分級與處理規則、資料最小化與保存期限。\n相關概念涵蓋資料生命週期、個資保護原則及個人資料，並說明客人查詢、更正或刪除個資的流程。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.39, "total_s": 8.4}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "church_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "church_in"}, "rows": 1, "ms": 5.6}], "graph": {"nodes": [{"key": "church_in", "label": "Room", "en": "Lakeside Chapel", "zh": "湖畔教堂"}, {"key": "data_classification", "label": "Control", "en": "Data Classification & Handling", "zh": "資料分級與處理規則"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}, {"key": "c_data_lifecycle", "label": "Concept", "en": "Data Lifecycle", "zh": "資料生命週期"}, {"key": "c_privacy_principles", "label": "Concept", "en": "Privacy Principles", "zh": "個資保護原則"}, {"key": "c_personal_data", "label": "Concept", "en": "Personal Data", "zh": "個人資料"}], "edges": [{"a": "c_personal_data", "t": "TAUGHT_IN", "b": "church_in"}, {"a": "c_privacy_principles", "t": "TAUGHT_IN", "b": "church_in"}, {"a": "c_privacy_principles", "t": "RELATED_TO", "b": "retention_deletion"}, {"a": "c_data_lifecycle", "t": "TAUGHT_IN", "b": "church_in"}, {"a": "c_data_lifecycle", "t": "RELATED_TO", "b": "retention_deletion"}, {"a": "c_data_lifecycle", "t": "RELATED_TO", "b": "data_classification"}, {"a": "data_classification", "t": "SEEN_IN", "b": "church_in"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "church_in"}]}, "tool_used": "room_overview", "facts": "房間：隱私小教堂（導覽裡的名稱：湖畔教堂）\n代表的資訊主題：彩繪玻璃畫的是個資保護的原則。\n重點：個資只用在當初的目的、保持正確、保管好、時間到就刪。\n看得到的防護措施：資料分級與處理規則、資料最小化與保存期限\n課程概念：資料生命週期、個資保護原則、個人資料\n相關的處理流程：客人要求查詢、更正或刪除個資\n可以走到：港口廣場・供應商、教堂近看・個資原則", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.39, "load_s": 0.0, "prompt_tokens": 567, "prompt_s": 2.16, "gen_tokens": 73, "gen_s": 6.19, "tok_per_s": 11.8, "first_token_s": 2.19}}, "state": {}}
 

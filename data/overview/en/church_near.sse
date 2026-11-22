@@ -11,7 +11,7 @@ event: token
 data: {"text": "This"}
 
 event: token
-data: {"text": " room"}
+data: {"text": " place"}
 
 event: token
 data: {"text": " is"}
@@ -29,13 +29,10 @@ event: token
 data: {"text": "apel"}
 
 event: token
-data: {"text": " ·"}
-
-event: token
-data: {"text": " Up"}
-
-event: token
 data: {"text": " Close"}
+
+event: token
+data: {"text": "-up"}
 
 event: token
 data: {"text": "**"}
@@ -50,22 +47,25 @@ event: token
 data: {"text": " as"}
 
 event: token
-data: {"text": " **"}
+data: {"text": " '"}
 
 event: token
-data: {"text": "L"}
+data: {"text": "Ch"}
 
 event: token
-data: {"text": "akes"}
+data: {"text": "apel"}
 
 event: token
-data: {"text": "ide"}
+data: {"text": " ·"}
 
 event: token
-data: {"text": " Chapel"}
+data: {"text": " Up"}
 
 event: token
-data: {"text": "**"}
+data: {"text": " Close"}
+
+event: token
+data: {"text": "'"}
 
 event: token
 data: {"text": " in"}
@@ -107,85 +107,13 @@ event: token
 data: {"text": " principle"}
 
 event: token
-data: {"text": ":"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "Purpose"}
-
-event: token
-data: {"text": "**,"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "min"}
-
-event: token
-data: {"text": "im"}
-
-event: token
-data: {"text": "isation"}
-
-event: token
-data: {"text": "**,"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "accuracy"}
-
-event: token
-data: {"text": "**,"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "storage"}
-
-event: token
-data: {"text": " limits"}
-
-event: token
-data: {"text": "**,"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "security"}
-
-event: token
-data: {"text": "**,"}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "account"}
-
-event: token
-data: {"text": "ability"}
-
-event: token
-data: {"text": "**."}
+data: {"text": "."}
 
 event: token
 data: {"text": " You"}
 
 event: token
 data: {"text": " can"}
-
-event: token
-data: {"text": " also"}
 
 event: token
 data: {"text": " see"}
@@ -221,14 +149,134 @@ event: token
 data: {"text": " Schedule"}
 
 event: token
+data: {"text": "**."}
+
+event: token
+data: {"text": " The"}
+
+event: token
+data: {"text": " key"}
+
+event: token
+data: {"text": " lesson"}
+
+event: token
+data: {"text": " covers"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Purpose"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " minim"}
+
+event: token
+data: {"text": "isation"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " accuracy"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " storage"}
+
+event: token
+data: {"text": " limits"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " security"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " accountability"}
+
+event: token
+data: {"text": "**."}
+
+event: token
+data: {"text": " To"}
+
+event: token
+data: {"text": " leave"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " go"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Privacy"}
+
+event: token
+data: {"text": " Chapel"}
+
+event: token
 data: {"text": "**"}
 
 event: token
-data: {"text": " here"}
+data: {"text": " ("}
 
 event: token
-data: {"text": "."}
+data: {"text": "shown"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " '"}
+
+event: token
+data: {"text": "L"}
+
+event: token
+data: {"text": "akes"}
+
+event: token
+data: {"text": "ide"}
+
+event: token
+data: {"text": " Chapel"}
+
+event: token
+data: {"text": "'"}
+
+event: token
+data: {"text": " in"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " tour"}
+
+event: token
+data: {"text": ")."}
 
 event: done
-data: {"answer": "This room is the **Chapel · Up Close** (shown as **Lakeside Chapel** in the tour). It displays each window panel naming one privacy principle: **Purpose**, **minimisation**, **accuracy**, **storage limits**, **security**, and **accountability**. You can also see controls for **Data Minimization & Retention Schedule** here.", "go": [], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.91, "total_s": 8.92}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "church_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "church_near"}, "rows": 1, "ms": 7.3}], "graph": {"nodes": [{"key": "church_near", "label": "Room", "en": "Chapel · Up Close", "zh": "教堂近看"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}, {"key": "c_privacy_principles", "label": "Concept", "en": "Privacy Principles", "zh": "個資保護原則"}], "edges": [{"a": "c_privacy_principles", "t": "TAUGHT_IN", "b": "church_near"}, {"a": "c_privacy_principles", "t": "RELATED_TO", "b": "retention_deletion"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "church_near"}]}, "tool_used": "room_overview", "facts": "Room: Chapel Close-up · Privacy Principles (called 'Chapel · Up Close' in the tour)\nWhat it shows: Up close, each window panel names one privacy principle.\nKey lesson: Purpose, minimisation, accuracy, storage limits, security and accountability.\nControls you can see: Data Minimization & Retention Schedule\nConcepts: Privacy Principles\nExits: Privacy Chapel (called 'Lakeside Chapel' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.91, "load_s": 0.0, "prompt_tokens": 535, "prompt_s": 2.94, "gen_tokens": 75, "gen_s": 5.94, "tok_per_s": 12.6, "first_token_s": 2.96}}, "state": {}}
+data: {"answer": "This place is the **Chapel Close-up** (shown as 'Chapel · Up Close' in the tour). It displays each window panel naming one privacy principle. You can see controls for **Data Minimization & Retention Schedule**. The key lesson covers **Purpose, minimisation, accuracy, storage limits, security and accountability**. To leave, go to the **Privacy Chapel** (shown as 'Lakeside Chapel' in the tour).", "go": [], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.01, "total_s": 10.02}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "church_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "church_near"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "church_near", "label": "Room", "en": "Chapel · Up Close", "zh": "教堂近看"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}, {"key": "c_privacy_principles", "label": "Concept", "en": "Privacy Principles", "zh": "個資保護原則"}], "edges": [{"a": "c_privacy_principles", "t": "TAUGHT_IN", "b": "church_near"}, {"a": "c_privacy_principles", "t": "RELATED_TO", "b": "retention_deletion"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "church_near"}]}, "tool_used": "room_overview", "facts": "Room: Chapel Close-up · Privacy Principles (called 'Chapel · Up Close' in the tour)\nWhat it shows: Up close, each window panel names one privacy principle.\nKey lesson: Purpose, minimisation, accuracy, storage limits, security and accountability.\nControls you can see: Data Minimization & Retention Schedule\nConcepts: Privacy Principles\nExits: Privacy Chapel (called 'Lakeside Chapel' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.0, "load_s": 0.01, "prompt_tokens": 535, "prompt_s": 2.28, "gen_tokens": 91, "gen_s": 7.7, "tok_per_s": 11.8, "first_token_s": 2.31}}, "state": {}}
 

@@ -50,6 +50,8 @@ Games.access = function (d, main, replay) {
   const claimed = (r) => who(r).name;
   // 11/22: an extension in both languages (ext. 3100 分機 3100); other numbers and addresses as they are
   const numHTML = (s) => { const m = /^ext\.\s*(\d+)$/.exec(String(s || "")); return m ? bi(`ext. ${m[1]}`, `分機 ${m[1]}`) : esc(s); };
+  // 11/22 review: inside a Chinese sentence an extension reads 分機 2105 (as phish.js extZh)
+  const extZh = (n) => String(n || "").replace(/^ext\.\s*/, "分機 ");
 
   /* ------------------------------------------------------------------ the briefing */
   function brief() {
@@ -418,7 +420,7 @@ Games.access = function (d, main, replay) {
     const src = r.impostor
       ? `${S.verified[r.id] === "fake" ? `<p class="ah-kg-line ah-fake-call">${bi(`You called back ${r.from}, the number the caller gave you, so the crew picked up.`, `你回撥的是對方給的 ${r.from}，接電話的就是歹徒。`)}</p>` : ""}
         <p class="ah-kg-line">${bi(`Not ${p.name}: ${r.via === "email" ? `${r.from} is one of the three accounts the crew stole before dinner` : `the call came from ${r.from}, and HR has ${p.number}`}.`,
-          r.via === "email" ? `不是本人：${r.from} 是晚餐前被歹徒盜走的三個帳號之一。` : `不是本人：來電號碼是 ${r.from}，人資系統裡的號碼是 ${p.number}。`)}</p>
+          r.via === "email" ? `不是本人：${r.from} 是晚餐前被歹徒盜走的三個帳號之一。` : `不是本人：來電號碼是 ${r.from}，人資系統裡的號碼是${extZh(p.number)}。`)}</p>
         ${procLine()}`
       : `<p class="ah-kg-line">${bi("Knowledge graph", "知識圖")} ${CB.lvChip(r.level)} ${r.note_en ? `<span class="ah-kg-note">${bi(r.note_en, r.note_zh)}</span>` : ""}</p>
         <p class="g-src">${r.level === "none" ? bi(`No CAN_ACCESS relationship from ${nm(p.role).name_en} to ${nm(r.data).name_en}.`, "知識圖裡這個職務和這份資料之間沒有 CAN_ACCESS 關係。")
@@ -452,8 +454,11 @@ Games.access = function (d, main, replay) {
   const digits = (x) => String(x || "").replace(/\D/g, "");
   // 11/22 evening: the crew's number is a UK drama number (+44 7700 900417), typed with or without the 00 in front
   const intl = (d) => String(d || "").replace(/^00/, "");
-  const shown = (d) => (/^(00)?44\d{10}$/.test(d) ? `+44 ${intl(d).slice(2, 6)} ${intl(d).slice(6)}`
-    : d.length <= 4 ? (d ? `ext. ${d}` : "") : d.length === 10 ? `${d.slice(0, 4)}-${d.slice(4, 7)}-${d.slice(7)}` : d);
+  // 11/22 review, the display while you type: 0044 or 44 is that number, grouped as it grows (+44 7700 900417); 1 to 4 digits
+  // starting with 1-9 is an extension (none starts with 0); 10 digits is a Taiwan number (0912-345-678); anything else as typed
+  const uk = (n) => { const y = n.replace(/^(00)?44/, ""); return ["+44", y.slice(0, 4), y.slice(4)].filter(Boolean).join(" "); };
+  const shown = (n) => (/^(00)?44/.test(n) ? uk(n)
+    : /^[1-9]\d{0,3}$/.test(n) ? `ext. ${n}` : n.length === 10 ? `${n.slice(0, 4)}-${n.slice(4, 7)}-${n.slice(7)}` : n);
   const BOOK = Object.entries(people).sort((a, b) => a[1].name.localeCompare(b[1].name));
 
   function phone() {
@@ -493,26 +498,28 @@ Games.access = function (d, main, replay) {
     return { kind: "none" };
   }
 
-  async function dial(d) {
-    if (!d || S.calls <= 0 || S.calling) return;
+  // 11/22 review: the number is "num"; it was "d", which hid the game data d (d.requests in the "other" branch threw,
+  // and the phone stayed on "Calling")
+  async function dial(num) {
+    if (!num || S.calls <= 0 || S.calling) return;
     const r = S.open && byId[S.open];
     S.calls -= 1;
     S.calling = r ? r.id : "x";
     S.heard = {};
     CB.SFX.play("ring");
     const box = $("#ahPhone");
-    box.innerHTML = `<p class="ah-phone-top"><b>${bi("Calling", "撥號中")}</b><em>${numHTML(shown(d))}</em></p><div class="rs-ring" aria-hidden="true"><i></i><i></i><i></i></div>`;
+    box.innerHTML = `<p class="ah-phone-top"><b>${bi("Calling", "撥號中")}</b><em>${numHTML(shown(num))}</em></p><div class="rs-ring" aria-hidden="true"><i></i><i></i><i></i></div>`;
     await wait(1500);
     if (!S || S.over) return;
     S.calling = false;
     S.dial = "";
-    const a = answerer(d, r);
+    const a = answerer(num, r);
     const face = (k, mood) => CB.face(Object.assign({}, people[k].look, { mood }), "ah-callee-av");
     if (a.kind === "fake") {                                    // the number the caller gave: he picks up himself
       const q = a.req, p = who(q);
       S.verified[q.id] = S.verified[q.id] || "fake";
       S.heard = { cls: "is-ok", face: `<span class="ah-av ah-av-phone ah-callee-av" aria-hidden="true">${CB.ICON.phone}</span>`, text: bi(q.fake_confirm_en || "Yes, it's me.", q.fake_confirm_zh || "對，是我。") };
-      S.notes.push({ id: q.id, who: `${p.name}?`, who_zh: p.name_zh, en: q.fake_confirm_en || "Yes, it's me.", zh: q.fake_confirm_zh || "對，是我。", fake: false, via: shown(d) });
+      S.notes.push({ id: q.id, who: `${p.name}?`, who_zh: p.name_zh, en: q.fake_confirm_en || "Yes, it's me.", zh: q.fake_confirm_zh || "對，是我。", fake: false, via: shown(num) });
     } else if (a.kind === "real") {
       const p = people[a.key];
       if (r.via === "walk") {
@@ -560,7 +567,7 @@ Games.access = function (d, main, replay) {
     S.hints -= 1; S.hinted[r.id] = true;
     const p = who(r);
     if (r.impostor) say(bi(`Hmm, that ${r.via === "email" ? "address belongs to an account the crew stole tonight" : `number isn't ${p.name}'s. HR has ${p.number}`}. Don't give it anything you can't verify.`,
-      r.via === "email" ? "嗯，這個信箱是今晚被歹徒盜走的帳號之一。沒辦法確認的，什麼都不要給。" : `嗯，這不是${p.name_zh}的號碼，人資系統裡是 ${p.number}。沒辦法確認的，什麼都不要給。`), "is-no");
+      r.via === "email" ? "嗯，這個信箱是今晚被歹徒盜走的帳號之一。沒辦法確認的，什麼都不要給。" : `嗯，這不是${p.name_zh}的號碼，人資系統裡是${extZh(p.number)}。沒辦法確認的，什麼都不要給。`), "is-no");
     else say(bi(`The policy for ${nm(p.role).name_en} on ${nm(r.data).name_en}: ${CB.LV[r.level].en}.${r.note_en ? ` ${r.note_en}` : ""}`,
       `規定裡${nm(p.role).name_zh}對${nm(r.data).name_zh}是「${CB.LV[r.level].zh}」。${r.note_zh || ""}`), "is-good");
     hintBtn();

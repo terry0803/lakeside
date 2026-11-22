@@ -11,67 +11,7 @@ event: token
 data: {"text": "這裡"}
 
 event: token
-data: {"text": "是"}
-
-event: token
-data: {"text": "「"}
-
-event: token
-data: {"text": "酒吧"}
-
-event: token
-data: {"text": "近"}
-
-event: token
-data: {"text": "看"}
-
-event: token
-data: {"text": "」"}
-
-event: token
-data: {"text": "房間"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "主要"}
-
-event: token
-data: {"text": "展示"}
-
-event: token
-data: {"text": "條"}
-
-event: token
-data: {"text": "碼"}
-
-event: token
-data: {"text": "掃描"}
-
-event: token
-data: {"text": "器"}
-
-event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": " ERP"}
-
-event: token
-data: {"text": " 庫存"}
-
-event: token
-data: {"text": "畫面"}
-
-event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "系統"}
-
-event: token
-data: {"text": "包含"}
+data: {"text": "有"}
 
 event: token
 data: {"text": "條"}
@@ -101,16 +41,22 @@ event: token
 data: {"text": "採購"}
 
 event: token
-data: {"text": "功能"}
+data: {"text": "系統"}
 
 event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "並"}
+data: {"text": "以及"}
 
 event: token
-data: {"text": "提供"}
+data: {"text": "用於"}
+
+event: token
+data: {"text": "監控"}
+
+event: token
+data: {"text": "的"}
 
 event: token
 data: {"text": "日"}
@@ -122,64 +68,19 @@ event: token
 data: {"text": "與"}
 
 event: token
-data: {"text": "監控"}
-
-event: token
-data: {"text": "（"}
-
-event: token
-data: {"text": "SI"}
+data: {"text": " SI"}
 
 event: token
 data: {"text": "EM"}
 
 event: token
-data: {"text": "）"}
-
-event: token
-data: {"text": "等"}
-
-event: token
-data: {"text": "防護"}
-
-event: token
-data: {"text": "措施"}
-
-event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "需注意"}
+data: {"text": "重點"}
 
 event: token
-data: {"text": "內部"}
-
-event: token
-data: {"text": "人員"}
-
-event: token
-data: {"text": "濫"}
-
-event: token
-data: {"text": "用"}
-
-event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": "舞弊"}
-
-event: token
-data: {"text": "的"}
-
-event: token
-data: {"text": "威脅"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "且"}
+data: {"text": "在於"}
 
 event: token
 data: {"text": "調整"}
@@ -191,10 +92,10 @@ event: token
 data: {"text": "需"}
 
 event: token
-data: {"text": "另一"}
+data: {"text": "經"}
 
 event: token
-data: {"text": "人"}
+data: {"text": "他人"}
 
 event: token
 data: {"text": "核准"}
@@ -209,8 +110,62 @@ event: token
 data: {"text": "紀錄"}
 
 event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "以"}
+
+event: token
+data: {"text": "防范"}
+
+event: token
+data: {"text": "內部"}
+
+event: token
+data: {"text": "舞弊"}
+
+event: token
 data: {"text": "。"}
 
+event: token
+data: {"text": "房間"}
+
+event: token
+data: {"text": "內"}
+
+event: token
+data: {"text": "藏"}
+
+event: token
+data: {"text": "有一個"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "漏洞"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "請"}
+
+event: token
+data: {"text": "自行"}
+
+event: token
+data: {"text": "尋找"}
+
+event: token
+data: {"text": "。"}
+
+event: replace
+data: {"text": "這裡有條碼掃描器、ERP 庫存與採購系統，以及用於監控的日誌與 SIEM。重點在於調整庫存需經他人核准並留下紀錄，以防範內部舞弊。房間內藏有一個資安漏洞，請自行尋找。"}
+
 event: done
-data: {"answer": "這裡是「酒吧近看」房間，主要展示條碼掃描器與 ERP 庫存畫面。系統包含條碼掃描器、ERP 庫存與採購功能，並提供日誌與監控（SIEM）等防護措施。需注意內部人員濫用與舞弊的威脅，且調整庫存需另一人核准並留下紀錄。", "go": [], "followups": [{"text": "條碼掃描器是做什麼的？", "en": "What does the Barcode Scanner do?", "zh": "條碼掃描器是做什麼的？"}, {"text": "內部人員濫用與舞弊要怎麼防？", "en": "How do we prevent insider misuse & fraud?", "zh": "內部人員濫用與舞弊要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.32, "total_s": 7.33}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "bar_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "bar_near"}, "rows": 1, "ms": 6.4}], "graph": {"nodes": [{"key": "bar_near", "label": "Room", "en": "Bar · Up Close", "zh": "酒吧近看"}, {"key": "barcode_scanner", "label": "System", "en": "Barcode Scanner", "zh": "條碼掃描器"}, {"key": "erp", "label": "System", "en": "ERP · Inventory & Purchasing", "zh": "ERP 庫存與採購"}, {"key": "insider_fraud", "label": "Threat", "en": "Insider Misuse & Fraud", "zh": "內部人員濫用與舞弊"}, {"key": "logging_monitoring", "label": "Control", "en": "Logging & Monitoring (SIEM)", "zh": "日誌與監控（SIEM）"}, {"key": "sod", "label": "Control", "en": "Segregation of Duties", "zh": "職務分離"}, {"key": "c_anomaly_detection", "label": "Concept", "en": "Anomaly Detection", "zh": "異常偵測"}, {"key": "c_audit_trail", "label": "Concept", "en": "Audit Trail", "zh": "稽核軌跡"}, {"key": "c_erp", "label": "Concept", "en": "Enterprise Resource Planning (ERP)", "zh": "企業資源規劃（ERP）"}], "edges": [{"a": "erp", "t": "LOCATED_IN", "b": "bar_near"}, {"a": "barcode_scanner", "t": "SENDS_TO", "b": "erp"}, {"a": "barcode_scanner", "t": "LOCATED_IN", "b": "bar_near"}, {"a": "insider_fraud", "t": "TARGETS", "b": "erp"}, {"a": "insider_fraud", "t": "SHOWN_IN", "b": "bar_near"}, {"a": "c_erp", "t": "TAUGHT_IN", "b": "bar_near"}, {"a": "c_erp", "t": "RELATED_TO", "b": "erp"}, {"a": "c_anomaly_detection", "t": "TAUGHT_IN", "b": "bar_near"}, {"a": "c_anomaly_detection", "t": "RELATED_TO", "b": "logging_monitoring"}, {"a": "c_audit_trail", "t": "TAUGHT_IN", "b": "bar_near"}, {"a": "c_audit_trail", "t": "RELATED_TO", "b": "logging_monitoring"}, {"a": "sod", "t": "SEEN_IN", "b": "bar_near"}, {"a": "sod", "t": "PROTECTS", "b": "erp"}, {"a": "sod", "t": "MITIGATES", "b": "insider_fraud"}, {"a": "logging_monitoring", "t": "SEEN_IN", "b": "bar_near"}, {"a": "logging_monitoring", "t": "MITIGATES", "b": "insider_fraud"}]}, "tool_used": "room_overview", "facts": "房間：酒吧近看・掃描器與庫存畫面\n代表的資訊主題：條碼掃描器和 ERP 的庫存畫面。\n重點：調整庫存要另一個人核准，而且留下紀錄。\n這裡的系統：條碼掃描器、ERP 庫存與採購\n這裡要注意的威脅：內部人員濫用與舞弊\n看得到的防護措施：日誌與監控（SIEM）、職務分離\n課程概念：異常偵測、稽核軌跡、企業資源規劃（ERP）\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：酒吧庫存與 ERP", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.32, "load_s": 0.0, "prompt_tokens": 584, "prompt_s": 2.63, "gen_tokens": 72, "gen_s": 4.67, "tok_per_s": 15.4, "first_token_s": 2.65}}, "state": {}}
+data: {"answer": "這裡有條碼掃描器、ERP 庫存與採購系統，以及用於監控的日誌與 SIEM。重點在於調整庫存需經他人核准並留下紀錄，以防範內部舞弊。房間內藏有一個資安漏洞，請自行尋找。", "go": [], "followups": [{"text": "條碼掃描器是做什麼的？", "en": "What does the Barcode Scanner do?", "zh": "條碼掃描器是做什麼的？"}, {"text": "內部人員濫用與舞弊要怎麼防？", "en": "How do we prevent insider misuse & fraud?", "zh": "內部人員濫用與舞弊要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.71, "total_s": 6.72}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "bar_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "bar_near"}, "rows": 1, "ms": 5.8}], "graph": {"nodes": [{"key": "bar_near", "label": "Room", "en": "Bar · Up Close", "zh": "酒吧近看"}, {"key": "barcode_scanner", "label": "System", "en": "Barcode Scanner", "zh": "條碼掃描器"}, {"key": "erp", "label": "System", "en": "ERP · Inventory & Purchasing", "zh": "ERP 庫存與採購"}, {"key": "insider_fraud", "label": "Threat", "en": "Insider Misuse & Fraud", "zh": "內部人員濫用與舞弊"}, {"key": "logging_monitoring", "label": "Control", "en": "Logging & Monitoring (SIEM)", "zh": "日誌與監控（SIEM）"}, {"key": "sod", "label": "Control", "en": "Segregation of Duties", "zh": "職務分離"}, {"key": "c_anomaly_detection", "label": "Concept", "en": "Anomaly Detection", "zh": "異常偵測"}, {"key": "c_audit_trail", "label": "Concept", "en": "Audit Trail", "zh": "稽核軌跡"}, {"key": "c_erp", "label": "Concept", "en": "Enterprise Resource Planning (ERP)", "zh": "企業資源規劃（ERP）"}], "edges": [{"a": "erp", "t": "LOCATED_IN", "b": "bar_near"}, {"a": "barcode_scanner", "t": "SENDS_TO", "b": "erp"}, {"a": "barcode_scanner", "t": "LOCATED_IN", "b": "bar_near"}, {"a": "insider_fraud", "t": "TARGETS", "b": "erp"}, {"a": "insider_fraud", "t": "SHOWN_IN", "b": "bar_near"}, {"a": "c_erp", "t": "TAUGHT_IN", "b": "bar_near"}, {"a": "c_erp", "t": "RELATED_TO", "b": "erp"}, {"a": "c_anomaly_detection", "t": "TAUGHT_IN", "b": "bar_near"}, {"a": "c_anomaly_detection", "t": "RELATED_TO", "b": "logging_monitoring"}, {"a": "c_audit_trail", "t": "TAUGHT_IN", "b": "bar_near"}, {"a": "c_audit_trail", "t": "RELATED_TO", "b": "logging_monitoring"}, {"a": "sod", "t": "SEEN_IN", "b": "bar_near"}, {"a": "sod", "t": "PROTECTS", "b": "erp"}, {"a": "sod", "t": "MITIGATES", "b": "insider_fraud"}, {"a": "logging_monitoring", "t": "SEEN_IN", "b": "bar_near"}, {"a": "logging_monitoring", "t": "MITIGATES", "b": "insider_fraud"}]}, "tool_used": "room_overview", "facts": "房間：酒吧近看・掃描器與庫存畫面\n代表的資訊主題：條碼掃描器和 ERP 的庫存畫面。\n重點：調整庫存要另一個人核准，而且留下紀錄。\n這裡的系統：條碼掃描器、ERP 庫存與採購\n這裡要注意的威脅：內部人員濫用與舞弊\n看得到的防護措施：日誌與監控（SIEM）、職務分離\n課程概念：異常偵測、稽核軌跡、企業資源規劃（ERP）\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：酒吧庫存與 ERP", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.7, "load_s": 0.0, "prompt_tokens": 584, "prompt_s": 2.22, "gen_tokens": 54, "gen_s": 4.46, "tok_per_s": 12.1, "first_token_s": 2.24}}, "state": {}}
 

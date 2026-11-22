@@ -272,32 +272,80 @@ event: token
 data: {"text": " digits"}
 
 event: token
-data: {"text": " while"}
+data: {"text": " of"}
 
 event: token
-data: {"text": " passwords"}
+data: {"text": " card"}
 
 event: token
-data: {"text": " must"}
+data: {"text": " numbers"}
 
 event: token
-data: {"text": " never"}
+data: {"text": "."}
 
 event: token
-data: {"text": " be"}
+data: {"text": " There"}
 
 event: token
-data: {"text": " on"}
+data: {"text": " are"}
 
 event: token
-data: {"text": " sticky"}
+data: {"text": " 2"}
 
 event: token
-data: {"text": " notes"}
+data: {"text": " hidden"}
+
+event: token
+data: {"text": " security"}
+
+event: token
+data: {"text": " weaknesses"}
+
+event: token
+data: {"text": " in"}
+
+event: token
+data: {"text": " this"}
+
+event: token
+data: {"text": " room"}
+
+event: token
+data: {"text": " that"}
+
+event: token
+data: {"text": " you"}
+
+event: token
+data: {"text": " need"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " spot"}
+
+event: token
+data: {"text": ";"}
+
+event: token
+data: {"text": " do"}
+
+event: token
+data: {"text": " not"}
+
+event: token
+data: {"text": " reveal"}
+
+event: token
+data: {"text": " them"}
+
+event: token
+data: {"text": " yet"}
 
 event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This place is the **Restaurant Close-up** room (also called 'Restaurant · Up Close' in the tour), which displays a POS terminal, card terminal, and receipt printer. You can see controls like Clear Desk & Clear Screen, Payment Terminal Inspection, P2PE & Tokenization, and Card Number Masking here. The room highlights threats such as Card Skimming & Terminal Tampering and teaches that receipts show only the last four digits while passwords must never be on sticky notes.", "go": [], "followups": [{"text": "What does the Card Payment Terminal do?", "en": "What does the Card Payment Terminal do?", "zh": "刷卡機是做什麼的？"}, {"text": "How do we prevent card skimming & terminal tampering?", "en": "How do we prevent card skimming & terminal tampering?", "zh": "刷卡機側錄與竄改要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.72, "total_s": 8.73}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "hall_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "hall_near"}, "rows": 1, "ms": 6.8}], "graph": {"nodes": [{"key": "hall_near", "label": "Room", "en": "Restaurant · Up Close", "zh": "餐廳近看"}, {"key": "pin_pad", "label": "System", "en": "Card Payment Terminal", "zh": "刷卡機"}, {"key": "pos", "label": "System", "en": "Point of Sale (POS)", "zh": "餐飲收銀系統（POS）"}, {"key": "skimming", "label": "Threat", "en": "Card Skimming & Terminal Tampering", "zh": "刷卡機側錄與竄改"}, {"key": "clear_desk", "label": "Control", "en": "Clear Desk & Clear Screen", "zh": "桌面淨空與螢幕淨空"}, {"key": "terminal_inspection", "label": "Control", "en": "Payment Terminal Inspection", "zh": "刷卡機定期檢查"}, {"key": "p2pe_tokenization", "label": "Control", "en": "P2PE & Tokenization", "zh": "點對點加密與代碼化"}, {"key": "pan_masking", "label": "Control", "en": "Card Number Masking", "zh": "卡號遮罩"}, {"key": "c_pci_scope", "label": "Concept", "en": "Cardholder Data Environment (PCI scope)", "zh": "持卡人資料環境（PCI 範圍）"}], "edges": [{"a": "pos", "t": "LOCATED_IN", "b": "hall_near"}, {"a": "pin_pad", "t": "LOCATED_IN", "b": "hall_near"}, {"a": "skimming", "t": "TARGETS", "b": "pin_pad"}, {"a": "skimming", "t": "SHOWN_IN", "b": "hall_near"}, {"a": "c_pci_scope", "t": "TAUGHT_IN", "b": "hall_near"}, {"a": "c_pci_scope", "t": "RELATED_TO", "b": "p2pe_tokenization"}, {"a": "p2pe_tokenization", "t": "SEEN_IN", "b": "hall_near"}, {"a": "p2pe_tokenization", "t": "PROTECTS", "b": "pin_pad"}, {"a": "p2pe_tokenization", "t": "PROTECTS", "b": "pos"}, {"a": "pan_masking", "t": "SEEN_IN", "b": "hall_near"}, {"a": "terminal_inspection", "t": "SEEN_IN", "b": "hall_near"}, {"a": "terminal_inspection", "t": "PROTECTS", "b": "pin_pad"}, {"a": "terminal_inspection", "t": "MITIGATES", "b": "skimming"}, {"a": "clear_desk", "t": "SEEN_IN", "b": "hall_near"}]}, "tool_used": "room_overview", "facts": "Room: Restaurant Close-up · POS Terminal (called 'Restaurant · Up Close' in the tour)\nWhat it shows: The POS terminal, card terminal and receipt printer up close.\nKey lesson: Receipts show only the last four digits, and passwords never go on sticky notes.\nSystems here: Card Payment Terminal, Point of Sale (POS)\nThreats shown here: Card Skimming & Terminal Tampering\nControls you can see: Clear Desk & Clear Screen, Payment Terminal Inspection, P2PE & Tokenization, Card Number Masking\nConcepts: Cardholder Data Environment (PCI scope)\nProcedures to know: Daily card terminal check, A card terminal looks tampered with\nHidden security weaknesses in this room: 2 (the player has to spot them; do not reveal them)\nExits: Restaurant POS", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.72, "load_s": 0.0, "prompt_tokens": 615, "prompt_s": 2.52, "gen_tokens": 98, "gen_s": 6.17, "tok_per_s": 15.9, "first_token_s": 2.54}}, "state": {}}
+data: {"answer": "This place is the **Restaurant Close-up** room (also called 'Restaurant · Up Close' in the tour), which displays a POS terminal, card terminal, and receipt printer. You can see controls like Clear Desk & Clear Screen, Payment Terminal Inspection, P2PE & Tokenization, and Card Number Masking here. The room highlights threats such as Card Skimming & Terminal Tampering and teaches that receipts show only the last four digits of card numbers. There are 2 hidden security weaknesses in this room that you need to spot; do not reveal them yet.", "go": [], "followups": [{"text": "What does the Card Payment Terminal do?", "en": "What does the Card Payment Terminal do?", "zh": "刷卡機是做什麼的？"}, {"text": "How do we prevent card skimming & terminal tampering?", "en": "How do we prevent card skimming & terminal tampering?", "zh": "刷卡機側錄與竄改要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 11.8, "total_s": 11.82}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "hall_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "hall_near"}, "rows": 1, "ms": 6.5}], "graph": {"nodes": [{"key": "hall_near", "label": "Room", "en": "Restaurant · Up Close", "zh": "餐廳近看"}, {"key": "pin_pad", "label": "System", "en": "Card Payment Terminal", "zh": "刷卡機"}, {"key": "pos", "label": "System", "en": "Point of Sale (POS)", "zh": "餐飲收銀系統（POS）"}, {"key": "skimming", "label": "Threat", "en": "Card Skimming & Terminal Tampering", "zh": "刷卡機側錄與竄改"}, {"key": "clear_desk", "label": "Control", "en": "Clear Desk & Clear Screen", "zh": "桌面淨空與螢幕淨空"}, {"key": "terminal_inspection", "label": "Control", "en": "Payment Terminal Inspection", "zh": "刷卡機定期檢查"}, {"key": "p2pe_tokenization", "label": "Control", "en": "P2PE & Tokenization", "zh": "點對點加密與代碼化"}, {"key": "pan_masking", "label": "Control", "en": "Card Number Masking", "zh": "卡號遮罩"}, {"key": "c_pci_scope", "label": "Concept", "en": "Cardholder Data Environment (PCI scope)", "zh": "持卡人資料環境（PCI 範圍）"}], "edges": [{"a": "pos", "t": "LOCATED_IN", "b": "hall_near"}, {"a": "pin_pad", "t": "LOCATED_IN", "b": "hall_near"}, {"a": "skimming", "t": "TARGETS", "b": "pin_pad"}, {"a": "skimming", "t": "SHOWN_IN", "b": "hall_near"}, {"a": "c_pci_scope", "t": "TAUGHT_IN", "b": "hall_near"}, {"a": "c_pci_scope", "t": "RELATED_TO", "b": "p2pe_tokenization"}, {"a": "p2pe_tokenization", "t": "SEEN_IN", "b": "hall_near"}, {"a": "p2pe_tokenization", "t": "PROTECTS", "b": "pin_pad"}, {"a": "p2pe_tokenization", "t": "PROTECTS", "b": "pos"}, {"a": "pan_masking", "t": "SEEN_IN", "b": "hall_near"}, {"a": "terminal_inspection", "t": "SEEN_IN", "b": "hall_near"}, {"a": "terminal_inspection", "t": "PROTECTS", "b": "pin_pad"}, {"a": "terminal_inspection", "t": "MITIGATES", "b": "skimming"}, {"a": "clear_desk", "t": "SEEN_IN", "b": "hall_near"}]}, "tool_used": "room_overview", "facts": "Room: Restaurant Close-up · POS Terminal (called 'Restaurant · Up Close' in the tour)\nWhat it shows: The POS terminal, card terminal and receipt printer up close.\nKey lesson: Receipts show only the last four digits, and passwords never go on sticky notes.\nSystems here: Card Payment Terminal, Point of Sale (POS)\nThreats shown here: Card Skimming & Terminal Tampering\nControls you can see: Clear Desk & Clear Screen, Payment Terminal Inspection, P2PE & Tokenization, Card Number Masking\nConcepts: Cardholder Data Environment (PCI scope)\nProcedures to know: Daily card terminal check, A card terminal looks tampered with\nHidden security weaknesses in this room: 2 (the player has to spot them; do not reveal them)\nExits: Restaurant POS", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 11.74, "load_s": 0.01, "prompt_tokens": 615, "prompt_s": 2.19, "gen_tokens": 115, "gen_s": 9.52, "tok_per_s": 12.1, "first_token_s": 2.21}}, "state": {}}
 

@@ -20,7 +20,10 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " IT"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "IT"}
 
 event: token
 data: {"text": " Help"}
@@ -29,10 +32,13 @@ event: token
 data: {"text": " Desk"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " where"}
+data: {"text": " which"}
+
+event: token
+data: {"text": " handles"}
 
 event: token
 data: {"text": " tickets"}
@@ -59,6 +65,12 @@ event: token
 data: {"text": " and"}
 
 event: token
+data: {"text": " keeps"}
+
+event: token
+data: {"text": " the"}
+
+event: token
 data: {"text": " asset"}
 
 event: token
@@ -74,16 +86,7 @@ event: token
 data: {"text": "DB"}
 
 event: token
-data: {"text": ")"}
-
-event: token
-data: {"text": " are"}
-
-event: token
-data: {"text": " managed"}
-
-event: token
-data: {"text": "."}
+data: {"text": ")."}
 
 event: token
 data: {"text": " You"}
@@ -101,98 +104,122 @@ event: token
 data: {"text": " like"}
 
 event: token
-data: {"text": " IAM"}
+data: {"text": " Asset"}
 
 event: token
-data: {"text": ","}
+data: {"text": " Inventory"}
 
 event: token
-data: {"text": " IT"}
+data: {"text": " ("}
 
 event: token
-data: {"text": "SM"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " CM"}
+data: {"text": "CM"}
 
 event: token
 data: {"text": "DB"}
 
 event: token
-data: {"text": " here"}
+data: {"text": "),"}
 
 event: token
-data: {"text": ","}
+data: {"text": " Directory"}
 
 event: token
-data: {"text": " along"}
+data: {"text": " &"}
 
 event: token
-data: {"text": " with"}
+data: {"text": " Single"}
 
 event: token
-data: {"text": " controls"}
+data: {"text": " Sign"}
 
 event: token
-data: {"text": " such"}
+data: {"text": "-On"}
 
 event: token
-data: {"text": " as"}
+data: {"text": " ("}
 
 event: token
-data: {"text": " role"}
+data: {"text": "IAM"}
 
 event: token
-data: {"text": "-based"}
-
-event: token
-data: {"text": " access"}
+data: {"text": "),"}
 
 event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " caller"}
+data: {"text": " IT"}
 
 event: token
-data: {"text": " identity"}
+data: {"text": " Service"}
 
 event: token
-data: {"text": " verification"}
+data: {"text": " Desk"}
+
+event: token
+data: {"text": " ("}
+
+event: token
+data: {"text": "IT"}
+
+event: token
+data: {"text": "SM"}
+
+event: token
+data: {"text": ")"}
+
+event: token
+data: {"text": " here"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " The"}
+
+event: token
+data: {"text": " department"}
+
+event: token
+data: {"text": " based"}
+
+event: token
+data: {"text": " here"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " Information"}
+
+event: token
+data: {"text": " Technology"}
+
+event: token
+data: {"text": " ("}
+
+event: token
+data: {"text": "ext"}
 
 event: token
 data: {"text": "."}
 
 event: token
-data: {"text": " Threat"}
+data: {"text": " 2"}
 
 event: token
-data: {"text": "s"}
+data: {"text": "1"}
 
 event: token
-data: {"text": " displayed"}
+data: {"text": "0"}
 
 event: token
-data: {"text": " include"}
+data: {"text": "0"}
 
 event: token
-data: {"text": " phone"}
-
-event: token
-data: {"text": " social"}
-
-event: token
-data: {"text": " engineering"}
-
-event: token
-data: {"text": "."}
+data: {"text": ")."}
 
 event: done
-data: {"answer": "This place is the IT Help Desk, where tickets, account requests, changes, and asset inventory (CMDB) are managed. You can see systems like IAM, ITSM, and CMDB here, along with controls such as role-based access and caller identity verification. Threats displayed include phone social engineering.", "go": [{"key": "play", "en": "Security Awareness Training Room", "zh": "資安訓練室", "base_en": "Training Room", "base_zh": "資安訓練室", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=7", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the Asset Inventory (CMDB) do?", "en": "What does the Asset Inventory (CMDB) do?", "zh": "資產清冊（CMDB）是做什麼的？"}, {"text": "How do we prevent phone social engineering?", "en": "How do we prevent phone social engineering?", "zh": "電話社交工程要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.31, "total_s": 7.33}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "billiard", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "billiard"}, "rows": 1, "ms": 7.5}], "graph": {"nodes": [{"key": "billiard", "label": "Room", "en": "IT Help Desk", "zh": "資訊服務台"}, {"key": "cmdb", "label": "System", "en": "Asset Inventory (CMDB)", "zh": "資產清冊（CMDB）"}, {"key": "iam", "label": "System", "en": "Directory & Single Sign-On (IAM)", "zh": "帳號目錄與單一登入（IAM）"}, {"key": "itsm", "label": "System", "en": "IT Service Desk (ITSM)", "zh": "IT 服務台系統（ITSM）"}, {"key": "vishing", "label": "Threat", "en": "Phone Social Engineering", "zh": "電話社交工程"}, {"key": "asset_inventory", "label": "Control", "en": "Asset Inventory (CMDB)", "zh": "資產清冊（CMDB）"}, {"key": "least_privilege", "label": "Control", "en": "Least Privilege & Role-Based Access", "zh": "最小權限與角色權限"}, {"key": "change_management", "label": "Control", "en": "Change Management", "zh": "變更管理"}, {"key": "caller_verification", "label": "Control", "en": "Caller Identity Verification", "zh": "來電身分核實"}, {"key": "access_review", "label": "Control", "en": "Joiner-Mover-Leaver & Access Reviews", "zh": "到職異動離職與權限審查"}, {"key": "c_itsm", "label": "Concept", "en": "ITIL & IT Service Management", "zh": "ITIL 與 IT 服務管理"}], "edges": [{"a": "change_management", "t": "SEEN_IN", "b": "billiard"}, {"a": "asset_inventory", "t": "SEEN_IN", "b": "billiard"}, {"a": "asset_inventory", "t": "PROTECTS", "b": "cmdb"}, {"a": "iam", "t": "LOCATED_IN", "b": "billiard"}, {"a": "itsm", "t": "LOCATED_IN", "b": "billiard"}, {"a": "cmdb", "t": "LOCATED_IN", "b": "billiard"}, {"a": "vishing", "t": "TARGETS", "b": "itsm"}, {"a": "vishing", "t": "TARGETS", "b": "iam"}, {"a": "vishing", "t": "SHOWN_IN", "b": "billiard"}, {"a": "c_itsm", "t": "TAUGHT_IN", "b": "billiard"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "itsm"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "change_management"}, {"a": "least_privilege", "t": "SEEN_IN", "b": "billiard"}, {"a": "access_review", "t": "SEEN_IN", "b": "billiard"}, {"a": "access_review", "t": "PROTECTS", "b": "iam"}, {"a": "caller_verification", "t": "SEEN_IN", "b": "billiard"}, {"a": "caller_verification", "t": "PROTECTS", "b": "iam"}, {"a": "caller_verification", "t": "MITIGATES", "b": "vishing"}]}, "tool_used": "room_overview", "facts": "Room: IT Help Desk\nWhat it shows: The help desk handles tickets, account requests and changes, and keeps the asset inventory (CMDB).\nKey lesson: Access is approved by job role, and password resets need an identity check.\nDepartment based here: Information Technology (ext. 2100)\nSystems here: Asset Inventory (CMDB), Directory & Single Sign-On (IAM), IT Service Desk (ITSM)\nThreats shown here: Phone Social Engineering\nControls you can see: Asset Inventory (CMDB), Least Privilege & Role-Based Access, Change Management, Caller Identity Verification, Joiner-Mover-Leaver & Access Reviews\nConcepts: ITIL & IT Service Management\nProcedures to know: Password or MFA reset, Making a change to a system, Employee leaving or changing role, New employee needs access\nExits: Security Awareness Training Room, Help Desk Close-up · Ticket Board (called 'IT Help Desk · Up Close' in the tour), Staff Corridor & Physical Security", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.3, "load_s": 0.01, "prompt_tokens": 654, "prompt_s": 2.68, "gen_tokens": 63, "gen_s": 3.66, "tok_per_s": 17.2, "first_token_s": 3.63}}, "state": {}}
+data: {"answer": "This place is the **IT Help Desk**, which handles tickets, account requests, changes, and keeps the asset inventory (CMDB). You can see systems like Asset Inventory (CMDB), Directory & Single Sign-On (IAM), and IT Service Desk (ITSM) here. The department based here is Information Technology (ext. 2100).", "go": [{"key": "play", "en": "Security Awareness Training Room", "zh": "資安訓練室", "base_en": "Training Room", "base_zh": "資安訓練室", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=7", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the Asset Inventory (CMDB) do?", "en": "What does the Asset Inventory (CMDB) do?", "zh": "資產清冊（CMDB）是做什麼的？"}, {"text": "How do we prevent phone social engineering?", "en": "How do we prevent phone social engineering?", "zh": "電話社交工程要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.16, "total_s": 8.18}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "billiard", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "billiard"}, "rows": 1, "ms": 5.8}], "graph": {"nodes": [{"key": "billiard", "label": "Room", "en": "IT Help Desk", "zh": "資訊服務台"}, {"key": "cmdb", "label": "System", "en": "Asset Inventory (CMDB)", "zh": "資產清冊（CMDB）"}, {"key": "iam", "label": "System", "en": "Directory & Single Sign-On (IAM)", "zh": "帳號目錄與單一登入（IAM）"}, {"key": "itsm", "label": "System", "en": "IT Service Desk (ITSM)", "zh": "IT 服務台系統（ITSM）"}, {"key": "vishing", "label": "Threat", "en": "Phone Social Engineering", "zh": "電話社交工程"}, {"key": "asset_inventory", "label": "Control", "en": "Asset Inventory (CMDB)", "zh": "資產清冊（CMDB）"}, {"key": "least_privilege", "label": "Control", "en": "Least Privilege & Role-Based Access", "zh": "最小權限與角色權限"}, {"key": "change_management", "label": "Control", "en": "Change Management", "zh": "變更管理"}, {"key": "caller_verification", "label": "Control", "en": "Caller Identity Verification", "zh": "來電身分核實"}, {"key": "access_review", "label": "Control", "en": "Joiner-Mover-Leaver & Access Reviews", "zh": "到職異動離職與權限審查"}, {"key": "c_itsm", "label": "Concept", "en": "ITIL & IT Service Management", "zh": "ITIL 與 IT 服務管理"}], "edges": [{"a": "change_management", "t": "SEEN_IN", "b": "billiard"}, {"a": "asset_inventory", "t": "SEEN_IN", "b": "billiard"}, {"a": "asset_inventory", "t": "PROTECTS", "b": "cmdb"}, {"a": "iam", "t": "LOCATED_IN", "b": "billiard"}, {"a": "itsm", "t": "LOCATED_IN", "b": "billiard"}, {"a": "cmdb", "t": "LOCATED_IN", "b": "billiard"}, {"a": "vishing", "t": "TARGETS", "b": "itsm"}, {"a": "vishing", "t": "TARGETS", "b": "iam"}, {"a": "vishing", "t": "SHOWN_IN", "b": "billiard"}, {"a": "c_itsm", "t": "TAUGHT_IN", "b": "billiard"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "itsm"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "change_management"}, {"a": "least_privilege", "t": "SEEN_IN", "b": "billiard"}, {"a": "access_review", "t": "SEEN_IN", "b": "billiard"}, {"a": "access_review", "t": "PROTECTS", "b": "iam"}, {"a": "caller_verification", "t": "SEEN_IN", "b": "billiard"}, {"a": "caller_verification", "t": "PROTECTS", "b": "iam"}, {"a": "caller_verification", "t": "MITIGATES", "b": "vishing"}]}, "tool_used": "room_overview", "facts": "Room: IT Help Desk\nWhat it shows: The help desk handles tickets, account requests and changes, and keeps the asset inventory (CMDB).\nKey lesson: Access is approved by job role, and password resets need an identity check.\nDepartment based here: Information Technology (ext. 2100)\nSystems here: Asset Inventory (CMDB), Directory & Single Sign-On (IAM), IT Service Desk (ITSM)\nThreats shown here: Phone Social Engineering\nControls you can see: Asset Inventory (CMDB), Least Privilege & Role-Based Access, Change Management, Caller Identity Verification, Joiner-Mover-Leaver & Access Reviews\nConcepts: ITIL & IT Service Management\nProcedures to know: Password or MFA reset, Making a change to a system, Employee leaving or changing role, New employee needs access\nExits: Security Awareness Training Room, Help Desk Close-up · Ticket Board (called 'IT Help Desk · Up Close' in the tour), Staff Corridor & Physical Security", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.16, "load_s": 0.01, "prompt_tokens": 654, "prompt_s": 2.59, "gen_tokens": 73, "gen_s": 5.55, "tok_per_s": 13.1, "first_token_s": 2.61}}, "state": {}}
 

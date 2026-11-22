@@ -143,6 +143,42 @@ event: token
 data: {"text": "段"}
 
 event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "同時"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "提供"}
+
+event: token
+data: {"text": "裝置"}
+
+event: token
+data: {"text": "管理"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "遠"}
+
+event: token
+data: {"text": "端"}
+
+event: token
+data: {"text": "抹"}
+
+event: token
+data: {"text": "除"}
+
+event: token
+data: {"text": "功能"}
+
+event: token
 data: {"text": "。"}
 
 event: token
@@ -152,62 +188,62 @@ event: token
 data: {"text": "處"}
 
 event: token
-data: {"text": "可見"}
+data: {"text": "隱藏"}
 
 event: token
-data: {"text": "活動"}
+data: {"text": " 1"}
 
 event: token
-data: {"text": "燈光"}
+data: {"text": " 個"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "資"}
 
 event: token
-data: {"text": "煙"}
+data: {"text": "安"}
 
 event: token
-data: {"text": "火"}
+data: {"text": "漏洞"}
 
 event: token
-data: {"text": "控制器"}
+data: {"text": "待"}
 
 event: token
-data: {"text": "系統"}
+data: {"text": "您"}
+
+event: token
+data: {"text": "自行"}
+
+event: token
+data: {"text": "尋找"}
 
 event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "以及"}
+data: {"text": "請"}
 
 event: token
-data: {"text": "行動"}
+data: {"text": "繼續"}
 
 event: token
-data: {"text": "裝置"}
+data: {"text": "探索"}
 
 event: token
-data: {"text": "管理"}
+data: {"text": "以"}
 
 event: token
-data: {"text": "（"}
+data: {"text": "完成"}
 
 event: token
-data: {"text": "MD"}
-
-event: token
-data: {"text": "M"}
-
-event: token
-data: {"text": "）"}
-
-event: token
-data: {"text": "功能"}
+data: {"text": "進度"}
 
 event: token
 data: {"text": "。"}
 
+event: replace
+data: {"text": "這裡是「花園派對・物聯網與 OT」房間，主要展示智慧燈光、煙火控制器及員工手機等物聯網設備。重點在於這些設備需改為非預設密碼並隔離至獨立網段，同時系統提供裝置管理與遠端抹除功能。此處隱藏 1 個資安漏洞待你自行尋找，請繼續探索以完成進度。"}
+
 event: done
-data: {"answer": "這裡是「花園派對・物聯網與 OT」房間，主要展示智慧燈光、煙火控制器及員工手機等物聯網設備。重點在於這些設備需改為非預設密碼並隔離至獨立網段。此處可見活動燈光與煙火控制器系統，以及行動裝置管理（MDM）功能。", "go": [{"key": "plaza_fw", "en": "Plaza · Signage & Public Kiosk", "zh": "湖邊廣場・數位看板與資訊站", "base_en": "Lakeside Plaza at Night", "base_zh": "夜晚的湖邊廣場", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=13", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "活動燈光與煙火控制器是做什麼的？", "en": "What does the Event Lighting & Fireworks Controllers do?", "zh": "活動燈光與煙火控制器是做什麼的？"}, {"text": "不安全的物聯網設備要怎麼防？", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.85, "total_s": 6.86}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "garden_party", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "garden_party"}, "rows": 1, "ms": 5.5}], "graph": {"nodes": [{"key": "garden_party", "label": "Room", "en": "Garden Party", "zh": "花園派對"}, {"key": "event_iot", "label": "System", "en": "Event Lighting & Fireworks Controllers", "zh": "活動燈光與煙火控制器"}, {"key": "mdm", "label": "System", "en": "Mobile Device Management (MDM)", "zh": "行動裝置管理（MDM）"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "secure_config", "label": "Control", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}, {"key": "mdm_wipe", "label": "Control", "en": "Device Management & Remote Wipe", "zh": "裝置管理與遠端抹除"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "mdm", "t": "LOCATED_IN", "b": "garden_party"}, {"a": "event_iot", "t": "LOCATED_IN", "b": "garden_party"}, {"a": "iot_default", "t": "TARGETS", "b": "event_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "garden_party"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "garden_party"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "event_iot"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "segmentation"}, {"a": "segmentation", "t": "SEEN_IN", "b": "garden_party"}, {"a": "segmentation", "t": "PROTECTS", "b": "event_iot"}, {"a": "segmentation", "t": "MITIGATES", "b": "iot_default"}, {"a": "secure_config", "t": "SEEN_IN", "b": "garden_party"}, {"a": "secure_config", "t": "PROTECTS", "b": "event_iot"}, {"a": "secure_config", "t": "MITIGATES", "b": "iot_default"}, {"a": "mdm_wipe", "t": "SEEN_IN", "b": "garden_party"}]}, "tool_used": "room_overview", "facts": "房間：花園派對・物聯網與 OT\n代表的資訊主題：智慧燈光和煙火控制器都接在網路上，員工的手機也在現場。\n重點：物聯網設備要改掉預設密碼，放在獨立的網段。\n這裡的系統：活動燈光與煙火控制器、行動裝置管理（MDM）\n這裡要注意的威脅：不安全的物聯網設備\n看得到的防護措施：安全組態（不用預設密碼）、裝置管理與遠端抹除、網段隔離\n課程概念：IT、OT 與物聯網\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：湖邊廣場・數位看板與資訊站（導覽裡的名稱：夜晚的湖邊廣場）", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.84, "load_s": 0.02, "prompt_tokens": 615, "prompt_s": 2.61, "gen_tokens": 68, "gen_s": 4.21, "tok_per_s": 16.1, "first_token_s": 2.63}}, "state": {}}
+data: {"answer": "這裡是「花園派對・物聯網與 OT」房間，主要展示智慧燈光、煙火控制器及員工手機等物聯網設備。重點在於這些設備需改為非預設密碼並隔離至獨立網段，同時系統提供裝置管理與遠端抹除功能。此處隱藏 1 個資安漏洞待你自行尋找，請繼續探索以完成進度。", "go": [{"key": "plaza_fw", "en": "Plaza · Signage & Public Kiosk", "zh": "湖邊廣場・數位看板與資訊站", "base_en": "Lakeside Plaza at Night", "base_zh": "夜晚的湖邊廣場", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=13", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "活動燈光與煙火控制器是做什麼的？", "en": "What does the Event Lighting & Fireworks Controllers do?", "zh": "活動燈光與煙火控制器是做什麼的？"}, {"text": "不安全的物聯網設備要怎麼防？", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.88, "total_s": 8.89}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "garden_party", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "garden_party"}, "rows": 1, "ms": 5.5}], "graph": {"nodes": [{"key": "garden_party", "label": "Room", "en": "Garden Party", "zh": "花園派對"}, {"key": "event_iot", "label": "System", "en": "Event Lighting & Fireworks Controllers", "zh": "活動燈光與煙火控制器"}, {"key": "mdm", "label": "System", "en": "Mobile Device Management (MDM)", "zh": "行動裝置管理（MDM）"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "secure_config", "label": "Control", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}, {"key": "mdm_wipe", "label": "Control", "en": "Device Management & Remote Wipe", "zh": "裝置管理與遠端抹除"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "mdm", "t": "LOCATED_IN", "b": "garden_party"}, {"a": "event_iot", "t": "LOCATED_IN", "b": "garden_party"}, {"a": "iot_default", "t": "TARGETS", "b": "event_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "garden_party"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "garden_party"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "event_iot"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "segmentation"}, {"a": "segmentation", "t": "SEEN_IN", "b": "garden_party"}, {"a": "segmentation", "t": "PROTECTS", "b": "event_iot"}, {"a": "segmentation", "t": "MITIGATES", "b": "iot_default"}, {"a": "secure_config", "t": "SEEN_IN", "b": "garden_party"}, {"a": "secure_config", "t": "PROTECTS", "b": "event_iot"}, {"a": "secure_config", "t": "MITIGATES", "b": "iot_default"}, {"a": "mdm_wipe", "t": "SEEN_IN", "b": "garden_party"}]}, "tool_used": "room_overview", "facts": "房間：花園派對・物聯網與 OT\n代表的資訊主題：智慧燈光和煙火控制器都接在網路上，員工的手機也在現場。\n重點：物聯網設備要改掉預設密碼，放在獨立的網段。\n這裡的系統：活動燈光與煙火控制器、行動裝置管理（MDM）\n這裡要注意的威脅：不安全的物聯網設備\n看得到的防護措施：安全組態（不用預設密碼）、裝置管理與遠端抹除、網段隔離\n課程概念：IT、OT 與物聯網\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：湖邊廣場・數位看板與資訊站（導覽裡的名稱：夜晚的湖邊廣場）", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.88, "load_s": 0.01, "prompt_tokens": 615, "prompt_s": 2.24, "gen_tokens": 81, "gen_s": 6.61, "tok_per_s": 12.3, "first_token_s": 2.27}}, "state": {}}
 

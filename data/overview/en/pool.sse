@@ -11,7 +11,7 @@ event: token
 data: {"text": "This"}
 
 event: token
-data: {"text": " place"}
+data: {"text": " room"}
 
 event: token
 data: {"text": " is"}
@@ -38,10 +38,7 @@ event: token
 data: {"text": "**,"}
 
 event: token
-data: {"text": " which"}
-
-event: token
-data: {"text": " stores"}
+data: {"text": " where"}
 
 event: token
 data: {"text": " raw"}
@@ -59,19 +56,16 @@ event: token
 data: {"text": " systems"}
 
 event: token
+data: {"text": " pools"}
+
+event: token
 data: {"text": " before"}
 
 event: token
 data: {"text": " analysts"}
 
 event: token
-data: {"text": " process"}
-
-event: token
-data: {"text": " it"}
-
-event: token
-data: {"text": " into"}
+data: {"text": " create"}
 
 event: token
 data: {"text": " reports"}
@@ -161,13 +155,13 @@ event: token
 data: {"text": "."}
 
 event: token
-data: {"text": " Be"}
+data: {"text": " The"}
 
 event: token
-data: {"text": " aware"}
+data: {"text": " area"}
 
 event: token
-data: {"text": " that"}
+data: {"text": " displays"}
 
 event: token
 data: {"text": " threats"}
@@ -203,26 +197,8 @@ event: token
 data: {"text": " Access"}
 
 event: token
-data: {"text": "**"}
-
-event: token
-data: {"text": " are"}
-
-event: token
-data: {"text": " present"}
-
-event: token
-data: {"text": " in"}
-
-event: token
-data: {"text": " this"}
-
-event: token
-data: {"text": " room"}
-
-event: token
-data: {"text": "."}
+data: {"text": "**."}
 
 event: done
-data: {"answer": "This place is the **Pool · Data Lake**, which stores raw data from many systems before analysts process it into reports. You can see controls for **Data Classification & Handling** and **Data Masking** here to prevent it from becoming a data swamp. Be aware that threats like **Misconfiguration** and **Excessive Access** are present in this room.", "go": [], "followups": [{"text": "What does the Data Lake do?", "en": "What does the Data Lake do?", "zh": "資料湖是做什麼的？"}, {"text": "How do we prevent misconfiguration & excessive access?", "en": "How do we prevent misconfiguration & excessive access?", "zh": "設定錯誤與權限過大要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.49, "total_s": 9.51}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pool", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pool"}, "rows": 1, "ms": 7.8}], "graph": {"nodes": [{"key": "pool", "label": "Room", "en": "Pool", "zh": "泳池"}, {"key": "data_lake", "label": "System", "en": "Data Lake", "zh": "資料湖"}, {"key": "misconfiguration", "label": "Threat", "en": "Misconfiguration & Excessive Access", "zh": "設定錯誤與權限過大"}, {"key": "data_classification", "label": "Control", "en": "Data Classification & Handling", "zh": "資料分級與處理規則"}, {"key": "data_masking", "label": "Control", "en": "Data Masking", "zh": "資料遮蔽"}, {"key": "c_data_lifecycle", "label": "Concept", "en": "Data Lifecycle", "zh": "資料生命週期"}, {"key": "c_warehouse_lake", "label": "Concept", "en": "Data Warehouse vs Data Lake", "zh": "資料倉儲與資料湖"}], "edges": [{"a": "data_lake", "t": "LOCATED_IN", "b": "pool"}, {"a": "misconfiguration", "t": "TARGETS", "b": "data_lake"}, {"a": "misconfiguration", "t": "SHOWN_IN", "b": "pool"}, {"a": "c_data_lifecycle", "t": "TAUGHT_IN", "b": "pool"}, {"a": "c_data_lifecycle", "t": "RELATED_TO", "b": "data_classification"}, {"a": "c_warehouse_lake", "t": "TAUGHT_IN", "b": "pool"}, {"a": "c_warehouse_lake", "t": "RELATED_TO", "b": "data_lake"}, {"a": "data_classification", "t": "SEEN_IN", "b": "pool"}, {"a": "data_classification", "t": "MITIGATES", "b": "misconfiguration"}, {"a": "data_masking", "t": "SEEN_IN", "b": "pool"}]}, "tool_used": "room_overview", "facts": "Room: Pool · Data Lake\nWhat it shows: Raw data from many systems pools here before analysts turn it into reports.\nKey lesson: A data lake still needs classification and access control, or it turns into a data swamp.\nSystems here: Data Lake\nThreats shown here: Misconfiguration & Excessive Access\nControls you can see: Data Classification & Handling, Data Masking\nConcepts: Data Lifecycle, Data Warehouse vs Data Lake\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Pier · Deliveries & Vendors (called 'Clubhouse Pier' in the tour), Lake Villas · Smart Rooms, Greenhouse · Test Environment, Lawn · Assembly Point & Continuity (called 'Lakeside Lawn' in the tour), Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.49, "load_s": 0.01, "prompt_tokens": 628, "prompt_s": 3.17, "gen_tokens": 73, "gen_s": 6.3, "tok_per_s": 11.6, "first_token_s": 3.19}}, "state": {}}
+data: {"answer": "This room is the **Pool · Data Lake**, where raw data from many systems pools before analysts create reports. You can see controls for **Data Classification & Handling** and **Data Masking** here to prevent it from becoming a data swamp. The area displays threats like **Misconfiguration** and **Excessive Access**.", "go": [], "followups": [{"text": "What does the Data Lake do?", "en": "What does the Data Lake do?", "zh": "資料湖是做什麼的？"}, {"text": "How do we prevent misconfiguration & excessive access?", "en": "How do we prevent misconfiguration & excessive access?", "zh": "設定錯誤與權限過大要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.94, "total_s": 7.95}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pool", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pool"}, "rows": 1, "ms": 7.3}], "graph": {"nodes": [{"key": "pool", "label": "Room", "en": "Pool", "zh": "泳池"}, {"key": "data_lake", "label": "System", "en": "Data Lake", "zh": "資料湖"}, {"key": "misconfiguration", "label": "Threat", "en": "Misconfiguration & Excessive Access", "zh": "設定錯誤與權限過大"}, {"key": "data_classification", "label": "Control", "en": "Data Classification & Handling", "zh": "資料分級與處理規則"}, {"key": "data_masking", "label": "Control", "en": "Data Masking", "zh": "資料遮蔽"}, {"key": "c_data_lifecycle", "label": "Concept", "en": "Data Lifecycle", "zh": "資料生命週期"}, {"key": "c_warehouse_lake", "label": "Concept", "en": "Data Warehouse vs Data Lake", "zh": "資料倉儲與資料湖"}], "edges": [{"a": "data_lake", "t": "LOCATED_IN", "b": "pool"}, {"a": "misconfiguration", "t": "TARGETS", "b": "data_lake"}, {"a": "misconfiguration", "t": "SHOWN_IN", "b": "pool"}, {"a": "c_data_lifecycle", "t": "TAUGHT_IN", "b": "pool"}, {"a": "c_data_lifecycle", "t": "RELATED_TO", "b": "data_classification"}, {"a": "c_warehouse_lake", "t": "TAUGHT_IN", "b": "pool"}, {"a": "c_warehouse_lake", "t": "RELATED_TO", "b": "data_lake"}, {"a": "data_classification", "t": "SEEN_IN", "b": "pool"}, {"a": "data_classification", "t": "MITIGATES", "b": "misconfiguration"}, {"a": "data_masking", "t": "SEEN_IN", "b": "pool"}]}, "tool_used": "room_overview", "facts": "Room: Pool · Data Lake\nWhat it shows: Raw data from many systems pools here before analysts turn it into reports.\nKey lesson: A data lake still needs classification and access control, or it turns into a data swamp.\nSystems here: Data Lake\nThreats shown here: Misconfiguration & Excessive Access\nControls you can see: Data Classification & Handling, Data Masking\nConcepts: Data Lifecycle, Data Warehouse vs Data Lake\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Pier · Deliveries & Vendors (called 'Clubhouse Pier' in the tour), Lake Villas · Smart Rooms, Greenhouse · Test Environment, Lawn · Assembly Point & Continuity (called 'Lakeside Lawn' in the tour), Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.93, "load_s": 0.01, "prompt_tokens": 628, "prompt_s": 2.33, "gen_tokens": 65, "gen_s": 5.57, "tok_per_s": 11.7, "first_token_s": 2.36}}, "state": {}}
 

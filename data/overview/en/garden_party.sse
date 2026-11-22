@@ -143,59 +143,56 @@ event: token
 data: {"text": " The"}
 
 event: token
-data: {"text": " visible"}
+data: {"text": " main"}
 
 event: token
-data: {"text": " controls"}
+data: {"text": " security"}
 
 event: token
-data: {"text": " include"}
+data: {"text": " lesson"}
 
 event: token
-data: {"text": " Secure"}
+data: {"text": " is"}
 
 event: token
-data: {"text": " Configuration"}
+data: {"text": " to"}
 
 event: token
-data: {"text": ","}
+data: {"text": " change"}
 
 event: token
-data: {"text": " Device"}
+data: {"text": " default"}
 
 event: token
-data: {"text": " Management"}
-
-event: token
-data: {"text": " with"}
-
-event: token
-data: {"text": " Remote"}
-
-event: token
-data: {"text": " W"}
-
-event: token
-data: {"text": "ipe"}
-
-event: token
-data: {"text": ","}
+data: {"text": " passwords"}
 
 event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " Network"}
+data: {"text": " keep"}
 
 event: token
-data: {"text": " Seg"}
+data: {"text": " IoT"}
 
 event: token
-data: {"text": "mentation"}
+data: {"text": " devices"}
+
+event: token
+data: {"text": " on"}
+
+event: token
+data: {"text": " their"}
+
+event: token
+data: {"text": " own"}
+
+event: token
+data: {"text": " network"}
 
 event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This place is the Garden Party room, which hosts Event Lighting & Fireworks Controllers and Mobile Device Management (MDM) systems. You can see smart lights, fireworks controllers, and staff phones running on the network here. The visible controls include Secure Configuration, Device Management with Remote Wipe, and Network Segmentation.", "go": [{"key": "plaza_fw", "en": "Plaza · Signage & Public Kiosk", "zh": "湖邊廣場・數位看板與資訊站", "base_en": "Lakeside Plaza at Night", "base_zh": "夜晚的湖邊廣場", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=13", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the Event Lighting & Fireworks Controllers do?", "en": "What does the Event Lighting & Fireworks Controllers do?", "zh": "活動燈光與煙火控制器是做什麼的？"}, {"text": "How do we prevent insecure IoT devices?", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.82, "total_s": 6.84}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "garden_party", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "garden_party"}, "rows": 1, "ms": 6.5}], "graph": {"nodes": [{"key": "garden_party", "label": "Room", "en": "Garden Party", "zh": "花園派對"}, {"key": "event_iot", "label": "System", "en": "Event Lighting & Fireworks Controllers", "zh": "活動燈光與煙火控制器"}, {"key": "mdm", "label": "System", "en": "Mobile Device Management (MDM)", "zh": "行動裝置管理（MDM）"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "secure_config", "label": "Control", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}, {"key": "mdm_wipe", "label": "Control", "en": "Device Management & Remote Wipe", "zh": "裝置管理與遠端抹除"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "mdm", "t": "LOCATED_IN", "b": "garden_party"}, {"a": "event_iot", "t": "LOCATED_IN", "b": "garden_party"}, {"a": "iot_default", "t": "TARGETS", "b": "event_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "garden_party"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "garden_party"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "event_iot"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "segmentation"}, {"a": "segmentation", "t": "SEEN_IN", "b": "garden_party"}, {"a": "segmentation", "t": "PROTECTS", "b": "event_iot"}, {"a": "segmentation", "t": "MITIGATES", "b": "iot_default"}, {"a": "secure_config", "t": "SEEN_IN", "b": "garden_party"}, {"a": "secure_config", "t": "PROTECTS", "b": "event_iot"}, {"a": "secure_config", "t": "MITIGATES", "b": "iot_default"}, {"a": "mdm_wipe", "t": "SEEN_IN", "b": "garden_party"}]}, "tool_used": "room_overview", "facts": "Room: Garden Party · IoT & OT\nWhat it shows: Smart lights and the fireworks controller run on the network, and staff phones are at the party too.\nKey lesson: Change default passwords and keep IoT devices on their own network.\nSystems here: Event Lighting & Fireworks Controllers, Mobile Device Management (MDM)\nThreats shown here: Insecure IoT Devices\nControls you can see: Secure Configuration (No Default Passwords), Device Management & Remote Wipe, Network Segmentation\nConcepts: IT, OT & IoT\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Plaza · Signage & Public Kiosk (called 'Lakeside Plaza at Night' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.54, "load_s": 0.01, "prompt_tokens": 603, "prompt_s": 2.78, "gen_tokens": 64, "gen_s": 3.74, "tok_per_s": 17.1, "first_token_s": 2.8}}, "state": {}}
+data: {"answer": "This place is the Garden Party room, which hosts Event Lighting & Fireworks Controllers and Mobile Device Management (MDM) systems. You can see smart lights, fireworks controllers, and staff phones running on the network here. The main security lesson is to change default passwords and keep IoT devices on their own network.", "go": [{"key": "plaza_fw", "en": "Plaza · Signage & Public Kiosk", "zh": "湖邊廣場・數位看板與資訊站", "base_en": "Lakeside Plaza at Night", "base_zh": "夜晚的湖邊廣場", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=13", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the Event Lighting & Fireworks Controllers do?", "en": "What does the Event Lighting & Fireworks Controllers do?", "zh": "活動燈光與煙火控制器是做什麼的？"}, {"text": "How do we prevent insecure IoT devices?", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.2, "total_s": 7.21}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "garden_party", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "garden_party"}, "rows": 1, "ms": 5.2}], "graph": {"nodes": [{"key": "garden_party", "label": "Room", "en": "Garden Party", "zh": "花園派對"}, {"key": "event_iot", "label": "System", "en": "Event Lighting & Fireworks Controllers", "zh": "活動燈光與煙火控制器"}, {"key": "mdm", "label": "System", "en": "Mobile Device Management (MDM)", "zh": "行動裝置管理（MDM）"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "secure_config", "label": "Control", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}, {"key": "mdm_wipe", "label": "Control", "en": "Device Management & Remote Wipe", "zh": "裝置管理與遠端抹除"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "mdm", "t": "LOCATED_IN", "b": "garden_party"}, {"a": "event_iot", "t": "LOCATED_IN", "b": "garden_party"}, {"a": "iot_default", "t": "TARGETS", "b": "event_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "garden_party"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "garden_party"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "event_iot"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "segmentation"}, {"a": "segmentation", "t": "SEEN_IN", "b": "garden_party"}, {"a": "segmentation", "t": "PROTECTS", "b": "event_iot"}, {"a": "segmentation", "t": "MITIGATES", "b": "iot_default"}, {"a": "secure_config", "t": "SEEN_IN", "b": "garden_party"}, {"a": "secure_config", "t": "PROTECTS", "b": "event_iot"}, {"a": "secure_config", "t": "MITIGATES", "b": "iot_default"}, {"a": "mdm_wipe", "t": "SEEN_IN", "b": "garden_party"}]}, "tool_used": "room_overview", "facts": "Room: Garden Party · IoT & OT\nWhat it shows: Smart lights and the fireworks controller run on the network, and staff phones are at the party too.\nKey lesson: Change default passwords and keep IoT devices on their own network.\nSystems here: Event Lighting & Fireworks Controllers, Mobile Device Management (MDM)\nThreats shown here: Insecure IoT Devices\nControls you can see: Secure Configuration (No Default Passwords), Device Management & Remote Wipe, Network Segmentation\nConcepts: IT, OT & IoT\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Plaza · Signage & Public Kiosk (called 'Lakeside Plaza at Night' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.15, "load_s": 0.01, "prompt_tokens": 603, "prompt_s": 2.08, "gen_tokens": 63, "gen_s": 5.05, "tok_per_s": 12.5, "first_token_s": 2.1}}, "state": {}}
 

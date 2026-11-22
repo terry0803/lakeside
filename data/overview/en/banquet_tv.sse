@@ -146,13 +146,19 @@ event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " visible"}
+data: {"text": " you"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
 
 event: token
 data: {"text": " controls"}
 
 event: token
-data: {"text": " include"}
+data: {"text": " like"}
 
 event: token
 data: {"text": " **"}
@@ -197,13 +203,34 @@ event: token
 data: {"text": "**."}
 
 event: token
-data: {"text": " You"}
+data: {"text": " There"}
 
 event: token
-data: {"text": " can"}
+data: {"text": " is"}
 
 event: token
-data: {"text": " see"}
+data: {"text": " currently"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "1"}
+
+event: token
+data: {"text": " hidden"}
+
+event: token
+data: {"text": " security"}
+
+event: token
+data: {"text": " weakness"}
+
+event: token
+data: {"text": "**"}
+
+event: token
+data: {"text": " in"}
 
 event: token
 data: {"text": " this"}
@@ -212,47 +239,26 @@ event: token
 data: {"text": " room"}
 
 event: token
-data: {"text": " in"}
+data: {"text": " that"}
 
 event: token
-data: {"text": " the"}
+data: {"text": " you"}
 
 event: token
-data: {"text": " tour"}
+data: {"text": " have"}
 
 event: token
-data: {"text": " under"}
+data: {"text": " not"}
 
 event: token
-data: {"text": " the"}
+data: {"text": " yet"}
 
 event: token
-data: {"text": " name"}
+data: {"text": " found"}
 
 event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "Ban"}
-
-event: token
-data: {"text": "quet"}
-
-event: token
-data: {"text": " TV"}
-
-event: token
-data: {"text": " ·"}
-
-event: token
-data: {"text": " Up"}
-
-event: token
-data: {"text": " Close"}
-
-event: token
-data: {"text": "**."}
+data: {"text": "."}
 
 event: done
-data: {"answer": "This place is the **Banquet TV Close-up** (also called 'Banquet TV · Up Close'), which displays a big screen showing the event's CRM dashboard. The room contains systems for **CRM & Loyalty**, and visible controls include **Data Masking**, **Clear Desk**, and **Clear Screen**. You can see this room in the tour under the name **Banquet TV · Up Close**.", "go": [], "followups": [{"text": "What does the CRM & Loyalty do?", "en": "What does the CRM & Loyalty do?", "zh": "CRM 與會員系統是做什麼的？"}, {"text": "How do we prevent data sent to the wrong person?", "en": "How do we prevent data sent to the wrong person?", "zh": "資料寄錯人要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.35, "total_s": 8.36}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet_tv", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet_tv"}, "rows": 1, "ms": 6.9}], "graph": {"nodes": [{"key": "banquet_tv", "label": "Room", "en": "Banquet TV · Up Close", "zh": "宴會廳電視近看"}, {"key": "crm", "label": "System", "en": "CRM & Loyalty", "zh": "CRM 與會員系統"}, {"key": "misdelivery", "label": "Threat", "en": "Data Sent to the Wrong Person", "zh": "資料寄錯人"}, {"key": "shoulder_surfing", "label": "Threat", "en": "Shoulder Surfing & Screen Exposure", "zh": "偷窺與螢幕外露"}, {"key": "data_masking", "label": "Control", "en": "Data Masking", "zh": "資料遮蔽"}, {"key": "clear_desk", "label": "Control", "en": "Clear Desk & Clear Screen", "zh": "桌面淨空與螢幕淨空"}, {"key": "c_crm", "label": "Concept", "en": "Customer Relationship Management (CRM)", "zh": "顧客關係管理（CRM）"}], "edges": [{"a": "crm", "t": "LOCATED_IN", "b": "banquet_tv"}, {"a": "misdelivery", "t": "SHOWN_IN", "b": "banquet_tv"}, {"a": "shoulder_surfing", "t": "TARGETS", "b": "crm"}, {"a": "shoulder_surfing", "t": "SHOWN_IN", "b": "banquet_tv"}, {"a": "c_crm", "t": "TAUGHT_IN", "b": "banquet_tv"}, {"a": "c_crm", "t": "RELATED_TO", "b": "crm"}, {"a": "clear_desk", "t": "SEEN_IN", "b": "banquet_tv"}, {"a": "clear_desk", "t": "MITIGATES", "b": "shoulder_surfing"}, {"a": "clear_desk", "t": "MITIGATES", "b": "misdelivery"}, {"a": "data_masking", "t": "SEEN_IN", "b": "banquet_tv"}, {"a": "data_masking", "t": "MITIGATES", "b": "shoulder_surfing"}, {"a": "data_masking", "t": "MITIGATES", "b": "misdelivery"}]}, "tool_used": "room_overview", "facts": "Room: Banquet TV Close-up · CRM Screen (called 'Banquet TV · Up Close' in the tour)\nWhat it shows: A big screen showing the event's CRM dashboard.\nKey lesson: Screens in public areas must not show guests' personal details.\nSystems here: CRM & Loyalty\nThreats shown here: Data Sent to the Wrong Person, Shoulder Surfing & Screen Exposure\nControls you can see: Data Masking, Clear Desk & Clear Screen\nConcepts: Customer Relationship Management (CRM)\nProcedures to know: Personal data sent to the wrong person\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Banquet Hall · Events & CRM", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.34, "load_s": 0.0, "prompt_tokens": 598, "prompt_s": 2.83, "gen_tokens": 83, "gen_s": 5.49, "tok_per_s": 15.1, "first_token_s": 2.85}}, "state": {}}
+data: {"answer": "This place is the **Banquet TV Close-up** (also called 'Banquet TV · Up Close'), which displays a big screen showing the event's CRM dashboard. The room contains systems for **CRM & Loyalty**, and you can see controls like **Data Masking**, **Clear Desk**, and **Clear Screen**. There is currently **1 hidden security weakness** in this room that you have not yet found.", "go": [], "followups": [{"text": "What does the CRM & Loyalty do?", "en": "What does the CRM & Loyalty do?", "zh": "CRM 與會員系統是做什麼的？"}, {"text": "How do we prevent data sent to the wrong person?", "en": "How do we prevent data sent to the wrong person?", "zh": "資料寄錯人要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.42, "total_s": 9.43}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet_tv", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet_tv"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "banquet_tv", "label": "Room", "en": "Banquet TV · Up Close", "zh": "宴會廳電視近看"}, {"key": "crm", "label": "System", "en": "CRM & Loyalty", "zh": "CRM 與會員系統"}, {"key": "misdelivery", "label": "Threat", "en": "Data Sent to the Wrong Person", "zh": "資料寄錯人"}, {"key": "shoulder_surfing", "label": "Threat", "en": "Shoulder Surfing & Screen Exposure", "zh": "偷窺與螢幕外露"}, {"key": "data_masking", "label": "Control", "en": "Data Masking", "zh": "資料遮蔽"}, {"key": "clear_desk", "label": "Control", "en": "Clear Desk & Clear Screen", "zh": "桌面淨空與螢幕淨空"}, {"key": "c_crm", "label": "Concept", "en": "Customer Relationship Management (CRM)", "zh": "顧客關係管理（CRM）"}], "edges": [{"a": "crm", "t": "LOCATED_IN", "b": "banquet_tv"}, {"a": "misdelivery", "t": "SHOWN_IN", "b": "banquet_tv"}, {"a": "shoulder_surfing", "t": "TARGETS", "b": "crm"}, {"a": "shoulder_surfing", "t": "SHOWN_IN", "b": "banquet_tv"}, {"a": "c_crm", "t": "TAUGHT_IN", "b": "banquet_tv"}, {"a": "c_crm", "t": "RELATED_TO", "b": "crm"}, {"a": "clear_desk", "t": "SEEN_IN", "b": "banquet_tv"}, {"a": "clear_desk", "t": "MITIGATES", "b": "shoulder_surfing"}, {"a": "clear_desk", "t": "MITIGATES", "b": "misdelivery"}, {"a": "data_masking", "t": "SEEN_IN", "b": "banquet_tv"}, {"a": "data_masking", "t": "MITIGATES", "b": "shoulder_surfing"}, {"a": "data_masking", "t": "MITIGATES", "b": "misdelivery"}]}, "tool_used": "room_overview", "facts": "Room: Banquet TV Close-up · CRM Screen (called 'Banquet TV · Up Close' in the tour)\nWhat it shows: A big screen showing the event's CRM dashboard.\nKey lesson: Screens in public areas must not show guests' personal details.\nSystems here: CRM & Loyalty\nThreats shown here: Data Sent to the Wrong Person, Shoulder Surfing & Screen Exposure\nControls you can see: Data Masking, Clear Desk & Clear Screen\nConcepts: Customer Relationship Management (CRM)\nProcedures to know: Personal data sent to the wrong person\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Banquet Hall · Events & CRM", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.42, "load_s": 0.0, "prompt_tokens": 598, "prompt_s": 2.16, "gen_tokens": 85, "gen_s": 7.24, "tok_per_s": 11.7, "first_token_s": 2.18}}, "state": {}}
 

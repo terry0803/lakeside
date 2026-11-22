@@ -164,7 +164,7 @@ event: token
 data: {"text": " Access"}
 
 event: token
-data: {"text": ","}
+data: {"text": " and"}
 
 event: token
 data: {"text": " Payment"}
@@ -182,21 +182,6 @@ event: token
 data: {"text": "Back"}
 
 event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " Vendor"}
-
-event: token
-data: {"text": " Risk"}
-
-event: token
-data: {"text": " Management"}
-
-event: token
 data: {"text": " here"}
 
 event: token
@@ -204,6 +189,18 @@ data: {"text": "."}
 
 event: token
 data: {"text": " The"}
+
+event: token
+data: {"text": " department"}
+
+event: token
+data: {"text": " based"}
+
+event: token
+data: {"text": " here"}
+
+event: token
+data: {"text": " is"}
 
 event: token
 data: {"text": " Finance"}
@@ -216,9 +213,6 @@ data: {"text": " Proc"}
 
 event: token
 data: {"text": "urement"}
-
-event: token
-data: {"text": " department"}
 
 event: token
 data: {"text": " ("}
@@ -242,40 +236,40 @@ event: token
 data: {"text": "0"}
 
 event: token
-data: {"text": ")"}
+data: {"text": "),"}
 
 event: token
-data: {"text": " operates"}
+data: {"text": " and"}
 
 event: token
-data: {"text": " from"}
+data: {"text": " systems"}
 
 event: token
-data: {"text": " this"}
+data: {"text": " include"}
 
 event: token
-data: {"text": " location"}
+data: {"text": " the"}
 
 event: token
-data: {"text": ","}
+data: {"text": " Supplier"}
 
 event: token
-data: {"text": " which"}
+data: {"text": " Portal"}
 
 event: token
-data: {"text": " also"}
+data: {"text": "."}
 
 event: token
-data: {"text": " highlights"}
+data: {"text": " Threat"}
 
 event: token
-data: {"text": " threats"}
+data: {"text": "s"}
 
 event: token
-data: {"text": " such"}
+data: {"text": " shown"}
 
 event: token
-data: {"text": " as"}
+data: {"text": " are"}
 
 event: token
 data: {"text": " Business"}
@@ -291,6 +285,18 @@ data: {"text": "romise"}
 
 event: token
 data: {"text": " and"}
+
+event: token
+data: {"text": " Third"}
+
+event: token
+data: {"text": "-"}
+
+event: token
+data: {"text": "Party"}
+
+event: token
+data: {"text": " &"}
 
 event: token
 data: {"text": " Supply"}
@@ -311,5 +317,5 @@ event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This place is **Pier · Deliveries & Vendors** (shown as 'Clubhouse Pier' in the tour). It displays suppliers delivering by boat and vendors providing software, support, and remote access. You can see controls like Time-Limited Vendor Access, Payment Change Call-Back, and Vendor Risk Management here. The Finance & Procurement department (ext. 1600) operates from this location, which also highlights threats such as Business Email Compromise and Supply-Chain Compromise.", "go": [], "followups": [{"text": "What does the Supplier Portal do?", "en": "What does the Supplier Portal do?", "zh": "供應商入口網站是做什麼的？"}, {"text": "How do we prevent business email compromise?", "en": "How do we prevent business email compromise?", "zh": "商務郵件詐騙要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.04, "total_s": 9.05}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pier", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pier"}, "rows": 1, "ms": 6.1}], "graph": {"nodes": [{"key": "pier", "label": "Room", "en": "Clubhouse Pier", "zh": "會館碼頭"}, {"key": "supplier_portal", "label": "System", "en": "Supplier Portal", "zh": "供應商入口網站"}, {"key": "bec", "label": "Threat", "en": "Business Email Compromise", "zh": "商務郵件詐騙"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "vendor_remote_access", "label": "Control", "en": "Time-Limited Vendor Access", "zh": "廠商限時遠端存取"}, {"key": "payment_callback", "label": "Control", "en": "Payment Change Call-Back", "zh": "匯款變更回撥確認"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "c_erp", "label": "Concept", "en": "Enterprise Resource Planning (ERP)", "zh": "企業資源規劃（ERP）"}, {"key": "c_supply_chain_risk", "label": "Concept", "en": "Supply-Chain Risk", "zh": "供應鏈風險"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "pier"}, {"a": "vendor_management", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "vendor_management", "t": "MITIGATES", "b": "bec"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "vendor_remote_access", "t": "SEEN_IN", "b": "pier"}, {"a": "vendor_remote_access", "t": "MITIGATES", "b": "supply_chain"}, {"a": "supplier_portal", "t": "LOCATED_IN", "b": "pier"}, {"a": "bec", "t": "SHOWN_IN", "b": "pier"}, {"a": "supply_chain", "t": "TARGETS", "b": "supplier_portal"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "pier"}, {"a": "c_erp", "t": "TAUGHT_IN", "b": "pier"}, {"a": "c_supply_chain_risk", "t": "TAUGHT_IN", "b": "pier"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "supply_chain"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "vendor_management"}, {"a": "payment_callback", "t": "SEEN_IN", "b": "pier"}, {"a": "payment_callback", "t": "MITIGATES", "b": "bec"}]}, "tool_used": "room_overview", "facts": "Room: Pier · Deliveries & Vendors (called 'Clubhouse Pier' in the tour)\nWhat it shows: Suppliers deliver by boat; vendors also deliver software, support and remote access.\nKey lesson: Assess vendors before trusting them, and confirm any change to their bank details by phone.\nDepartment based here: Finance & Procurement (ext. 1600)\nSystems here: Supplier Portal\nThreats shown here: Business Email Compromise, Third-Party & Supply-Chain Compromise\nControls you can see: Time-Limited Vendor Access, Payment Change Call-Back, Vendor Risk Management\nConcepts: Enterprise Resource Planning (ERP), Supply-Chain Risk\nProcedures to know: A vendor needs remote access, A supplier asks to change their bank details\nExits: Lawn · Assembly Point & Continuity (called 'Lakeside Lawn' in the tour), Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), On the Lake · Offsite Backup, Steamer Deck · Working on the Move, Pool · Data Lake", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.04, "load_s": 0.0, "prompt_tokens": 665, "prompt_s": 2.73, "gen_tokens": 103, "gen_s": 6.29, "tok_per_s": 16.4, "first_token_s": 2.75}}, "state": {}}
+data: {"answer": "This place is **Pier · Deliveries & Vendors** (shown as 'Clubhouse Pier' in the tour). It displays suppliers delivering by boat and vendors providing software, support, and remote access. You can see controls like Time-Limited Vendor Access and Payment Change Call-Back here. The department based here is Finance & Procurement (ext. 1600), and systems include the Supplier Portal. Threats shown are Business Email Compromise and Third-Party & Supply-Chain Compromise.", "go": [], "followups": [{"text": "What does the Supplier Portal do?", "en": "What does the Supplier Portal do?", "zh": "供應商入口網站是做什麼的？"}, {"text": "How do we prevent business email compromise?", "en": "How do we prevent business email compromise?", "zh": "商務郵件詐騙要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 12.12, "total_s": 12.14}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pier", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pier"}, "rows": 1, "ms": 7.5}], "graph": {"nodes": [{"key": "pier", "label": "Room", "en": "Clubhouse Pier", "zh": "會館碼頭"}, {"key": "supplier_portal", "label": "System", "en": "Supplier Portal", "zh": "供應商入口網站"}, {"key": "bec", "label": "Threat", "en": "Business Email Compromise", "zh": "商務郵件詐騙"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "vendor_remote_access", "label": "Control", "en": "Time-Limited Vendor Access", "zh": "廠商限時遠端存取"}, {"key": "payment_callback", "label": "Control", "en": "Payment Change Call-Back", "zh": "匯款變更回撥確認"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "c_erp", "label": "Concept", "en": "Enterprise Resource Planning (ERP)", "zh": "企業資源規劃（ERP）"}, {"key": "c_supply_chain_risk", "label": "Concept", "en": "Supply-Chain Risk", "zh": "供應鏈風險"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "pier"}, {"a": "vendor_management", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "vendor_management", "t": "MITIGATES", "b": "bec"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "vendor_remote_access", "t": "SEEN_IN", "b": "pier"}, {"a": "vendor_remote_access", "t": "MITIGATES", "b": "supply_chain"}, {"a": "supplier_portal", "t": "LOCATED_IN", "b": "pier"}, {"a": "bec", "t": "SHOWN_IN", "b": "pier"}, {"a": "supply_chain", "t": "TARGETS", "b": "supplier_portal"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "pier"}, {"a": "c_erp", "t": "TAUGHT_IN", "b": "pier"}, {"a": "c_supply_chain_risk", "t": "TAUGHT_IN", "b": "pier"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "supply_chain"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "vendor_management"}, {"a": "payment_callback", "t": "SEEN_IN", "b": "pier"}, {"a": "payment_callback", "t": "MITIGATES", "b": "bec"}]}, "tool_used": "room_overview", "facts": "Room: Pier · Deliveries & Vendors (called 'Clubhouse Pier' in the tour)\nWhat it shows: Suppliers deliver by boat; vendors also deliver software, support and remote access.\nKey lesson: Assess vendors before trusting them, and confirm any change to their bank details by phone.\nDepartment based here: Finance & Procurement (ext. 1600)\nSystems here: Supplier Portal\nThreats shown here: Business Email Compromise, Third-Party & Supply-Chain Compromise\nControls you can see: Time-Limited Vendor Access, Payment Change Call-Back, Vendor Risk Management\nConcepts: Enterprise Resource Planning (ERP), Supply-Chain Risk\nProcedures to know: A vendor needs remote access, A supplier asks to change their bank details\nExits: Lawn · Assembly Point & Continuity (called 'Lakeside Lawn' in the tour), Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), On the Lake · Offsite Backup, Steamer Deck · Working on the Move, Pool · Data Lake", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 12.1, "load_s": 0.01, "prompt_tokens": 665, "prompt_s": 2.58, "gen_tokens": 105, "gen_s": 9.5, "tok_per_s": 11.1, "first_token_s": 2.6}}, "state": {}}
 

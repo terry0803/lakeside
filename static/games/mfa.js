@@ -27,6 +27,9 @@ Games.mfa = function (d, main, replay) {
   const PROC = d.procedures.proc_unexpected_mfa, BADGE = d.procedures.proc_lost_badge;
   const P = { deny: 20, fast: 10, door: 100, back: 150, own: 100, ownWrong: 30, good: 60, bad: 40, reblock: 40 };
   const CON = story.console || {}, BADGE_ID = (CON.badge || {}).id || "#0417";
+  // 11/22 review: Kevin's lost badge tapped at the reader after you had unblocked it: the reader takes it (doorFire, doorDone)
+  const BD = Object.assign({ en: "Kevin Wu", zh: "吳凱文" }, CON.badge);
+  const ACCEPTED = { alert_en: `Banquet Hall door: badge ${BADGE_ID} (${BD.en}) accepted, badge active`, alert_zh: `宴會廳門口：員工證 ${BADGE_ID}（${BD.zh}）通過，這張卡可以使用` };
   const digitsOf = (s) => String(s || "").replace(/\D/g, "");
   // 11/22: an extension in both languages (ext. 2199 分機 2199), and the sign-in app's name with its Chinese
   const numHTML = (s) => { const m = /^ext\.\s*(\d+)$/.exec(String(s || "")); return m ? bi(`ext. ${m[1]}`, `分機 ${m[1]}`) : esc(s); };
@@ -459,15 +462,25 @@ Games.mfa = function (d, main, replay) {
 
   function doorFire(e) {
     const a = { e, left: e.secs, total: e.secs };
+    // You unblocked the lost badge earlier: tonight it simply works. 11/22 review: the alert and the camera say the reader
+    // accepted it (they said "refused"), the LED no longer flashes red first, and the door log says so too (via "before", doorRows)
+    a.doomed = e.box === "reader" && S.badge === "active";
+    const show = a.doomed ? Object.assign({}, e, ACCEPTED, { led: "" }) : e;
     S.alerts.push(a);
-    addNotif({ id: e.id, e, kind: "door", alert: a });
+    addNotif({ id: e.id, e: show, kind: "door", alert: a });
     buzz();
-    camEvent(e);
+    camEvent(show);
     conDraw();
-    if (e.box === "reader" && S.badge === "active") {    // you unblocked the lost badge earlier: tonight it simply works
-      a.doomed = true;
-      setTimeout(() => { if (S && !S.over && S.alerts.includes(a)) doorDone(a, "bad", "unblock"); }, reduceMotion ? 100 : 1700);
-    }
+    if (a.doomed) setTimeout(() => {
+      if (!S || S.over || !S.alerts.includes(a)) return;
+      if (S.badge === "active") return doorDone(a, "bad", "before");
+      // 11/22 review: blocked again during the alarm, so the reader refuses it after all: an ordinary alert again (radio works)
+      a.doomed = false;
+      const n = S.notifs.find((x) => x.id === e.id), h = $(`.mn-nw[data-id="${e.id}"] .mn-n-title`);
+      if (n) n.e = e;
+      if (h) h.innerHTML = bi(e.alert_en, e.alert_zh);
+      camEvent(e);
+    }, reduceMotion ? 100 : 1700);
   }
 
   async function doorDone(a, how, via) {
@@ -486,9 +499,12 @@ Games.mfa = function (d, main, replay) {
     }
     if (how === "bad") {
       S.res[e.id] = bad.k;
-      S.via[e.id] = via;      // 11/22: unlocked remotely or the badge unblocked, for the door log on the case board (doorRows)
+      S.via[e.id] = via;      // 11/22: unlocked remotely or the badge unblocked (during the alert, or "before" it), for the door log on the case board (doorRows)
+      if (via === "before") S.beforeAt = S.unblockedAt;      // 11/22 review: the unblock that let the badge in; a later unblock must not move it
       const dm = via === "unlock" && e.box === "reader" ? DOORS[0].damage : e.damage;
-      addLog(e.cam.slice(0, 5), via === "unblock" ? bi(`${e.alert_en} → badge ${BADGE_ID} was unblocked, so the door opened.`, `${e.alert_zh} → 員工證 ${BADGE_ID} 被解除停用，門開了。`)
+      const at = (S.beforeAt || "").slice(0, 5);
+      addLog(e.cam.slice(0, 5), via === "before" ? bi(`${ACCEPTED.alert_en} → you had unblocked it at ${at}, so the door opened.`, `${ACCEPTED.alert_zh} → 你在 ${at} 就解除了停用，門開了。`)
+        : via === "unblock" ? bi(`${e.alert_en} → badge ${BADGE_ID} was unblocked, so the door opened.`, `${e.alert_zh} → 員工證 ${BADGE_ID} 被解除停用，門開了。`)
         : bi(`${e.alert_en} → you unlocked the door remotely.`, `${e.alert_zh} → 你遠端開了門。`), "is-bad");
       camOpen();
       await wait(1500);
@@ -513,6 +529,7 @@ Games.mfa = function (d, main, replay) {
   function unblockBadge() {
     if (S.over) return;
     S.badge = "active";
+    S.unblockedAt = `${clockAt(S.clock)}:${CB.pad2(Math.floor((S.clock * 60) % 60))}`;     // 11/22 review: when, for the door log (doorRows)
     conDraw();
     addLog(clockAt(S.clock), bi(`Unblocked badge ${BADGE_ID} (Kevin Wu, reported lost).`, `解除了員工證 ${BADGE_ID}（吳凱文，已掛失）的停用。`), "is-bad");
     const a = S.alerts.find((x) => x.e.box === "reader");
@@ -635,8 +652,9 @@ Games.mfa = function (d, main, replay) {
 
   const KEYS = [["1", ""], ["2", "ABC"], ["3", "DEF"], ["4", "GHI"], ["5", "JKL"], ["6", "MNO"], ["7", "PQRS"], ["8", "TUV"], ["9", "WXYZ"], ["*", ""], ["0", "+"], ["#", ""]];
   const keysHTML = (id, keys) => `<div class="mn-keys" id="${id}">${(keys || KEYS).map(([k, s]) => (k ? `<button type="button" data-k="${k}" aria-label="${k === "del" ? "Delete" : k}">${k === "del" ? "⌫" : `<b>${k}</b><small>${s}</small>`}</button>` : "<span></span>")).join("")}</div>`;
-  // 11/22 evening: the crew's number is a UK drama number (+44 7700 900417), typed with or without the 00 in front
-  const shownNum = (s) => { const x = digitsOf(s); if (/^(00)?44\d{10}$/.test(x)) { const y = x.replace(/^00/, ""); return `+44 ${y.slice(2, 6)} ${y.slice(6)}`; } return x.length > 7 ? x.replace(/^(\d{4})(\d{3})(\d*)$/, (m, a, b, c) => [a, b, c].filter(Boolean).join("-")) : x; };
+  // 11/22 evening: the crew's number is a UK drama number (+44 7700 900417), typed with or without the 00 in front;
+  // 11/22 review: grouped that way from 0044 or 44 on while you type (it showed 0044-770-0900 for 8 to 13 digits)
+  const shownNum = (s) => { const x = digitsOf(s); if (/^(00)?44/.test(x)) { const y = x.replace(/^(00)?44/, ""); return ["+44", y.slice(0, 4), y.slice(4)].filter(Boolean).join(" "); } return x.length > 7 ? x.replace(/^(\d{4})(\d{3})(\d*)$/, (m, a, b, c) => [a, b, c].filter(Boolean).join("-")) : x; };
   const keyFx = (b) => { if (!b) return; b.classList.remove("is-hit"); void b.offsetWidth; b.classList.add("is-hit"); };
 
   function onKey(ev) {
@@ -693,7 +711,7 @@ Games.mfa = function (d, main, replay) {
     S.recents.unshift({ num: shownNum(num), t: clockAt(S.clock), dir: "out" });
     S.dial = "";
     if (num === NUM.soc) return callSoc();
-    if (num === FAKE) return callFake();
+    if (num === FAKE && S.fired[CALL.id]) return callFake();     // 11/22 review: a call-back only once that call has rung; before, any unknown number
     lineCall(num);
   }
 
@@ -1160,11 +1178,17 @@ Games.mfa = function (d, main, replay) {
   // did anyone open the Banquet Hall door from the console last night? (11/21 night: the board used to show a clean night)
   const doorOpened = () => DOORS.some((e) => (e.options.find((o) => o.k === S.res[e.id]) || {}).bad);
   const youSaidYes = () => !!S && S.approved > 0;
+  // 11/22 review: Kevin's badge was unblocked before the crew tapped it, so its line on the door log reads "accepted" (doorRows)
+  const badgeTaken = () => DOORS.some((e) => e.box === "reader" && S.via[e.id] === "before");
   /* the questions as they read after this particular night */
   const QV = () => QS.map((q) => {
-    // 11/22: the door was opened from the console: the how-to line and the hint for a wrong line say so too (review)
-    if (q.kind === "choose" && q.en_open && S && doorOpened()) return Object.assign({}, q, { en: q.en_open, zh: q.zh_open, solved_en: q.solved_open_en, solved_zh: q.solved_open_zh,
-      how_en: q.how_open_en || q.how_en, how_zh: q.how_open_zh || q.how_zh, wrong_evidence_en: q.wrong_evidence_open_en || q.wrong_evidence_en, wrong_evidence_zh: q.wrong_evidence_open_zh || q.wrong_evidence_zh });
+    // 11/22: the door was opened from the console: the how-to line and the hint for a wrong line say so too (review);
+    // when the reader took the unblocked badge, the pair that says so (how_accepted, wrong_evidence_accepted in games.yaml)
+    if (q.kind === "choose" && q.en_open && S && doorOpened()) {
+      const v = badgeTaken() && q.how_accepted_en ? "accepted" : "open";
+      return Object.assign({}, q, { en: q.en_open, zh: q.zh_open, solved_en: q.solved_open_en, solved_zh: q.solved_open_zh,
+        how_en: q[`how_${v}_en`] || q.how_en, how_zh: q[`how_${v}_zh`] || q.how_zh, wrong_evidence_en: q[`wrong_evidence_${v}_en`] || q.wrong_evidence_en, wrong_evidence_zh: q[`wrong_evidence_${v}_zh`] || q.wrong_evidence_zh });
+    }
     if (q.kind === "logs" && q.en_you && youSaidYes()) return Object.assign({}, q, { en: q.en_you, zh: q.zh_you, how_en: q.how_you_en, how_zh: q.how_you_zh, solved_en: q.solved_you_en, solved_zh: q.solved_you_zh });
     return q;
   });
@@ -1177,7 +1201,13 @@ Games.mfa = function (d, main, replay) {
     for (const e of DOORS) {
       const o = e.options.find((x) => x.k === S.res[e.id]) || {};
       if (!o.bad) continue;
-      if (e.box === "reader" && S.via[e.id] !== "unlock") {      // the lost badge was unblocked (sliding "unlock" at the reader is a remote open)
+      if (e.box === "reader" && S.via[e.id] === "before") {      // 11/22 review: unblocked before the crew tapped it, so the reader took it
+        rows.push({ t: S.beforeAt, en: `Badge ${BADGE_ID} unblocked from the on-call console`, zh: `值班控制台解除員工證 ${BADGE_ID} 的停用`, kind: "remote" });
+        const bb = rows.find((r) => r.kind === "badge_blocked");     // keeps its kind: question 2's evidence is still this line
+        if (bb) Object.assign(bb, { en: `Badge ${BADGE_ID} (${BD.en}) · accepted (unblocked at ${S.beforeAt} from the console)`, zh: `員工證 ${BADGE_ID}（${BD.zh}）· 通過（${S.beforeAt} 已從控制台解除停用）` });
+        const al = rows.find((r) => r.kind === "alarm");
+        if (al) Object.assign(al, { en: `Door opened with badge ${BADGE_ID}`, zh: `員工證 ${BADGE_ID} 刷卡開門`, kind: "opened" });
+      } else if (e.box === "reader" && S.via[e.id] !== "unlock") {      // the lost badge was unblocked (sliding "unlock" at the reader is a remote open)
         rows.push({ t: at[e.id] || e.cam, en: `Badge ${BADGE_ID} unblocked from the on-call console`, zh: `值班控制台解除員工證 ${BADGE_ID} 的停用`, kind: "remote" });
         const al = rows.find((r) => r.kind === "alarm");
         if (al) Object.assign(al, { en: `Door opened with badge ${BADGE_ID} after it was unblocked`, zh: `員工證 ${BADGE_ID} 解除停用後，門打開了`, kind: "opened" });

@@ -197,16 +197,7 @@ event: token
 data: {"text": "**."}
 
 event: token
-data: {"text": " To"}
-
-event: token
-data: {"text": " leave"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " go"}
+data: {"text": " Proceed"}
 
 event: token
 data: {"text": " to"}
@@ -221,10 +212,16 @@ event: token
 data: {"text": "Pool"}
 
 event: token
-data: {"text": " ·"}
+data: {"text": "**"}
 
 event: token
-data: {"text": " Data"}
+data: {"text": " or"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Data"}
 
 event: token
 data: {"text": " Lake"}
@@ -233,11 +230,17 @@ event: token
 data: {"text": "**"}
 
 event: token
-data: {"text": " exit"}
+data: {"text": " exits"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " continue"}
 
 event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This is the **Greenhouse · Test Environment**, where new systems are tested with fake data before going live. You can see controls like **Data Masking**, **Patch & Vulnerability Management**, and **Separate Test & Production** here. The main threat displayed is **Exploited Unpatched Software**. To leave, go to the **Pool · Data Lake** exit.", "go": [], "followups": [{"text": "What does the Test Environment do?", "en": "What does the Test Environment do?", "zh": "測試環境是做什麼的？"}, {"text": "How do we prevent exploited unpatched software?", "en": "How do we prevent exploited unpatched software?", "zh": "未修補漏洞被利用要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.34, "total_s": 9.36}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "greenhouse_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "greenhouse_in"}, "rows": 1, "ms": 11.2}], "graph": {"nodes": [{"key": "greenhouse_in", "label": "Room", "en": "Greenhouse", "zh": "溫室"}, {"key": "test_env", "label": "System", "en": "Test Environment", "zh": "測試環境"}, {"key": "unpatched", "label": "Threat", "en": "Exploited Unpatched Software", "zh": "未修補漏洞被利用"}, {"key": "data_masking", "label": "Control", "en": "Data Masking", "zh": "資料遮蔽"}, {"key": "patch_management", "label": "Control", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "env_separation", "label": "Control", "en": "Separate Test & Production", "zh": "測試與正式環境分離"}, {"key": "change_management", "label": "Control", "en": "Change Management", "zh": "變更管理"}, {"key": "c_sandbox", "label": "Concept", "en": "Sandbox & Test Environments", "zh": "沙箱與測試環境"}], "edges": [{"a": "env_separation", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "env_separation", "t": "PROTECTS", "b": "test_env"}, {"a": "env_separation", "t": "MITIGATES", "b": "unpatched"}, {"a": "change_management", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "test_env", "t": "LOCATED_IN", "b": "greenhouse_in"}, {"a": "unpatched", "t": "SHOWN_IN", "b": "greenhouse_in"}, {"a": "c_sandbox", "t": "TAUGHT_IN", "b": "greenhouse_in"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "test_env"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "env_separation"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "change_management"}, {"a": "patch_management", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "patch_management", "t": "MITIGATES", "b": "unpatched"}, {"a": "data_masking", "t": "SEEN_IN", "b": "greenhouse_in"}]}, "tool_used": "room_overview", "facts": "Room: Greenhouse · Test Environment\nWhat it shows: New systems grow in the greenhouse first: changes are tested here before going live.\nKey lesson: Keep test and production apart, and test with fake data.\nSystems here: Test Environment\nThreats shown here: Exploited Unpatched Software\nControls you can see: Data Masking, Patch & Vulnerability Management, Separate Test & Production, Change Management\nConcepts: Sandbox & Test Environments\nProcedures to know: Making a change to a system\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Pool · Data Lake", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.34, "load_s": 0.01, "prompt_tokens": 582, "prompt_s": 3.03, "gen_tokens": 78, "gen_s": 6.29, "tok_per_s": 12.4, "first_token_s": 3.05}}, "state": {}}
+data: {"answer": "This is the **Greenhouse · Test Environment**, where new systems are tested with fake data before going live. You can see controls like **Data Masking**, **Patch & Vulnerability Management**, and **Separate Test & Production** here. The main threat displayed is **Exploited Unpatched Software**. Proceed to the **Pool** or **Data Lake** exits to continue.", "go": [], "followups": [{"text": "What does the Test Environment do?", "en": "What does the Test Environment do?", "zh": "測試環境是做什麼的？"}, {"text": "How do we prevent exploited unpatched software?", "en": "How do we prevent exploited unpatched software?", "zh": "未修補漏洞被利用要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.0, "total_s": 9.01}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "greenhouse_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "greenhouse_in"}, "rows": 1, "ms": 6.4}], "graph": {"nodes": [{"key": "greenhouse_in", "label": "Room", "en": "Greenhouse", "zh": "溫室"}, {"key": "test_env", "label": "System", "en": "Test Environment", "zh": "測試環境"}, {"key": "unpatched", "label": "Threat", "en": "Exploited Unpatched Software", "zh": "未修補漏洞被利用"}, {"key": "data_masking", "label": "Control", "en": "Data Masking", "zh": "資料遮蔽"}, {"key": "patch_management", "label": "Control", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "env_separation", "label": "Control", "en": "Separate Test & Production", "zh": "測試與正式環境分離"}, {"key": "change_management", "label": "Control", "en": "Change Management", "zh": "變更管理"}, {"key": "c_sandbox", "label": "Concept", "en": "Sandbox & Test Environments", "zh": "沙箱與測試環境"}], "edges": [{"a": "env_separation", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "env_separation", "t": "PROTECTS", "b": "test_env"}, {"a": "env_separation", "t": "MITIGATES", "b": "unpatched"}, {"a": "change_management", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "test_env", "t": "LOCATED_IN", "b": "greenhouse_in"}, {"a": "unpatched", "t": "SHOWN_IN", "b": "greenhouse_in"}, {"a": "c_sandbox", "t": "TAUGHT_IN", "b": "greenhouse_in"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "test_env"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "env_separation"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "change_management"}, {"a": "patch_management", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "patch_management", "t": "MITIGATES", "b": "unpatched"}, {"a": "data_masking", "t": "SEEN_IN", "b": "greenhouse_in"}]}, "tool_used": "room_overview", "facts": "Room: Greenhouse · Test Environment\nWhat it shows: New systems grow in the greenhouse first: changes are tested here before going live.\nKey lesson: Keep test and production apart, and test with fake data.\nSystems here: Test Environment\nThreats shown here: Exploited Unpatched Software\nControls you can see: Data Masking, Patch & Vulnerability Management, Separate Test & Production, Change Management\nConcepts: Sandbox & Test Environments\nProcedures to know: Making a change to a system\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Pool · Data Lake", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.96, "load_s": 0.01, "prompt_tokens": 582, "prompt_s": 2.23, "gen_tokens": 79, "gen_s": 6.7, "tok_per_s": 11.8, "first_token_s": 2.26}}, "state": {}}
 

@@ -149,16 +149,22 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " VPN"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "VPN"}
 
 event: token
 data: {"text": " Gateway"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " Staff"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Staff"}
 
 event: token
 data: {"text": " L"}
@@ -167,10 +173,19 @@ event: token
 data: {"text": "aptops"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " PCs"}
+data: {"text": " and"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "PC"}
+
+event: token
+data: {"text": "s"}
 
 event: token
 data: {"text": " &"}
@@ -179,43 +194,7 @@ event: token
 data: {"text": " Phones"}
 
 event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " threats"}
-
-event: token
-data: {"text": " such"}
-
-event: token
-data: {"text": " as"}
-
-event: token
-data: {"text": " Rogue"}
-
-event: token
-data: {"text": " Wi"}
-
-event: token
-data: {"text": "-Fi"}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " E"}
-
-event: token
-data: {"text": "aves"}
-
-event: token
-data: {"text": "dro"}
-
-event: token
-data: {"text": "pping"}
+data: {"text": "**"}
 
 event: token
 data: {"text": " in"}
@@ -227,8 +206,62 @@ event: token
 data: {"text": " area"}
 
 event: token
-data: {"text": "."}
+data: {"text": ","}
+
+event: token
+data: {"text": " along"}
+
+event: token
+data: {"text": " with"}
+
+event: token
+data: {"text": " threats"}
+
+event: token
+data: {"text": " such"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "R"}
+
+event: token
+data: {"text": "ogue"}
+
+event: token
+data: {"text": " Wi"}
+
+event: token
+data: {"text": "-Fi"}
+
+event: token
+data: {"text": "**"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "E"}
+
+event: token
+data: {"text": "aves"}
+
+event: token
+data: {"text": "dro"}
+
+event: token
+data: {"text": "pping"}
+
+event: token
+data: {"text": "**."}
 
 event: done
-data: {"answer": "This place is the **Steamer Saloon**, which offers open public Wi-Fi including a suspicious look-alike network. Treat this connection as hostile by keeping your VPN on and avoiding any admin work here. You can see systems like the VPN Gateway, Staff Laptops, PCs & Phones, and threats such as Rogue Wi-Fi and Eavesdropping in this area.", "go": [], "followups": [{"text": "What does the VPN Gateway do?", "en": "What does the VPN Gateway do?", "zh": "VPN 閘道是做什麼的？"}, {"text": "How do we prevent rogue Wi-Fi & eavesdropping?", "en": "How do we prevent rogue Wi-Fi & eavesdropping?", "zh": "假冒熱點與竊聽要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.6, "total_s": 9.62}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "boat_cabin", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "boat_cabin"}, "rows": 1, "ms": 6.9}], "graph": {"nodes": [{"key": "boat_cabin", "label": "Room", "en": "Steamer Saloon", "zh": "蒸汽船船艙"}, {"key": "vpn", "label": "System", "en": "VPN Gateway", "zh": "VPN 閘道"}, {"key": "endpoints", "label": "System", "en": "Staff Laptops, PCs & Phones", "zh": "員工筆電、電腦與手機"}, {"key": "evil_twin", "label": "Threat", "en": "Rogue Wi-Fi & Eavesdropping", "zh": "假冒熱點與竊聽"}, {"key": "vpn_remote", "label": "Control", "en": "VPN for Remote Access", "zh": "遠端連線使用 VPN"}], "edges": [{"a": "endpoints", "t": "LOCATED_IN", "b": "boat_cabin"}, {"a": "vpn", "t": "LOCATED_IN", "b": "boat_cabin"}, {"a": "evil_twin", "t": "TARGETS", "b": "endpoints"}, {"a": "evil_twin", "t": "SHOWN_IN", "b": "boat_cabin"}, {"a": "vpn_remote", "t": "SEEN_IN", "b": "boat_cabin"}, {"a": "vpn_remote", "t": "PROTECTS", "b": "endpoints"}, {"a": "vpn_remote", "t": "MITIGATES", "b": "evil_twin"}]}, "tool_used": "room_overview", "facts": "Room: Steamer Saloon · Public Wi-Fi\nWhat it shows: The saloon offers open Wi-Fi to passengers, including a suspicious look-alike network.\nKey lesson: Treat public Wi-Fi as hostile: VPN on, no admin work.\nSystems here: VPN Gateway, Staff Laptops, PCs & Phones\nThreats shown here: Rogue Wi-Fi & Eavesdropping\nControls you can see: VPN for Remote Access\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Steamer Deck · Working on the Move", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.6, "load_s": 0.0, "prompt_tokens": 568, "prompt_s": 3.04, "gen_tokens": 75, "gen_s": 6.53, "tok_per_s": 11.5, "first_token_s": 3.06}}, "state": {}}
+data: {"answer": "This place is the **Steamer Saloon**, which offers open public Wi-Fi including a suspicious look-alike network. Treat this connection as hostile by keeping your VPN on and avoiding any admin work here. You can see systems like the **VPN Gateway**, **Staff Laptops**, and **PCs & Phones** in this area, along with threats such as **Rogue Wi-Fi** and **Eavesdropping**.", "go": [], "followups": [{"text": "What does the VPN Gateway do?", "en": "What does the VPN Gateway do?", "zh": "VPN 閘道是做什麼的？"}, {"text": "How do we prevent rogue Wi-Fi & eavesdropping?", "en": "How do we prevent rogue Wi-Fi & eavesdropping?", "zh": "假冒熱點與竊聽要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.63, "total_s": 9.65}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "boat_cabin", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "boat_cabin"}, "rows": 1, "ms": 5.7}], "graph": {"nodes": [{"key": "boat_cabin", "label": "Room", "en": "Steamer Saloon", "zh": "蒸汽船船艙"}, {"key": "vpn", "label": "System", "en": "VPN Gateway", "zh": "VPN 閘道"}, {"key": "endpoints", "label": "System", "en": "Staff Laptops, PCs & Phones", "zh": "員工筆電、電腦與手機"}, {"key": "evil_twin", "label": "Threat", "en": "Rogue Wi-Fi & Eavesdropping", "zh": "假冒熱點與竊聽"}, {"key": "vpn_remote", "label": "Control", "en": "VPN for Remote Access", "zh": "遠端連線使用 VPN"}], "edges": [{"a": "endpoints", "t": "LOCATED_IN", "b": "boat_cabin"}, {"a": "vpn", "t": "LOCATED_IN", "b": "boat_cabin"}, {"a": "evil_twin", "t": "TARGETS", "b": "endpoints"}, {"a": "evil_twin", "t": "SHOWN_IN", "b": "boat_cabin"}, {"a": "vpn_remote", "t": "SEEN_IN", "b": "boat_cabin"}, {"a": "vpn_remote", "t": "PROTECTS", "b": "endpoints"}, {"a": "vpn_remote", "t": "MITIGATES", "b": "evil_twin"}]}, "tool_used": "room_overview", "facts": "Room: Steamer Saloon · Public Wi-Fi\nWhat it shows: The saloon offers open Wi-Fi to passengers, including a suspicious look-alike network.\nKey lesson: Treat public Wi-Fi as hostile: VPN on, no admin work.\nSystems here: VPN Gateway, Staff Laptops, PCs & Phones\nThreats shown here: Rogue Wi-Fi & Eavesdropping\nControls you can see: VPN for Remote Access\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Steamer Deck · Working on the Move", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.6, "load_s": 0.01, "prompt_tokens": 568, "prompt_s": 2.21, "gen_tokens": 86, "gen_s": 7.35, "tok_per_s": 11.7, "first_token_s": 2.24}}, "state": {}}
 

@@ -47,16 +47,22 @@ event: token
 data: {"text": "'s"}
 
 event: token
-data: {"text": " suppliers"}
+data: {"text": " supplier"}
+
+event: token
+data: {"text": " connections"}
 
 event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " their"}
+data: {"text": " related"}
 
 event: token
-data: {"text": " connections"}
+data: {"text": " security"}
+
+event: token
+data: {"text": " concepts"}
 
 event: token
 data: {"text": "."}
@@ -89,52 +95,13 @@ event: token
 data: {"text": ","}
 
 event: token
-data: {"text": " controls"}
+data: {"text": " threats"}
 
 event: token
 data: {"text": " such"}
 
 event: token
 data: {"text": " as"}
-
-event: token
-data: {"text": " Vendor"}
-
-event: token
-data: {"text": " Risk"}
-
-event: token
-data: {"text": " Management"}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " Payment"}
-
-event: token
-data: {"text": " Change"}
-
-event: token
-data: {"text": " Call"}
-
-event: token
-data: {"text": "-"}
-
-event: token
-data: {"text": "Back"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " threats"}
-
-event: token
-data: {"text": " including"}
 
 event: token
 data: {"text": " Third"}
@@ -164,6 +131,27 @@ event: token
 data: {"text": "romise"}
 
 event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": " including"}
+
+event: token
+data: {"text": " Vendor"}
+
+event: token
+data: {"text": " Risk"}
+
+event: token
+data: {"text": " Management"}
+
+event: token
 data: {"text": "."}
 
 event: token
@@ -177,27 +165,6 @@ data: {"text": " also"}
 
 event: token
 data: {"text": " illustrates"}
-
-event: token
-data: {"text": " concepts"}
-
-event: token
-data: {"text": " like"}
-
-event: token
-data: {"text": " Supply"}
-
-event: token
-data: {"text": "-"}
-
-event: token
-data: {"text": "Chain"}
-
-event: token
-data: {"text": " Risk"}
-
-event: token
-data: {"text": " and"}
 
 event: token
 data: {"text": " procedures"}
@@ -218,7 +185,10 @@ event: token
 data: {"text": " changes"}
 
 event: token
-data: {"text": " or"}
+data: {"text": " and"}
+
+event: token
+data: {"text": " vendor"}
 
 event: token
 data: {"text": " remote"}
@@ -233,5 +203,5 @@ event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This place is Harbour Square · Suppliers, which displays the resort's suppliers and their connections. You can see systems like the Supplier Portal, controls such as Vendor Risk Management and Payment Change Call-Back, and threats including Third-Party & Supply-Chain Compromise. The area also illustrates concepts like Supply-Chain Risk and procedures for handling bank detail changes or remote access requests.", "go": [], "followups": [{"text": "What does the Supplier Portal do?", "en": "What does the Supplier Portal do?", "zh": "供應商入口網站是做什麼的？"}, {"text": "How do we prevent Third-Party & Supply-Chain compromise?", "en": "How do we prevent Third-Party & Supply-Chain compromise?", "zh": "第三方與供應鏈入侵要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.4, "total_s": 9.42}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "town_square", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "town_square"}, "rows": 1, "ms": 7.5}], "graph": {"nodes": [{"key": "town_square", "label": "Room", "en": "Harbour Square", "zh": "港口廣場"}, {"key": "supplier_portal", "label": "System", "en": "Supplier Portal", "zh": "供應商入口網站"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "bec", "label": "Threat", "en": "Business Email Compromise", "zh": "商務郵件詐騙"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "payment_callback", "label": "Control", "en": "Payment Change Call-Back", "zh": "匯款變更回撥確認"}, {"key": "c_supply_chain_risk", "label": "Concept", "en": "Supply-Chain Risk", "zh": "供應鏈風險"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "town_square"}, {"a": "vendor_management", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "vendor_management", "t": "MITIGATES", "b": "bec"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "supplier_portal", "t": "LOCATED_IN", "b": "town_square"}, {"a": "bec", "t": "SHOWN_IN", "b": "town_square"}, {"a": "supply_chain", "t": "TARGETS", "b": "supplier_portal"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "town_square"}, {"a": "c_supply_chain_risk", "t": "TAUGHT_IN", "b": "town_square"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "supply_chain"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "vendor_management"}, {"a": "payment_callback", "t": "SEEN_IN", "b": "town_square"}, {"a": "payment_callback", "t": "MITIGATES", "b": "bec"}]}, "tool_used": "room_overview", "facts": "Room: Harbour Square · Suppliers\nWhat it shows: The old town's shops are the resort's suppliers, and each one connects to the resort in its own way.\nKey lesson: Your security is only as strong as your weakest supplier.\nSystems here: Supplier Portal\nThreats shown here: Third-Party & Supply-Chain Compromise, Business Email Compromise\nControls you can see: Vendor Risk Management, Payment Change Call-Back\nConcepts: Supply-Chain Risk\nProcedures to know: A supplier asks to change their bank details, A vendor needs remote access\nExits: Breakwater · Network Perimeter, Privacy Chapel (called 'Lakeside Chapel' in the tour), Market Square · Online Sales, Bakery · Supplier Portal", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.4, "load_s": 0.0, "prompt_tokens": 597, "prompt_s": 3.12, "gen_tokens": 76, "gen_s": 6.25, "tok_per_s": 12.2, "first_token_s": 3.15}}, "state": {}}
+data: {"answer": "This place is Harbour Square · Suppliers, which displays the resort's supplier connections and related security concepts. You can see systems like the Supplier Portal, threats such as Third-Party & Supply-Chain Compromise, and controls including Vendor Risk Management. The area also illustrates procedures for handling bank detail changes and vendor remote access requests.", "go": [], "followups": [{"text": "What does the Supplier Portal do?", "en": "What does the Supplier Portal do?", "zh": "供應商入口網站是做什麼的？"}, {"text": "How do we prevent Third-Party & Supply-Chain compromise?", "en": "How do we prevent Third-Party & Supply-Chain compromise?", "zh": "第三方與供應鏈入侵要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.02, "total_s": 8.04}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "town_square", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "town_square"}, "rows": 1, "ms": 6.7}], "graph": {"nodes": [{"key": "town_square", "label": "Room", "en": "Harbour Square", "zh": "港口廣場"}, {"key": "supplier_portal", "label": "System", "en": "Supplier Portal", "zh": "供應商入口網站"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "bec", "label": "Threat", "en": "Business Email Compromise", "zh": "商務郵件詐騙"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "payment_callback", "label": "Control", "en": "Payment Change Call-Back", "zh": "匯款變更回撥確認"}, {"key": "c_supply_chain_risk", "label": "Concept", "en": "Supply-Chain Risk", "zh": "供應鏈風險"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "town_square"}, {"a": "vendor_management", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "vendor_management", "t": "MITIGATES", "b": "bec"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "supplier_portal", "t": "LOCATED_IN", "b": "town_square"}, {"a": "bec", "t": "SHOWN_IN", "b": "town_square"}, {"a": "supply_chain", "t": "TARGETS", "b": "supplier_portal"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "town_square"}, {"a": "c_supply_chain_risk", "t": "TAUGHT_IN", "b": "town_square"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "supply_chain"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "vendor_management"}, {"a": "payment_callback", "t": "SEEN_IN", "b": "town_square"}, {"a": "payment_callback", "t": "MITIGATES", "b": "bec"}]}, "tool_used": "room_overview", "facts": "Room: Harbour Square · Suppliers\nWhat it shows: The old town's shops are the resort's suppliers, and each one connects to the resort in its own way.\nKey lesson: Your security is only as strong as your weakest supplier.\nSystems here: Supplier Portal\nThreats shown here: Third-Party & Supply-Chain Compromise, Business Email Compromise\nControls you can see: Vendor Risk Management, Payment Change Call-Back\nConcepts: Supply-Chain Risk\nProcedures to know: A supplier asks to change their bank details, A vendor needs remote access\nExits: Breakwater · Network Perimeter, Privacy Chapel (called 'Lakeside Chapel' in the tour), Market Square · Online Sales, Bakery · Supplier Portal", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.02, "load_s": 0.0, "prompt_tokens": 597, "prompt_s": 2.34, "gen_tokens": 66, "gen_s": 5.65, "tok_per_s": 11.7, "first_token_s": 2.37}}, "state": {}}
 

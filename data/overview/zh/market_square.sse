@@ -95,7 +95,7 @@ event: token
 data: {"text": "系統"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "及"}
 
 event: token
 data: {"text": "金"}
@@ -110,13 +110,7 @@ event: token
 data: {"text": "道"}
 
 event: token
-data: {"text": "及"}
-
-event: token
-data: {"text": "線上"}
-
-event: token
-data: {"text": "訂房"}
+data: {"text": "等"}
 
 event: token
 data: {"text": "系統"}
@@ -125,109 +119,19 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "\n重點"}
-
-event: token
-data: {"text": "防護"}
-
-event: token
-data: {"text": "措施"}
-
-event: token
-data: {"text": "包括"}
-
-event: token
-data: {"text": "付款"}
-
-event: token
-data: {"text": "頁面"}
-
-event: token
-data: {"text": "腳"}
-
-event: token
-data: {"text": "本"}
-
-event: token
-data: {"text": "監控"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "資料"}
-
-event: token
-data: {"text": "加密"}
-
-event: token
-data: {"text": "（"}
-
-event: token
-data: {"text": "磁"}
-
-event: token
-data: {"text": "碟"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "資料"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "傳輸"}
-
-event: token
-data: {"text": "）、"}
-
-event: token
-data: {"text": "網站"}
-
-event: token
-data: {"text": "應用"}
-
-event: token
-data: {"text": "防火"}
-
-event: token
-data: {"text": "牆"}
-
-event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": " D"}
-
-event: token
-data: {"text": "Do"}
-
-event: token
-data: {"text": "S"}
-
-event: token
-data: {"text": " 防護"}
-
-event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "\n此"}
+data: {"text": "此"}
 
 event: token
 data: {"text": "處"}
 
 event: token
-data: {"text": "需"}
+data: {"text": "重點"}
 
 event: token
-data: {"text": "防"}
+data: {"text": "在於"}
 
 event: token
-data: {"text": "範"}
+data: {"text": "防護"}
 
 event: token
 data: {"text": "分散"}
@@ -281,14 +185,173 @@ event: token
 data: {"text": "cart"}
 
 event: token
-data: {"text": "）"}
+data: {"text": "），"}
 
 event: token
-data: {"text": "威脅"}
+data: {"text": "並"}
+
+event: token
+data: {"text": "已"}
+
+event: token
+data: {"text": "部署"}
+
+event: token
+data: {"text": "付款"}
+
+event: token
+data: {"text": "頁面"}
+
+event: token
+data: {"text": "腳"}
+
+event: token
+data: {"text": "本"}
+
+event: token
+data: {"text": "監控"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "加密"}
+
+event: token
+data: {"text": "措施"}
+
+event: token
+data: {"text": "以及"}
+
+event: token
+data: {"text": "網站"}
+
+event: token
+data: {"text": "應用"}
+
+event: token
+data: {"text": "防火"}
+
+event: token
+data: {"text": "牆"}
 
 event: token
 data: {"text": "。"}
 
+event: token
+data: {"text": "你可以"}
+
+event: token
+data: {"text": "在此"}
+
+event: token
+data: {"text": "看到"}
+
+event: token
+data: {"text": "代"}
+
+event: token
+data: {"text": "碼"}
+
+event: token
+data: {"text": "化"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "PCI"}
+
+event: token
+data: {"text": " 範圍"}
+
+event: token
+data: {"text": "持卡人"}
+
+event: token
+data: {"text": "資料"}
+
+event: token
+data: {"text": "環境"}
+
+event: token
+data: {"text": "及"}
+
+event: token
+data: {"text": "雲端"}
+
+event: token
+data: {"text": "共同"}
+
+event: token
+data: {"text": "責任"}
+
+event: token
+data: {"text": "等"}
+
+event: token
+data: {"text": "課程"}
+
+event: token
+data: {"text": "概念"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "接下來"}
+
+event: token
+data: {"text": "可"}
+
+event: token
+data: {"text": "前往"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "事件"}
+
+event: token
+data: {"text": "博物館"}
+
+event: token
+data: {"text": "或"}
+
+event: token
+data: {"text": "客人"}
+
+event: token
+data: {"text": "報"}
+
+event: token
+data: {"text": "到"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "無線"}
+
+event: token
+data: {"text": "網路"}
+
+event: token
+data: {"text": "（"}
+
+event: token
+data: {"text": "湖畔"}
+
+event: token
+data: {"text": "露台"}
+
+event: token
+data: {"text": "）。"}
+
 event: done
-data: {"answer": "這裡是「市集廣場・網路銷售」，屬於行銷部（分機 1400），主要處理線上商店、通路管理系統、金流閘道及線上訂房系統。\n重點防護措施包括付款頁面腳本監控、資料加密（磁碟、資料、傳輸）、網站應用防火牆與 DDoS 防護。\n此處需防範分散式阻斷服務攻擊（DDoS）與網頁側錄（Magecart）威脅。", "go": [], "followups": [{"text": "線上商店是做什麼的？", "en": "What does the Online Shop do?", "zh": "線上商店是做什麼的？"}, {"text": "分散式阻斷服務攻擊要怎麼防？", "en": "How do we prevent DDoS on online services?", "zh": "分散式阻斷服務攻擊要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 11.11, "total_s": 11.13}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "market_square", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "market_square"}, "rows": 1, "ms": 6.8}], "graph": {"nodes": [{"key": "market_square", "label": "Room", "en": "Market Square", "zh": "市集廣場"}, {"key": "web_shop", "label": "System", "en": "Online Shop", "zh": "線上商店"}, {"key": "channel_manager", "label": "System", "en": "Channel Manager", "zh": "通路管理系統"}, {"key": "payment_gateway", "label": "System", "en": "Payment Gateway", "zh": "金流閘道"}, {"key": "booking_engine", "label": "System", "en": "Online Booking Engine", "zh": "線上訂房系統"}, {"key": "ddos", "label": "Threat", "en": "DDoS on Online Services", "zh": "分散式阻斷服務攻擊"}, {"key": "web_skimming", "label": "Threat", "en": "Web Skimming (Magecart)", "zh": "網頁側錄（Magecart）"}, {"key": "payment_page_monitoring", "label": "Control", "en": "Payment Page Script Monitoring", "zh": "付款頁面腳本監控"}, {"key": "encryption", "label": "Control", "en": "Encryption (Disk, Data & TLS)", "zh": "加密（磁碟、資料、傳輸）"}, {"key": "waf_ddos", "label": "Control", "en": "Web Application Firewall & DDoS Protection", "zh": "網站應用防火牆與 DDoS 防護"}, {"key": "c_tokenization", "label": "Concept", "en": "Tokenization", "zh": "代碼化"}, {"key": "c_pci_scope", "label": "Concept", "en": "Cardholder Data Environment (PCI scope)", "zh": "持卡人資料環境（PCI 範圍）"}, {"key": "c_shared_responsibility", "label": "Concept", "en": "Shared Responsibility (Cloud & SaaS)", "zh": "共同責任（雲端與 SaaS）"}], "edges": [{"a": "booking_engine", "t": "LOCATED_IN", "b": "market_square"}, {"a": "channel_manager", "t": "LOCATED_IN", "b": "market_square"}, {"a": "payment_gateway", "t": "LOCATED_IN", "b": "market_square"}, {"a": "web_shop", "t": "SENDS_TO", "b": "payment_gateway"}, {"a": "web_shop", "t": "LOCATED_IN", "b": "market_square"}, {"a": "web_skimming", "t": "TARGETS", "b": "booking_engine"}, {"a": "web_skimming", "t": "TARGETS", "b": "web_shop"}, {"a": "web_skimming", "t": "SHOWN_IN", "b": "market_square"}, {"a": "ddos", "t": "TARGETS", "b": "booking_engine"}, {"a": "ddos", "t": "TARGETS", "b": "web_shop"}, {"a": "ddos", "t": "SHOWN_IN", "b": "market_square"}, {"a": "c_tokenization", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_tokenization", "t": "RELATED_TO", "b": "payment_gateway"}, {"a": "c_pci_scope", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_shared_responsibility", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_shared_responsibility", "t": "RELATED_TO", "b": "payment_gateway"}, {"a": "payment_page_monitoring", "t": "SEEN_IN", "b": "market_square"}, {"a": "payment_page_monitoring", "t": "PROTECTS", "b": "web_shop"}, {"a": "payment_page_monitoring", "t": "PROTECTS", "b": "booking_engine"}, {"a": "payment_page_monitoring", "t": "MITIGATES", "b": "web_skimming"}, {"a": "waf_ddos", "t": "SEEN_IN", "b": "market_square"}, {"a": "waf_ddos", "t": "PROTECTS", "b": "booking_engine"}, {"a": "waf_ddos", "t": "PROTECTS", "b": "web_shop"}, {"a": "waf_ddos", "t": "MITIGATES", "b": "ddos"}, {"a": "encryption", "t": "SEEN_IN", "b": "market_square"}, {"a": "encryption", "t": "PROTECTS", "b": "booking_engine"}]}, "tool_used": "room_overview", "facts": "房間：市集廣場・網路銷售\n代表的資訊主題：渡假村在網路上賣房間和紀念品，付款交給金流閘道。\n重點：付款頁和網站要防側錄和攻擊。\n在這裡的部門：行銷部（分機 1400）\n這裡的系統：線上商店、通路管理系統、金流閘道、線上訂房系統\n這裡要注意的威脅：分散式阻斷服務攻擊、網頁側錄（Magecart）\n看得到的防護措施：付款頁面腳本監控、加密（磁碟、資料、傳輸）、網站應用防火牆與 DDoS 防護\n課程概念：代碼化、持卡人資料環境（PCI 範圍）、共同責任（雲端與 SaaS）\n可以走到：資安事件博物館、客人報到與無線網路（導覽裡的名稱：湖畔露台）、薰衣草農莊・智慧感測器、港口廣場・供應商", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 11.11, "load_s": 0.01, "prompt_tokens": 645, "prompt_s": 2.93, "gen_tokens": 100, "gen_s": 8.16, "tok_per_s": 12.3, "first_token_s": 2.95}}, "state": {}}
+data: {"answer": "這裡是「市集廣場・網路銷售」，屬於行銷部（分機 1400），主要處理線上商店、通路管理系統及金流閘道等系統。此處重點在於防護分散式阻斷服務攻擊（DDoS）與網頁側錄（Magecart），並已部署付款頁面腳本監控、加密措施以及網站應用防火牆。你可以在此看到代碼化、PCI 範圍持卡人資料環境及雲端共同責任等課程概念，接下來可前往資安事件博物館或客人報到與無線網路（湖畔露台）。", "go": [], "followups": [{"text": "線上商店是做什麼的？", "en": "What does the Online Shop do?", "zh": "線上商店是做什麼的？"}, {"text": "分散式阻斷服務攻擊要怎麼防？", "en": "How do we prevent DDoS on online services?", "zh": "分散式阻斷服務攻擊要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 13.82, "total_s": 13.83}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "market_square", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "market_square"}, "rows": 1, "ms": 6.8}], "graph": {"nodes": [{"key": "market_square", "label": "Room", "en": "Market Square", "zh": "市集廣場"}, {"key": "web_shop", "label": "System", "en": "Online Shop", "zh": "線上商店"}, {"key": "channel_manager", "label": "System", "en": "Channel Manager", "zh": "通路管理系統"}, {"key": "payment_gateway", "label": "System", "en": "Payment Gateway", "zh": "金流閘道"}, {"key": "booking_engine", "label": "System", "en": "Online Booking Engine", "zh": "線上訂房系統"}, {"key": "ddos", "label": "Threat", "en": "DDoS on Online Services", "zh": "分散式阻斷服務攻擊"}, {"key": "web_skimming", "label": "Threat", "en": "Web Skimming (Magecart)", "zh": "網頁側錄（Magecart）"}, {"key": "payment_page_monitoring", "label": "Control", "en": "Payment Page Script Monitoring", "zh": "付款頁面腳本監控"}, {"key": "encryption", "label": "Control", "en": "Encryption (Disk, Data & TLS)", "zh": "加密（磁碟、資料、傳輸）"}, {"key": "waf_ddos", "label": "Control", "en": "Web Application Firewall & DDoS Protection", "zh": "網站應用防火牆與 DDoS 防護"}, {"key": "c_tokenization", "label": "Concept", "en": "Tokenization", "zh": "代碼化"}, {"key": "c_pci_scope", "label": "Concept", "en": "Cardholder Data Environment (PCI scope)", "zh": "持卡人資料環境（PCI 範圍）"}, {"key": "c_shared_responsibility", "label": "Concept", "en": "Shared Responsibility (Cloud & SaaS)", "zh": "共同責任（雲端與 SaaS）"}], "edges": [{"a": "booking_engine", "t": "LOCATED_IN", "b": "market_square"}, {"a": "channel_manager", "t": "LOCATED_IN", "b": "market_square"}, {"a": "payment_gateway", "t": "LOCATED_IN", "b": "market_square"}, {"a": "web_shop", "t": "SENDS_TO", "b": "payment_gateway"}, {"a": "web_shop", "t": "LOCATED_IN", "b": "market_square"}, {"a": "web_skimming", "t": "TARGETS", "b": "booking_engine"}, {"a": "web_skimming", "t": "TARGETS", "b": "web_shop"}, {"a": "web_skimming", "t": "SHOWN_IN", "b": "market_square"}, {"a": "ddos", "t": "TARGETS", "b": "booking_engine"}, {"a": "ddos", "t": "TARGETS", "b": "web_shop"}, {"a": "ddos", "t": "SHOWN_IN", "b": "market_square"}, {"a": "c_tokenization", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_tokenization", "t": "RELATED_TO", "b": "payment_gateway"}, {"a": "c_pci_scope", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_shared_responsibility", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_shared_responsibility", "t": "RELATED_TO", "b": "payment_gateway"}, {"a": "payment_page_monitoring", "t": "SEEN_IN", "b": "market_square"}, {"a": "payment_page_monitoring", "t": "PROTECTS", "b": "web_shop"}, {"a": "payment_page_monitoring", "t": "PROTECTS", "b": "booking_engine"}, {"a": "payment_page_monitoring", "t": "MITIGATES", "b": "web_skimming"}, {"a": "waf_ddos", "t": "SEEN_IN", "b": "market_square"}, {"a": "waf_ddos", "t": "PROTECTS", "b": "booking_engine"}, {"a": "waf_ddos", "t": "PROTECTS", "b": "web_shop"}, {"a": "waf_ddos", "t": "MITIGATES", "b": "ddos"}, {"a": "encryption", "t": "SEEN_IN", "b": "market_square"}, {"a": "encryption", "t": "PROTECTS", "b": "booking_engine"}]}, "tool_used": "room_overview", "facts": "房間：市集廣場・網路銷售\n代表的資訊主題：渡假村在網路上賣房間和紀念品，付款交給金流閘道。\n重點：付款頁和網站要防側錄和攻擊。\n在這裡的部門：行銷部（分機 1400）\n這裡的系統：線上商店、通路管理系統、金流閘道、線上訂房系統\n這裡要注意的威脅：分散式阻斷服務攻擊、網頁側錄（Magecart）\n看得到的防護措施：付款頁面腳本監控、加密（磁碟、資料、傳輸）、網站應用防火牆與 DDoS 防護\n課程概念：代碼化、持卡人資料環境（PCI 範圍）、共同責任（雲端與 SaaS）\n可以走到：資安事件博物館、客人報到與無線網路（導覽裡的名稱：湖畔露台）、薰衣草農莊・智慧感測器、港口廣場・供應商", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 13.81, "load_s": 0.01, "prompt_tokens": 645, "prompt_s": 3.29, "gen_tokens": 119, "gen_s": 10.5, "tok_per_s": 11.3, "first_token_s": 3.31}}, "state": {}}
 

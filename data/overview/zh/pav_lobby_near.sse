@@ -104,7 +104,7 @@ event: token
 data: {"text": "系統"}
 
 event: token
-data: {"text": "包含"}
+data: {"text": "為"}
 
 event: token
 data: {"text": " BI"}
@@ -161,12 +161,6 @@ event: token
 data: {"text": "指標"}
 
 event: token
-data: {"text": "等"}
-
-event: token
-data: {"text": "課程"}
-
-event: token
 data: {"text": "概念"}
 
 event: token
@@ -176,13 +170,10 @@ event: token
 data: {"text": "您可以"}
 
 event: token
-data: {"text": "從"}
+data: {"text": "繼續"}
 
 event: token
-data: {"text": "這裡"}
-
-event: token
-data: {"text": "走到"}
+data: {"text": "前往"}
 
 event: token
 data: {"text": "湖"}
@@ -218,8 +209,8 @@ event: token
 data: {"text": "。"}
 
 event: replace
-data: {"text": "這裡是大廳水池對面的 KPI 牆，展示住房率、平均房價、每間可售房收入及餐廳營收等數據。該區域的系統包含 BI 與資料倉儲，可用於學習 DIKW 金字塔、商業智慧與飯店指標等課程概念。你可以從這裡走到湖心館大廳查看 BI 儀表板。"}
+data: {"text": "這裡是大廳水池對面的 KPI 牆，展示住房率、平均房價、每間可售房收入及餐廳營收等數據。該區域的系統為 BI 與資料倉儲，可用於學習 DIKW 金字塔、商業智慧與飯店指標概念。你可以繼續前往湖心館大廳查看 BI 儀表板。"}
 
 event: done
-data: {"answer": "這裡是大廳水池對面的 KPI 牆，展示住房率、平均房價、每間可售房收入及餐廳營收等數據。該區域的系統包含 BI 與資料倉儲，可用於學習 DIKW 金字塔、商業智慧與飯店指標等課程概念。你可以從這裡走到湖心館大廳查看 BI 儀表板。", "go": [], "followups": [{"text": "BI 與資料倉儲是做什麼的？", "en": "What does the BI & Data Warehouse do?", "zh": "BI 與資料倉儲是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.89, "total_s": 7.91}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_lobby_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_lobby_near"}, "rows": 1, "ms": 7.1}], "graph": {"nodes": [{"key": "pav_lobby_near", "label": "Room", "en": "Lobby · Across the Pool", "zh": "大廳水池對面"}, {"key": "bi", "label": "System", "en": "BI & Data Warehouse", "zh": "BI 與資料倉儲"}, {"key": "c_dikw", "label": "Concept", "en": "DIKW Pyramid", "zh": "DIKW 金字塔（資料、資訊、知識、智慧）"}, {"key": "c_bi_kpi", "label": "Concept", "en": "BI & Hotel KPIs", "zh": "商業智慧與飯店指標"}], "edges": [{"a": "bi", "t": "LOCATED_IN", "b": "pav_lobby_near"}, {"a": "c_dikw", "t": "TAUGHT_IN", "b": "pav_lobby_near"}, {"a": "c_dikw", "t": "RELATED_TO", "b": "bi"}, {"a": "c_bi_kpi", "t": "TAUGHT_IN", "b": "pav_lobby_near"}, {"a": "c_bi_kpi", "t": "RELATED_TO", "b": "bi"}]}, "tool_used": "room_overview", "facts": "房間：大廳水池對面・KPI 牆\n代表的資訊主題：KPI 牆：住房率、平均房價、每間可售房收入、餐廳營收。\n重點：指標要大家都知道怎麼算才有用。\n這裡的系統：BI 與資料倉儲\n課程概念：DIKW 金字塔（資料、資訊、知識、智慧）、商業智慧與飯店指標\n可以走到：湖心館大廳・BI 儀表板", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.89, "load_s": 0.0, "prompt_tokens": 548, "prompt_s": 2.48, "gen_tokens": 75, "gen_s": 5.39, "tok_per_s": 13.9, "first_token_s": 2.5}}, "state": {}}
+data: {"answer": "這裡是大廳水池對面的 KPI 牆，展示住房率、平均房價、每間可售房收入及餐廳營收等數據。該區域的系統為 BI 與資料倉儲，可用於學習 DIKW 金字塔、商業智慧與飯店指標概念。你可以繼續前往湖心館大廳查看 BI 儀表板。", "go": [], "followups": [{"text": "BI 與資料倉儲是做什麼的？", "en": "What does the BI & Data Warehouse do?", "zh": "BI 與資料倉儲是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.17, "total_s": 8.18}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_lobby_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_lobby_near"}, "rows": 1, "ms": 6.0}], "graph": {"nodes": [{"key": "pav_lobby_near", "label": "Room", "en": "Lobby · Across the Pool", "zh": "大廳水池對面"}, {"key": "bi", "label": "System", "en": "BI & Data Warehouse", "zh": "BI 與資料倉儲"}, {"key": "c_dikw", "label": "Concept", "en": "DIKW Pyramid", "zh": "DIKW 金字塔（資料、資訊、知識、智慧）"}, {"key": "c_bi_kpi", "label": "Concept", "en": "BI & Hotel KPIs", "zh": "商業智慧與飯店指標"}], "edges": [{"a": "bi", "t": "LOCATED_IN", "b": "pav_lobby_near"}, {"a": "c_dikw", "t": "TAUGHT_IN", "b": "pav_lobby_near"}, {"a": "c_dikw", "t": "RELATED_TO", "b": "bi"}, {"a": "c_bi_kpi", "t": "TAUGHT_IN", "b": "pav_lobby_near"}, {"a": "c_bi_kpi", "t": "RELATED_TO", "b": "bi"}]}, "tool_used": "room_overview", "facts": "房間：大廳水池對面・KPI 牆\n代表的資訊主題：KPI 牆：住房率、平均房價、每間可售房收入、餐廳營收。\n重點：指標要大家都知道怎麼算才有用。\n這裡的系統：BI 與資料倉儲\n課程概念：DIKW 金字塔（資料、資訊、知識、智慧）、商業智慧與飯店指標\n可以走到：湖心館大廳・BI 儀表板", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.16, "load_s": 0.01, "prompt_tokens": 548, "prompt_s": 2.29, "gen_tokens": 72, "gen_s": 5.85, "tok_per_s": 12.3, "first_token_s": 2.31}}, "state": {}}
 

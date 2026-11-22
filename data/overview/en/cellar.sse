@@ -152,10 +152,25 @@ event: token
 data: {"text": "es"}
 
 event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " VLAN"}
+
+event: token
+data: {"text": "s"}
+
+event: token
 data: {"text": ","}
 
 event: token
 data: {"text": " Servers"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " Storage"}
 
 event: token
 data: {"text": ","}
@@ -194,89 +209,20 @@ event: token
 data: {"text": " UPS"}
 
 event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " Backup"}
+
+event: token
+data: {"text": " Generator"}
+
+event: token
 data: {"text": " here"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " along"}
-
-event: token
-data: {"text": " with"}
-
-event: token
-data: {"text": " controls"}
-
-event: token
-data: {"text": " such"}
-
-event: token
-data: {"text": " as"}
-
-event: token
-data: {"text": " 3"}
-
-event: token
-data: {"text": "-"}
-
-event: token
-data: {"text": "2"}
-
-event: token
-data: {"text": "-"}
-
-event: token
-data: {"text": "1"}
-
-event: token
-data: {"text": " Back"}
-
-event: token
-data: {"text": "ups"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " Fire"}
-
-event: token
-data: {"text": " Sup"}
-
-event: token
-data: {"text": "pression"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " Physical"}
-
-event: token
-data: {"text": " Access"}
-
-event: token
-data: {"text": " Control"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " Network"}
-
-event: token
-data: {"text": " Seg"}
-
-event: token
-data: {"text": "mentation"}
 
 event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This place is the Server Room (Restricted), which contains servers, storage, network gear, a UPS, and an on-site backup behind a locked door. Entering without authorization sets off an alarm. You can see systems like Network Switches, Servers, Backup System, Firewall, Badge Access Control, and UPS here, along with controls such as 3-2-1 Backups, Fire Suppression, Physical Access Control, and Network Segmentation.", "go": [], "followups": [{"text": "What does the Network Switches & VLANs do?", "en": "What does the Network Switches & VLANs do?", "zh": "網路交換器與網段（VLAN）是做什麼的？"}, {"text": "How do we prevent power outage, fire & flood?", "en": "How do we prevent power outage, fire & flood?", "zh": "停電、火災與淹水要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.36, "total_s": 8.38}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "cellar", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "cellar"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "cellar", "label": "Room", "en": "Server Room", "zh": "機房"}, {"key": "network", "label": "System", "en": "Network Switches & VLANs", "zh": "網路交換器與網段（VLAN）"}, {"key": "servers", "label": "System", "en": "Servers & Storage", "zh": "伺服器與儲存設備"}, {"key": "backup", "label": "System", "en": "Backup System", "zh": "備份系統"}, {"key": "firewall", "label": "System", "en": "Firewall", "zh": "防火牆"}, {"key": "access_control", "label": "System", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "power", "label": "System", "en": "UPS & Backup Generator", "zh": "不斷電系統與發電機"}, {"key": "environmental", "label": "Threat", "en": "Power Outage, Fire & Flood", "zh": "停電、火災與淹水"}, {"key": "tailgating", "label": "Threat", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "environmental_protection", "label": "Control", "en": "UPS, Generator & Fire Suppression", "zh": "不斷電、發電機與滅火設備"}, {"key": "physical_access", "label": "Control", "en": "Physical Access Control", "zh": "實體門禁"}, {"key": "firewall_ids", "label": "Control", "en": "Firewall & Intrusion Detection", "zh": "防火牆與入侵偵測"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}], "edges": [{"a": "environmental_protection", "t": "SEEN_IN", "b": "cellar"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "servers"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "power"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "network"}, {"a": "environmental_protection", "t": "MITIGATES", "b": "environmental"}, {"a": "firewall", "t": "LOCATED_IN", "b": "cellar"}, {"a": "network", "t": "LOCATED_IN", "b": "cellar"}, {"a": "access_control", "t": "LOCATED_IN", "b": "cellar"}, {"a": "servers", "t": "LOCATED_IN", "b": "cellar"}, {"a": "servers", "t": "HOSTS", "b": "access_control"}, {"a": "power", "t": "LOCATED_IN", "b": "cellar"}, {"a": "backup", "t": "LOCATED_IN", "b": "cellar"}, {"a": "tailgating", "t": "TARGETS", "b": "access_control"}, {"a": "tailgating", "t": "TARGETS", "b": "servers"}, {"a": "tailgating", "t": "TARGETS", "b": "network"}, {"a": "tailgating", "t": "SHOWN_IN", "b": "cellar"}, {"a": "environmental", "t": "TARGETS", "b": "network"}, {"a": "environmental", "t": "TARGETS", "b": "servers"}, {"a": "environmental", "t": "TARGETS", "b": "power"}, {"a": "environmental", "t": "SHOWN_IN", "b": "cellar"}, {"a": "segmentation", "t": "SEEN_IN", "b": "cellar"}, {"a": "segmentation", "t": "PROTECTS", "b": "network"}, {"a": "firewall_ids", "t": "SEEN_IN", "b": "cellar"}, {"a": "firewall_ids", "t": "PROTECTS", "b": "network"}, {"a": "backup_321", "t": "SEEN_IN", "b": "cellar"}, {"a": "backup_321", "t": "MITIGATES", "b": "environmental"}, {"a": "physical_access", "t": "SEEN_IN", "b": "cellar"}, {"a": "physical_access", "t": "PROTECTS", "b": "servers"}, {"a": "physical_access", "t": "PROTECTS", "b": "network"}, {"a": "physical_access", "t": "PROTECTS", "b": "access_control"}, {"a": "physical_access", "t": "MITIGATES", "b": "tailgating"}]}, "tool_used": "room_overview", "facts": "Room: Server Room (Restricted)\nWhat it shows: Servers, storage, network gear, the UPS and the on-site backup sit behind a locked door; entering without authorization sets off the alarm (bad ending).\nKey lesson: Only authorized people enter the server room, and every entry is logged.\nSystems here: Network Switches & VLANs, Servers & Storage, Backup System, Firewall, Badge Access Control, UPS & Backup Generator\nThreats shown here: Power Outage, Fire & Flood, Tailgating & Unauthorised Entry\nControls you can see: 3-2-1 Backups with an Offline Copy, UPS, Generator & Fire Suppression, Physical Access Control, Firewall & Intrusion Detection, Network Segmentation\nExits: Staff Corridor & Physical Security", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.36, "load_s": 0.01, "prompt_tokens": 605, "prompt_s": 2.62, "gen_tokens": 92, "gen_s": 5.72, "tok_per_s": 16.1, "first_token_s": 2.64}}, "state": {}}
+data: {"answer": "This place is the Server Room (Restricted), which contains servers, storage, network gear, a UPS, and an on-site backup behind a locked door. Entering without authorization sets off an alarm. You can see systems like Network Switches & VLANs, Servers & Storage, Backup System, Firewall, Badge Access Control, and UPS & Backup Generator here.", "go": [], "followups": [{"text": "What does the Network Switches & VLANs do?", "en": "What does the Network Switches & VLANs do?", "zh": "網路交換器與網段（VLAN）是做什麼的？"}, {"text": "How do we prevent power outage, fire & flood?", "en": "How do we prevent power outage, fire & flood?", "zh": "停電、火災與淹水要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.12, "total_s": 8.13}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "cellar", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "cellar"}, "rows": 1, "ms": 5.7}], "graph": {"nodes": [{"key": "cellar", "label": "Room", "en": "Server Room", "zh": "機房"}, {"key": "network", "label": "System", "en": "Network Switches & VLANs", "zh": "網路交換器與網段（VLAN）"}, {"key": "servers", "label": "System", "en": "Servers & Storage", "zh": "伺服器與儲存設備"}, {"key": "backup", "label": "System", "en": "Backup System", "zh": "備份系統"}, {"key": "firewall", "label": "System", "en": "Firewall", "zh": "防火牆"}, {"key": "access_control", "label": "System", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "power", "label": "System", "en": "UPS & Backup Generator", "zh": "不斷電系統與發電機"}, {"key": "environmental", "label": "Threat", "en": "Power Outage, Fire & Flood", "zh": "停電、火災與淹水"}, {"key": "tailgating", "label": "Threat", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "environmental_protection", "label": "Control", "en": "UPS, Generator & Fire Suppression", "zh": "不斷電、發電機與滅火設備"}, {"key": "physical_access", "label": "Control", "en": "Physical Access Control", "zh": "實體門禁"}, {"key": "firewall_ids", "label": "Control", "en": "Firewall & Intrusion Detection", "zh": "防火牆與入侵偵測"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}], "edges": [{"a": "environmental_protection", "t": "SEEN_IN", "b": "cellar"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "servers"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "power"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "network"}, {"a": "environmental_protection", "t": "MITIGATES", "b": "environmental"}, {"a": "firewall", "t": "LOCATED_IN", "b": "cellar"}, {"a": "network", "t": "LOCATED_IN", "b": "cellar"}, {"a": "access_control", "t": "LOCATED_IN", "b": "cellar"}, {"a": "servers", "t": "LOCATED_IN", "b": "cellar"}, {"a": "servers", "t": "HOSTS", "b": "access_control"}, {"a": "power", "t": "LOCATED_IN", "b": "cellar"}, {"a": "backup", "t": "LOCATED_IN", "b": "cellar"}, {"a": "tailgating", "t": "TARGETS", "b": "access_control"}, {"a": "tailgating", "t": "TARGETS", "b": "servers"}, {"a": "tailgating", "t": "TARGETS", "b": "network"}, {"a": "tailgating", "t": "SHOWN_IN", "b": "cellar"}, {"a": "environmental", "t": "TARGETS", "b": "network"}, {"a": "environmental", "t": "TARGETS", "b": "servers"}, {"a": "environmental", "t": "TARGETS", "b": "power"}, {"a": "environmental", "t": "SHOWN_IN", "b": "cellar"}, {"a": "segmentation", "t": "SEEN_IN", "b": "cellar"}, {"a": "segmentation", "t": "PROTECTS", "b": "network"}, {"a": "firewall_ids", "t": "SEEN_IN", "b": "cellar"}, {"a": "firewall_ids", "t": "PROTECTS", "b": "network"}, {"a": "backup_321", "t": "SEEN_IN", "b": "cellar"}, {"a": "backup_321", "t": "MITIGATES", "b": "environmental"}, {"a": "physical_access", "t": "SEEN_IN", "b": "cellar"}, {"a": "physical_access", "t": "PROTECTS", "b": "servers"}, {"a": "physical_access", "t": "PROTECTS", "b": "network"}, {"a": "physical_access", "t": "PROTECTS", "b": "access_control"}, {"a": "physical_access", "t": "MITIGATES", "b": "tailgating"}]}, "tool_used": "room_overview", "facts": "Room: Server Room (Restricted)\nWhat it shows: Servers, storage, network gear, the UPS and the on-site backup sit behind a locked door; entering without authorization sets off the alarm (bad ending).\nKey lesson: Only authorized people enter the server room, and every entry is logged.\nSystems here: Network Switches & VLANs, Servers & Storage, Backup System, Firewall, Badge Access Control, UPS & Backup Generator\nThreats shown here: Power Outage, Fire & Flood, Tailgating & Unauthorised Entry\nControls you can see: 3-2-1 Backups with an Offline Copy, UPS, Generator & Fire Suppression, Physical Access Control, Firewall & Intrusion Detection, Network Segmentation\nExits: Staff Corridor & Physical Security", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.11, "load_s": 0.01, "prompt_tokens": 605, "prompt_s": 2.18, "gen_tokens": 73, "gen_s": 5.91, "tok_per_s": 12.4, "first_token_s": 2.21}}, "state": {}}
 

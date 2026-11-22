@@ -104,64 +104,64 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "\n可"}
+data: {"text": "\n重點"}
 
 event: token
-data: {"text": "在此"}
+data: {"text": "在於"}
 
 event: token
-data: {"text": "處理"}
+data: {"text": "只"}
 
 event: token
-data: {"text": "個"}
+data: {"text": "收取"}
 
 event: token
-data: {"text": "資"}
+data: {"text": "必要的"}
 
 event: token
-data: {"text": "寄"}
-
-event: token
-data: {"text": "錯"}
-
-event: token
-data: {"text": "人"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "客人"}
-
-event: token
-data: {"text": "查詢"}
-
-event: token
-data: {"text": "或"}
-
-event: token
-data: {"text": "刪除"}
-
-event: token
-data: {"text": "個"}
-
-event: token
-data: {"text": "資"}
-
-event: token
-data: {"text": "等"}
-
-event: token
-data: {"text": "流程"}
+data: {"text": "資料"}
 
 event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "並"}
+data: {"text": "若"}
 
 event: token
-data: {"text": "透過"}
+data: {"text": "客人"}
+
+event: token
+data: {"text": "拒絕"}
+
+event: token
+data: {"text": "行銷"}
+
+event: token
+data: {"text": "則"}
+
+event: token
+data: {"text": "需"}
+
+event: token
+data: {"text": "停止"}
+
+event: token
+data: {"text": "相關"}
+
+event: token
+data: {"text": "作業"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "防護"}
+
+event: token
+data: {"text": "措施"}
+
+event: token
+data: {"text": "為"}
 
 event: token
 data: {"text": "個"}
@@ -179,25 +179,19 @@ event: token
 data: {"text": "同意"}
 
 event: token
-data: {"text": "作為"}
-
-event: token
-data: {"text": "防護"}
-
-event: token
-data: {"text": "措施"}
-
-event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "\n現場"}
+data: {"text": "\n可"}
 
 event: token
-data: {"text": "可見"}
+data: {"text": "在此"}
 
 event: token
-data: {"text": "通往"}
+data: {"text": "處"}
+
+event: token
+data: {"text": "看到"}
 
 event: token
 data: {"text": "資"}
@@ -254,13 +248,16 @@ event: token
 data: {"text": "以及"}
 
 event: token
+data: {"text": "通往"}
+
+event: token
 data: {"text": "花園"}
 
 event: token
 data: {"text": "派對"}
 
 event: token
-data: {"text": "的"}
+data: {"text": "（"}
 
 event: token
 data: {"text": "物"}
@@ -275,11 +272,17 @@ event: token
 data: {"text": " OT"}
 
 event: token
-data: {"text": " 展示"}
+data: {"text": "）"}
+
+event: token
+data: {"text": "的路"}
+
+event: token
+data: {"text": "徑"}
 
 event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是宴會廳，屬於活動業務部（分機 3300），主要系統包含 CRM 與會員系統、活動報名報到系統。\n可在此處理個資寄錯人、客人查詢或刪除個資等流程，並透過個資告知與同意作為防護措施。\n現場可見通往資安訓練室、舞台頒獎流程、宴會廳電視上的 CRM 畫面，以及花園派對的物聯網與 OT 展示。", "go": [{"key": "garden_party", "en": "Garden Party · IoT & OT", "zh": "花園派對・物聯網與 OT", "base_en": "Garden Party", "base_zh": "花園派對", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=12", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "CRM 與會員系統是做什麼的？", "en": "What does the CRM & Loyalty do?", "zh": "CRM 與會員系統是做什麼的？"}, {"text": "資料寄錯人要怎麼防？", "en": "How do we prevent data sent to the wrong person?", "zh": "資料寄錯人要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.5, "total_s": 8.51}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet"}, "rows": 1, "ms": 7.1}], "graph": {"nodes": [{"key": "banquet", "label": "Room", "en": "Banquet Hall", "zh": "宴會廳"}, {"key": "crm", "label": "System", "en": "CRM & Loyalty", "zh": "CRM 與會員系統"}, {"key": "event_system", "label": "System", "en": "Event Registration & Check-in", "zh": "活動報名報到系統"}, {"key": "misdelivery", "label": "Threat", "en": "Data Sent to the Wrong Person", "zh": "資料寄錯人"}, {"key": "privacy_notice_consent", "label": "Control", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "c_crm", "label": "Concept", "en": "Customer Relationship Management (CRM)", "zh": "顧客關係管理（CRM）"}], "edges": [{"a": "privacy_notice_consent", "t": "SEEN_IN", "b": "banquet"}, {"a": "crm", "t": "LOCATED_IN", "b": "banquet"}, {"a": "event_system", "t": "SENDS_TO", "b": "crm"}, {"a": "event_system", "t": "LOCATED_IN", "b": "banquet"}, {"a": "misdelivery", "t": "SHOWN_IN", "b": "banquet"}, {"a": "c_crm", "t": "TAUGHT_IN", "b": "banquet"}, {"a": "c_crm", "t": "RELATED_TO", "b": "crm"}]}, "tool_used": "room_overview", "facts": "房間：宴會廳・活動與 CRM\n代表的資訊主題：活動報名資料進到 CRM；行銷只能在客人同意的範圍內使用。\n重點：只收需要的資料，客人說不要行銷就要停。\n在這裡的部門：活動業務部（分機 3300）\n這裡的系統：CRM 與會員系統、活動報名報到系統\n這裡要注意的威脅：資料寄錯人\n看得到的防護措施：個資告知與同意\n課程概念：顧客關係管理（CRM）\n相關的處理流程：個資寄錯人、客人要求查詢、更正或刪除個資\n可以走到：資安訓練室、舞台近看・頒獎流程、宴會廳電視近看・CRM 畫面、花園派對・物聯網與 OT", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.49, "load_s": 0.01, "prompt_tokens": 615, "prompt_s": 2.62, "gen_tokens": 98, "gen_s": 5.86, "tok_per_s": 16.7, "first_token_s": 2.64}}, "state": {}}
+data: {"answer": "這裡是宴會廳，屬於活動業務部（分機 3300），主要系統包含 CRM 與會員系統、活動報名報到系統。\n重點在於只收取必要的資料，若客人拒絕行銷則需停止相關作業，防護措施為個資告知與同意。\n可在此處看到資安訓練室、舞台頒獎流程、宴會廳電視上的 CRM 畫面，以及通往花園派對（物聯網與 OT）的路徑。", "go": [{"key": "garden_party", "en": "Garden Party · IoT & OT", "zh": "花園派對・物聯網與 OT", "base_en": "Garden Party", "base_zh": "花園派對", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=12", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "CRM 與會員系統是做什麼的？", "en": "What does the CRM & Loyalty do?", "zh": "CRM 與會員系統是做什麼的？"}, {"text": "資料寄錯人要怎麼防？", "en": "How do we prevent data sent to the wrong person?", "zh": "資料寄錯人要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.78, "total_s": 9.8}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet"}, "rows": 1, "ms": 5.2}], "graph": {"nodes": [{"key": "banquet", "label": "Room", "en": "Banquet Hall", "zh": "宴會廳"}, {"key": "crm", "label": "System", "en": "CRM & Loyalty", "zh": "CRM 與會員系統"}, {"key": "event_system", "label": "System", "en": "Event Registration & Check-in", "zh": "活動報名報到系統"}, {"key": "misdelivery", "label": "Threat", "en": "Data Sent to the Wrong Person", "zh": "資料寄錯人"}, {"key": "privacy_notice_consent", "label": "Control", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "c_crm", "label": "Concept", "en": "Customer Relationship Management (CRM)", "zh": "顧客關係管理（CRM）"}], "edges": [{"a": "privacy_notice_consent", "t": "SEEN_IN", "b": "banquet"}, {"a": "crm", "t": "LOCATED_IN", "b": "banquet"}, {"a": "event_system", "t": "SENDS_TO", "b": "crm"}, {"a": "event_system", "t": "LOCATED_IN", "b": "banquet"}, {"a": "misdelivery", "t": "SHOWN_IN", "b": "banquet"}, {"a": "c_crm", "t": "TAUGHT_IN", "b": "banquet"}, {"a": "c_crm", "t": "RELATED_TO", "b": "crm"}]}, "tool_used": "room_overview", "facts": "房間：宴會廳・活動與 CRM\n代表的資訊主題：活動報名資料進到 CRM；行銷只能在客人同意的範圍內使用。\n重點：只收需要的資料，客人說不要行銷就要停。\n在這裡的部門：活動業務部（分機 3300）\n這裡的系統：CRM 與會員系統、活動報名報到系統\n這裡要注意的威脅：資料寄錯人\n看得到的防護措施：個資告知與同意\n課程概念：顧客關係管理（CRM）\n相關的處理流程：個資寄錯人、客人要求查詢、更正或刪除個資\n可以走到：資安訓練室、舞台近看・頒獎流程、宴會廳電視近看・CRM 畫面、花園派對・物聯網與 OT", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.78, "load_s": 0.01, "prompt_tokens": 615, "prompt_s": 2.01, "gen_tokens": 98, "gen_s": 7.75, "tok_per_s": 12.7, "first_token_s": 2.03}}, "state": {}}
 

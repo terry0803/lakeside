@@ -122,7 +122,7 @@ event: token
 data: {"text": "電"}
 
 event: token
-data: {"text": "或"}
+data: {"text": "與"}
 
 event: token
 data: {"text": "手機"}
@@ -141,6 +141,18 @@ data: {"text": "遺"}
 
 event: token
 data: {"text": "失"}
+
+event: token
+data: {"text": "或"}
+
+event: token
+data: {"text": "遭"}
+
+event: token
+data: {"text": "竊"}
+
+event: token
+data: {"text": "，"}
 
 event: token
 data: {"text": "需"}
@@ -170,13 +182,7 @@ event: token
 data: {"text": "除"}
 
 event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": "加密"}
-
-event: token
-data: {"text": "防護"}
+data: {"text": "機制"}
 
 event: token
 data: {"text": "。"}
@@ -189,6 +195,9 @@ data: {"text": "繼續"}
 
 event: token
 data: {"text": "前往"}
+
+event: token
+data: {"text": "「"}
 
 event: token
 data: {"text": "防"}
@@ -212,7 +221,7 @@ event: token
 data: {"text": "界"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "」、「"}
 
 event: token
 data: {"text": "會"}
@@ -239,13 +248,13 @@ event: token
 data: {"text": "廠商"}
 
 event: token
-data: {"text": "，"}
+data: {"text": "」"}
 
 event: token
 data: {"text": "或"}
 
 event: token
-data: {"text": "進入"}
+data: {"text": "「"}
 
 event: token
 data: {"text": "蒸汽"}
@@ -272,17 +281,26 @@ event: token
 data: {"text": "-Fi"}
 
 event: token
-data: {"text": " 區域"}
+data: {"text": "」"}
 
 event: token
 data: {"text": "探索"}
 
 event: token
+data: {"text": "其他"}
+
+event: token
+data: {"text": "防護"}
+
+event: token
+data: {"text": "重點"}
+
+event: token
 data: {"text": "。"}
 
 event: replace
-data: {"text": "這裡是「蒸汽船甲板・行動辦公」區域，重點在於員工透過 VPN 連回公司並使用行動裝置管理（MDM）系統。\n請務必上鎖你的筆電或手機，若裝置遺失需立即通報以啟動遠端抹除與加密防護。\n你可以繼續前往防波堤・網路邊界、會館碼頭・進貨與廠商，或進入蒸汽船船艙・公共 Wi-Fi 區域探索。"}
+data: {"text": "這裡是「蒸汽船甲板・行動辦公」區域，重點在於員工透過 VPN 連回公司並使用行動裝置管理（MDM）系統。\n請務必上鎖你的筆電與手機，若裝置遺失或遭竊，需立即通報以啟動遠端抹除機制。\n你可以繼續前往「防波堤・網路邊界」、「會館碼頭・進貨與廠商」或「蒸汽船船艙・公共 Wi-Fi」探索其他防護重點。"}
 
 event: done
-data: {"answer": "這裡是「蒸汽船甲板・行動辦公」區域，重點在於員工透過 VPN 連回公司並使用行動裝置管理（MDM）系統。\n請務必上鎖你的筆電或手機，若裝置遺失需立即通報以啟動遠端抹除與加密防護。\n你可以繼續前往防波堤・網路邊界、會館碼頭・進貨與廠商，或進入蒸汽船船艙・公共 Wi-Fi 區域探索。", "go": [], "followups": [{"text": "行動裝置管理（MDM）是做什麼的？", "en": "What does the Mobile Device Management (MDM) do?", "zh": "行動裝置管理（MDM）是做什麼的？"}, {"text": "裝置遺失或遭竊要怎麼防？", "en": "How do we prevent lost or stolen device?", "zh": "裝置遺失或遭竊要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 12.97, "total_s": 12.98}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "boat_deck", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "boat_deck"}, "rows": 1, "ms": 6.9}], "graph": {"nodes": [{"key": "boat_deck", "label": "Room", "en": "Steamer Deck", "zh": "蒸汽船甲板"}, {"key": "mdm", "label": "System", "en": "Mobile Device Management (MDM)", "zh": "行動裝置管理（MDM）"}, {"key": "endpoints", "label": "System", "en": "Staff Laptops, PCs & Phones", "zh": "員工筆電、電腦與手機"}, {"key": "vpn", "label": "System", "en": "VPN Gateway", "zh": "VPN 閘道"}, {"key": "device_loss", "label": "Threat", "en": "Lost or Stolen Device", "zh": "裝置遺失或遭竊"}, {"key": "vendor_remote_access", "label": "Control", "en": "Time-Limited Vendor Access", "zh": "廠商限時遠端存取"}, {"key": "vpn_remote", "label": "Control", "en": "VPN for Remote Access", "zh": "遠端連線使用 VPN"}, {"key": "mdm_wipe", "label": "Control", "en": "Device Management & Remote Wipe", "zh": "裝置管理與遠端抹除"}, {"key": "encryption", "label": "Control", "en": "Encryption (Disk, Data & TLS)", "zh": "加密（磁碟、資料、傳輸）"}, {"key": "c_encryption_hashing", "label": "Concept", "en": "Encryption vs Hashing", "zh": "加密與雜湊"}, {"key": "c_zero_trust", "label": "Concept", "en": "Zero Trust", "zh": "零信任"}], "edges": [{"a": "vendor_remote_access", "t": "SEEN_IN", "b": "boat_deck"}, {"a": "vendor_remote_access", "t": "PROTECTS", "b": "vpn"}, {"a": "mdm", "t": "LOCATED_IN", "b": "boat_deck"}, {"a": "endpoints", "t": "LOCATED_IN", "b": "boat_deck"}, {"a": "vpn", "t": "LOCATED_IN", "b": "boat_deck"}, {"a": "device_loss", "t": "TARGETS", "b": "endpoints"}, {"a": "device_loss", "t": "SHOWN_IN", "b": "boat_deck"}, {"a": "c_zero_trust", "t": "TAUGHT_IN", "b": "boat_deck"}, {"a": "c_encryption_hashing", "t": "TAUGHT_IN", "b": "boat_deck"}, {"a": "c_encryption_hashing", "t": "RELATED_TO", "b": "encryption"}, {"a": "vpn_remote", "t": "SEEN_IN", "b": "boat_deck"}, {"a": "vpn_remote", "t": "PROTECTS", "b": "endpoints"}, {"a": "mdm_wipe", "t": "SEEN_IN", "b": "boat_deck"}, {"a": "mdm_wipe", "t": "PROTECTS", "b": "endpoints"}, {"a": "mdm_wipe", "t": "MITIGATES", "b": "device_loss"}, {"a": "encryption", "t": "SEEN_IN", "b": "boat_deck"}, {"a": "encryption", "t": "PROTECTS", "b": "endpoints"}, {"a": "encryption", "t": "MITIGATES", "b": "device_loss"}]}, "tool_used": "room_overview", "facts": "房間：蒸汽船甲板・行動辦公\n代表的資訊主題：員工在移動中用筆電和手機工作，透過 VPN 連回公司。\n重點：用 VPN、裝置要上鎖、掉了馬上通報。\n這裡的系統：行動裝置管理（MDM）、員工筆電、電腦與手機、VPN 閘道\n這裡要注意的威脅：裝置遺失或遭竊\n看得到的防護措施：廠商限時遠端存取、遠端連線使用 VPN、裝置管理與遠端抹除、加密（磁碟、資料、傳輸）\n課程概念：加密與雜湊、零信任\n相關的處理流程：廠商要遠端連線、筆電或手機遺失\n可以走到：防波堤・網路邊界、會館碼頭・進貨與廠商、蒸汽船船艙・公共 Wi-Fi", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 12.96, "load_s": 0.01, "prompt_tokens": 630, "prompt_s": 3.75, "gen_tokens": 97, "gen_s": 9.19, "tok_per_s": 10.6, "first_token_s": 3.77}}, "state": {}}
+data: {"answer": "這裡是「蒸汽船甲板・行動辦公」區域，重點在於員工透過 VPN 連回公司並使用行動裝置管理（MDM）系統。\n請務必上鎖你的筆電與手機，若裝置遺失或遭竊，需立即通報以啟動遠端抹除機制。\n你可以繼續前往「防波堤・網路邊界」、「會館碼頭・進貨與廠商」或「蒸汽船船艙・公共 Wi-Fi」探索其他防護重點。", "go": [], "followups": [{"text": "行動裝置管理（MDM）是做什麼的？", "en": "What does the Mobile Device Management (MDM) do?", "zh": "行動裝置管理（MDM）是做什麼的？"}, {"text": "裝置遺失或遭竊要怎麼防？", "en": "How do we prevent lost or stolen device?", "zh": "裝置遺失或遭竊要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.84, "total_s": 10.86}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "boat_deck", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "boat_deck"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "boat_deck", "label": "Room", "en": "Steamer Deck", "zh": "蒸汽船甲板"}, {"key": "mdm", "label": "System", "en": "Mobile Device Management (MDM)", "zh": "行動裝置管理（MDM）"}, {"key": "endpoints", "label": "System", "en": "Staff Laptops, PCs & Phones", "zh": "員工筆電、電腦與手機"}, {"key": "vpn", "label": "System", "en": "VPN Gateway", "zh": "VPN 閘道"}, {"key": "device_loss", "label": "Threat", "en": "Lost or Stolen Device", "zh": "裝置遺失或遭竊"}, {"key": "vendor_remote_access", "label": "Control", "en": "Time-Limited Vendor Access", "zh": "廠商限時遠端存取"}, {"key": "vpn_remote", "label": "Control", "en": "VPN for Remote Access", "zh": "遠端連線使用 VPN"}, {"key": "mdm_wipe", "label": "Control", "en": "Device Management & Remote Wipe", "zh": "裝置管理與遠端抹除"}, {"key": "encryption", "label": "Control", "en": "Encryption (Disk, Data & TLS)", "zh": "加密（磁碟、資料、傳輸）"}, {"key": "c_encryption_hashing", "label": "Concept", "en": "Encryption vs Hashing", "zh": "加密與雜湊"}, {"key": "c_zero_trust", "label": "Concept", "en": "Zero Trust", "zh": "零信任"}], "edges": [{"a": "vendor_remote_access", "t": "SEEN_IN", "b": "boat_deck"}, {"a": "vendor_remote_access", "t": "PROTECTS", "b": "vpn"}, {"a": "mdm", "t": "LOCATED_IN", "b": "boat_deck"}, {"a": "endpoints", "t": "LOCATED_IN", "b": "boat_deck"}, {"a": "vpn", "t": "LOCATED_IN", "b": "boat_deck"}, {"a": "device_loss", "t": "TARGETS", "b": "endpoints"}, {"a": "device_loss", "t": "SHOWN_IN", "b": "boat_deck"}, {"a": "c_zero_trust", "t": "TAUGHT_IN", "b": "boat_deck"}, {"a": "c_encryption_hashing", "t": "TAUGHT_IN", "b": "boat_deck"}, {"a": "c_encryption_hashing", "t": "RELATED_TO", "b": "encryption"}, {"a": "vpn_remote", "t": "SEEN_IN", "b": "boat_deck"}, {"a": "vpn_remote", "t": "PROTECTS", "b": "endpoints"}, {"a": "mdm_wipe", "t": "SEEN_IN", "b": "boat_deck"}, {"a": "mdm_wipe", "t": "PROTECTS", "b": "endpoints"}, {"a": "mdm_wipe", "t": "MITIGATES", "b": "device_loss"}, {"a": "encryption", "t": "SEEN_IN", "b": "boat_deck"}, {"a": "encryption", "t": "PROTECTS", "b": "endpoints"}, {"a": "encryption", "t": "MITIGATES", "b": "device_loss"}]}, "tool_used": "room_overview", "facts": "房間：蒸汽船甲板・行動辦公\n代表的資訊主題：員工在移動中用筆電和手機工作，透過 VPN 連回公司。\n重點：用 VPN、裝置要上鎖、掉了馬上通報。\n這裡的系統：行動裝置管理（MDM）、員工筆電、電腦與手機、VPN 閘道\n這裡要注意的威脅：裝置遺失或遭竊\n看得到的防護措施：廠商限時遠端存取、遠端連線使用 VPN、裝置管理與遠端抹除、加密（磁碟、資料、傳輸）\n課程概念：加密與雜湊、零信任\n相關的處理流程：廠商要遠端連線、筆電或手機遺失\n可以走到：防波堤・網路邊界、會館碼頭・進貨與廠商、蒸汽船船艙・公共 Wi-Fi", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.84, "load_s": 0.01, "prompt_tokens": 630, "prompt_s": 2.22, "gen_tokens": 103, "gen_s": 8.59, "tok_per_s": 12.0, "first_token_s": 2.25}}, "state": {}}
 

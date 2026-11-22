@@ -71,6 +71,12 @@ event: token
 data: {"text": "接"}
 
 event: token
+data: {"text": "度假"}
+
+event: token
+data: {"text": "村"}
+
+event: token
 data: {"text": "訂單"}
 
 event: token
@@ -125,19 +131,31 @@ event: token
 data: {"text": "共用"}
 
 event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "以"}
+
+event: token
+data: {"text": "防范"}
+
+event: token
+data: {"text": "第三方"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "供應鏈"}
+
+event: token
+data: {"text": "入侵"}
+
+event: token
+data: {"text": "威脅"}
+
+event: token
 data: {"text": "。"}
-
-event: token
-data: {"text": "此"}
-
-event: token
-data: {"text": "處"}
-
-event: token
-data: {"text": "可見"}
-
-event: token
-data: {"text": "到的"}
 
 event: token
 data: {"text": "防護"}
@@ -176,29 +194,80 @@ event: token
 data: {"text": "但"}
 
 event: token
-data: {"text": "需注意"}
+data: {"text": "房間"}
 
 event: token
-data: {"text": "第三方"}
+data: {"text": "內"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "隱藏"}
 
 event: token
-data: {"text": "供應鏈"}
+data: {"text": "著"}
 
 event: token
-data: {"text": "入侵"}
+data: {"text": " 1"}
 
 event: token
-data: {"text": "的"}
+data: {"text": " 個"}
 
 event: token
-data: {"text": "威脅"}
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "漏洞"}
+
+event: token
+data: {"text": "待"}
+
+event: token
+data: {"text": "你"}
+
+event: token
+data: {"text": "尋找"}
 
 event: token
 data: {"text": "。"}
 
+event: token
+data: {"text": "你可以"}
+
+event: token
+data: {"text": "前往"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "港口"}
+
+event: token
+data: {"text": "廣場"}
+
+event: token
+data: {"text": "・"}
+
+event: token
+data: {"text": "供應商"}
+
+event: token
+data: {"text": "」"}
+
+event: token
+data: {"text": "繼續"}
+
+event: token
+data: {"text": "探索"}
+
+event: token
+data: {"text": "。"}
+
+event: replace
+data: {"text": "這裡是「麵包店・供應商入口網站」房間，主要展示麵包店透過供應商入口網站接度假村訂單的系統。重點在於供應商的每個人都必須擁有自己的帳號，嚴禁共用，以防範第三方與供應鏈入侵威脅。防護措施包括廠商風險管理與個人帳號機制，但房間內隱藏著 1 個資安漏洞待你尋找。你可以前往「港口廣場・供應商」繼續探索。"}
+
 event: done
-data: {"answer": "這裡是「麵包店・供應商入口網站」房間，主要展示麵包店透過供應商入口網站接訂單的系統。重點在於供應商的每個人都必須擁有自己的帳號，嚴禁共用。此處可見到的防護措施包括廠商風險管理與個人帳號機制，但需注意第三方與供應鏈入侵的威脅。", "go": [], "followups": [{"text": "供應商入口網站是做什麼的？", "en": "What does the Supplier Portal do?", "zh": "供應商入口網站是做什麼的？"}, {"text": "第三方與供應鏈入侵要怎麼防？", "en": "How do we prevent Third-Party & Supply-Chain compromise?", "zh": "第三方與供應鏈入侵要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.13, "total_s": 8.15}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "bakery_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "bakery_in"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "bakery_in", "label": "Room", "en": "Bakery", "zh": "麵包店"}, {"key": "supplier_portal", "label": "System", "en": "Supplier Portal", "zh": "供應商入口網站"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "unique_ids", "label": "Control", "en": "Individual Accounts (No Shared Logins)", "zh": "個人帳號（不共用）"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "bakery_in"}, {"a": "vendor_management", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "supplier_portal", "t": "LOCATED_IN", "b": "bakery_in"}, {"a": "supply_chain", "t": "TARGETS", "b": "supplier_portal"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "bakery_in"}, {"a": "unique_ids", "t": "SEEN_IN", "b": "bakery_in"}, {"a": "unique_ids", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "unique_ids", "t": "MITIGATES", "b": "supply_chain"}]}, "tool_used": "room_overview", "facts": "房間：麵包店・供應商入口網站\n代表的資訊主題：麵包店透過供應商入口網站接渡假村的訂單。\n重點：供應商的每個人都要有自己的帳號，不能共用。\n這裡的系統：供應商入口網站\n這裡要注意的威脅：第三方與供應鏈入侵\n看得到的防護措施：廠商風險管理、個人帳號（不共用）\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：港口廣場・供應商", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.13, "load_s": 0.01, "prompt_tokens": 554, "prompt_s": 2.68, "gen_tokens": 65, "gen_s": 5.43, "tok_per_s": 12.0, "first_token_s": 2.7}}, "state": {}}
+data: {"answer": "這裡是「麵包店・供應商入口網站」房間，主要展示麵包店透過供應商入口網站接度假村訂單的系統。重點在於供應商的每個人都必須擁有自己的帳號，嚴禁共用，以防範第三方與供應鏈入侵威脅。防護措施包括廠商風險管理與個人帳號機制，但房間內隱藏著 1 個資安漏洞待你尋找。你可以前往「港口廣場・供應商」繼續探索。", "go": [], "followups": [{"text": "供應商入口網站是做什麼的？", "en": "What does the Supplier Portal do?", "zh": "供應商入口網站是做什麼的？"}, {"text": "第三方與供應鏈入侵要怎麼防？", "en": "How do we prevent Third-Party & Supply-Chain compromise?", "zh": "第三方與供應鏈入侵要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.71, "total_s": 10.72}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "bakery_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "bakery_in"}, "rows": 1, "ms": 5.2}], "graph": {"nodes": [{"key": "bakery_in", "label": "Room", "en": "Bakery", "zh": "麵包店"}, {"key": "supplier_portal", "label": "System", "en": "Supplier Portal", "zh": "供應商入口網站"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "unique_ids", "label": "Control", "en": "Individual Accounts (No Shared Logins)", "zh": "個人帳號（不共用）"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "bakery_in"}, {"a": "vendor_management", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "supplier_portal", "t": "LOCATED_IN", "b": "bakery_in"}, {"a": "supply_chain", "t": "TARGETS", "b": "supplier_portal"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "bakery_in"}, {"a": "unique_ids", "t": "SEEN_IN", "b": "bakery_in"}, {"a": "unique_ids", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "unique_ids", "t": "MITIGATES", "b": "supply_chain"}]}, "tool_used": "room_overview", "facts": "房間：麵包店・供應商入口網站\n代表的資訊主題：麵包店透過供應商入口網站接渡假村的訂單。\n重點：供應商的每個人都要有自己的帳號，不能共用。\n這裡的系統：供應商入口網站\n這裡要注意的威脅：第三方與供應鏈入侵\n看得到的防護措施：廠商風險管理、個人帳號（不共用）\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：港口廣場・供應商", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.71, "load_s": 0.01, "prompt_tokens": 554, "prompt_s": 2.4, "gen_tokens": 89, "gen_s": 8.28, "tok_per_s": 10.7, "first_token_s": 2.42}}, "state": {}}
 

@@ -146,7 +146,7 @@ event: token
 data: {"text": "）"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "以及"}
 
 event: token
 data: {"text": "湖"}
@@ -221,10 +221,13 @@ event: token
 data: {"text": "資料"}
 
 event: token
-data: {"text": "共同"}
+data: {"text": "結合"}
 
 event: token
-data: {"text": "構成"}
+data: {"text": "才是"}
+
+event: token
+data: {"text": "完整的"}
 
 event: token
 data: {"text": "資訊"}
@@ -239,7 +242,7 @@ event: token
 data: {"text": "並"}
 
 event: token
-data: {"text": "介紹"}
+data: {"text": "涵蓋"}
 
 event: token
 data: {"text": "機"}
@@ -284,8 +287,8 @@ event: token
 data: {"text": "。"}
 
 event: replace
-data: {"text": "這裡是「渡假村資訊系統地圖」（導覽名稱：熱氣球），展示每個部門如何透過相連的資訊系統運作。\n你可以看到三條降落路線分別通往會館（主線）、老城（供應商）與湖上（行動辦公、物聯網、資安監控中心）。\n此處強調人、流程、科技與資料共同構成資訊系統，並介紹機密性、完整性、可用性（CIA）等課程概念。"}
+data: {"text": "這裡是「渡假村資訊系統地圖」（導覽名稱：熱氣球），展示每個部門如何透過相連的資訊系統運作。\n你可以看到三條降落路線分別通往會館（主線）、老城（供應商）以及湖上（行動辦公、物聯網、資安監控中心）。\n此處強調人、流程、科技與資料結合才是完整的資訊系統，並涵蓋機密性、完整性、可用性（CIA）等課程概念。"}
 
 event: done
-data: {"answer": "這裡是「渡假村資訊系統地圖」（導覽名稱：熱氣球），展示每個部門如何透過相連的資訊系統運作。\n你可以看到三條降落路線分別通往會館（主線）、老城（供應商）與湖上（行動辦公、物聯網、資安監控中心）。\n此處強調人、流程、科技與資料共同構成資訊系統，並介紹機密性、完整性、可用性（CIA）等課程概念。", "go": [{"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.2, "total_s": 8.22}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "sky", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "sky"}, "rows": 1, "ms": 6.1}], "graph": {"nodes": [{"key": "sky", "label": "Room", "en": "Hot-Air Balloon", "zh": "熱氣球"}, {"key": "c_cia", "label": "Concept", "en": "CIA Triad", "zh": "機密性、完整性、可用性（CIA）"}, {"key": "c_shared_responsibility", "label": "Concept", "en": "Shared Responsibility (Cloud & SaaS)", "zh": "共同責任（雲端與 SaaS）"}, {"key": "c_information_system", "label": "Concept", "en": "Information System", "zh": "資訊系統"}], "edges": [{"a": "c_cia", "t": "TAUGHT_IN", "b": "sky"}, {"a": "c_information_system", "t": "TAUGHT_IN", "b": "sky"}, {"a": "c_shared_responsibility", "t": "TAUGHT_IN", "b": "sky"}]}, "tool_used": "room_overview", "facts": "房間：渡假村資訊系統地圖（導覽裡的名稱：熱氣球）\n代表的資訊主題：從熱氣球上看整個渡假村：每個部門都靠資訊系統運作，系統之間彼此相連。三條降落路線：會館（主線）、老城（供應商）、湖上（行動辦公、物聯網、資安監控中心）。\n重點：人、流程、科技、資料合起來才是資訊系統。\n課程概念：機密性、完整性、可用性（CIA）、共同責任（雲端與 SaaS）、資訊系統\n可以走到：客人報到與無線網路（導覽裡的名稱：湖畔露台）、港口廣場・供應商、蒸汽船甲板・行動辦公", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.2, "load_s": 0.01, "prompt_tokens": 596, "prompt_s": 2.62, "gen_tokens": 95, "gen_s": 5.55, "tok_per_s": 17.1, "first_token_s": 2.65}}, "state": {}}
+data: {"answer": "這裡是「渡假村資訊系統地圖」（導覽名稱：熱氣球），展示每個部門如何透過相連的資訊系統運作。\n你可以看到三條降落路線分別通往會館（主線）、老城（供應商）以及湖上（行動辦公、物聯網、資安監控中心）。\n此處強調人、流程、科技與資料結合才是完整的資訊系統，並涵蓋機密性、完整性、可用性（CIA）等課程概念。", "go": [{"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 25.52, "total_s": 25.53}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "sky", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "sky"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "sky", "label": "Room", "en": "Hot-Air Balloon", "zh": "熱氣球"}, {"key": "c_cia", "label": "Concept", "en": "CIA Triad", "zh": "機密性、完整性、可用性（CIA）"}, {"key": "c_shared_responsibility", "label": "Concept", "en": "Shared Responsibility (Cloud & SaaS)", "zh": "共同責任（雲端與 SaaS）"}, {"key": "c_information_system", "label": "Concept", "en": "Information System", "zh": "資訊系統"}], "edges": [{"a": "c_cia", "t": "TAUGHT_IN", "b": "sky"}, {"a": "c_information_system", "t": "TAUGHT_IN", "b": "sky"}, {"a": "c_shared_responsibility", "t": "TAUGHT_IN", "b": "sky"}]}, "tool_used": "room_overview", "facts": "房間：渡假村資訊系統地圖（導覽裡的名稱：熱氣球）\n代表的資訊主題：從熱氣球上看整個渡假村：每個部門都靠資訊系統運作，系統之間彼此相連。三條降落路線：會館（主線）、老城（供應商）、湖上（行動辦公、物聯網、資安監控中心）。\n重點：人、流程、科技、資料合起來才是資訊系統。\n課程概念：機密性、完整性、可用性（CIA）、共同責任（雲端與 SaaS）、資訊系統\n可以走到：客人報到與無線網路（導覽裡的名稱：湖畔露台）、港口廣場・供應商、蒸汽船甲板・行動辦公", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 25.52, "load_s": 0.01, "prompt_tokens": 596, "prompt_s": 1.91, "gen_tokens": 96, "gen_s": 8.11, "tok_per_s": 11.8, "first_token_s": 17.41}}, "state": {}}
 

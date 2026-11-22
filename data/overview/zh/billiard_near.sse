@@ -74,7 +74,7 @@ event: token
 data: {"text": "）"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "的"}
 
 event: token
 data: {"text": "待"}
@@ -83,7 +83,25 @@ event: token
 data: {"text": "處理"}
 
 event: token
-data: {"text": "的"}
+data: {"text": "申請"}
+
+event: token
+data: {"text": "清單"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n清單"}
+
+event: token
+data: {"text": "內容"}
+
+event: token
+data: {"text": "包含"}
+
+event: token
+data: {"text": "開"}
 
 event: token
 data: {"text": "帳號"}
@@ -92,16 +110,16 @@ event: token
 data: {"text": "、"}
 
 event: token
+data: {"text": "改"}
+
+event: token
 data: {"text": "權"}
 
 event: token
 data: {"text": "限"}
 
 event: token
-data: {"text": "及"}
-
-event: token
-data: {"text": "密碼"}
+data: {"text": "與"}
 
 event: token
 data: {"text": "重"}
@@ -110,37 +128,40 @@ event: token
 data: {"text": "設"}
 
 event: token
-data: {"text": "申請"}
+data: {"text": "密碼"}
 
 event: token
-data: {"text": "。"}
+data: {"text": "等"}
 
 event: token
-data: {"text": "請"}
+data: {"text": "事項"}
 
 event: token
-data: {"text": "注意"}
+data: {"text": "，"}
 
 event: token
-data: {"text": "來"}
+data: {"text": "並"}
 
 event: token
-data: {"text": "電"}
+data: {"text": "強調"}
 
 event: token
-data: {"text": "身分"}
+data: {"text": "每個"}
 
 event: token
-data: {"text": "核"}
+data: {"text": "職務"}
 
 event: token
-data: {"text": "實"}
+data: {"text": "僅"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "授予"}
 
 event: token
-data: {"text": "最小"}
+data: {"text": "所需"}
+
+event: token
+data: {"text": "的最小"}
 
 event: token
 data: {"text": "權"}
@@ -149,22 +170,19 @@ event: token
 data: {"text": "限"}
 
 event: token
-data: {"text": "原則"}
+data: {"text": "。"}
 
 event: token
-data: {"text": "等"}
+data: {"text": "\n此"}
 
 event: token
-data: {"text": "防護"}
+data: {"text": "處"}
 
 event: token
-data: {"text": "措施"}
+data: {"text": "需"}
 
 event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "並"}
+data: {"text": "特別"}
 
 event: token
 data: {"text": "留意"}
@@ -182,53 +200,59 @@ event: token
 data: {"text": "威脅"}
 
 event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "此"}
-
-event: token
-data: {"text": "處"}
-
-event: token
-data: {"text": "藏"}
-
-event: token
-data: {"text": "有"}
-
-event: token
-data: {"text": " 1"}
-
-event: token
-data: {"text": " 個"}
-
-event: token
-data: {"text": "資"}
-
-event: token
-data: {"text": "安"}
-
-event: token
-data: {"text": "漏洞"}
-
-event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "目前"}
+data: {"text": "現場"}
 
 event: token
-data: {"text": "尚未"}
+data: {"text": "可見"}
 
 event: token
-data: {"text": "被"}
+data: {"text": "的"}
 
 event: token
-data: {"text": "發現"}
+data: {"text": "防護"}
+
+event: token
+data: {"text": "措施"}
+
+event: token
+data: {"text": "包括"}
+
+event: token
+data: {"text": "來"}
+
+event: token
+data: {"text": "電"}
+
+event: token
+data: {"text": "身分"}
+
+event: token
+data: {"text": "核"}
+
+event: token
+data: {"text": "實"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "角色"}
+
+event: token
+data: {"text": "權"}
+
+event: token
+data: {"text": "限"}
+
+event: token
+data: {"text": "管理"}
 
 event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是服務台近看・工單看板區域，主要展示 IT 服務台系統（ITSM）與待處理的帳號、權限及密碼重設申請。請注意來電身分核實、最小權限原則等防護措施，並留意電話社交工程威脅。此處藏有 1 個資安漏洞，目前尚未被發現。", "go": [], "followups": [{"text": "IT 服務台系統（ITSM）是做什麼的？", "en": "What does the IT Service Desk (ITSM) do?", "zh": "IT 服務台系統（ITSM）是做什麼的？"}, {"text": "電話社交工程要怎麼防？", "en": "How do we prevent phone social engineering?", "zh": "電話社交工程要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.75, "total_s": 7.76}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "billiard_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "billiard_near"}, "rows": 1, "ms": 8.3}], "graph": {"nodes": [{"key": "billiard_near", "label": "Room", "en": "IT Help Desk · Up Close", "zh": "服務台近看"}, {"key": "itsm", "label": "System", "en": "IT Service Desk (ITSM)", "zh": "IT 服務台系統（ITSM）"}, {"key": "vishing", "label": "Threat", "en": "Phone Social Engineering", "zh": "電話社交工程"}, {"key": "caller_verification", "label": "Control", "en": "Caller Identity Verification", "zh": "來電身分核實"}, {"key": "least_privilege", "label": "Control", "en": "Least Privilege & Role-Based Access", "zh": "最小權限與角色權限"}, {"key": "c_social_engineering", "label": "Concept", "en": "Social Engineering", "zh": "社交工程"}, {"key": "c_itsm", "label": "Concept", "en": "ITIL & IT Service Management", "zh": "ITIL 與 IT 服務管理"}], "edges": [{"a": "itsm", "t": "LOCATED_IN", "b": "billiard_near"}, {"a": "vishing", "t": "TARGETS", "b": "itsm"}, {"a": "vishing", "t": "SHOWN_IN", "b": "billiard_near"}, {"a": "c_itsm", "t": "TAUGHT_IN", "b": "billiard_near"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "itsm"}, {"a": "c_social_engineering", "t": "TAUGHT_IN", "b": "billiard_near"}, {"a": "c_social_engineering", "t": "RELATED_TO", "b": "vishing"}, {"a": "least_privilege", "t": "SEEN_IN", "b": "billiard_near"}, {"a": "caller_verification", "t": "SEEN_IN", "b": "billiard_near"}, {"a": "caller_verification", "t": "MITIGATES", "b": "vishing"}]}, "tool_used": "room_overview", "facts": "房間：服務台近看・工單看板\n代表的資訊主題：工單看板列出待處理的申請：開帳號、改權限、重設密碼。\n重點：每個職務只給它需要的最少權限。\n這裡的系統：IT 服務台系統（ITSM）\n這裡要注意的威脅：電話社交工程\n看得到的防護措施：來電身分核實、最小權限與角色權限\n課程概念：社交工程、ITIL 與 IT 服務管理\n相關的處理流程：新進人員開帳號、密碼或驗證重設\n真實案例：MGM 渡假村網路攻擊（2023）\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：資訊服務台", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.74, "load_s": 0.01, "prompt_tokens": 619, "prompt_s": 2.91, "gen_tokens": 78, "gen_s": 4.81, "tok_per_s": 16.2, "first_token_s": 2.94}}, "state": {}}
+data: {"answer": "這裡是服務台近看・工單看板區域，主要展示 IT 服務台系統（ITSM）的待處理申請清單。\n清單內容包含開帳號、改權限與重設密碼等事項，並強調每個職務僅授予所需的最小權限。\n此處需特別留意電話社交工程威脅，現場可見的防護措施包括來電身分核實與角色權限管理。", "go": [], "followups": [{"text": "IT 服務台系統（ITSM）是做什麼的？", "en": "What does the IT Service Desk (ITSM) do?", "zh": "IT 服務台系統（ITSM）是做什麼的？"}, {"text": "電話社交工程要怎麼防？", "en": "How do we prevent phone social engineering?", "zh": "電話社交工程要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.02, "answer_s": 9.29, "total_s": 9.32}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "billiard_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "billiard_near"}, "rows": 1, "ms": 22.2}], "graph": {"nodes": [{"key": "billiard_near", "label": "Room", "en": "IT Help Desk · Up Close", "zh": "服務台近看"}, {"key": "itsm", "label": "System", "en": "IT Service Desk (ITSM)", "zh": "IT 服務台系統（ITSM）"}, {"key": "vishing", "label": "Threat", "en": "Phone Social Engineering", "zh": "電話社交工程"}, {"key": "caller_verification", "label": "Control", "en": "Caller Identity Verification", "zh": "來電身分核實"}, {"key": "least_privilege", "label": "Control", "en": "Least Privilege & Role-Based Access", "zh": "最小權限與角色權限"}, {"key": "c_social_engineering", "label": "Concept", "en": "Social Engineering", "zh": "社交工程"}, {"key": "c_itsm", "label": "Concept", "en": "ITIL & IT Service Management", "zh": "ITIL 與 IT 服務管理"}], "edges": [{"a": "itsm", "t": "LOCATED_IN", "b": "billiard_near"}, {"a": "vishing", "t": "TARGETS", "b": "itsm"}, {"a": "vishing", "t": "SHOWN_IN", "b": "billiard_near"}, {"a": "c_itsm", "t": "TAUGHT_IN", "b": "billiard_near"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "itsm"}, {"a": "c_social_engineering", "t": "TAUGHT_IN", "b": "billiard_near"}, {"a": "c_social_engineering", "t": "RELATED_TO", "b": "vishing"}, {"a": "least_privilege", "t": "SEEN_IN", "b": "billiard_near"}, {"a": "caller_verification", "t": "SEEN_IN", "b": "billiard_near"}, {"a": "caller_verification", "t": "MITIGATES", "b": "vishing"}]}, "tool_used": "room_overview", "facts": "房間：服務台近看・工單看板\n代表的資訊主題：工單看板列出待處理的申請：開帳號、改權限、重設密碼。\n重點：每個職務只給它需要的最少權限。\n這裡的系統：IT 服務台系統（ITSM）\n這裡要注意的威脅：電話社交工程\n看得到的防護措施：來電身分核實、最小權限與角色權限\n課程概念：社交工程、ITIL 與 IT 服務管理\n相關的處理流程：新進人員開帳號、密碼或驗證重設\n真實案例：MGM 渡假村網路攻擊（2023）\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：資訊服務台", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.28, "load_s": 0.01, "prompt_tokens": 619, "prompt_s": 2.12, "gen_tokens": 86, "gen_s": 7.14, "tok_per_s": 12.0, "first_token_s": 2.14}}, "state": {}}
 

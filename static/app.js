@@ -190,8 +190,21 @@ function popupBeat() {
 // (every second), the map, the buttons and the assistant window step aside so they do not cover it. 11/22: the same for the
 // assistant itself when a sign opens it in iStaging's window.
 let gameTimer = null, aside = false, asideAnims = [], navUntil = 0;
-// no word from that window for a while: it is gone, unless it said it was moving to its next page (that page can be slow)
-function gameQuiet() { if (Date.now() < navUntil) gameTimer = setTimeout(gameQuiet, 400); else gameOpen(false); }
+// 11/22 evening: each window that says it is open is remembered on its own (two pop-ups can be open: closing one must
+// not bring the column back while the other still talks). A removed frame reports closed = true.
+const talkers = new Map();
+function stillTalking() {
+  const now = Date.now();
+  for (const [w, t] of talkers) { let gone = true; try { gone = w.closed; } catch { gone = true; } if (gone || now - t > 2600) talkers.delete(w); }
+  return talkers.size > 0;
+}
+// no word from those windows for a while: they are gone, unless one said it was moving to its next page (can be slow);
+// a window that said so and was then closed before its next page came is not waited for
+let navFrom = null;
+function gameQuiet() {
+  if (navUntil) { let gone = false; try { gone = !navFrom || navFrom.closed; } catch { gone = true; } if (gone) navUntil = 0; }
+  if (Date.now() < navUntil || stillTalking()) gameTimer = setTimeout(gameQuiet, 400); else gameOpen(false);
+}
 function gameOpen(on) {
   clearTimeout(gameTimer);
   if (on) gameTimer = setTimeout(gameQuiet, 2600);
@@ -237,14 +250,24 @@ window.addEventListener("message", (e) => {          // the other end: our full-
   }
   if (d && (d.type === "lakeside:game-open" || d.type === "lakeside:game-alive" || d.type === "lakeside:popup-alive")) {
     if (d.type === "lakeside:game-open") navUntil = 0;   // the next page has arrived: a close from now on is a real one
+    if (e.source) talkers.set(e.source, Date.now());
     gameOpen(true);
     // 11/22: a game in iStaging's window keeps its storage apart from this page; give it this page's session so its score
     // lands in this Progress tab (our own address only)
     if (d.type !== "lakeside:popup-alive" && e.origin === location.origin) { try { e.source.postMessage({ type: "lakeside:session", session: S.session }, location.origin); } catch { /* gone */ } }
     return;
   }
-  if (d && (d.type === "lakeside:game-nav" || d.type === "lakeside:popup-nav")) { navUntil = Date.now() + 4000; return; }
-  if (d && (d.type === "lakeside:game-close" || d.type === "lakeside:popup-close")) { gameCloseSoon(); return; }
+  if (d && (d.type === "lakeside:game-nav" || d.type === "lakeside:popup-nav")) { navUntil = Date.now() + 4000; navFrom = e.source; return; }
+  if (d && (d.type === "lakeside:game-close" || d.type === "lakeside:popup-close")) {
+    if (e.source) {
+      let removed = false;
+      try { removed = e.source.closed; } catch { removed = false; }
+      talkers.delete(e.source);
+      if (removed) navUntil = 0;                         // the frame itself is gone: no next page is coming
+    }
+    gameCloseSoon();
+    return;
+  }
   if (d && d.type === "lakeside:full") {                // the balloon's "Full version" button, pressed in here: this is it
     const toast = $("#tourToast");
     toast.innerHTML = `${PIN}<span>This is the full version: the map and the assistant are at the top left <span lang="zh-Hant">這裡就是完整版：地圖和小幫手都在左上角</span></span>`;
@@ -255,6 +278,7 @@ window.addEventListener("message", (e) => {          // the other end: our full-
   if (d && d.type === "lakeside:hello") {               // the assistant opened in iStaging's window: where the visitor is, then step aside
     if (S.byKey[d.room]) setHere(d.room);
     navUntil = 0;
+    if (e.source) talkers.set(e.source, Date.now());
     gameOpen(true);
     try { e.source.postMessage(e.origin === location.origin ? { type: "lakeside:ack", session: S.session } : { type: "lakeside:ack" }, "*"); } catch { /* the window went away */ }
     return;
@@ -615,7 +639,7 @@ async function checkHealth() {
     if (h.offline) {        // 11/22: the saved copy on GitHub Pages (pages/offline.js) while the laptop is off
       el.className = "status offline";
       el.innerHTML = L(`Saved copy from ${h.saved} · the AI is off`, `${h.saved} 存的離線版・AI 沒開`);
-      el.title = LT("The AI runs on the presenter's laptop, which is off. Saved answers, the map and the mini-games still work.", "AI 跑在報告用的筆電上，筆電沒開。存好的回答、地圖和小遊戲照常能用。");
+      el.title = LT("The AI runs on the presenter's laptop and is not running right now. Saved answers, the map and the mini-games still work.", "AI 跑在報告用的筆電上，現在沒開。存好的回答、地圖和小遊戲照常能用。");
       return;
     }
     const ok = h.neo4j && h.ollama;
@@ -1266,7 +1290,7 @@ async function renderHow() {
   v.dataset.done = "1";
   v.innerHTML = `<h2>How the assistant works <span lang="zh-Hant">助理怎麼運作</span></h2>
   <p>Everything runs on the presenter's laptop. The page shows the iStaging tour full screen; this window, the casebook and the map open over it. Your question goes to a local language model (Ollama), which only chooses a tool and the words that name what you asked about. The tool matches those words to a node in the Neo4j knowledge graph and runs a fixed, read-only Cypher query. The model then writes the answer from those facts only.</p>
-  <p lang="zh-Hant">全部在報告用的筆電上跑。畫面是全螢幕的 iStaging 導覽，這個視窗、事件簿和地圖都疊在上面。你的問題先交給本機的語言模型（Ollama），它只負責選工具、抓出你問的是什麼；工具把它對到 Neo4j 知識圖的節點，執行寫好的唯讀 Cypher，模型再只根據查到的資料寫回答。</p>
+  <p lang="zh-Hant">全部在報告用的筆電上跑。畫面是全螢幕的 iStaging 導覽，這個視窗、事件簿和地圖都疊在上面。你的問題先交給筆電上的語言模型（Ollama），它只負責選工具、抓出你問的是什麼；工具把它對到 Neo4j 知識圖的節點，執行寫好的唯讀 Cypher，模型再只根據查到的資料寫回答。</p>
   <svg class="arch" viewBox="0 0 420 258" role="img" aria-label="Architecture: your question goes to the assistant server, which asks the local model and the Neo4j graph, then gives the answer and a card that can take you to a place in the tour">
     <defs><marker id="archArrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 9 5 0 9z" fill="#f1d79a"/></marker></defs>
     <rect x="8" y="12" width="150" height="52" rx="14" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.24)"/>
@@ -1289,8 +1313,8 @@ async function renderHow() {
   <p>Three signals are combined with reciprocal rank fusion: exact names and aliases (English and Chinese), BM25 full-text search in Neo4j (CJK analyzer), and bge-m3 vector search in Neo4j's vector index, so 信用卡 finds “Payment Card Data”.</p>
   <p lang="zh-Hant">用 RRF 合併三種線索：中英文名稱和別名、Neo4j 的 BM25 全文檢索（中日韓分詞），還有 Neo4j 向量索引裡的 bge-m3 向量搜尋。所以打「信用卡」也找得到「Payment Card Data」。</p>
   <h2>Safety of the assistant itself <span lang="zh-Hant">助理自己的資安</span></h2>
-  <p>Read-only database transactions, parameterised queries, a JSON schema that limits the model to known tools, answers grounded in retrieved facts, quoted evidence checked against your text, no data leaving the laptop, and logs kept locally.</p>
-  <p lang="zh-Hant">資料庫只用唯讀交易，查詢一律帶參數。JSON schema 限定模型只能選已知的工具，回答只根據查到的資料，引用的證據會和你貼的原文核對。資料不離開這台筆電，紀錄只存在本機。</p>
+  <p>Read-only database transactions, parameterised queries, a JSON schema that limits the model to known tools, answers grounded in retrieved facts, quoted evidence checked against your text, no questions sent to outside AI services, and logs kept on the presenter's laptop.</p>
+  <p lang="zh-Hant">資料庫只用唯讀交易，查詢一律帶參數。JSON schema 限定模型只能選已知的工具，回答只根據查到的資料，引用的證據會和你貼的原文核對。問題不會送到外面的 AI 服務，紀錄只存在報告用的筆電上。</p>
   <h2>Colours in the cards and the graph <span lang="zh-Hant">卡片和關係圖的顏色</span></h2>
   <p>Each kind of node has one colour, the same in the dots of the cards and in the graph under “How I found this”. <span lang="zh-Hant">每一種節點一個顏色，資料卡的小圓點和「我怎麼查到的」裡的關係圖都一樣。</span></p>
   <div class="legend">${Object.keys(LABEL).filter((l) => COLORS[l] && l !== "Area").map((l) => `<span data-t="${l}">${esc(LABEL[l][0])} <span lang="zh-Hant">${esc(LABEL[l][1])}</span></span>`).join("")}</div>

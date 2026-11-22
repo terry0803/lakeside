@@ -86,9 +86,6 @@ event: token
 data: {"text": "有"}
 
 event: token
-data: {"text": "**"}
-
-event: token
 data: {"text": "未"}
 
 event: token
@@ -98,19 +95,10 @@ event: token
 data: {"text": "補"}
 
 event: token
-data: {"text": "漏洞"}
-
-event: token
-data: {"text": "被"}
-
-event: token
-data: {"text": "利用"}
-
-event: token
-data: {"text": "**"}
-
-event: token
 data: {"text": "的"}
+
+event: token
+data: {"text": "漏洞"}
 
 event: token
 data: {"text": "威脅"}
@@ -119,13 +107,16 @@ event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "並"}
+data: {"text": "但"}
 
 event: token
-data: {"text": "已"}
+data: {"text": "防護"}
 
 event: token
-data: {"text": "實施"}
+data: {"text": "措施"}
+
+event: token
+data: {"text": "包含"}
 
 event: token
 data: {"text": "資料"}
@@ -146,19 +137,19 @@ event: token
 data: {"text": "管理及"}
 
 event: token
+data: {"text": "測試"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "正式"}
+
+event: token
 data: {"text": "環境"}
 
 event: token
 data: {"text": "分離"}
-
-event: token
-data: {"text": "等"}
-
-event: token
-data: {"text": "防護"}
-
-event: token
-data: {"text": "措施"}
 
 event: token
 data: {"text": "。"}
@@ -170,10 +161,10 @@ event: token
 data: {"text": "內"}
 
 event: token
-data: {"text": "隱藏"}
+data: {"text": "藏"}
 
 event: token
-data: {"text": "了"}
+data: {"text": "有"}
 
 event: token
 data: {"text": " 1"}
@@ -198,6 +189,9 @@ data: {"text": "目前"}
 
 event: token
 data: {"text": "尚未"}
+
+event: token
+data: {"text": "被"}
 
 event: token
 data: {"text": "發現"}
@@ -239,5 +233,5 @@ event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是「溫室・測試環境」，用於新系統上線前的測試與變更管理。\n請注意此處有**未修補漏洞被利用**的威脅，並已實施資料遮蔽、弱點管理及環境分離等防護措施。\n房間內隱藏了 1 個資安漏洞，目前尚未發現。\n你可以前往「泳池・資料湖」繼續探索。", "go": [], "followups": [{"text": "測試環境是做什麼的？", "en": "What does the Test Environment do?", "zh": "測試環境是做什麼的？"}, {"text": "未修補漏洞被利用要怎麼防？", "en": "How do we prevent exploited unpatched software?", "zh": "未修補漏洞被利用要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.82, "total_s": 9.83}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "greenhouse_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "greenhouse_in"}, "rows": 1, "ms": 7.0}], "graph": {"nodes": [{"key": "greenhouse_in", "label": "Room", "en": "Greenhouse", "zh": "溫室"}, {"key": "test_env", "label": "System", "en": "Test Environment", "zh": "測試環境"}, {"key": "unpatched", "label": "Threat", "en": "Exploited Unpatched Software", "zh": "未修補漏洞被利用"}, {"key": "data_masking", "label": "Control", "en": "Data Masking", "zh": "資料遮蔽"}, {"key": "patch_management", "label": "Control", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "env_separation", "label": "Control", "en": "Separate Test & Production", "zh": "測試與正式環境分離"}, {"key": "change_management", "label": "Control", "en": "Change Management", "zh": "變更管理"}, {"key": "c_sandbox", "label": "Concept", "en": "Sandbox & Test Environments", "zh": "沙箱與測試環境"}], "edges": [{"a": "env_separation", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "env_separation", "t": "PROTECTS", "b": "test_env"}, {"a": "env_separation", "t": "MITIGATES", "b": "unpatched"}, {"a": "change_management", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "test_env", "t": "LOCATED_IN", "b": "greenhouse_in"}, {"a": "unpatched", "t": "SHOWN_IN", "b": "greenhouse_in"}, {"a": "c_sandbox", "t": "TAUGHT_IN", "b": "greenhouse_in"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "test_env"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "env_separation"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "change_management"}, {"a": "patch_management", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "patch_management", "t": "MITIGATES", "b": "unpatched"}, {"a": "data_masking", "t": "SEEN_IN", "b": "greenhouse_in"}]}, "tool_used": "room_overview", "facts": "房間：溫室・測試環境\n代表的資訊主題：新系統先在溫室裡長大：變更先在這裡測試，再上線。\n重點：測試和正式環境要分開，測試用假資料。\n這裡的系統：測試環境\n這裡要注意的威脅：未修補漏洞被利用\n看得到的防護措施：資料遮蔽、修補與弱點管理、測試與正式環境分離、變更管理\n課程概念：沙箱與測試環境\n相關的處理流程：系統變更\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：泳池・資料湖", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.81, "load_s": 0.01, "prompt_tokens": 585, "prompt_s": 2.75, "gen_tokens": 83, "gen_s": 7.04, "tok_per_s": 11.8, "first_token_s": 2.77}}, "state": {}}
+data: {"answer": "這裡是「溫室・測試環境」，用於新系統上線前的測試與變更管理。\n請注意此處有未修補的漏洞威脅，但防護措施包含資料遮蔽、弱點管理及測試與正式環境分離。\n房間內藏有 1 個資安漏洞，目前尚未被發現。\n你可以前往「泳池・資料湖」繼續探索。", "go": [], "followups": [{"text": "測試環境是做什麼的？", "en": "What does the Test Environment do?", "zh": "測試環境是做什麼的？"}, {"text": "未修補漏洞被利用要怎麼防？", "en": "How do we prevent exploited unpatched software?", "zh": "未修補漏洞被利用要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.84, "total_s": 9.86}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "greenhouse_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "greenhouse_in"}, "rows": 1, "ms": 6.1}], "graph": {"nodes": [{"key": "greenhouse_in", "label": "Room", "en": "Greenhouse", "zh": "溫室"}, {"key": "test_env", "label": "System", "en": "Test Environment", "zh": "測試環境"}, {"key": "unpatched", "label": "Threat", "en": "Exploited Unpatched Software", "zh": "未修補漏洞被利用"}, {"key": "data_masking", "label": "Control", "en": "Data Masking", "zh": "資料遮蔽"}, {"key": "patch_management", "label": "Control", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "env_separation", "label": "Control", "en": "Separate Test & Production", "zh": "測試與正式環境分離"}, {"key": "change_management", "label": "Control", "en": "Change Management", "zh": "變更管理"}, {"key": "c_sandbox", "label": "Concept", "en": "Sandbox & Test Environments", "zh": "沙箱與測試環境"}], "edges": [{"a": "env_separation", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "env_separation", "t": "PROTECTS", "b": "test_env"}, {"a": "env_separation", "t": "MITIGATES", "b": "unpatched"}, {"a": "change_management", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "test_env", "t": "LOCATED_IN", "b": "greenhouse_in"}, {"a": "unpatched", "t": "SHOWN_IN", "b": "greenhouse_in"}, {"a": "c_sandbox", "t": "TAUGHT_IN", "b": "greenhouse_in"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "test_env"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "env_separation"}, {"a": "c_sandbox", "t": "RELATED_TO", "b": "change_management"}, {"a": "patch_management", "t": "SEEN_IN", "b": "greenhouse_in"}, {"a": "patch_management", "t": "MITIGATES", "b": "unpatched"}, {"a": "data_masking", "t": "SEEN_IN", "b": "greenhouse_in"}]}, "tool_used": "room_overview", "facts": "房間：溫室・測試環境\n代表的資訊主題：新系統先在溫室裡長大：變更先在這裡測試，再上線。\n重點：測試和正式環境要分開，測試用假資料。\n這裡的系統：測試環境\n這裡要注意的威脅：未修補漏洞被利用\n看得到的防護措施：資料遮蔽、修補與弱點管理、測試與正式環境分離、變更管理\n課程概念：沙箱與測試環境\n相關的處理流程：系統變更\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：泳池・資料湖", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.75, "load_s": 0.01, "prompt_tokens": 585, "prompt_s": 2.5, "gen_tokens": 81, "gen_s": 7.22, "tok_per_s": 11.2, "first_token_s": 2.53}}, "state": {}}
 
