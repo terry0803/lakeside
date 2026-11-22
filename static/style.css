@@ -395,7 +395,8 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .empty { color: var(--tx-2); max-width: 64ch; }
 /* 11/23 (the user: in the bigger window the contents stayed at the small window's width, a blank band on the right):
    the reading-width caps are for the 460 px window; the 780 px one fills its width */
-.desk.is-big .empty, .desk.is-big .answer, .desk.is-big .card .text, .desk.is-big .card .note, .desk.is-big .how p { max-width: none; }
+.desk.is-big .empty, .desk.is-big .answer, .desk.is-big .card .text, .desk.is-big .card .note, .desk.is-big .how p,
+.desk.is-big .arch { max-width: none; }      /* the How it works diagram too (it is an SVG: it scales) */
 .empty h2 { margin: 2px 0 8px; font: 650 19px/1.3 var(--font-head); color: #fff; }
 .empty h2 span { display: block; margin-top: 2px; font: 600 14.5px var(--font-zh); color: var(--tx-2); }
 .empty p { margin: 0 0 8px; font-size: 14px; }
