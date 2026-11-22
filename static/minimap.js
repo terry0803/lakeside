@@ -46,7 +46,7 @@ const Minimap = (() => {
         <span class="mm-mini-cap"><span class="mm-mini-t"><b id="mmHereEn"></b><small lang="zh-Hant" id="mmHereZh"></small></span>
           <span class="mm-mini-open">${ICON_OPEN}<span>Map <span lang="zh-Hant">地圖</span></span></span></span></button>
       <button type="button" class="mm-hide" id="mmHide" title="Hide the mini map 收起小地圖" aria-label="Hide the mini map">${ICON_HIDE}</button>
-      <button type="button" class="mm-pill lg-rim lg-hi" id="mmPill" title="Show the mini map 顯示小地圖" aria-label="Show the mini map" hidden>${ICON_MAP}<span>Map <span lang="zh-Hant">地圖</span></span></button>
+      <button type="button" class="mm-pill lg-rim lg-hi" id="mmPill" title="Show the mini map 顯示小地圖" aria-label="Show the mini map" hidden><span class="mm-pill-ico">${ICON_MAP}</span><span class="dock-t"><b>Map</b><small lang="zh-Hant">地圖</small></span></button>
       <section class="mm-panel lg-rim lg-hi" id="mmPanel" hidden aria-label="Map">
         <header class="mm-head"><nav class="mm-crumbs" id="mmCrumbs" aria-label="Where on the map"></nav>
           <button type="button" class="mm-x" id="mmClose" aria-label="Close the map">×</button></header>
