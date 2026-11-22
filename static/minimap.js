@@ -206,11 +206,20 @@ const Minimap = (() => {
     from.hidden = false; float(from, F);
     to.style.zIndex = "2"; to.style.transformOrigin = "0 0";
     const T = toPill ? 440 : 540, o = { duration: T, easing: toPill ? "cubic-bezier(.4, 0, .2, 1)" : "cubic-bezier(.2, .9, .25, 1)", fill: "both" };
+    // 11/23: the Map button is now as wide as the small map (same kind of button as the two under it), so the width no
+    // longer shrinks; the small map rolls up from the bottom to the button's height instead (and down again when it comes
+    // back). The cut stays off the shadow at the open end, so nothing changes when the animation lets go.
+    const miniClip = (toPill ? F.height - Tg.height / s : Tg.height - F.height * s).toFixed(1);
+    const OPEN = "inset(-30px -30px -30px -30px round 50px)", FULL = "inset(0px 0px 0px 0px round 20px)", CUT = `inset(0px 0px ${miniClip}px 0px round 20px)`;
+    const fromMove = [{ transform: "none" }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})` }];
+    const toMove = [{ transform: `translate(${(-dx).toFixed(1)}px, ${(-dy).toFixed(1)}px) scale(${(1 / s).toFixed(4)})` }, { transform: "none" }];
     const anims = [
-      from.animate([{ transform: "none" }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})` }], o),
+      from.animate(fromMove, o),
       from.animate([{ opacity: 1 }, { opacity: 0, offset: 0.4 }, { opacity: 0 }], { duration: T, fill: "both" }),
-      to.animate([{ transform: `translate(${(-dx).toFixed(1)}px, ${(-dy).toFixed(1)}px) scale(${(1 / s).toFixed(4)})` }, { transform: "none" }], o),
+      to.animate(toMove, o),
       to.animate([{ opacity: 0 }, { opacity: 0, offset: 0.1 }, { opacity: 1, offset: 0.45 }, { opacity: 1 }], { duration: T, fill: "both" }),
+      toPill ? mini.animate([{ clipPath: OPEN }, { clipPath: FULL, offset: 0.12 }, { clipPath: CUT }], o)
+             : mini.animate([{ clipPath: CUT }, { clipPath: FULL, offset: 0.88 }, { clipPath: OPEN }], o),
     ];
     if (H0 && H0.width) {                                  // the "−" button rides along with the small map and goes first
       hide.hidden = false; float(hide, H0);
