@@ -200,7 +200,9 @@ const Minimap = (() => {
     const KEYS = ["position", "left", "top", "width", "height", "margin", "zIndex", "pointerEvents", "transformOrigin", "opacity"];
     const float = (el, r) => Object.assign(el.style, { position: "absolute", left: `${(r.left - B.left).toFixed(1)}px`, top: `${(r.top - B.top).toFixed(1)}px`,
       width: `${r.width.toFixed(1)}px`, height: `${r.height.toFixed(1)}px`, margin: "0", zIndex: "3", pointerEvents: "none", transformOrigin: "0 0" });
-    const clean = (el) => { for (const k of KEYS) el.style[k] = ""; el.classList.remove("is-quiet"); };
+    // is-quiet stays on: taking it off restarts the pill's CSS slide-in, which played once more after it had landed (the user:
+    // "after shrinking it bounces once more, like the buttons used to"); the dock buttons keep theirs the same way
+    const clean = (el) => { for (const k of KEYS) el.style[k] = ""; };
     from.hidden = false; float(from, F);
     to.style.zIndex = "2"; to.style.transformOrigin = "0 0";
     const T = toPill ? 440 : 540, o = { duration: T, easing: toPill ? "cubic-bezier(.4, 0, .2, 1)" : "cubic-bezier(.2, .9, .25, 1)", fill: "both" };

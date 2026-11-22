@@ -142,10 +142,12 @@ async function init() {
   goTo(start, { quiet: !fromTour });
   checkHealth();
   renderTasks();
+  // 11/23 (the user: "can the assistant start folded? not open by default feels better"): the full page starts with the
+  // window shut, also when a tour sign sent the visitor here (?room=: the place is set, nothing is asked until they open
+  // it) or it was open last time. Inside iStaging's window the page IS the assistant and opens as before; back from a game
+  // it opens on the new score.
   if (fromGame) openDesk("progress");                      // show the new score instead of asking about the room again
-  else if (fromTour && S.byKey[fromTour]) { openDesk("chat"); runAction("room_overview", "", t("What is in this place?", "這裡有什麼？")); }
   else if (EMBED) openDesk("chat");
-  else if (store.get("deskOpen", false)) openDesk(store.get("deskTab", "chat"));
   else if (!store.get("seenDock", false)) hintDock();
 }
 
