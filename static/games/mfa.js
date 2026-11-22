@@ -99,7 +99,7 @@ Games.mfa = function (d, main, replay) {
           <ul class="mn-numbers">${(story.contacts || []).map((c) => `<li><span>${bi(c.en, c.zh)}</span><b>${numHTML(c.number)}</b></li>`).join("")}</ul>
           <p class="mn-card-src">${bi(`From “${PROC.name_en}” in the knowledge graph`, `出自知識圖的流程「${PROC.name_zh}」`)}</p></section>
         <section class="rs-notebook mn-log" aria-label="Night log"><h3>${bi("Night log", "值班紀錄")} <b id="mnLogN">0</b></h3><ol id="mnLog"></ol></section></div>
-      <div class="mn-phone-wrap"><div class="mn-phone" id="mnPhone"><div class="mn-screen" id="mnScreen">
+      <div class="mn-phone-wrap"><div class="mn-phone" id="mnPhone"><i class="mn-halo" aria-hidden="true"></i><i class="mn-edge" aria-hidden="true"></i><div class="mn-screen" id="mnScreen">
         <div class="mn-status"><span id="mnTime">${esc(story.start)}</span><span class="mn-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>${ICON.batt}</div>
         <div class="mn-lock"><p class="mn-clock" id="mnClock">${esc(story.start)}</p><p class="mn-date">${bi("Sunday, 22 November", "11 月 22 日 星期日")}</p></div>
         <div class="mn-notifs" id="mnNotifs" aria-live="polite"></div>

@@ -228,7 +228,9 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .mm-spot:hover .mm-dot, .mm-spot:focus-visible .mm-dot, .mm-spot:hover .mm-balloon, .mm-spot:focus-visible .mm-balloon { fill: #8ccaff; transform: scale(1.35); }
 .mm-spot.is-here .mm-dot, .mm-dot.is-here-dot { fill: var(--beacon); stroke: #fff; }
 .mm-spot.is-here .mm-balloon { fill: var(--beacon); }
-.mm-here-ring { fill: none; stroke: #ff6a4e; stroke-width: 2.4; vector-effect: non-scaling-stroke; transform-box: fill-box; transform-origin: center; animation: mm-ping 2.4s var(--e-out) infinite; pointer-events: none; }
+.mm-here-ring { fill: none; stroke: #ff6a4e; stroke-width: 2.4; vector-effect: non-scaling-stroke; transform-box: fill-box; transform-origin: center; animation: mm-ping 2.4s var(--e-out) 3; pointer-events: none; }
+/* 11/22 evening (frame drops): the ring pings three times after each move instead of forever. A ring inside the SVG
+   cannot move on its own layer, so every frame of it drew the whole small map again, all the time. */
 .mm-here-flag { fill: var(--beacon); pointer-events: none; }
 .mm-here-flag-t { fill: #fff; font-family: var(--font-head); font-weight: 600; pointer-events: none; }
 .mm-here-flag-zh { font-family: var(--font-zh); font-weight: 400; }
@@ -283,8 +285,18 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .win-btn:active { transform: scale(.9); transition-duration: .1s; }
 #deskSet[aria-expanded="true"] svg { transform: rotate(180deg); }
 #deskClose:hover svg { transform: rotate(90deg); }
-.desk-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 8px 14px 0; padding: 10px 12px; border: 1px solid var(--g-line); border-radius: 16px; background: rgba(255, 255, 255, .06); font-size: 12.5px; color: var(--tx-2); animation: drop-in .35s var(--e-spring); }
-.desk-settings[hidden] { display: none; }
+.desk-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 8px 14px 0; padding: 10px 12px; border: 1px solid var(--g-line); border-radius: 16px; background: rgba(255, 255, 255, .06); font-size: 12.5px; color: var(--tx-2);
+  /* 11/22 evening (the user: opening language and model has hardly any animation): the panel grows open (height from 0, so
+     the tabs below slide down with it instead of jumping), fades in, and its four parts rise one after another; closing
+     folds it back the same way */
+  overflow: clip; interpolate-size: allow-keywords;
+  transition: height .45s var(--e-liquid), opacity .3s ease, translate .45s var(--e-spring), margin-top .45s var(--e-liquid), padding-block .45s var(--e-liquid),
+    border-color .3s ease, display .45s allow-discrete; }
+.desk-settings[hidden] { display: none; height: 0; opacity: 0; translate: 0 -8px; margin-top: 0; padding-block: 0; border-color: transparent; }
+@starting-style { .desk-settings:not([hidden]) { height: 0; opacity: 0; translate: 0 -8px; margin-top: 0; padding-block: 0; border-color: transparent; } }
+.desk-settings:not([hidden]) > * { animation: rise .5s var(--e-spring) backwards; animation-delay: calc(90ms + var(--i, 0) * 60ms); }
+.desk-settings > :nth-child(2) { --i: 1; } .desk-settings > :nth-child(3) { --i: 2; } .desk-settings > :nth-child(4) { --i: 3; }
+@media (prefers-reduced-motion: reduce) { .desk-settings { transition: none; } .desk-settings > * { animation: none !important; } }
 .set-l span[lang] { margin-left: 3px; color: var(--tx-3); }
 .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: rgba(0, 0, 0, .22); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .08); }
 .seg button { position: relative; padding: 4px 12px; overflow: hidden; border: 0; border-radius: 999px; background: none; font: 600 12.5px var(--font-head); color: var(--tx-2); cursor: pointer; transition: background-color .25s, color .25s, box-shadow .25s; }
@@ -304,6 +316,40 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .room-pick select:hover { background-color: rgba(255, 255, 255, .16); }
 .room-pick select:focus-visible { outline: none; border-color: #9fd0ff; box-shadow: 0 0 0 3px rgba(159, 208, 255, .3); }
 .room-pick select.is-changed { animation: flash 1s var(--e-out); }
+/* 11/22 evening (the user: the list still opens in the old style): where the browser lets a <select> be styled
+   (appearance: base-select, Chrome 135+), the list is a glass panel like the rest, grouped by area, each place on two
+   lines (the IT name, then the name in the tour), and it unfolds from the button; elsewhere the system list stays. */
+@supports (appearance: base-select) {
+  .room-pick select, .room-pick select::picker(select) { appearance: base-select; }
+  .room-pick select { display: flex; align-items: center; gap: 8px; padding: 0 12px 0 14px; background-image: none; }
+  .room-pick select > button { all: unset; flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .room-pick select selectedcontent { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .room-pick select selectedcontent .ro-s { display: none; }
+  .room-pick select selectedcontent .ro-t span[lang] { color: var(--tx-2); }
+  .room-pick select::picker-icon { content: ""; flex: none; width: 12px; height: 12px; transition: rotate .35s var(--e-spring);
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 12px no-repeat; }
+  .room-pick select:open::picker-icon { rotate: 180deg; }
+  .room-pick select:open { border-color: rgba(159, 208, 255, .7); background-color: rgba(255, 255, 255, .16); }
+  .room-pick select::picker(select) {
+    box-sizing: border-box; width: anchor-size(width); max-height: min(440px, 62vh); margin-top: 6px; padding: 6px; overflow: hidden auto; scrollbar-width: thin;
+    border: 1px solid var(--g-rim); border-radius: 18px; color: #fff; background: rgba(18, 26, 38, .74);
+    -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 20px 48px rgba(0, 0, 0, .38);
+    transform-origin: 50% 0; opacity: 1; translate: 0 0; scale: 1;
+    transition: opacity .2s ease, translate .38s var(--e-spring), scale .38s var(--e-spring), overlay .38s allow-discrete, display .38s allow-discrete; }
+  .room-pick select:not(:open)::picker(select) { opacity: 0; translate: 0 -6px; scale: .97; }
+  @starting-style { .room-pick select:open::picker(select) { opacity: 0; translate: 0 -6px; scale: .97; } }
+  .room-pick select optgroup { padding: 0; background: none; color: var(--tx-3); font: 600 11.5px var(--font-head); letter-spacing: .01em; }
+  .room-pick select optgroup + optgroup { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--g-line); }
+  .room-pick select option { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; padding: 7px 10px; border-radius: 12px; background: none;
+    color: #fff; font: 500 13px var(--font-body, inherit); white-space: normal; overflow-wrap: anywhere; cursor: pointer; transition: background-color .15s ease; }
+  .room-pick select option::checkmark { display: none; }
+  .room-pick select option:hover, .room-pick select option:focus-visible { outline: none; background: rgba(255, 255, 255, .12); }
+  .room-pick select option:checked { background: rgba(98, 160, 255, .26); box-shadow: inset 0 0 0 1px rgba(159, 208, 255, .45); }
+  .room-pick select option .ro-t span[lang] { color: var(--tx-2); font-family: var(--font-zh); }
+  .room-pick select option .ro-s { color: var(--tx-3); font-size: 11.5px; }
+  @media (prefers-reduced-motion: reduce) { .room-pick select::picker(select) { transition: none; } }
+}
 
 /* the tabs: a capsule with a piece of clear glass that slides to the chosen one */
 .tabs { position: relative; display: flex; gap: 2px; margin: 12px 14px 12px; padding: 4px; overflow-x: auto; border-radius: 999px; background: rgba(0, 0, 0, .2); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(255, 255, 255, .08); scrollbar-width: none; overscroll-behavior-x: contain; }
@@ -338,8 +384,9 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .empty p { margin: 0 0 8px; font-size: 14px; }
 .starter-h { margin: 16px 0 8px !important; font: 600 12.5px var(--font-head) !important; color: var(--tx-3); }
 .starter-h span { font-family: var(--font-zh); font-weight: 400; }
-.starter { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 7px; }
+.starter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 7px; }
 .starter .chip { width: 100%; border-radius: 14px; padding: 8px 12px; animation: rise .5s var(--e-spring) backwards; animation-delay: calc(.12s + var(--i, 0) * 45ms); }
+.starter .chip { flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; }   /* 11/22 evening: English, then Chinese below */
 
 .msg { margin: 0 0 18px; }
 .msg.is-in { animation: msg-in .45s var(--e-out) backwards; }
@@ -745,6 +792,7 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 /* the window grows out of the button that opened it and shrinks back into it (app.js morphDesk, Web Animations) */
 .desk.is-morph { animation: none !important; }
 .dock-btn.is-quiet { animation: none; }               /* no slide-in while the window lands in it */
+.dock.is-opening { pointer-events: none; }            /* 11/22 evening: faded while the window grows out of them */
 .dock-btn.is-receiving { opacity: 0; }
 /* a press squashes the glass a little and the release wobbles it back like jelly: app.js, Web Animations added on top */
 /* the next tab's content slides in from the side you moved toward */
@@ -760,7 +808,9 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 /* ---------------------------------------------------------------- 11/22 afternoon: the game window over the tour (app.js openGame)
    A game started here opens over the tour instead of in a new tab. Plain: a soft shade over the tour, the game in a
    rounded frame with a thin edge. It grows out of the button that opened it and shrinks away when it closes. */
-.game-win { position: fixed; inset: 0; z-index: 60; display: grid; padding: 14px; background: rgba(4, 8, 14, .55); animation: gw-in .26s var(--e-out); }
+.game-win { position: fixed; inset: 0; z-index: 60; display: grid; padding: 14px; animation: gw-in .26s var(--e-out); }
+/* 11/22 evening: the dark backdrop is a layer of its own, so closing fades it by opacity instead of painting a colour */
+.game-win::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(4, 8, 14, .55); pointer-events: none; }
 .game-win[hidden] { display: none; }
 .game-frame { min-width: 0; min-height: 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, .14); border-radius: 20px; background: #0d1117; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); animation: gw-grow .46s var(--e-out); }
 .game-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
@@ -788,5 +838,8 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 
 /* ---------------------------------------------------------------- 11/22 afternoon: the two glass capsules the window splits into
    when it closes, and that the two buttons become when it opens (app.js splitDesk) */
+/* 11/22 evening (frame drops): the shape that flies between a button and the window has no backdrop blur. It changes
+   size on every frame, so the blur under it had to be worked out again each time; a darker tint stands in for the
+   glass for the half second it is moving. */
 .desk-ghost { position: fixed; z-index: 35; pointer-events: none; box-sizing: border-box; border: 1px solid var(--g-rim); border-radius: 20px;
-  background: var(--g-sheen); -webkit-backdrop-filter: var(--g-filter-sm); backdrop-filter: var(--g-filter-sm); box-shadow: var(--g-inner), var(--g-shadow-sm); }
+  background: rgba(24, 32, 44, .5); box-shadow: var(--g-inner); contain: strict; }

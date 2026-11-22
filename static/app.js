@@ -315,6 +315,8 @@ function stopDeskMorph() {
   if (!m) return;
   for (const a of m.anims) a.cancel();
   for (const g of m.ghosts) g.remove();
+  $("#desk").style.transformOrigin = "";
+  if (m.restore) m.restore();
   m.end();
 }
 const rectOf = (el) => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; };
@@ -322,48 +324,49 @@ const pxBox = (r) => ({ left: `${r.left.toFixed(1)}px`, top: `${r.top.toFixed(1)
 function splitDesk(opening, end, mainBtn) {
   const d = $("#desk"), btns = [$("#dockChat"), $("#dockGames")];
   if (EMBED || RM.matches || typeof d.animate !== "function" || btns.some((b) => !b || b.offsetParent === null)) return false;
-  const B = btns.map(rectOf), D = rectOf(d);
-  if (!D.width || !D.height || B.some((r) => !r.width)) return false;
-  // 11/22 (the user: opening still showed two halves, "even stranger"): no halves. Both shapes start (closing) or end
-  // (opening) as the whole window, on top of each other. The button that opened it is the main shape; the other one only
-  // shows while the two are apart: closing, it comes out of the window as they separate; opening, it melts into it.
-  const main = Math.max(0, btns.indexOf(mainBtn));
-  const T = opening ? 560 : 540, ease = opening ? "cubic-bezier(.2, .9, .25, 1)" : "cubic-bezier(.45, 0, .2, 1)";
-  const anims = [], ends = [];
-  // 11/22 (the user: two shapes growing on top of each other looked odd): opening has one shape only, the clicked button's
-  const ghosts = btns.map((btn, i) => {
-    if (opening && i !== main) return null;
-    const g = document.createElement("div"); g.className = "desk-ghost"; g.setAttribute("aria-hidden", "true");
-    const a = pxBox(opening ? B[i] : D), z = pxBox(opening ? D : B[i]);
-    Object.assign(g.style, a); ends.push(z); document.body.appendChild(g);
-    const lag = i === main ? 0 : 50;
-    anims.push(g.animate([a, z], { duration: T, delay: lag, easing: ease, fill: "both" }));
-    const fade = opening
-      ? (i === main ? [{ opacity: 0 }, { opacity: 1, offset: 0.15 }, { opacity: 1 }]
-                    : [{ opacity: 0 }, { opacity: 1, offset: 0.15 }, { opacity: 1, offset: 0.4 }, { opacity: 0, offset: 0.8 }, { opacity: 0 }])
-      : (i === main ? [{ opacity: 0 }, { opacity: 1, offset: 0.12 }, { opacity: 1 }]
-                    : [{ opacity: 0 }, { opacity: 0, offset: 0.2 }, { opacity: 1, offset: 0.55 }, { opacity: 1 }]);
-    anims.push(g.animate(fade, { duration: T, delay: lag, fill: "both" }));
-    return g;
-  }).filter(Boolean);
+  const main = Math.max(0, btns.indexOf(mainBtn)), btn = btns[main];
+  const B = rectOf(btn), D = rectOf(d);
+  if (!D.width || !D.height || !B.width || !B.height) return false;
+  // 11/22 evening (the user: the window turned all grey before its contents showed, opening and closing): the window
+  // itself grows out of the button and shrinks back into it, contents showing all the way, the way the big map grows out
+  // of the small one (minimap.js morphMap): scaled to the button's width, moved onto it, cut to its height with the
+  // button's corners. Before, an empty glass shape flew instead and the window only showed in the last 30% of the opening.
+  const s = B.width / D.width, r = parseFloat(getComputedStyle(btn).borderTopLeftRadius) || 20;
+  const cut = Math.max(0, D.height - B.height / s);
+  const small = { transform: `translate(${(B.left - D.left).toFixed(1)}px, ${(B.top - D.top).toFixed(1)}px) scale(${s.toFixed(4)})`,
+    clipPath: `inset(0px 0px ${cut.toFixed(1)}px 0px round ${(r / s).toFixed(1)}px)` };
+  // the open end leaves room for the window's shadow, so nothing changes when the animation lets go
+  const big = { transform: "translate(0px, 0px) scale(1)", clipPath: "inset(-60px -60px -60px -60px round 80px)" };
+  const T = opening ? 560 : 500, ease = opening ? "cubic-bezier(.2, .9, .25, 1)" : "cubic-bezier(.45, 0, .2, 1)";
+  d.style.transformOrigin = "0 0";
+  const anims = [d.animate(opening ? [small, big] : [big, small], { duration: T, easing: ease, fill: "both" })];
+  let restore = null;
   if (opening) {
-    // the clicked button fades under its shape, the other one fades where it is; the column hides once both are gone;
-    // the window shows at the end
-    btns.forEach((b, i) => anims.push(b.animate([{ opacity: 1 }, { opacity: 0 }], { duration: i === main ? 130 : 200, easing: "ease-out", fill: "forwards" })));
-    anims.push(d.animate([{ opacity: 0 }, { opacity: 0, offset: 0.7 }, { opacity: 1 }], { duration: T, fill: "both" }));
+    // the window is already there, small, where the button was; the buttons fade under it
+    anims.push(d.animate([{ opacity: 0.4 }, { opacity: 1, offset: 0.3 }, { opacity: 1 }], { duration: T, fill: "both" }));
+    btns.forEach((b, i) => anims.push(b.animate([{ opacity: 1 }, { opacity: 0 }], { duration: i === main ? 120 : 200, easing: "ease-out", fill: "forwards" })));
   } else {
-    anims.push(d.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, easing: "ease-in", fill: "forwards" }));
+    // closing, fourth try (the user: it vanished and the buttons popped up; then the buttons still seemed to appear
+    // from nowhere; then a second, separate slide still did not feel right): the way a phone closes an app. The two
+    // buttons come back in their places as soon as the window starts to leave (fading and growing a little, the other
+    // one a moment later), so the window shrinks onto a button that is already there and melts into it at the end.
+    // One motion, nothing turns up at the end.
+    const other = btns[1 - main];
+    anims.push(d.animate([{ opacity: 1 }, { opacity: 0 }], { duration: T * 0.3, delay: T * 0.7, easing: "ease-in", fill: "both" }));
+    anims.push(btn.animate([{ opacity: 0, transform: "scale(.94)" }, { opacity: 1, transform: "none" }], { duration: T * 0.55, delay: T * 0.1, easing: "cubic-bezier(.2, .9, .25, 1)", fill: "both" }));
+    anims.push(other.animate([{ opacity: 0, transform: "scale(.94)" }, { opacity: 1, transform: "none" }], { duration: T * 0.55, delay: T * 0.2, easing: "cubic-bezier(.2, .9, .25, 1)", fill: "both" }));
+    btn.style.zIndex = ""; other.style.zIndex = "";
+    restore = () => { btn.style.zIndex = ""; other.style.zIndex = ""; };
   }
-  const mo = { anims, ghosts, end };
+  const mo = { anims, ghosts: [], end, restore };
   deskMorph = mo;
   Promise.all(anims.map((x) => x.finished)).then(() => {
     if (deskMorph !== mo) return;
     deskMorph = null;
-    ghosts.forEach((g, i) => Object.assign(g.style, ends[i]));          // where they landed
+    end();                                              // opening: the column goes; closing: the window hides, the buttons land
     for (const x of anims) x.cancel();
-    end();                                                              // the real window or buttons show under them...
-    const outs = ghosts.map((g) => g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: "ease-out", fill: "forwards" }));
-    Promise.all(outs.map((o) => o.finished)).finally(() => ghosts.forEach((g) => g.remove()));   // ...and the shapes fade away
+    d.style.transformOrigin = "";
+    if (restore) restore();
   }).catch(() => { /* stopped by the next open or close */ });
   return true;
 }
@@ -378,10 +381,22 @@ function openDesk(tab, fromBtn) {
   if (wasHidden) d.classList.toggle("is-morph", !!merge);   // merging: no CSS slide-in at all; otherwise the slide-in plays
   if (merge) deskFrom = fromBtn;
   d.hidden = false;
-  const shown = () => { $("#layout").classList.add("is-desk"); window.dispatchEvent(new Event("resize")); };
+  // 11/22 evening (the user: animations sometimes drop frames): no resize event for the whole page any more. It made the
+  // small map draw itself again, up to 90 ms in one frame; now only the tabs are measured again, and the big map only
+  // when it is open (its width depends on the window).
+  const shown = () => {
+    clearTimeout(deskLater); deskLater = null;
+    $("#dock").classList.remove("is-opening");
+    $("#layout").classList.add("is-desk");
+    if (typeof Minimap !== "undefined" && Minimap.state() === "open") window.dispatchEvent(new Event("resize"));
+    else { moveInk(true); fitTabs(); }
+  };
   if (merge && splitDesk(true, () => { shown(); }, fromBtn)) {
     for (const b of document.querySelectorAll(".dock-btn")) b.classList.add("is-quiet");
-    deskLater = setTimeout(shown, 220);                   // the column goes once both buttons have faded
+    // the column goes when the window has landed (splitDesk calls shown), not 0.22 s in: switching the layout in the
+    // middle of the motion was the long frame. Until then the faded buttons ignore clicks.
+    $("#dock").classList.add("is-opening");
+    deskLater = setTimeout(shown, 1200);                  // a backstop, well after the window has landed
   } else {
     d.classList.remove("is-morph");
     shown();
@@ -404,10 +419,12 @@ function closeDesk() {
   d.classList.add("is-closing", "is-morph");
   const landed = () => {
     d.classList.remove("is-closing", "is-morph"); d.hidden = true;
+    // the buttons have already faded in under the shrinking window; only the one it went into gives a small settle
+    const into = deskFrom && deskFrom.isConnected ? deskFrom : $("#dockChat");
     for (const x of btns) {
       x.classList.remove("is-receiving");
-      if (!RM.matches && x.animate) x.animate([{ transform: "scale(.94)" }, { transform: "scale(1.02)", offset: .6 }, { transform: "scale(1)" }],
-        { duration: 360, easing: "ease-out", composite: "add" });
+      if (x === into && !RM.matches && x.animate) x.animate([{ transform: "scale(.97)" }, { transform: "scale(1.012)", offset: .55 }, { transform: "scale(1)" }],
+        { duration: 320, easing: "ease-out", composite: "add" });
     }
   };
   if (!splitDesk(false, landed, deskFrom && deskFrom.isConnected ? deskFrom : $("#dockChat"))) {                        // no buttons to land in (the big map hides them): slide out as before
@@ -488,7 +505,15 @@ function closeGame() {
   // 11/22 evening (the user: the closing animation should be smoother too): the window shrinks back into the link or
   // button it grew out of, the dark backdrop clears at the same time, and that link gives a small bounce as it lands.
   // Before: a 0.23 s fade with a slight shrink in place, so the game seemed to vanish rather than go back.
-  if (RM.matches || typeof box.animate !== "function") shut();
+  // the Progress tab is drawn again with the new score: put the focus back on the same link in the new list
+  const refocus = () => {
+    const again = gameHref && [...document.querySelectorAll(`a[href="${gameHref}"]`)].find((a) => a.offsetParent !== null);
+    const back = again || (gameFrom && gameFrom.isConnected && gameFrom.offsetParent !== null ? gameFrom : null) || $("#dockGames");
+    if (back && back.offsetParent !== null) back.focus({ preventScroll: true });
+  };
+  const refresh = () => fetch(`/api/state?session=${encodeURIComponent(S.session)}`).then((r) => r.json())
+    .then((res) => { updateState(res); refocus(); }).catch(() => {});
+  if (RM.matches || typeof box.animate !== "function") { shut(); refresh(); }
   else {
     const fr = box.getBoundingClientRect();
     let end = "scale(.92)";
@@ -498,32 +523,28 @@ function closeGame() {
       box.style.transformOrigin = `${(r.left + r.width / 2 - fr.left).toFixed(0)}px ${(r.top + r.height / 2 - fr.top).toFixed(0)}px`;
       end = "scale(.12)";
     }
+    // 11/22 evening (frame drops): the dark backdrop is its own layer (::before) and fades by opacity; animating the
+    // window's background colour painted the whole screen again on every frame
     gameAnims = [
       box.animate([{ transform: "scale(1)", opacity: 1 }, { opacity: 1, offset: 0.4 }, { transform: end, opacity: 0 }],
         { duration: 400, easing: "cubic-bezier(.45, 0, .25, 1)", fill: "forwards" }),
-      w.animate([{ backgroundColor: getComputedStyle(w).backgroundColor }, { backgroundColor: "rgba(4, 8, 14, 0)" }],
-        { duration: 340, delay: 60, easing: "ease-out", fill: "forwards" }),
+      w.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 340, delay: 60, easing: "ease-out", fill: "forwards", pseudoElement: "::before" }),
     ];
     const mine = gameAnims;
-    Promise.all(mine.map((a) => a.finished)).then(() => {
+    Promise.all(mine.map((a) => a.finished)).then(async () => {
       if (gameAnims !== mine) return;
       shut();
-      // the Progress list may have been drawn again with the new score meanwhile: the same link in the new list
+      // the new score is fetched and the Progress list drawn again only now: during the shrink it cost a long frame.
+      // Then the link it landed in (the same link in the new list) gives its small bounce.
+      await refresh();
       const land = (toHref && [...document.querySelectorAll("a[href]")].find((a) => a.getAttribute("href") === toHref && onScreen(a))) || (onScreen(to) ? to : null);
       if (land && land.animate) land.animate([{ transform: "scale(.92)" }, { transform: "scale(1.04)", offset: 0.6 }, { transform: "scale(1)" }],
         { duration: 340, easing: "ease-out", composite: "add" });
     }).catch(() => { /* opened again halfway */ });
-    gameShut = setTimeout(shut, 1200);                    // a backstop if the animations never finish
+    gameShut = setTimeout(() => { if (w.classList.contains("is-closing")) { shut(); refresh(); } }, 1200);   // a backstop if the animations never finish
   }
   $("#layout").inert = false;
-  // the Progress tab is drawn again with the new score: put the focus back on the same link in the new list
-  const refocus = () => {
-    const again = gameHref && [...document.querySelectorAll(`a[href="${gameHref}"]`)].find((a) => a.offsetParent !== null);
-    const back = again || (gameFrom && gameFrom.isConnected && gameFrom.offsetParent !== null ? gameFrom : null) || $("#dockGames");
-    if (back && back.offsetParent !== null) back.focus({ preventScroll: true });
-  };
   refocus();
-  fetch(`/api/state?session=${encodeURIComponent(S.session)}`).then((r) => r.json()).then((res) => { updateState(res); refocus(); }).catch(() => {});
 }
 
 function hintDock() {        // the first visit: a word next to the button, gone after a while or on any click
@@ -537,17 +558,21 @@ function bindUi() {
   $("#dockChat").addEventListener("click", (e) => (shut() ? openDesk("chat", e.currentTarget) : $("#pane-chat").hidden ? showTab("chat") : closeDesk()));
   $("#dockGames").addEventListener("click", (e) => (shut() ? openDesk("progress", e.currentTarget) : $("#pane-progress").hidden ? showTab("progress") : closeDesk()));
   $("#deskClose").addEventListener("click", closeDesk);
+  // 11/22 evening (the user: the tab highlight was off after making the window bigger or smaller): the window's width
+  // changes over 0.55 s, and the resize event sent at the click measured the tabs before that. The tab row is watched
+  // instead (below), so the highlight follows the tabs on every frame of the change.
   $("#deskBig").addEventListener("click", () => {
     const big = !$("#desk").classList.contains("is-big");
     $("#desk").classList.toggle("is-big", big); $("#deskBig").setAttribute("aria-pressed", String(big)); store.set("deskBig", big);
-    window.dispatchEvent(new Event("resize"));
   });
   if (store.get("deskBig", false)) { $("#desk").classList.add("is-big"); $("#deskBig").setAttribute("aria-pressed", "true"); }
+  // 11/22 evening: the settings panel grows open and folds away in CSS (.desk-settings transitions, display allow-discrete)
   $("#deskSet").addEventListener("click", () => { const s = $("#deskSettings"); s.hidden = !s.hidden; $("#deskSet").setAttribute("aria-expanded", String(!s.hidden)); });
   $("#desk").addEventListener("keydown", (ev) => { if (ev.key === "Escape" && !ev.defaultPrevented) closeDesk(); });
   for (const b of document.querySelectorAll(".tabs [role=tab]")) b.addEventListener("click", () => showTab(b.id.replace("tab-", "")));
   $("#tabs").addEventListener("scroll", fitTabs, { passive: true });
   window.addEventListener("resize", () => { moveInk(true); fitTabs(); });
+  if ("ResizeObserver" in window) new ResizeObserver(() => { moveInk(true); fitTabs(); }).observe($("#tabs"));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { moveInk(true); fitTabs(); });
   for (const b of document.querySelectorAll("[data-lang]")) {
     b.setAttribute("aria-pressed", String(b.dataset.lang === S.langPref));
@@ -658,13 +683,21 @@ async function checkHealth() {
 /* ---------------------------------------------------------------- rooms and the tour */
 function fillRoomSelect() {
   const sel = $("#roomSelect"); sel.innerHTML = "";
+  // 11/22 evening: where a <select> can be styled (style.css, base-select), each place gets two lines and the button shows
+  // the first one through <selectedcontent>; elsewhere the options stay plain text
+  const rich = !!(window.CSS && CSS.supports("appearance", "base-select"));
+  if (rich) { const b = document.createElement("button"); b.type = "button"; b.appendChild(document.createElement("selectedcontent")); sel.appendChild(b); }
   const groups = {};
   for (const r of S.rooms) (groups[r.area_en] ||= { zh: r.area_zh, rooms: [] }).rooms.push(r);
   for (const [en, g] of Object.entries(groups)) {
     const og = document.createElement("optgroup"); og.label = `${en} ${g.zh}`;
     for (const r of g.rooms.sort((a, b) => (a.story || 99) - (b.story || 99) || a.url_index - b.url_index)) {
       const o = document.createElement("option"); o.value = r.key;
-      o.textContent = r.it_en === r.name_en ? `${r.it_en} ${r.it_zh}` : `${r.it_en} ${r.it_zh} (${r.name_en}${r.name_zh ? " " + r.name_zh : ""})`;
+      const plain = r.it_en === r.name_en ? `${r.it_en} ${r.it_zh}` : `${r.it_en} ${r.it_zh} (${r.name_en}${r.name_zh ? " " + r.name_zh : ""})`;
+      if (rich) {
+        o.innerHTML = `<span class="ro-t">${esc(r.it_en)} <span lang="zh-Hant">${esc(r.it_zh)}</span></span>` +
+          (r.it_en === r.name_en ? "" : `<span class="ro-s">${esc(r.name_en)}${r.name_zh ? " " + esc(r.name_zh) : ""}</span>`);
+      } else o.textContent = plain;
       og.appendChild(o);
     }
     sel.appendChild(og);
@@ -707,7 +740,9 @@ function updateState(res) {
     if ((res.state.found_n || 0) > (before.found_n || 0)) bump($("#progBadge"));
     if (played > GAMES.filter((g) => (before.games || {})[g[0]]).length) bump($("#dockGamesN"));
   }
-  if (!$("#pane-progress").hidden) renderProgress(false);
+  // 11/22 evening (frame drops): the Progress tab is drawn again only when something it shows has changed
+  const shows = (s) => (s ? JSON.stringify([s.found, s.games, s.visited_keys]) : "");
+  if (!$("#pane-progress").hidden && shows(before) !== shows(res.state)) renderProgress(false);
 }
 
 /* ---------------------------------------------------------------- chat */
@@ -724,15 +759,14 @@ function renderEmpty() {
     ["I clicked a link in an email and typed my password", "我點了信裡的連結還輸入了密碼"], ["What should I do next?", "接下來要去哪？"],
   ];
   const box = $(".starter", th);
-  let i = 0;
-  for (const [en, z] of starters) {          // one row per question: English on the left, the same in Chinese on the right
-    for (const q of [en, z]) {
-      const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = q;
-      if (q === z) b.lang = "zh-Hant";
-      b.style.setProperty("--i", i++);
-      b.addEventListener("click", () => ask(q)); box.appendChild(b);
-    }
-  }
+  // 11/22 evening (the user: why are they apart?): one button per question with both languages, like the follow-up
+  // questions under each answer; it asks in the chat's language (the language button in the settings, or the last
+  // question's language). Before, the English and the Chinese question were two buttons side by side.
+  starters.forEach(([en, z], i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.innerHTML = LB(en, z);
+    b.style.setProperty("--i", i);
+    b.addEventListener("click", () => ask(zh() || S.langPref === "zh" ? z : en)); box.appendChild(b);
+  });
 }
 
 function growAsk() {
