@@ -421,7 +421,10 @@ Games.ir = function (d, main, replay) {
     };
     elm.addEventListener("pointerup", end);
     elm.addEventListener("pointercancel", end);
-    elm.addEventListener("keydown", (ev) => { if ((ev.key === "Enter" || ev.key === " ") && o && o.key) { ev.preventDefault(); o.key(); } });
+    elm.addEventListener("keydown", (ev) => {
+      if (elm.classList.contains("is-locked") || elm.classList.contains("is-used")) return;     // 11/22: like the pointer, the keyboard leaves these alone
+      if ((ev.key === "Enter" || ev.key === " ") && o && o.key) { ev.preventDefault(); o.key(); }
+    });
   }
 
   function valid(kind, h) {
@@ -454,6 +457,7 @@ Games.ir = function (d, main, replay) {
   /* Click instead of drag (and the keyboard): pick a tool, then click where it goes. */
   function pick(kind) {
     if (!S || S.over || S.hold) return;
+    if ((kind === "isolate" || kind === "cut") && toolOff(kind)) return;      // 11/22: a locked or used-up tool is not picked up
     if (kind === "tape" && !S.analyzed) return tipNote(bi("Not yet: the SOC has to find out how they got in first.", "還不行：資安監控中心要先查出他們怎麼進來的。"));
     if (kind === "usb" && S.usb) return;
     S.sel = S.sel === kind ? null : kind;
@@ -489,8 +493,15 @@ Games.ir = function (d, main, replay) {
     if (k && S.open === k) { const x = $(".ir-close-x", $("#irClose")); if (x) x.focus({ preventScroll: true }); }   // into the close-up
   }
 
-  // picked up with the keyboard: go straight to the first place on the map where it can go
-  function toTarget() { const n = $("#irMap .ir-sw.is-target, #irMap .ir-node.is-target") || ($("#irTunnel.is-target") && $("#irTunnelHit")); if (n) n.focus({ preventScroll: true }); }
+  // picked up with the keyboard: go straight to the place on the map where it matters most. 11/22 (review: the first target in
+  // page order was an office PC, so Enter, Enter put a shield there): devices in the order the ransomware goes for them
+  // (PRIORITY), the ones already encrypted last; the cutter goes to the crew's line first, then to a switch.
+  function toTarget() {
+    const rank = (g) => { const k = g.dataset.k, i = PRIORITY.indexOf(k); return (S.nodes[k].state === "encrypted" ? PRIORITY.length + 1 : 0) + (i < 0 ? PRIORITY.length : i); };
+    const node = $$("#irMap .ir-node.is-target").sort((a, b) => rank(a) - rank(b))[0];
+    const n = ($("#irTunnel.is-target") && $("#irTunnelHit")) || $("#irMap .ir-sw.is-target") || node;
+    if (n) n.focus({ preventScroll: true });
+  }
 
   function nudge(e) { e.classList.remove("is-nudge"); void e.offsetWidth; e.classList.add("is-nudge"); }
 
@@ -602,7 +613,14 @@ Games.ir = function (d, main, replay) {
     const end = () => { if (!p) return; p = null; btn.classList.remove("is-pull"); btn.style.transform = ""; nudge($(".ir-port", $("#irClose")) || btn); };
     btn.addEventListener("pointerup", end);
     btn.addEventListener("pointercancel", end);
-    btn.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); use("unplug", k); } });
+    btn.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      ev.preventDefault();
+      use("unplug", k);
+      // 11/22: the redraw takes the cable's button away: the keyboard goes to the close-up's ×, not to the power button (a trap)
+      const x = $(".ir-close-x", $("#irClose"));
+      if (x) x.focus({ preventScroll: true });
+    });
   }
 
   function holdCtl(b, ms, done) {   // a power button: hold it down until the ring closes
@@ -676,13 +694,16 @@ Games.ir = function (d, main, replay) {
     return "";
   };
 
+  // a tool is out of reach before the SOC call, and once used up (the cutter still reaches the crew's line while it is live)
+  const toolOff = (k) => !S.soc || (S.uses[k] <= 0 && !(k === "cut" && S.acct));
   function tools() {
     const box = $("#irTools");
     if (!box) return;
     if (S.drag) { S.dirty = true; return; }
     const off = !S.soc;
-    const tool = (k, svg, en, zh, n, hint) => `<div class="ir-tool${off ? " is-locked" : ""}${!off && n <= 0 && !(k === "cut" && S.acct) ? " is-used" : ""}${S.sel === k ? " is-sel" : ""}" data-k="${k}" tabindex="${off ? -1 : 0}" role="button"
-        aria-label="${esc(`${en}: drag it onto the map`)}">${svg}<b>${bi(en, zh)}</b><em>${n}×</em><span>${hint}</span></div>`;
+    // 11/22: a used-up tool is out of the Tab order too (review: Tab still reached the 0× shield, and Enter picked it up)
+    const tool = (k, svg, en, zh, n, hint) => `<div class="ir-tool${off ? " is-locked" : ""}${!off && n <= 0 && !(k === "cut" && S.acct) ? " is-used" : ""}${S.sel === k ? " is-sel" : ""}" data-k="${k}" tabindex="${toolOff(k) ? -1 : 0}" role="button"
+        aria-disabled="${toolOff(k)}" aria-label="${esc(`${en}: drag it onto the map`)}">${svg}<b>${bi(en, zh)}</b><em>${n}×</em><span>${hint}</span></div>`;
     box.innerHTML = `<h3>${bi("The SOC's tools", "資安監控中心的工具")}${off ? `<small>${CB.ICON.lock}${bi("after the SOC call", "打給資安監控中心之後")}</small>` : ""}</h3>
       <div class="ir-tool-row">${tool("isolate", SVG.shield, "EDR shield", "端點防護", S.uses.isolate, bi("onto a device", "放到裝置上"))}
         ${tool("cut", SVG.cutter, "Cutter", "剪刀", S.uses.cut, bi("a switch, or the crew's line", "交換器，或歹徒的線"))}</div>`;
@@ -693,6 +714,8 @@ Games.ir = function (d, main, replay) {
     const box = $("#irHand");
     if (!box) return;
     if (S.drag) { S.dirty = true; return; }
+    // 11/22: a redraw keeps the keyboard on the same card (by data-k), also once it is played (review: focus fell to the page)
+    const had = box.contains(document.activeElement) ? document.activeElement.dataset.k : null;
     box.innerHTML = PLAYS.map((k) => CARD[k]).map((c) => {
       const lk = locked(c), up = usedUp(c);
       return `<div class="ir-card${lk ? " is-locked" : ""}${up ? " is-used" : ""}${S.played[c.k] ? " is-played" : ""}" data-k="${c.k}" tabindex="${lk || up ? -1 : 0}" role="button" aria-disabled="${lk || up}">
@@ -703,6 +726,8 @@ Games.ir = function (d, main, replay) {
       const c = CARD[cEl.dataset.k];
       draggable(cEl, c.k, { tap: () => nudge(cEl), key: () => { if (!locked(c) && !usedUp(c)) use(c.k); } });
     }
+    const back = had && $(`.ir-card[data-k="${had}"]`, box);
+    if (back) back.focus({ preventScroll: true });
   }
 
   function markStep(c) {
@@ -1187,6 +1212,8 @@ Games.ir = function (d, main, replay) {
     renderQs();
     requestAnimationFrame(() => CB.drawStrings(B.strings));
     if (B.solved.every(Boolean)) CB.addClose(wrapUp);
+    // 11/22: solved with a button the redraw took away (the chain's "That's the order"): on to the next question's control
+    CB.refocus("#cbQ #cbSpool, #cbQ .cb-opt:not([disabled]), #cbQ #irFlag, #cbQs .cb-close");
   }
 
   function fact(html) { $("#cbCrewFacts").insertAdjacentHTML("beforeend", `<li class="is-new">${html}</li>`); }

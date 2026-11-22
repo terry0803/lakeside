@@ -82,7 +82,7 @@ Games.mfa = function (d, main, replay) {
     loop.stop();
     S = { clock: 0, over: false, paused: false, hold: 0, fired: {}, res: {}, notifs: [], log: [], shields: sh.shields, points: 0, losses: [],
       approved: 0, call: null, soc: null, reported: null, pwReset: false, own: { state: "idle", tries: 0, left: 0 }, endAt: 0,
-      alerts: [], badge: "blocked", app: null, dial: "", recents: [], streak: 0, calledFake: false };
+      alerts: [], badge: "blocked", app: null, dial: "", recents: [], streak: 0, calledFake: false, via: {} };
     B = null;
     st.scene("mn_room", 0.18);
     H = CB.hud({ pause: true, clock: story.start, clockLabel: bi("on call", "值班中"), shields: sh.shields });
@@ -486,6 +486,7 @@ Games.mfa = function (d, main, replay) {
     }
     if (how === "bad") {
       S.res[e.id] = bad.k;
+      S.via[e.id] = via;      // 11/22: unlocked remotely or the badge unblocked, for the door log on the case board (doorRows)
       const dm = via === "unlock" && e.box === "reader" ? DOORS[0].damage : e.damage;
       addLog(e.cam.slice(0, 5), via === "unblock" ? bi(`${e.alert_en} → badge ${BADGE_ID} was unblocked, so the door opened.`, `${e.alert_zh} → 員工證 ${BADGE_ID} 被解除停用，門開了。`)
         : bi(`${e.alert_en} → you unlocked the door remotely.`, `${e.alert_zh} → 你遠端開了門。`), "is-bad");
@@ -634,7 +635,8 @@ Games.mfa = function (d, main, replay) {
 
   const KEYS = [["1", ""], ["2", "ABC"], ["3", "DEF"], ["4", "GHI"], ["5", "JKL"], ["6", "MNO"], ["7", "PQRS"], ["8", "TUV"], ["9", "WXYZ"], ["*", ""], ["0", "+"], ["#", ""]];
   const keysHTML = (id, keys) => `<div class="mn-keys" id="${id}">${(keys || KEYS).map(([k, s]) => (k ? `<button type="button" data-k="${k}" aria-label="${k === "del" ? "Delete" : k}">${k === "del" ? "⌫" : `<b>${k}</b><small>${s}</small>`}</button>` : "<span></span>")).join("")}</div>`;
-  const shownNum = (s) => { const x = digitsOf(s); return x.length > 7 ? x.replace(/^(\d{4})(\d{3})(\d*)$/, (m, a, b, c) => [a, b, c].filter(Boolean).join("-")) : x; };
+  // 11/22 evening: the crew's number is a UK drama number (+44 7700 900417), typed with or without the 00 in front
+  const shownNum = (s) => { const x = digitsOf(s); if (/^(00)?44\d{10}$/.test(x)) { const y = x.replace(/^00/, ""); return `+44 ${y.slice(2, 6)} ${y.slice(6)}`; } return x.length > 7 ? x.replace(/^(\d{4})(\d{3})(\d*)$/, (m, a, b, c) => [a, b, c].filter(Boolean).join("-")) : x; };
   const keyFx = (b) => { if (!b) return; b.classList.remove("is-hit"); void b.offsetWidth; b.classList.add("is-hit"); };
 
   function onKey(ev) {
@@ -677,7 +679,7 @@ Games.mfa = function (d, main, replay) {
   }
   function dialKey(k) {
     if (k === "del") S.dial = S.dial.slice(0, -1);
-    else if (S.dial.length < 13) { S.dial += k; CB.SFX.play("dtmf"); keyFx($(`#mnDialKeys [data-k="${k === "#" ? "\\#" : k === "*" ? "\\*" : k}"]`)); }
+    else if (S.dial.length < 14) { S.dial += k; CB.SFX.play("dtmf"); keyFx($(`#mnDialKeys [data-k="${k === "#" ? "\\#" : k === "*" ? "\\*" : k}"]`)); }
     dialNum();
   }
   function dialNum() {
@@ -686,7 +688,7 @@ Games.mfa = function (d, main, replay) {
   }
 
   function dialOut() {
-    const num = digitsOf(S.dial);
+    const num = digitsOf(S.dial).replace(/^00/, "");
     if (!num || S.app !== "dial") return;
     S.recents.unshift({ num: shownNum(num), t: clockAt(S.clock), dir: "out" });
     S.dial = "";
@@ -845,8 +847,9 @@ Games.mfa = function (d, main, replay) {
 
   function happened(k) {   // only what has happened by now can be reported
     if (k === "prompts") return PUSHES.some((e) => S.fired[e.id] && S.res[e.id] !== "stopped");
-    // 11/22: after a call-back to 2199 the result reads "back"; what you heard still depends on how the call itself ended
-    if (k === "caller") return !!(S.call && S.call.state === "done" && !["missed", "declined"].includes(S.res[CALL.id] === "back" ? S.callWas : S.res[CALL.id]));
+    // 11/22: after a call-back to 2199 the result reads "back"; what you heard still depends on how the call itself ended.
+    // Ringing his number back counts too: once that call connects (S.call.fake) he asks for the code again, even after a missed call.
+    if (k === "caller") return !!(S.call && S.call.state === "done" && (S.call.fake || !["missed", "declined"].includes(S.res[CALL.id] === "back" ? S.callWas : S.res[CALL.id])));
     if (k === "door") return DOORS.some((e) => e.box === "reader" && S.fired[e.id]);     // the card names Kevin's blocked badge
     if (k === "gave") return S.approved > 0;
     return true;
@@ -1159,7 +1162,9 @@ Games.mfa = function (d, main, replay) {
   const youSaidYes = () => !!S && S.approved > 0;
   /* the questions as they read after this particular night */
   const QV = () => QS.map((q) => {
-    if (q.kind === "choose" && q.en_open && S && doorOpened()) return Object.assign({}, q, { en: q.en_open, zh: q.zh_open, solved_en: q.solved_open_en, solved_zh: q.solved_open_zh });
+    // 11/22: the door was opened from the console: the how-to line and the hint for a wrong line say so too (review)
+    if (q.kind === "choose" && q.en_open && S && doorOpened()) return Object.assign({}, q, { en: q.en_open, zh: q.zh_open, solved_en: q.solved_open_en, solved_zh: q.solved_open_zh,
+      how_en: q.how_open_en || q.how_en, how_zh: q.how_open_zh || q.how_zh, wrong_evidence_en: q.wrong_evidence_open_en || q.wrong_evidence_en, wrong_evidence_zh: q.wrong_evidence_open_zh || q.wrong_evidence_zh });
     if (q.kind === "logs" && q.en_you && youSaidYes()) return Object.assign({}, q, { en: q.en_you, zh: q.zh_you, how_en: q.how_you_en, how_zh: q.how_you_zh, solved_en: q.solved_you_en, solved_zh: q.solved_you_zh });
     return q;
   });
@@ -1168,15 +1173,19 @@ Games.mfa = function (d, main, replay) {
     const rows = BOARD.door_log.rows.map((r) => Object.assign({}, r));
     if (!S) return rows;
     const at = { d1: "03:12:40", d2: "03:15:12", d3: "03:16:52" };      // just after each alert (d1: after the second wrong code)
+    let remote = false;
     for (const e of DOORS) {
       const o = e.options.find((x) => x.k === S.res[e.id]) || {};
       if (!o.bad) continue;
-      if (e.box === "reader") {
+      if (e.box === "reader" && S.via[e.id] !== "unlock") {      // the lost badge was unblocked (sliding "unlock" at the reader is a remote open)
         rows.push({ t: at[e.id] || e.cam, en: `Badge ${BADGE_ID} unblocked from the on-call console`, zh: `值班控制台解除員工證 ${BADGE_ID} 的停用`, kind: "remote" });
         const al = rows.find((r) => r.kind === "alarm");
         if (al) Object.assign(al, { en: `Door opened with badge ${BADGE_ID} after it was unblocked`, zh: `員工證 ${BADGE_ID} 解除停用後，門打開了`, kind: "opened" });
-      } else rows.push({ t: at[e.id] || e.cam, en: "Unlocked remotely from the on-call console · door open", zh: "值班控制台遠端開門 · 門打開", kind: "remote" });
+      } else { rows.push({ t: at[e.id] || e.cam, en: "Unlocked remotely from the on-call console · door open", zh: "值班控制台遠端開門 · 門打開", kind: "remote" }); remote = true; }
     }
+    // 11/22: after a remote open the alarm line no longer says the door was held shut (review: it contradicted the line above)
+    const al = remote && rows.find((r) => r.kind === "alarm");
+    if (al) Object.assign(al, { en: "Door already opened from the console · alarm sent to the Security desk", zh: "門已經從控制台打開過 · 警報送到安全室" });
     return rows.sort((x, y) => (x.t < y.t ? -1 : x.t > y.t ? 1 : 0));
   }
 
@@ -1358,6 +1367,7 @@ Games.mfa = function (d, main, replay) {
     renderQs();
     requestAnimationFrame(() => CB.drawStrings(B.strings));
     if (B.solved.every(Boolean)) CB.addClose(wrapUp);
+    CB.refocus("#cbQ #cbSpool, #cbQ .cb-opt:not([disabled]), #cbQs .cb-close");      // 11/22: solved with a button the redraw took away
   }
 
   function fact(html) { $("#cbCrewFacts").insertAdjacentHTML("beforeend", `<li class="is-new">${html}</li>`); }

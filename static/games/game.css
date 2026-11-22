@@ -2920,6 +2920,12 @@ body.is-fit .mn-logs .cb-doc { padding: 12px 22px 10px; }
 body.is-fit .rs-cut { grid-template-rows: minmax(0, 1fr); }
 body.is-fit .rs-cut-text { max-height: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(255, 180, 168, .45) transparent; }
 body.is-fit .rs-cut-go { position: sticky; bottom: 0; }
+/* 11/22 review: in a short window (1440 x 520) the button sat on the key sentence, and the lines scrolling under it showed
+   beside it, through its glass and in the box's 20 px below it. The button now sits on a plate of the box's own colour (as
+   the box renders over the scene, #1b0e0f): under its glass, and around it a spread shadow cut by clip-path to a band from
+   14 px above the button down to the box's bottom, and to the box's width by the box itself. In a window tall enough for the
+   text the band lies on the box's empty padding and looks the same as before. The first two shadows are liquid.css's .btn. */
+body.is-fit .rs-cut-go { background-color: #1b0e0f; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 6px 16px rgba(10, 40, 110, .25), 0 0 0 100vmax #1b0e0f; clip-path: inset(-14px -100vmax -100vmax); }
 /* a long email on the case board scrolls inside the reader instead of being cut off; centred while it fits */
 body.is-fit .cb-reader { overflow-y: auto; place-items: start center; }
 body.is-fit .cb-reader-paper { margin: auto 0; }

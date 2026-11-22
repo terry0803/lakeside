@@ -43,7 +43,10 @@ const G = {
     const f = $("#foot");
     const src = d.source === "neo4j"
       ? bi("Answers read from the Neo4j knowledge graph just now.", "答案剛剛從 Neo4j 知識圖讀出來。")
-      : bi("Neo4j is not running, so the answers come from the same content files that build the graph.", "Neo4j 沒有開，答案改從建知識圖的同一份內容檔讀。");
+      // 11/22 evening: the saved copy on GitHub Pages (pages/build_pages.py) read the graph once, on that day
+      : d.source === "saved"
+        ? bi(`Answers read from the Neo4j knowledge graph on ${d.saved_on} and saved with this copy.`, `答案是 ${d.saved_on} 從 Neo4j 知識圖讀出來、存在這個離線版裡的。`)
+        : bi("Neo4j is not running, so the answers come from the same content files that build the graph.", "Neo4j 沒有開，答案改從建知識圖的同一份內容檔讀。");
     // 11/22: the purpose of each query in Chinese too (games.py purpose_zh)
     const rows = (d.queries || []).map((q) => `<li><p>${bi(q.purpose, q.purpose_zh)} · ${q.rows} rows <span lang="zh-Hant">筆</span> · ${q.ms} ms</p><code>${esc(q.cypher)}</code></li>`).join("");
     f.innerHTML = `<details><summary title="Where the answers come from 答案從哪來">Sources <span lang="zh-Hant">來源</span></summary>
@@ -144,6 +147,15 @@ if (window.self !== window.top) {
   tell("lakeside:game-open");
   const beat = setInterval(() => tell("lakeside:game-alive"), 1000);
   window.addEventListener("pagehide", () => { clearInterval(beat); tell("lakeside:game-close"); });
+  // 11/22 evening: a link that moves this window to another page (the next case) is not the window closing. Say so first,
+  // so the page around the tour keeps its map and buttons away instead of fading them in and straight out again; a real
+  // close (iStaging's ✕) then brings them back at once.
+  document.addEventListener("click", (e) => {
+    const a = e.target instanceof Element ? e.target.closest("a[href]") : null;
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if ((a.target && a.target !== "_self") || a.getAttribute("href").startsWith("#")) return;
+    tell("lakeside:game-nav");
+  });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

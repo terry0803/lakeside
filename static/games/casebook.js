@@ -535,6 +535,15 @@ const CB = (() => {
 
   function solvedFx() { SFX.play("slam"); setTimeout(() => SFX.play("pluck"), 260); }
 
+  /* 11/22: a redraw took away the control that had the keyboard (focus fell back to the page): carry on at the control the
+     next step needs. Nothing moves if the focus is still on something that is there. */
+  function refocus(sel) {
+    const a = document.activeElement;
+    if (a && a !== document.body && a.isConnected) return;
+    const n = $(sel);
+    if (n) n.focus({ preventScroll: true });
+  }
+
   function addClose(onClose) {
     const last = $$(".cb-q.is-solved").pop();
     if (!last || $(".cb-close", last)) return;
@@ -699,9 +708,17 @@ const CB = (() => {
     };
     handle.addEventListener("pointerup", end);
     handle.addEventListener("pointercancel", end);
+    // 11/22: from the keyboard the string goes line by line: Enter (or Space) here moves to the first piece of evidence, and
+    // Enter on a line answers with it (review: this button did nothing on Enter, and the working route had no hint)
+    handle.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      ev.preventDefault();
+      const first = $(sel);
+      if (first) first.focus({ preventScroll: true });
+    });
   }
   const spoolHTML = (en, zh) => `<button type="button" class="cb-spool" id="cbSpool"><i class="cb-pin" aria-hidden="true"></i><span>${bi(en, zh)}</span></button>`;
 
   return { IMG, ICON, RULE, SFX, cap, slideHTML, slideCtl, stringFrom, spoolHTML, LV, lvIcon, lvChip, fill, mins, hhmm, pad2, mentor, analyst, face, personHTML, say, stage, brief, title, timeskip, streak, hud, loop, pauseLayer, over,
-    board, pinIn, solvedFx, cbSay, questions, nope, qPoints, drawStrings, addClose, closed, caseHTML, medal, finale, NEXT };
+    board, pinIn, solvedFx, refocus, cbSay, questions, nope, qPoints, drawStrings, addClose, closed, caseHTML, medal, finale, NEXT };
 })();

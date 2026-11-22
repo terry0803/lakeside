@@ -917,7 +917,8 @@ Games.phish = function (d, main, replay) {
   }
 
   function flood(ol, n, subj, zh) {
-    const names = [["Ivy Tsai"], ["Chef Huang", "黃主廚"], ["Pei-Shan"], ["Kevin Wu"], ["Grace Lin"], ["Front Desk", "櫃台"], ["Bar team", "酒吧組"], ["Night shift", "夜班"], ["Banquet team", "宴會組"], ["Wei-Ting"]];
+    // 11/22: the people's Chinese names as the other chapters write them (the Chinese lines call Wei-Ting at Ocean Fresh by his English name)
+    const names = [["Ivy Tsai", "蔡宜芳"], ["Chef Huang", "黃主廚"], ["Pei-Shan", "佩珊"], ["Kevin Wu", "吳凱文"], ["Grace Lin", "林思妤"], ["Front Desk", "櫃台"], ["Bar team", "酒吧組"], ["Night shift", "夜班"], ["Banquet team", "宴會組"], ["Wei-Ting"]];
     let k = 0;
     const tick2 = () => {
       if (!ol.isConnected || k >= n) return;
@@ -1121,8 +1122,9 @@ Games.phish = function (d, main, replay) {
     const a = S.answers[e.id], opened = S.how[e.id] === "opened";
     const st = opened ? ["is-opened", "OPENED", "被點開"] : a === "report" ? ["is-report", "REPORTED", "已回報"] : ["is-keep", "KEPT", "留著"];
     const rot = [-1.6, 1.1, -0.6, 1.4, -1.2, 0.7, -0.9, 1.5, -0.4][e.i] || 0;
-    // 11/22: the card itself takes the keyboard (Tab to it, Enter or Space = a click on the card), for picking it in a question
-    return `<div class="cb-card" data-id="${e.id}" style="--r:${rot}deg" tabindex="0" aria-label="${esc(`#${e.i + 1} ${e.from_name}: ${plainSubj(e)}`)}">
+    // 11/22: the card itself takes the keyboard (Tab to it, Enter or Space = a click on the card), for picking it in a question.
+    // It is a group (it holds its own buttons), and the face turned away is inert, so Tab skips that face's buttons (flip()).
+    return `<div class="cb-card" data-id="${e.id}" style="--r:${rot}deg" tabindex="0" role="group" aria-label="${esc(`#${e.i + 1} ${e.from_name}: ${plainSubj(e)}`)}">
       <div class="cb-card-in">
         <div class="cb-face cb-front">
           <i class="cb-pin" aria-hidden="true"></i>
@@ -1132,7 +1134,7 @@ Games.phish = function (d, main, replay) {
           <p class="cb-subj">${esc(plainSubj(e))}</p>${e.subject_zh ? `<p class="cb-subj-zh" lang="zh-Hant">${esc(subjZh(e))}</p>` : ""}
           <div class="cb-btns"><button type="button" data-act="read">${bi("Read", "看信")}</button><button type="button" data-act="look">${bi("Look up", "查網域")}</button></div>
         </div>
-        <div class="cb-face cb-back"><i class="cb-pin" aria-hidden="true"></i>${whoisHTML(dom)}<button type="button" class="cb-flip" data-act="flip">${bi("Flip back", "翻回正面")}</button></div>
+        <div class="cb-face cb-back" inert><i class="cb-pin" aria-hidden="true"></i>${whoisHTML(dom)}<button type="button" class="cb-flip" data-act="flip">${bi("Flip back", "翻回正面")}</button></div>
       </div></div>`;
   }
 
@@ -1210,7 +1212,12 @@ Games.phish = function (d, main, replay) {
   }
 
   function flip(card, on) {
+    // 11/22: the face turned away is inert, so Tab skips its buttons; a button that had the keyboard hands it to the other face
+    const a = document.activeElement, had = a !== card && card.contains(a);
     card.classList.toggle("is-flipped", on);
+    $(".cb-front", card).toggleAttribute("inert", on);
+    $(".cb-back", card).toggleAttribute("inert", !on);
+    if (had) $(on ? '.cb-back [data-act="flip"]' : '.cb-front [data-act="look"]', card).focus({ preventScroll: true });
     if (on) B.looked.add(card.dataset.id);
     setTimeout(drawStrings, reduceMotion ? 0 : 650);
   }
@@ -1290,13 +1297,15 @@ Games.phish = function (d, main, replay) {
     if (k === q.answer) {
       B.step = 1;
       cbSay(bi(q.evidence_en, q.evidence_zh), "is-good");
-      return renderQs();
+      renderQs();
+      return CB.refocus("#cbCards .cb-card");      // 11/22: the reasons are gone, so the keyboard goes on to the cards (show the proof)
     }
     const o = q.options.find((x) => x.k === k);
     B.tried[k] = true;
     nope();
     cbSay(bi(o.why_en || "", o.why_zh || ""), "is-no");
     renderQs();
+    CB.refocus("#cbQ .cb-opt:not([disabled])");    // the one just tried is disabled now: the next reason
   }
 
   function present(what) {
@@ -1375,6 +1384,7 @@ Games.phish = function (d, main, replay) {
       last.insertAdjacentHTML("beforeend", `<button type="button" class="btn cb-go cb-close">${bi("Close the case", "結案")}</button>`);
       $(".cb-close", last).addEventListener("click", wrapUp);
     }
+    CB.refocus("#cbQ .cb-opt:not([disabled]), #cbQs .cb-close");      // 11/22: solved with a button the redraw took away
   }
 
   /* Red string from pin to pin, sagging a little, drawn in when it is new. */
@@ -1405,6 +1415,7 @@ Games.phish = function (d, main, replay) {
   /* Read a card in full: the email as it was on the laptop, with the tells you found ringed and the rest dashed. */
   function reader(id) {
     const e = byId[id];
+    const back = document.activeElement;      // 11/22: closing gives the keyboard back here (the card's Read button), not to the page
     const box = el("div", "cb-reader");
     box.setAttribute("role", "dialog"); box.setAttribute("aria-label", `Email ${e.i + 1}`);
     box.innerHTML = `<div class="cb-reader-paper rx-done" id="cbPaper"><button type="button" class="rs-x cb-reader-x" aria-label="Close">×</button>
@@ -1414,7 +1425,10 @@ Games.phish = function (d, main, replay) {
     wrapTells(art, e);
     links(box);
     for (const k of S.found[id] || []) for (const x of $$(`.tell[data-k="${k}"]`, box)) x.classList.add("is-found");
-    const close = () => { box.remove(); document.removeEventListener("keydown", esc2); };
+    const close = () => {
+      box.remove(); document.removeEventListener("keydown", esc2);
+      if (back && back !== document.body && back.isConnected) back.focus({ preventScroll: true });
+    };
     const esc2 = (ev) => { if (ev.key === "Escape") close(); };
     document.addEventListener("keydown", esc2);
     $(".cb-reader-x", box).addEventListener("click", close);

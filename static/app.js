@@ -178,23 +178,33 @@ function probeOurPage(room) {
 function popupBeat() {
   const beat = setInterval(() => askAncestors({ type: "lakeside:popup-alive" }), 1000);
   window.addEventListener("pagehide", () => { clearInterval(beat); askAncestors({ type: "lakeside:popup-close" }); });
+  // a link that turns this window into a game is not the window closing: say so first (see gameCloseSoon)
+  document.addEventListener("click", (e) => {
+    const a = e.target instanceof Element ? e.target.closest("a[href]") : null;
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if ((a.target && a.target !== "_self") || a.getAttribute("href").startsWith("#")) return;
+    askAncestors({ type: "lakeside:popup-nav" });
+  });
 }
 // 11/21 night: a mini-game opened from a sign runs in iStaging's window inside the tour; while it says it is open
 // (every second), the map, the buttons and the assistant window step aside so they do not cover it. 11/22: the same for the
 // assistant itself when a sign opens it in iStaging's window.
-let gameTimer = null, aside = false, asideAnims = [];
+let gameTimer = null, aside = false, asideAnims = [], navUntil = 0;
+// no word from that window for a while: it is gone, unless it said it was moving to its next page (that page can be slow)
+function gameQuiet() { if (Date.now() < navUntil) gameTimer = setTimeout(gameQuiet, 400); else gameOpen(false); }
 function gameOpen(on) {
   clearTimeout(gameTimer);
-  if (on) gameTimer = setTimeout(() => gameOpen(false), 2600);
+  if (on) gameTimer = setTimeout(gameQuiet, 2600);
   if (on === aside) return;                              // the heartbeat: already out of the way (or already back)
   aside = on;
   stepAside(on);
   // back from a game or the assistant in iStaging's window: read the scores and findings again
   if (!on) fetch(`/api/state?session=${encodeURIComponent(S.session)}`).then((r) => r.json()).then(updateState).catch(() => {});
 }
-// a close message waits half a second: the next page in that window (a game after the assistant, the next case) says
-// "open" again right away, and the column must not fade in and straight out again
-function gameCloseSoon() { clearTimeout(gameTimer); gameTimer = setTimeout(() => gameOpen(false), 500); }
+// 11/22 evening (the user: closing a game should feel smoother too): the window said "close". If it said just before that it
+// is moving to its next page (the next case, a game opened from the assistant), the column stays out of the way until that
+// page says "open"; otherwise the window really closed, and the column comes back at once instead of half a second later.
+function gameCloseSoon() { clearTimeout(gameTimer); gameTimer = setTimeout(gameQuiet, Date.now() < navUntil ? 400 : 60); }
 // 11/22 afternoon: they fade out of the way and fade back in after, instead of vanishing and coming back at once (the user:
 // the map and the assistant disappeared suddenly). Hidden, not removed (style.css), so nothing plays its slide-in again.
 // Each glass piece fades by itself: fading the whole column would turn their frosted glass clear for that moment.
@@ -226,12 +236,14 @@ window.addEventListener("message", (e) => {          // the other end: our full-
     return;
   }
   if (d && (d.type === "lakeside:game-open" || d.type === "lakeside:game-alive" || d.type === "lakeside:popup-alive")) {
+    if (d.type === "lakeside:game-open") navUntil = 0;   // the next page has arrived: a close from now on is a real one
     gameOpen(true);
     // 11/22: a game in iStaging's window keeps its storage apart from this page; give it this page's session so its score
     // lands in this Progress tab (our own address only)
     if (d.type !== "lakeside:popup-alive" && e.origin === location.origin) { try { e.source.postMessage({ type: "lakeside:session", session: S.session }, location.origin); } catch { /* gone */ } }
     return;
   }
+  if (d && (d.type === "lakeside:game-nav" || d.type === "lakeside:popup-nav")) { navUntil = Date.now() + 4000; return; }
   if (d && (d.type === "lakeside:game-close" || d.type === "lakeside:popup-close")) { gameCloseSoon(); return; }
   if (d && d.type === "lakeside:full") {                // the balloon's "Full version" button, pressed in here: this is it
     const toast = $("#tourToast");
@@ -242,6 +254,7 @@ window.addEventListener("message", (e) => {          // the other end: our full-
   }
   if (d && d.type === "lakeside:hello") {               // the assistant opened in iStaging's window: where the visitor is, then step aside
     if (S.byKey[d.room]) setHere(d.room);
+    navUntil = 0;
     gameOpen(true);
     try { e.source.postMessage(e.origin === location.origin ? { type: "lakeside:ack", session: S.session } : { type: "lakeside:ack" }, "*"); } catch { /* the window went away */ }
     return;
@@ -388,7 +401,23 @@ function closeDesk() {
    it open a new window"). The game knows it is in here (?in=page) and its Back button asks this page to close the window.
    The game saves its own score; the Progress tab reads the scores again when the window closes. The window grows out of
    the button that opened it. A click outside the game, or Esc, closes it too. */
-let gameFrom = null, gameShut = null, gameHref = null;
+let gameFrom = null, gameShut = null, gameHref = null, gameAnims = [];
+// where the closing window goes back to: the link of the game now in it (the next case may have followed), else the link it
+// was opened from, else the Casebook button; only one that is on the screen
+function onScreen(e) {
+  if (!e || !e.isConnected || e.offsetParent === null) return false;
+  const r = e.getBoundingClientRect();
+  return r.width > 0 && r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth;
+}
+function gameBackTarget() {
+  const seen = onScreen;
+  let key = "";
+  try { key = ($("#gameFrame").contentWindow.location.pathname.match(/\/games\/([a-z]+)/) || [])[1] || ""; } catch { key = ""; }
+  const links = [...document.querySelectorAll('a[href*="/lakeside/games/"]')].filter((a) => !a.closest("#gameWin"));
+  return links.find((a) => key && new RegExp(`/lakeside/games/${key}(/|$|\\?)`).test(a.getAttribute("href")) && seen(a))
+    || links.find((a) => gameHref && a.getAttribute("href") === gameHref && seen(a))
+    || (seen(gameFrom) ? gameFrom : null) || (seen($("#dockGames")) ? $("#dockGames") : null);
+}
 function openGame(href, fromEl) {
   let w = $("#gameWin");
   if (!w) {
@@ -400,6 +429,8 @@ function openGame(href, fromEl) {
     document.body.appendChild(w);
   }
   clearTimeout(gameShut); w.classList.remove("is-closing");
+  for (const a of gameAnims) a.cancel();                 // opened again while it was closing: back to full size
+  gameAnims = [];
   const frame = $("#gameFrame"), box = $(".game-frame", w);
   const u = new URL(href, location.origin); u.searchParams.set("in", "page");
   // replace, not a new page: the browser's Back button must not walk through old games in this window
@@ -420,11 +451,46 @@ function closeGame() {
   const w = $("#gameWin");
   if (!w || w.hidden || w.classList.contains("is-closing")) return;
   w.classList.add("is-closing");
-  gameShut = setTimeout(() => {
+  const box = $(".game-frame", w), to = gameBackTarget(), toHref = to && to.getAttribute("href");
+  const shut = () => {
+    clearTimeout(gameShut);
+    if (!w.classList.contains("is-closing")) return;     // opened again meanwhile
+    for (const a of gameAnims) a.cancel();
+    gameAnims = [];
     w.hidden = true; w.classList.remove("is-closing");
     const f = $("#gameFrame");
     try { f.contentWindow.location.replace("about:blank"); } catch { f.src = "about:blank"; }
-  }, RM.matches ? 0 : 230);
+  };
+  // 11/22 evening (the user: the closing animation should be smoother too): the window shrinks back into the link or
+  // button it grew out of, the dark backdrop clears at the same time, and that link gives a small bounce as it lands.
+  // Before: a 0.23 s fade with a slight shrink in place, so the game seemed to vanish rather than go back.
+  if (RM.matches || typeof box.animate !== "function") shut();
+  else {
+    const fr = box.getBoundingClientRect();
+    let end = "scale(.92)";
+    box.style.transformOrigin = "50% 50%";
+    if (to) {
+      const r = to.getBoundingClientRect();
+      box.style.transformOrigin = `${(r.left + r.width / 2 - fr.left).toFixed(0)}px ${(r.top + r.height / 2 - fr.top).toFixed(0)}px`;
+      end = "scale(.12)";
+    }
+    gameAnims = [
+      box.animate([{ transform: "scale(1)", opacity: 1 }, { opacity: 1, offset: 0.4 }, { transform: end, opacity: 0 }],
+        { duration: 400, easing: "cubic-bezier(.45, 0, .25, 1)", fill: "forwards" }),
+      w.animate([{ backgroundColor: getComputedStyle(w).backgroundColor }, { backgroundColor: "rgba(4, 8, 14, 0)" }],
+        { duration: 340, delay: 60, easing: "ease-out", fill: "forwards" }),
+    ];
+    const mine = gameAnims;
+    Promise.all(mine.map((a) => a.finished)).then(() => {
+      if (gameAnims !== mine) return;
+      shut();
+      // the Progress list may have been drawn again with the new score meanwhile: the same link in the new list
+      const land = (toHref && [...document.querySelectorAll("a[href]")].find((a) => a.getAttribute("href") === toHref && onScreen(a))) || (onScreen(to) ? to : null);
+      if (land && land.animate) land.animate([{ transform: "scale(.92)" }, { transform: "scale(1.04)", offset: 0.6 }, { transform: "scale(1)" }],
+        { duration: 340, easing: "ease-out", composite: "add" });
+    }).catch(() => { /* opened again halfway */ });
+    gameShut = setTimeout(shut, 1200);                    // a backstop if the animations never finish
+  }
   $("#layout").inert = false;
   // the Progress tab is drawn again with the new score: put the focus back on the same link in the new list
   const refocus = () => {
@@ -549,7 +615,7 @@ async function checkHealth() {
     if (h.offline) {        // 11/22: the saved copy on GitHub Pages (pages/offline.js) while the laptop is off
       el.className = "status offline";
       el.innerHTML = L(`Saved copy from ${h.saved} · the AI is off`, `${h.saved} 存的離線版・AI 沒開`);
-      el.title = LT("The AI runs on the team's laptop, which is off. Saved answers, the map and the mini-games still work.", "AI 跑在組員的筆電上，筆電沒開。存好的回答、地圖和小遊戲照常可用。");
+      el.title = LT("The AI runs on the presenter's laptop, which is off. Saved answers, the map and the mini-games still work.", "AI 跑在報告用的筆電上，筆電沒開。存好的回答、地圖和小遊戲照常能用。");
       return;
     }
     const ok = h.neo4j && h.ollama;
@@ -720,7 +786,8 @@ async function stream(url, body, shown) {
 function finish(m, d, workEl) {
   const tr = d.trace || {};
   const used = tr.tool_used || (tr.route || {}).tool;
-  workEl.innerHTML = `<span>${TOOL[used] ? L(...TOOL[used]) : esc(used || "")} · ${(tr.timings || {}).total_s ?? "?"} s</span>`;
+  // the saved copy's "AI is off" note took no time at all: its label alone (a "· 0 s" looked like a fault)
+  workEl.innerHTML = `<span>${TOOL[used] ? L(...TOOL[used]) : esc(used || "")}${tr.offline ? "" : ` · ${(tr.timings || {}).total_s ?? "?"} s`}</span>`;
   workEl.classList.add("is-done");
   let k = 0;                       // the plates, then the follow-up questions, come in one after another
   if (d.go && d.go.length) {
@@ -1198,8 +1265,8 @@ async function renderHow() {
   if (v.dataset.done) return;
   v.dataset.done = "1";
   v.innerHTML = `<h2>How the assistant works <span lang="zh-Hant">助理怎麼運作</span></h2>
-  <p>Everything runs on this laptop. The page shows the iStaging tour full screen; this window, the casebook and the map open over it. Your question goes to a local language model (Ollama), which only chooses a tool and the words that name what you asked about. The tool matches those words to a node in the Neo4j knowledge graph and runs a fixed, read-only Cypher query. The model then writes the answer from those facts only.</p>
-  <p lang="zh-Hant">全部在這台筆電上跑。畫面是全螢幕的 iStaging 導覽，這個視窗、事件簿和地圖都疊在上面。你的問題先交給本機的語言模型（Ollama），它只負責選工具、抓出你問的是什麼；工具把它對到 Neo4j 知識圖的節點，執行寫好的唯讀 Cypher，模型再只根據查到的資料寫回答。</p>
+  <p>Everything runs on the presenter's laptop. The page shows the iStaging tour full screen; this window, the casebook and the map open over it. Your question goes to a local language model (Ollama), which only chooses a tool and the words that name what you asked about. The tool matches those words to a node in the Neo4j knowledge graph and runs a fixed, read-only Cypher query. The model then writes the answer from those facts only.</p>
+  <p lang="zh-Hant">全部在報告用的筆電上跑。畫面是全螢幕的 iStaging 導覽，這個視窗、事件簿和地圖都疊在上面。你的問題先交給本機的語言模型（Ollama），它只負責選工具、抓出你問的是什麼；工具把它對到 Neo4j 知識圖的節點，執行寫好的唯讀 Cypher，模型再只根據查到的資料寫回答。</p>
   <svg class="arch" viewBox="0 0 420 258" role="img" aria-label="Architecture: your question goes to the assistant server, which asks the local model and the Neo4j graph, then gives the answer and a card that can take you to a place in the tour">
     <defs><marker id="archArrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 9 5 0 9z" fill="#f1d79a"/></marker></defs>
     <rect x="8" y="12" width="150" height="52" rx="14" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.24)"/>
@@ -1212,7 +1279,7 @@ async function renderHow() {
       <path d="M161 38H250"/><path d="M300 67 256 101"/><path d="M360 67V101"/><path d="M252 157 296 193"/><path d="M360 157V193"/><path d="M251 222H162"/>
     </g>
     <text class="t" x="83" y="35" text-anchor="middle">You ask</text><text x="83" y="53" text-anchor="middle">提問</text>
-    <text class="n" x="333" y="35" text-anchor="middle">Assistant (FastAPI)</text><text class="n2" x="333" y="53" text-anchor="middle">小幫手・只開在本機</text>
+    <text class="n" x="333" y="35" text-anchor="middle">Assistant (FastAPI)</text><text class="n2" x="333" y="53" text-anchor="middle">小幫手・跑在筆電上</text>
     <text class="t" x="242" y="125" text-anchor="middle">Ollama · qwen3.5</text><text x="242" y="142" text-anchor="middle">選工具・寫回答</text>
     <text class="t" x="359" y="125" text-anchor="middle">Neo4j 2026.10</text><text x="359" y="142" text-anchor="middle">知識圖＋索引</text>
     <text class="t" x="333" y="219" text-anchor="middle">Answer + card</text><text x="333" y="237" text-anchor="middle">回答與資料卡</text>

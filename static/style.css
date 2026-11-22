@@ -764,14 +764,13 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 .game-win[hidden] { display: none; }
 .game-frame { min-width: 0; min-height: 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, .14); border-radius: 20px; background: #0d1117; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); animation: gw-grow .46s var(--e-out); }
 .game-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
-.game-win.is-closing { animation: gw-out .23s ease-in forwards; }
-.game-win.is-closing .game-frame { animation: gw-shrink .23s ease-in forwards; }
+/* closing (11/22 evening): app.js closeGame shrinks the frame back into the link it came from and clears the backdrop;
+   clicks already go to the page behind */
+.game-win.is-closing { pointer-events: none; }
 @keyframes gw-in { from { opacity: 0; } }
-@keyframes gw-out { to { opacity: 0; } }
 @keyframes gw-grow { from { opacity: 0; transform: scale(.6); } 55% { opacity: 1; } }
-@keyframes gw-shrink { to { opacity: 0; transform: scale(.94); } }
 @media (max-width: 700px) { .game-win { padding: 6px; } .game-frame { border-radius: 12px; } }
-@media (prefers-reduced-motion: reduce) { .game-win, .game-frame, .game-win.is-closing, .game-win.is-closing .game-frame { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .game-win, .game-frame { animation: none; } }
 
 /* ---------------------------------------------------------------- 11/22 afternoon: the Chinese next to the English in the window
    (the user: every English the visitor sees needs its Chinese). app.js L = after the English, LB = on its own line. */

@@ -450,7 +450,10 @@ Games.access = function (d, main, replay) {
   /* ------------------------------------------------------------------ the desk phone: you dial the number yourself
      The HR directory beside it has everyone's real number. The recent-calls list is quicker, and it rings whoever called. */
   const digits = (x) => String(x || "").replace(/\D/g, "");
-  const shown = (d) => (d.length <= 4 ? (d ? `ext. ${d}` : "") : d.length === 10 ? `${d.slice(0, 4)}-${d.slice(4, 7)}-${d.slice(7)}` : d);
+  // 11/22 evening: the crew's number is a UK drama number (+44 7700 900417), typed with or without the 00 in front
+  const intl = (d) => String(d || "").replace(/^00/, "");
+  const shown = (d) => (/^(00)?44\d{10}$/.test(d) ? `+44 ${intl(d).slice(2, 6)} ${intl(d).slice(6)}`
+    : d.length <= 4 ? (d ? `ext. ${d}` : "") : d.length === 10 ? `${d.slice(0, 4)}-${d.slice(4, 7)}-${d.slice(7)}` : d);
   const BOOK = Object.entries(people).sort((a, b) => a[1].name.localeCompare(b[1].name));
 
   function phone() {
@@ -476,13 +479,14 @@ Games.access = function (d, main, replay) {
   function key(k) {
     if (S.calling) return;
     if (k === "del") S.dial = S.dial.slice(0, -1);
-    else if (/^\d$/.test(k) && S.dial.length < 12) S.dial += k;
+    else if (/^\d$/.test(k) && S.dial.length < 14) S.dial += k;
     CB.SFX.play("tick");
     phone();
   }
 
   /* who answers the number you dialled */
   function answerer(d, r) {
+    d = intl(d);
     for (const q of d && S.arrived.map((id) => byId[id]) || []) if (q.impostor && q.via === "phone" && digits(q.from) === d) return { kind: "fake", req: q };
     const owners = BOOK.filter(([, q]) => digits(q.number) === d).map(([k]) => k);
     if (owners.length) return r && owners.includes(r.who) ? { kind: "real", key: r.who } : { kind: "other", key: owners[0] };
