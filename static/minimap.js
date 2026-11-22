@@ -209,8 +209,11 @@ const Minimap = (() => {
     // 11/23: the Map button is now as wide as the small map (same kind of button as the two under it), so the width no
     // longer shrinks; the small map rolls up from the bottom to the button's height instead (and down again when it comes
     // back). The cut stays off the shadow at the open end, so nothing changes when the animation lets go.
+    // the cut's corners in the small map's own units, so they match the button's on screen (it is narrower again)
     const miniClip = (toPill ? F.height - Tg.height / s : Tg.height - F.height * s).toFixed(1);
-    const OPEN = "inset(-30px -30px -30px -30px round 50px)", FULL = "inset(0px 0px 0px 0px round 20px)", CUT = `inset(0px 0px ${miniClip}px 0px round 20px)`;
+    const pillR = parseFloat(getComputedStyle(pill).borderTopLeftRadius) || 16, miniW = (toPill ? F : Tg).width, pillW = (toPill ? Tg : F).width;
+    const OPEN = "inset(-30px -30px -30px -30px round 50px)", FULL = "inset(0px 0px 0px 0px round 20px)",
+      CUT = `inset(0px 0px ${miniClip}px 0px round ${(pillR * miniW / pillW).toFixed(1)}px)`;
     const fromMove = [{ transform: "none" }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})` }];
     const toMove = [{ transform: `translate(${(-dx).toFixed(1)}px, ${(-dy).toFixed(1)}px) scale(${(1 / s).toFixed(4)})` }, { transform: "none" }];
     const anims = [

@@ -179,10 +179,14 @@ button, select, textarea, input { font: inherit; color: inherit; }
 /* 11/22 night: no slide-in while the small map folds into the pill or grows out of it (minimap.js foldMini) */
 .mm-pill.is-quiet, .mm-mini.is-quiet { animation: none; }
 .mm-pill:active { transform: scale(.96); transition-duration: .12s; }
-.mm-pill { width: var(--colw); height: 56px; gap: 11px; padding: 0 14px 0 8px; text-align: left; }      /* 11/23: same size and corners as the two buttons under it (40 px tall it was a capsule) */
-.mm-pill-ico { position: relative; z-index: 1; display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%; color: #fff;
+/* 11/23: the same kind of button as the two under it, one size smaller (the user: the map's button smaller than the
+   assistant's ones); 16 px corners on 44 px keep the same shape as 20 on 56 (40 px tall with 20 px corners was a capsule) */
+.mm-pill { height: 44px; gap: 9px; padding: 0 15px 0 6px; border-radius: 16px; text-align: left; }
+.mm-pill .dock-t b { font-size: 13.5px; }
+.mm-pill .dock-t small { font-size: 11.5px; }
+.mm-pill-ico { position: relative; z-index: 1; display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; color: #fff;
   background: linear-gradient(145deg, #34d399, #0f766e); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), 0 4px 12px rgba(0, 0, 0, .3); }
-.mm-pill-ico svg { width: 21px; height: 21px; color: #fff; }
+.mm-pill-ico svg { width: 17px; height: 17px; color: #fff; }
 
 .mm-panel {
   position: relative; width: min(560px, calc(100vw - 32px)); overflow: hidden; border: 1px solid var(--g-rim); border-radius: 20px;
@@ -707,7 +711,9 @@ details[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s backwards; }
   .mm-panel, .layout.is-desk .mm-panel { width: calc(100vw - 72px); }
   .mm-view { height: min(380px, calc(100dvh - 170px)); }
   .dock { width: 184px; }
-  .dock-btn, .mm-pill { height: 50px; padding: 0 12px 0 6px; }
+  .dock-btn { height: 50px; padding: 0 12px 0 6px; }
+  .mm-pill { height: 40px; padding: 0 13px 0 5px; }
+  .mm-pill-ico { width: 30px; height: 30px; }
   .dock-ico { width: 34px; height: 34px; }
   .dock-t small { font-size: 11px; }          /* 11/22: the Chinese stays on narrow screens too */
 }
