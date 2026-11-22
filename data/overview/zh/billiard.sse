@@ -17,6 +17,57 @@ event: token
 data: {"text": "資訊"}
 
 event: token
+data: {"text": "服務"}
+
+event: token
+data: {"text": "台"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "負責"}
+
+event: token
+data: {"text": "處理"}
+
+event: token
+data: {"text": "報"}
+
+event: token
+data: {"text": "修"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "帳號"}
+
+event: token
+data: {"text": "申請"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "資產"}
+
+event: token
+data: {"text": "管理"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n部門"}
+
+event: token
+data: {"text": "屬於"}
+
+event: token
+data: {"text": "資訊"}
+
+event: token
 data: {"text": "部"}
 
 event: token
@@ -41,61 +92,16 @@ event: token
 data: {"text": "0"}
 
 event: token
-data: {"text": "）"}
-
-event: token
-data: {"text": "的"}
-
-event: token
-data: {"text": "資訊"}
-
-event: token
-data: {"text": "服務"}
-
-event: token
-data: {"text": "台"}
-
-event: token
-data: {"text": "，"}
+data: {"text": "），"}
 
 event: token
 data: {"text": "主要"}
 
 event: token
-data: {"text": "處理"}
+data: {"text": "系統"}
 
 event: token
-data: {"text": "報"}
-
-event: token
-data: {"text": "修"}
-
-event: token
-data: {"text": "單"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "帳號"}
-
-event: token
-data: {"text": "申請"}
-
-event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": "變更"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "並"}
-
-event: token
-data: {"text": "管理"}
+data: {"text": "包含"}
 
 event: token
 data: {"text": "資產"}
@@ -116,25 +122,7 @@ event: token
 data: {"text": "DB"}
 
 event: token
-data: {"text": "）。"}
-
-event: token
-data: {"text": "系統"}
-
-event: token
-data: {"text": "包含"}
-
-event: token
-data: {"text": "資產"}
-
-event: token
-data: {"text": "清"}
-
-event: token
-data: {"text": "冊"}
-
-event: token
-data: {"text": "、"}
+data: {"text": "）、"}
 
 event: token
 data: {"text": "帳號"}
@@ -158,7 +146,7 @@ event: token
 data: {"text": "IAM"}
 
 event: token
-data: {"text": "），"}
+data: {"text": "）"}
 
 event: token
 data: {"text": "以及"}
@@ -188,7 +176,7 @@ event: token
 data: {"text": "）。"}
 
 event: token
-data: {"text": "需注意"}
+data: {"text": "\n要注意"}
 
 event: token
 data: {"text": "電話"}
@@ -212,7 +200,7 @@ event: token
 data: {"text": "措施"}
 
 event: token
-data: {"text": "包括"}
+data: {"text": "有"}
 
 event: token
 data: {"text": "來"}
@@ -230,7 +218,7 @@ event: token
 data: {"text": "實"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "與"}
 
 event: token
 data: {"text": "最小"}
@@ -245,17 +233,56 @@ event: token
 data: {"text": "原則"}
 
 event: token
-data: {"text": "及"}
+data: {"text": "。"}
 
 event: token
-data: {"text": "變更"}
+data: {"text": "\n你可以"}
 
 event: token
-data: {"text": "管理等"}
+data: {"text": "往"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "訓練"}
+
+event: token
+data: {"text": "室"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "工"}
+
+event: token
+data: {"text": "單"}
+
+event: token
+data: {"text": "看板"}
+
+event: token
+data: {"text": "或"}
+
+event: token
+data: {"text": "員工"}
+
+event: token
+data: {"text": "走廊"}
+
+event: token
+data: {"text": "方向"}
+
+event: token
+data: {"text": "走"}
 
 event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是資訊部（分機 2100）的資訊服務台，主要處理報修單、帳號申請與變更，並管理資產清冊（CMDB）。系統包含資產清冊、帳號目錄與單一登入（IAM），以及 IT 服務台系統（ITSM）。需注意電話社交工程威脅，防護措施包括來電身分核實、最小權限原則及變更管理等。", "go": [{"key": "play", "en": "Security Awareness Training Room", "zh": "資安訓練室", "base_en": "Training Room", "base_zh": "資安訓練室", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=7", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "資產清冊（CMDB）是做什麼的？", "en": "What does the Asset Inventory (CMDB) do?", "zh": "資產清冊（CMDB）是做什麼的？"}, {"text": "電話社交工程要怎麼防？", "en": "How do we prevent phone social engineering?", "zh": "電話社交工程要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.61, "total_s": 9.62}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "billiard", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "billiard"}, "rows": 1, "ms": 6.3}], "graph": {"nodes": [{"key": "billiard", "label": "Room", "en": "IT Help Desk", "zh": "資訊服務台"}, {"key": "cmdb", "label": "System", "en": "Asset Inventory (CMDB)", "zh": "資產清冊（CMDB）"}, {"key": "iam", "label": "System", "en": "Directory & Single Sign-On (IAM)", "zh": "帳號目錄與單一登入（IAM）"}, {"key": "itsm", "label": "System", "en": "IT Service Desk (ITSM)", "zh": "IT 服務台系統（ITSM）"}, {"key": "vishing", "label": "Threat", "en": "Phone Social Engineering", "zh": "電話社交工程"}, {"key": "asset_inventory", "label": "Control", "en": "Asset Inventory (CMDB)", "zh": "資產清冊（CMDB）"}, {"key": "least_privilege", "label": "Control", "en": "Least Privilege & Role-Based Access", "zh": "最小權限與角色權限"}, {"key": "change_management", "label": "Control", "en": "Change Management", "zh": "變更管理"}, {"key": "caller_verification", "label": "Control", "en": "Caller Identity Verification", "zh": "來電身分核實"}, {"key": "access_review", "label": "Control", "en": "Joiner-Mover-Leaver & Access Reviews", "zh": "到職異動離職與權限審查"}, {"key": "c_itsm", "label": "Concept", "en": "ITIL & IT Service Management", "zh": "ITIL 與 IT 服務管理"}], "edges": [{"a": "change_management", "t": "SEEN_IN", "b": "billiard"}, {"a": "asset_inventory", "t": "SEEN_IN", "b": "billiard"}, {"a": "asset_inventory", "t": "PROTECTS", "b": "cmdb"}, {"a": "iam", "t": "LOCATED_IN", "b": "billiard"}, {"a": "itsm", "t": "LOCATED_IN", "b": "billiard"}, {"a": "cmdb", "t": "LOCATED_IN", "b": "billiard"}, {"a": "vishing", "t": "TARGETS", "b": "itsm"}, {"a": "vishing", "t": "TARGETS", "b": "iam"}, {"a": "vishing", "t": "SHOWN_IN", "b": "billiard"}, {"a": "c_itsm", "t": "TAUGHT_IN", "b": "billiard"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "itsm"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "change_management"}, {"a": "least_privilege", "t": "SEEN_IN", "b": "billiard"}, {"a": "access_review", "t": "SEEN_IN", "b": "billiard"}, {"a": "access_review", "t": "PROTECTS", "b": "iam"}, {"a": "caller_verification", "t": "SEEN_IN", "b": "billiard"}, {"a": "caller_verification", "t": "PROTECTS", "b": "iam"}, {"a": "caller_verification", "t": "MITIGATES", "b": "vishing"}]}, "tool_used": "room_overview", "facts": "房間：資訊服務台\n代表的資訊主題：服務台處理報修單、帳號申請和變更，也管資產清冊（CMDB）。\n重點：權限照職務核准；重設密碼前一定要核對身分。\n在這裡的部門：資訊部（分機 2100）\n這裡的系統：資產清冊（CMDB）、帳號目錄與單一登入（IAM）、IT 服務台系統（ITSM）\n這裡要注意的威脅：電話社交工程\n看得到的防護措施：資產清冊（CMDB）、最小權限與角色權限、變更管理、來電身分核實、到職異動離職與權限審查\n課程概念：ITIL 與 IT 服務管理\n相關的處理流程：密碼或驗證重設、系統變更、員工離職或調職、新進人員開帳號\n可以走到：資安訓練室、服務台近看・工單看板、員工走廊與實體安全", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.6, "load_s": 0.0, "prompt_tokens": 656, "prompt_s": 2.62, "gen_tokens": 86, "gen_s": 6.96, "tok_per_s": 12.4, "first_token_s": 2.64}}, "state": {}}
+data: {"answer": "這裡是資訊服務台，負責處理報修、帳號申請與資產管理。\n部門屬於資訊部（分機 2100），主要系統包含資產清冊（CMDB）、帳號目錄與單一登入（IAM）以及 IT 服務台系統（ITSM）。\n要注意電話社交工程威脅，防護措施有來電身分核實與最小權限原則。\n你可以往資安訓練室、工單看板或員工走廊方向走。", "go": [{"key": "play", "en": "Security Awareness Training Room", "zh": "資安訓練室", "base_en": "Training Room", "base_zh": "資安訓練室", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=7", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "資產清冊（CMDB）是做什麼的？", "en": "What does the Asset Inventory (CMDB) do?", "zh": "資產清冊（CMDB）是做什麼的？"}, {"text": "電話社交工程要怎麼防？", "en": "How do we prevent phone social engineering?", "zh": "電話社交工程要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.11, "total_s": 9.13}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "billiard", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "billiard"}, "rows": 1, "ms": 8.4}], "graph": {"nodes": [{"key": "billiard", "label": "Room", "en": "IT Help Desk", "zh": "資訊服務台"}, {"key": "cmdb", "label": "System", "en": "Asset Inventory (CMDB)", "zh": "資產清冊（CMDB）"}, {"key": "iam", "label": "System", "en": "Directory & Single Sign-On (IAM)", "zh": "帳號目錄與單一登入（IAM）"}, {"key": "itsm", "label": "System", "en": "IT Service Desk (ITSM)", "zh": "IT 服務台系統（ITSM）"}, {"key": "vishing", "label": "Threat", "en": "Phone Social Engineering", "zh": "電話社交工程"}, {"key": "asset_inventory", "label": "Control", "en": "Asset Inventory (CMDB)", "zh": "資產清冊（CMDB）"}, {"key": "least_privilege", "label": "Control", "en": "Least Privilege & Role-Based Access", "zh": "最小權限與角色權限"}, {"key": "change_management", "label": "Control", "en": "Change Management", "zh": "變更管理"}, {"key": "caller_verification", "label": "Control", "en": "Caller Identity Verification", "zh": "來電身分核實"}, {"key": "access_review", "label": "Control", "en": "Joiner-Mover-Leaver & Access Reviews", "zh": "到職異動離職與權限審查"}, {"key": "c_itsm", "label": "Concept", "en": "ITIL & IT Service Management", "zh": "ITIL 與 IT 服務管理"}], "edges": [{"a": "change_management", "t": "SEEN_IN", "b": "billiard"}, {"a": "asset_inventory", "t": "SEEN_IN", "b": "billiard"}, {"a": "asset_inventory", "t": "PROTECTS", "b": "cmdb"}, {"a": "iam", "t": "LOCATED_IN", "b": "billiard"}, {"a": "itsm", "t": "LOCATED_IN", "b": "billiard"}, {"a": "cmdb", "t": "LOCATED_IN", "b": "billiard"}, {"a": "vishing", "t": "TARGETS", "b": "itsm"}, {"a": "vishing", "t": "TARGETS", "b": "iam"}, {"a": "vishing", "t": "SHOWN_IN", "b": "billiard"}, {"a": "c_itsm", "t": "TAUGHT_IN", "b": "billiard"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "itsm"}, {"a": "c_itsm", "t": "RELATED_TO", "b": "change_management"}, {"a": "least_privilege", "t": "SEEN_IN", "b": "billiard"}, {"a": "access_review", "t": "SEEN_IN", "b": "billiard"}, {"a": "access_review", "t": "PROTECTS", "b": "iam"}, {"a": "caller_verification", "t": "SEEN_IN", "b": "billiard"}, {"a": "caller_verification", "t": "PROTECTS", "b": "iam"}, {"a": "caller_verification", "t": "MITIGATES", "b": "vishing"}]}, "tool_used": "room_overview", "facts": "房間：資訊服務台\n這裡講的是：服務台處理報修單、帳號申請和變更，也管資產清冊（CMDB）。\n重點：權限照職務核准；重設密碼前一定要核對身分。\n在這裡的部門：資訊部（分機 2100）\n這裡的系統：資產清冊（CMDB）、帳號目錄與單一登入（IAM）、IT 服務台系統（ITSM）\n這裡要注意的威脅：電話社交工程\n看得到的防護措施：資產清冊（CMDB）、最小權限與角色權限、變更管理、來電身分核實、到職異動離職與權限審查\n課程概念：ITIL 與 IT 服務管理\n相關的處理流程：密碼或驗證重設、系統變更、員工離職或調職、新進人員開帳號\n可以走到：資安訓練室、服務台近看・工單看板、員工走廊與實體安全", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.11, "load_s": 0.0, "prompt_tokens": 732, "prompt_s": 0.64, "gen_tokens": 98, "gen_s": 7.44, "tok_per_s": 13.2, "first_token_s": 1.67}}, "state": {}}
 

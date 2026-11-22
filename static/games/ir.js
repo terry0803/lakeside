@@ -94,6 +94,9 @@ Games.ir = function (d, main, replay) {
         <section class="ir-desk"><div class="ir-usb" id="irUsb" tabindex="0" role="button" aria-label="USB backup drive from last Friday. Drag it onto a device.">${SVG.usb}<p>${bi("USB backup drive · last Friday", "USB 備份硬碟・上週五")}</p></div></section>
       </div></div>`;
     S.pause = CB.pauseLayer(st, () => togglePause(false));
+    if (window.__irKeys) document.removeEventListener("keydown", window.__irKeys);      // one listener, whichever round is playing
+    window.__irKeys = irEsc;
+    document.addEventListener("keydown", irEsc);
     $("#irMap").addEventListener("click", mapClick);
     $("#irMap").addEventListener("keydown", mapKey);
     $("#irKeys").addEventListener("click", (ev) => { const b = ev.target.closest("[data-k]"); if (b) dialKey(b.dataset.k); });
@@ -421,6 +424,17 @@ Games.ir = function (d, main, replay) {
     };
     elm.addEventListener("pointerup", end);
     elm.addEventListener("pointercancel", end);
+    // 11/23 review: the pointer was taken away under the drag: nothing is dropped, and the copy under the finger goes too
+    elm.addEventListener("lostpointercapture", () => {
+      if (!p) return;
+      const { ghost } = p;
+      p = null;
+      elm.classList.remove("is-lifted");
+      if (ghost) ghost.remove();
+      if (!S) return;
+      S.drag = null; S.hover = null;
+      if (!S.over) drawMap();
+    });
     elm.addEventListener("keydown", (ev) => {
       if (elm.classList.contains("is-locked") || elm.classList.contains("is-used")) return;     // 11/22: like the pointer, the keyboard leaves these alone
       if ((ev.key === "Enter" || ev.key === " ") && o && o.key) { ev.preventDefault(); o.key(); }
@@ -491,6 +505,19 @@ Games.ir = function (d, main, replay) {
     const k = t.dataset.k, sw = t.dataset.sw;
     mapAct(k ? { node: k, zone: NODE[k].zone, map: true } : sw ? { sw, map: true } : { tunnel: true, map: true });
     if (k && S.open === k) { const x = $(".ir-close-x", $("#irClose")); if (x) x.focus({ preventScroll: true }); }   // into the close-up
+  }
+
+  /* 11/23 (review G1): Escape puts back a tool you picked up, or closes the device up close, like their Cancel and ×.
+     Marked as used, so it doesn't also close the game window (common.js). */
+  function irEsc(ev) {
+    if (ev.key !== "Escape" || ev.defaultPrevented || !S || S.over || S.hold || S.paused) return;
+    if (S.sel) { ev.preventDefault(); S.sel = null; tip(); tools(); drawMap(); return; }
+    if (!S.open) return;
+    ev.preventDefault();
+    const k = S.open, box = $("#irClose"), inside = !!box && box.contains(document.activeElement);
+    closeClose();
+    const g = inside && $(`.ir-node[data-k="${k}"]`, $("#irMap"));     // from inside the close-up: back to its device on the map
+    if (g) g.focus({ preventScroll: true });
   }
 
   // picked up with the keyboard: go straight to the place on the map where it matters most. 11/22 (review: the first target in
@@ -886,10 +913,17 @@ Games.ir = function (d, main, replay) {
   });
   const shiftScore = () => { const r = right(); return r.steps + r.kept + r.clean; };
 
+  // 11/23 review: 05:00 (or the last shield) can come while a tool, a card or the tape is being dragged: its copy goes too
+  function dropGhosts() {
+    for (const g of $$(".ir-ghost")) g.remove();
+    S.drag = null; S.hover = null;
+  }
+
   async function endShift() {
     if (S.over) return;
     S.over = true;
     loop.stop();
+    dropGhosts();
     await wait(600);
     summary();
   }
@@ -922,6 +956,7 @@ Games.ir = function (d, main, replay) {
   function gameOver() {
     S.over = true;
     loop.stop();
+    dropGhosts();
     st.$rs.classList.remove("is-paused");
     st.scene("rush_pos", 0.2);
     CB.over(st, { time: clockAt(S.clock), title_en: "The whole resort is down.", title_zh: "整個渡假村都停擺了。",
@@ -959,7 +994,7 @@ Games.ir = function (d, main, replay) {
   function chainCard(k, where) {
     const c = CH[k], solved = B && B.solved[0];
     return `<button type="button" class="ir-cc${B && B.pick === k ? " is-pick" : ""}${solved ? " is-done" : ""}" data-k="${k}" data-where="${where}">
-      <span class="ir-cc-file">${bi(`File ${c.file}`, `第 ${c.file} 章`)}</span><span class="ir-cc-t">${bi(c.en, c.zh)}</span>${solved ? `<time>${chainTime(c)}</time>` : ""}</button>`;
+      <span class="ir-cc-file">${bi(`File ${c.file}`, CB.caseZh(c.file))}</span><span class="ir-cc-t">${bi(c.en, c.zh)}</span>${solved ? `<time>${chainTime(c)}</time>` : ""}</button>`;
   }
   const chainTime = (c) => `${esc(c.time)}${c.time_zh ? ` <span lang="zh-Hant">${esc(c.time_zh)}</span>` : ""}`;
 
@@ -1099,6 +1134,15 @@ Games.ir = function (d, main, replay) {
     };
     box.addEventListener("pointerup", end);
     box.addEventListener("pointercancel", end);
+    // 11/23 review: the pointer was taken away under the drag: the card stays where it was and its copy goes
+    box.addEventListener("lostpointercapture", () => {
+      if (!p) return;
+      const { ghost, card } = p;
+      p = null;
+      if (ghost) ghost.remove();
+      if (card) card.classList.remove("is-lifted");
+      for (const s of $$(".ir-slot.is-over", box)) s.classList.remove("is-over");
+    });
   }
 
   /* Q3 on a timeline: the week from the moment we found out; drag the flag to the latest time we may still notify. */
@@ -1108,12 +1152,15 @@ Games.ir = function (d, main, replay) {
     const day = (day0 + Math.floor(tot / 24)) % 7, hr = Math.round(tot % 24);
     return [`${DAYS[day][0]} ${CB.pad2(hr)}:00`, `${DAYS[day][1]} ${CB.pad2(hr)}:00`];
   }
+  // 11/23 review: the line starts at 23:00 on Saturday, so the day names sit at midnight (they sat at 23:00 and the review,
+  // Sunday 16:00, looked as if it was still Saturday); the small ticks are 00:00, 06:00, 12:00 and 18:00
+  const tlHour0 = (T) => CB.mins(String(T.start).split(" ")[1]) / 60;
   function timelineHTML(q) {
     const T = q.timeline, h = B.flag || 0, pct = (x) => `${((x / T.hours) * 100).toFixed(2)}%`;
-    const ticks = [];
-    for (let x = 0; x <= T.hours; x += 6) {
+    const h0 = tlHour0(T), ticks = [];
+    for (let x = (((-h0) % 6) + 6) % 6; x <= T.hours; x += 6) {
       const [en, zh] = tlAt(T, x);
-      ticks.push(x % 24 === 0 ? `<span class="ir-tl-tick is-day" style="--x:${pct(x)}"><b>${esc(en.split(" ")[0])}</b><small>${esc(zh.split(" ")[0])}</small></span>` : `<span class="ir-tl-tick" style="--x:${pct(x)}"></span>`);
+      ticks.push((h0 + x) % 24 === 0 ? `<span class="ir-tl-tick is-day" style="--x:${pct(x)}"><b>${esc(en.split(" ")[0])}</b><small>${esc(zh.split(" ")[0])}</small></span>` : `<span class="ir-tl-tick" style="--x:${pct(x)}"></span>`);
     }
     const [en, zh] = tlAt(T, h);
     return `<div class="ir-tl"><div class="ir-tl-track" id="irTl">${ticks.join("")}
@@ -1136,7 +1183,8 @@ Games.ir = function (d, main, replay) {
     let drag = false;
     const at = (x) => { const r = track.getBoundingClientRect(); return ((x - r.left) / r.width) * T.hours; };
     flag.addEventListener("pointerdown", (ev) => { if (ev.button !== 0) return; ev.preventDefault(); ev.stopPropagation(); drag = true; CB.cap(flag, ev.pointerId); flag.classList.add("is-drag"); });
-    flag.addEventListener("pointermove", (ev) => { if (!drag) return; const before = B.flag; set(at(ev.clientX)); if (B.flag !== before && B.flag % 6 === 0) CB.SFX.play("tick"); });
+    const h0 = tlHour0(T);      // a click as the flag passes one of the ticks (00:00, 06:00, 12:00, 18:00)
+    flag.addEventListener("pointermove", (ev) => { if (!drag) return; const before = B.flag; set(at(ev.clientX)); if (B.flag !== before && (h0 + B.flag) % 6 === 0) CB.SFX.play("tick"); });
     const end = () => { if (!drag) return; drag = false; flag.classList.remove("is-drag"); };
     flag.addEventListener("pointerup", end);
     flag.addEventListener("pointercancel", end);
@@ -1235,7 +1283,7 @@ Games.ir = function (d, main, replay) {
       stats: [{ v: (S.points + B.pts).toLocaleString("en-US"), en: "points", zh: "分" }, { v: `${r.steps}/${STEPS.length}`, en: "steps in order", zh: "照順序的步驟" },
         { v: `${r.kept}/${CRIT.length}`, en: "key systems kept", zh: "保住的關鍵系統" }, { v: `${S.traps.length}`, en: "traps", zh: "踩到的陷阱", hit: !!S.traps.length },
         { v: `${S.shields}/${sh.shields}`, en: "shields left", zh: "剩下的盾牌" }, { v: `${firstTry}/${QS.length}`, en: "solved first try", zh: "一次就解開" }],
-      body: `<section class="ir-book" id="irBook"><h2>${bi("The Awards Night casebook", "頒獎晚會事件簿")}</h2><p class="g-hint">${bi("Loading your four case files…", "讀取四章的成績…")}</p></section>`,
+      body: `<section class="ir-book" id="irBook"><h2>${bi("The Awards Night casebook", "頒獎晚會事件簿")}</h2><p class="g-hint">${bi("Loading your four case files…", "讀取四個案件的成績…")}</p></section>`,
       next: null, again: () => Games.ir(d, main, true) });
     B = null;
     await (rank.saved || wait(500));   // wait for G.save to write this chapter, then read all four back (review: a fixed 500 ms raced the tunnel)
@@ -1248,7 +1296,7 @@ Games.ir = function (d, main, replay) {
     book.innerHTML = `<h2>${bi("The Awards Night casebook", "頒獎晚會事件簿")}</h2>
       <ol class="ir-book-files">${files.map((k, i) => { const g = games[k]; return `<li class="${g ? "is-done" : ""}"><span class="ir-book-n">${i + 1}</span>
         <a href="/lakeside/games/${k}">${bi(CB.NEXT[k][0], CB.NEXT[k][1])}</a><b>${g ? `${g.best} / ${g.total}` : bi("not played", "還沒玩")}</b></li>`; }).join("")}</ol>
-      <p class="g-hint">${done === 4 ? bi("All four case files closed. The balloon is waiting to take you home.", "四章都結案了。熱氣球在等你回家。") : bi(`${done} of 4 case files closed. The others are waiting in the tour.`, `四章裡結案了 ${done} 章，其他的還在導覽裡等你。`)}</p>`;
+      <p class="g-hint">${done === 4 ? bi("All four case files closed. The balloon is waiting to take you home.", "四個案件都結案了。熱氣球在等你回家。") : bi(`${done} of 4 case files closed. The others are waiting in the tour.`, `四個案件裡結案了 ${done} 個，其他的還在導覽裡等你。`)}</p>`;
     if (done === 4 && rank.key !== "gold") st.confetti();
   }
 

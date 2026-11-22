@@ -5,16 +5,13 @@ event: route
 data: {"tool": "room_overview", "target": "", "how": "button"}
 
 event: card
-data: {"type": "sections", "label": "Room", "title": {"en": "Lighthouse · Security Operations Center", "zh": "燈塔・資安監控中心"}, "subtitle": {"en": "Lighthouse", "zh": "燈塔"}, "text": {"en": "The SOC watches logs from every system around the clock; the keeper's log is the security log.", "zh": "資安監控中心全天候看著各系統的日誌；守燈人日誌就是資安日誌。"}, "note": {"en": "Finding unusual patterns in logs is data mining at work: anomaly detection.", "zh": "從日誌裡找出不尋常的模式，就是資料探勘的異常偵測。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "edr", "en": "Endpoint Protection (EDR)", "zh": "端點防護（EDR）"}, {"key": "siem", "en": "SIEM & Log Management", "zh": "SIEM 與日誌管理"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "ransomware", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "credential_stuffing", "en": "Password Guessing & Credential Stuffing", "zh": "密碼猜測與撞庫"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "incident_response", "en": "Incident Response Plan & SOC", "zh": "事件應變計畫與資安監控中心"}, {"key": "logging_monitoring", "en": "Logging & Monitoring (SIEM)", "zh": "日誌與監控（SIEM）"}, {"key": "edr_antimalware", "en": "Endpoint Protection (EDR)", "zh": "端點防護（EDR）"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_anomaly_detection", "en": "Anomaly Detection", "zh": "異常偵測"}, {"key": "c_risk", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}, {"key": "c_soc_siem", "en": "SOC & SIEM", "zh": "資安監控中心與 SIEM"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_ransomware", "en": "Ransomware or encrypted files", "zh": "勒索軟體或檔案被加密"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "rowboat", "en": "On the Lake · Offsite Backup", "zh": "湖面上的小船・異地備份", "base_en": "On the Lake", "base_zh": "湖面上的小船", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=10", "tour": "B"}]}]}
+data: {"type": "sections", "label": "Room", "title": {"en": "Lighthouse · Security Operations Center", "zh": "燈塔・資安監控中心"}, "subtitle": {"en": "Lighthouse", "zh": "燈塔"}, "text": {"en": "The SOC watches logs from every system around the clock; the keeper's log is the security log.", "zh": "資安監控中心全天候看著各系統的日誌；守燈人日誌就是資安日誌。"}, "note": {"en": "Finding unusual patterns in logs is data mining at work: anomaly detection.", "zh": "從日誌裡找出不尋常的模式，就是資料探勘的異常偵測。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡藏著 1 個漏洞"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "edr", "en": "Endpoint Protection (EDR)", "zh": "端點防護（EDR）"}, {"key": "siem", "en": "SIEM & Log Management", "zh": "SIEM 與日誌管理"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "ransomware", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "credential_stuffing", "en": "Password Guessing & Credential Stuffing", "zh": "密碼猜測與撞庫"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "incident_response", "en": "Incident Response Plan & SOC", "zh": "事件應變計畫與資安監控中心"}, {"key": "logging_monitoring", "en": "Logging & Monitoring (SIEM)", "zh": "日誌與監控（SIEM）"}, {"key": "edr_antimalware", "en": "Endpoint Protection (EDR)", "zh": "端點防護（EDR）"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_anomaly_detection", "en": "Anomaly Detection", "zh": "異常偵測"}, {"key": "c_risk", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}, {"key": "c_soc_siem", "en": "SOC & SIEM", "zh": "資安監控中心與 SIEM"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_ransomware", "en": "Ransomware or encrypted files", "zh": "勒索軟體或檔案被加密"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "rowboat", "en": "On the Lake · Offsite Backup", "zh": "湖面上的小船・異地備份", "base_en": "On the Lake", "base_zh": "湖面上的小船", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=10", "tour": "B"}]}]}
 
 event: token
 data: {"text": "這裡"}
 
 event: token
 data: {"text": "是"}
-
-event: token
-data: {"text": "「"}
 
 event: token
 data: {"text": "燈"}
@@ -38,13 +35,40 @@ event: token
 data: {"text": "中心"}
 
 event: token
-data: {"text": "」"}
-
-event: token
 data: {"text": "，"}
 
 event: token
 data: {"text": "主要"}
+
+event: token
+data: {"text": "負責"}
+
+event: token
+data: {"text": "全天候"}
+
+event: token
+data: {"text": "監控"}
+
+event: token
+data: {"text": "各"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "日"}
+
+event: token
+data: {"text": "誌"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n房"}
+
+event: token
+data: {"text": "內"}
 
 event: token
 data: {"text": "系統"}
@@ -92,70 +116,16 @@ event: token
 data: {"text": "管理"}
 
 event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "重點"}
-
-event: token
-data: {"text": "在於"}
-
-event: token
-data: {"text": "從"}
-
-event: token
-data: {"text": "日"}
-
-event: token
-data: {"text": "誌"}
-
-event: token
-data: {"text": "中"}
-
-event: token
-data: {"text": "找出"}
-
-event: token
-data: {"text": "異常"}
-
-event: token
-data: {"text": "模式"}
-
-event: token
-data: {"text": "以"}
-
-event: token
-data: {"text": "進行"}
-
-event: token
-data: {"text": "資料"}
-
-event: token
-data: {"text": "探"}
-
-event: token
-data: {"text": "勘"}
-
-event: token
-data: {"text": "的"}
-
-event: token
-data: {"text": "異常"}
-
-event: token
-data: {"text": "偵"}
-
-event: token
-data: {"text": "測"}
-
-event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "並"}
+data: {"text": "可用"}
 
 event: token
-data: {"text": "針對"}
+data: {"text": "來"}
+
+event: token
+data: {"text": "找出"}
 
 event: token
 data: {"text": "勒索"}
@@ -191,7 +161,22 @@ event: token
 data: {"text": "威脅"}
 
 event: token
-data: {"text": "做好"}
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n可"}
+
+event: token
+data: {"text": "看到的"}
+
+event: token
+data: {"text": "防護"}
+
+event: token
+data: {"text": "措施"}
+
+event: token
+data: {"text": "有"}
 
 event: token
 data: {"text": "事件"}
@@ -203,79 +188,70 @@ event: token
 data: {"text": "變"}
 
 event: token
-data: {"text": "準備"}
+data: {"text": "計畫"}
 
 event: token
-data: {"text": "。"}
+data: {"text": "、"}
 
 event: token
-data: {"text": "房間"}
+data: {"text": "日"}
 
 event: token
-data: {"text": "內"}
+data: {"text": "誌"}
 
 event: token
-data: {"text": "藏"}
+data: {"text": "與"}
 
 event: token
-data: {"text": "有"}
+data: {"text": "監控"}
 
 event: token
-data: {"text": " 1"}
+data: {"text": "（"}
 
 event: token
-data: {"text": " 個"}
+data: {"text": "SI"}
 
 event: token
-data: {"text": "資"}
+data: {"text": "EM"}
 
 event: token
-data: {"text": "安"}
+data: {"text": "）"}
 
 event: token
-data: {"text": "漏洞"}
+data: {"text": "以及"}
 
 event: token
-data: {"text": "待"}
+data: {"text": "端"}
 
 event: token
-data: {"text": "你"}
+data: {"text": "點"}
 
 event: token
-data: {"text": "尋找"}
+data: {"text": "防護"}
 
 event: token
-data: {"text": "，"}
+data: {"text": "（"}
 
 event: token
-data: {"text": "目前"}
+data: {"text": "ED"}
 
 event: token
-data: {"text": "進度"}
+data: {"text": "R"}
 
 event: token
-data: {"text": "顯示"}
+data: {"text": "）。"}
 
 event: token
-data: {"text": "尚未"}
+data: {"text": "\n你可以"}
 
 event: token
-data: {"text": "發現"}
+data: {"text": "從"}
 
 event: token
-data: {"text": "該"}
+data: {"text": "這裡"}
 
 event: token
-data: {"text": "漏洞"}
-
-event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "你可以"}
-
-event: token
-data: {"text": "前往"}
+data: {"text": "走到"}
 
 event: token
 data: {"text": "湖"}
@@ -302,14 +278,8 @@ event: token
 data: {"text": "份"}
 
 event: token
-data: {"text": "繼續"}
-
-event: token
-data: {"text": "探索"}
-
-event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是「燈塔・資安監控中心」，主要系統包含端點防護（EDR）、SIEM 與日誌管理。重點在於從日誌中找出異常模式以進行資料探勘的異常偵測，並針對勒索軟體、密碼猜測與撞庫等威脅做好事件應變準備。房間內藏有 1 個資安漏洞待你尋找，目前進度顯示尚未發現該漏洞。你可以前往湖面上的小船・異地備份繼續探索。", "go": [], "followups": [{"text": "端點防護（EDR）是做什麼的？", "en": "What does the Endpoint Protection (EDR) do?", "zh": "端點防護（EDR）是做什麼的？"}, {"text": "勒索軟體要怎麼防？", "en": "How do we prevent ransomware?", "zh": "勒索軟體要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.57, "total_s": 10.58}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "lighthouse", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "lighthouse"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "lighthouse", "label": "Room", "en": "Lighthouse", "zh": "燈塔"}, {"key": "edr", "label": "System", "en": "Endpoint Protection (EDR)", "zh": "端點防護（EDR）"}, {"key": "siem", "label": "System", "en": "SIEM & Log Management", "zh": "SIEM 與日誌管理"}, {"key": "ransomware", "label": "Threat", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "credential_stuffing", "label": "Threat", "en": "Password Guessing & Credential Stuffing", "zh": "密碼猜測與撞庫"}, {"key": "incident_response", "label": "Control", "en": "Incident Response Plan & SOC", "zh": "事件應變計畫與資安監控中心"}, {"key": "logging_monitoring", "label": "Control", "en": "Logging & Monitoring (SIEM)", "zh": "日誌與監控（SIEM）"}, {"key": "edr_antimalware", "label": "Control", "en": "Endpoint Protection (EDR)", "zh": "端點防護（EDR）"}, {"key": "c_anomaly_detection", "label": "Concept", "en": "Anomaly Detection", "zh": "異常偵測"}, {"key": "c_risk", "label": "Concept", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}, {"key": "c_soc_siem", "label": "Concept", "en": "SOC & SIEM", "zh": "資安監控中心與 SIEM"}], "edges": [{"a": "siem", "t": "LOCATED_IN", "b": "lighthouse"}, {"a": "edr", "t": "SENDS_TO", "b": "siem"}, {"a": "edr", "t": "LOCATED_IN", "b": "lighthouse"}, {"a": "ransomware", "t": "SHOWN_IN", "b": "lighthouse"}, {"a": "credential_stuffing", "t": "SHOWN_IN", "b": "lighthouse"}, {"a": "c_risk", "t": "TAUGHT_IN", "b": "lighthouse"}, {"a": "c_soc_siem", "t": "TAUGHT_IN", "b": "lighthouse"}, {"a": "c_soc_siem", "t": "RELATED_TO", "b": "siem"}, {"a": "c_soc_siem", "t": "RELATED_TO", "b": "incident_response"}, {"a": "c_soc_siem", "t": "RELATED_TO", "b": "logging_monitoring"}, {"a": "c_anomaly_detection", "t": "TAUGHT_IN", "b": "lighthouse"}, {"a": "c_anomaly_detection", "t": "RELATED_TO", "b": "siem"}, {"a": "c_anomaly_detection", "t": "RELATED_TO", "b": "logging_monitoring"}, {"a": "c_anomaly_detection", "t": "RELATED_TO", "b": "c_soc_siem"}, {"a": "edr_antimalware", "t": "SEEN_IN", "b": "lighthouse"}, {"a": "edr_antimalware", "t": "MITIGATES", "b": "ransomware"}, {"a": "incident_response", "t": "SEEN_IN", "b": "lighthouse"}, {"a": "incident_response", "t": "MITIGATES", "b": "ransomware"}, {"a": "logging_monitoring", "t": "SEEN_IN", "b": "lighthouse"}, {"a": "logging_monitoring", "t": "MITIGATES", "b": "credential_stuffing"}, {"a": "logging_monitoring", "t": "MITIGATES", "b": "ransomware"}]}, "tool_used": "room_overview", "facts": "房間：燈塔・資安監控中心\n代表的資訊主題：資安監控中心全天候看著各系統的日誌；守燈人日誌就是資安日誌。\n重點：從日誌裡找出不尋常的模式，就是資料探勘的異常偵測。\n這裡的系統：端點防護（EDR）、SIEM 與日誌管理\n這裡要注意的威脅：勒索軟體、密碼猜測與撞庫\n看得到的防護措施：事件應變計畫與資安監控中心、日誌與監控（SIEM）、端點防護（EDR）\n課程概念：異常偵測、風險＝可能性×衝擊、資安監控中心與 SIEM\n相關的處理流程：勒索軟體或檔案被加密\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：湖面上的小船・異地備份", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.57, "load_s": 0.0, "prompt_tokens": 641, "prompt_s": 2.01, "gen_tokens": 105, "gen_s": 8.53, "tok_per_s": 12.3, "first_token_s": 2.04}}, "state": {}}
+data: {"answer": "這裡是燈塔・資安監控中心，主要負責全天候監控各系統日誌。\n房內系統包含端點防護（EDR）、SIEM 與日誌管理，可用來找出勒索軟體、密碼猜測與撞庫等威脅。\n可看到的防護措施有事件應變計畫、日誌與監控（SIEM）以及端點防護（EDR）。\n你可以從這裡走到湖面上的小船・異地備份。", "go": [], "followups": [{"text": "端點防護（EDR）是做什麼的？", "en": "What does the Endpoint Protection (EDR) do?", "zh": "端點防護（EDR）是做什麼的？"}, {"text": "勒索軟體要怎麼防？", "en": "How do we prevent ransomware?", "zh": "勒索軟體要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.1, "total_s": 10.11}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "lighthouse", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "lighthouse"}, "rows": 1, "ms": 5.5}], "graph": {"nodes": [{"key": "lighthouse", "label": "Room", "en": "Lighthouse", "zh": "燈塔"}, {"key": "edr", "label": "System", "en": "Endpoint Protection (EDR)", "zh": "端點防護（EDR）"}, {"key": "siem", "label": "System", "en": "SIEM & Log Management", "zh": "SIEM 與日誌管理"}, {"key": "ransomware", "label": "Threat", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "credential_stuffing", "label": "Threat", "en": "Password Guessing & Credential Stuffing", "zh": "密碼猜測與撞庫"}, {"key": "incident_response", "label": "Control", "en": "Incident Response Plan & SOC", "zh": "事件應變計畫與資安監控中心"}, {"key": "logging_monitoring", "label": "Control", "en": "Logging & Monitoring (SIEM)", "zh": "日誌與監控（SIEM）"}, {"key": "edr_antimalware", "label": "Control", "en": "Endpoint Protection (EDR)", "zh": "端點防護（EDR）"}, {"key": "c_anomaly_detection", "label": "Concept", "en": "Anomaly Detection", "zh": "異常偵測"}, {"key": "c_risk", "label": "Concept", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}, {"key": "c_soc_siem", "label": "Concept", "en": "SOC & SIEM", "zh": "資安監控中心與 SIEM"}], "edges": [{"a": "siem", "t": "LOCATED_IN", "b": "lighthouse"}, {"a": "edr", "t": "SENDS_TO", "b": "siem"}, {"a": "edr", "t": "LOCATED_IN", "b": "lighthouse"}, {"a": "ransomware", "t": "SHOWN_IN", "b": "lighthouse"}, {"a": "credential_stuffing", "t": "SHOWN_IN", "b": "lighthouse"}, {"a": "c_risk", "t": "TAUGHT_IN", "b": "lighthouse"}, {"a": "c_soc_siem", "t": "TAUGHT_IN", "b": "lighthouse"}, {"a": "c_soc_siem", "t": "RELATED_TO", "b": "siem"}, {"a": "c_soc_siem", "t": "RELATED_TO", "b": "incident_response"}, {"a": "c_soc_siem", "t": "RELATED_TO", "b": "logging_monitoring"}, {"a": "c_anomaly_detection", "t": "TAUGHT_IN", "b": "lighthouse"}, {"a": "c_anomaly_detection", "t": "RELATED_TO", "b": "siem"}, {"a": "c_anomaly_detection", "t": "RELATED_TO", "b": "logging_monitoring"}, {"a": "c_anomaly_detection", "t": "RELATED_TO", "b": "c_soc_siem"}, {"a": "edr_antimalware", "t": "SEEN_IN", "b": "lighthouse"}, {"a": "edr_antimalware", "t": "MITIGATES", "b": "ransomware"}, {"a": "incident_response", "t": "SEEN_IN", "b": "lighthouse"}, {"a": "incident_response", "t": "MITIGATES", "b": "ransomware"}, {"a": "logging_monitoring", "t": "SEEN_IN", "b": "lighthouse"}, {"a": "logging_monitoring", "t": "MITIGATES", "b": "credential_stuffing"}, {"a": "logging_monitoring", "t": "MITIGATES", "b": "ransomware"}]}, "tool_used": "room_overview", "facts": "房間：燈塔・資安監控中心\n這裡講的是：資安監控中心全天候看著各系統的日誌；守燈人日誌就是資安日誌。\n重點：從日誌裡找出不尋常的模式，就是資料探勘的異常偵測。\n這裡的系統：端點防護（EDR）、SIEM 與日誌管理\n這裡要注意的威脅：勒索軟體、密碼猜測與撞庫\n看得到的防護措施：事件應變計畫與資安監控中心、日誌與監控（SIEM）、端點防護（EDR）\n課程概念：異常偵測、風險＝可能性×衝擊、資安監控中心與 SIEM\n相關的處理流程：勒索軟體或檔案被加密\n這個房間藏著 1 個漏洞（讓玩家自己找，不要說出來）\n可以走到：湖面上的小船・異地備份", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.1, "load_s": 0.01, "prompt_tokens": 715, "prompt_s": 2.83, "gen_tokens": 96, "gen_s": 7.24, "tok_per_s": 13.3, "first_token_s": 2.85}}, "state": {}}
 

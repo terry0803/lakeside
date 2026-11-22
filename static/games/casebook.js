@@ -11,6 +11,8 @@ const CB = (() => {
   const mins = (t) => { const m = /^(\d+):(\d+)/.exec(t || ""); return m ? +m[1] * 60 + +m[2] : 0; };
   const hhmm = (m) => { const t = ((Math.floor(m) % 1440) + 1440) % 1440; return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`; };
   const pad2 = (n) => String(n).padStart(2, "0");
+  // 11/23 (review G2): the four games are cases, 第一案 to 第四案, as the tour's boards and the assistant say
+  const caseZh = (n) => `第${"一二三四"[n - 1] || n}案`;
 
   const ICON = {
     pause: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 3h2.4v10H4.5zM9.1 3h2.4v10H9.1z" fill="currentColor"/></svg>`,
@@ -304,15 +306,21 @@ const CB = (() => {
           go.addEventListener("click", () => { cut.hidden = true; cut.innerHTML = ""; st.body.inert = false; done(); });
         });
       },
-      overlay(cls, html, label) {   // fixed dialog over everything; returns {box, close}
+      /* fixed dialog over everything; returns {box, close}. 11/23 review: opt.stay = only its own buttons close it (no
+         Escape, no click beside it), for CASE CLOSED as in chapter 1. An Escape it uses is marked (preventDefault), so the
+         game window around it stays open (common.js). */
+      overlay(cls, html, label, opt) {
         const box = el("div", cls);
         box.setAttribute("role", "dialog"); if (label) box.setAttribute("aria-label", label);
         box.innerHTML = html;
         st.body.appendChild(box);
+        const stay = !!(opt && opt.stay);
         const close = () => { box.remove(); document.removeEventListener("keydown", onKey); };
-        const onKey = (ev) => { if (ev.key === "Escape") close(); };
-        document.addEventListener("keydown", onKey);
-        box.addEventListener("click", (ev) => { if (ev.target === box) close(); });
+        const onKey = (ev) => { if (ev.key === "Escape") { ev.preventDefault(); close(); } };
+        if (!stay) {
+          document.addEventListener("keydown", onKey);
+          box.addEventListener("click", (ev) => { if (ev.target === box) close(); });
+        }
         for (const x of $$("[data-close]", box)) x.addEventListener("click", close);
         return { box, close };
       },
@@ -327,7 +335,7 @@ const CB = (() => {
     st.body.innerHTML = `<section class="rs-brief has-rules">
       <div class="rs-brief-clock" aria-hidden="true"><span>${esc(o.top_en || "Awards Night")} <i lang="zh-Hant">${esc(o.top_zh || "頒獎晚會")}</i></span>
         <b>${esc(o.start)}</b><span>${esc(o.until_en || "")} <i lang="zh-Hant">${esc(o.until_zh || "")}</i></span>
-        <span class="rs-brief-file">Case file ${o.file} <i lang="zh-Hant">事件簿第 ${o.file} 章</i></span></div>
+        <span class="rs-brief-file">Case file ${o.file} <i lang="zh-Hant">事件簿${caseZh(o.file)}</i></span></div>
       <div class="rs-brief-main">${personHTML(o.person, bi(o.intro_en || "", o.intro_zh || ""), { big: true })}
         ${o.extra || ""}
         ${o.after_en ? `<p class="rs-brief-after">${bi(o.after_en, o.after_zh)}</p>` : ""}
@@ -343,11 +351,11 @@ const CB = (() => {
     st.$rs.classList.add("is-title");
     st.body.innerHTML = `<section class="cb-title" role="dialog" aria-label="${esc(o.title_en)}">
       <div class="cb-title-in">
-        <p class="cb-title-file">${bi(`Awards Night casebook · case file ${o.file} of 4`, `頒獎晚會事件簿・第 ${o.file} 章`)}</p>
+        <p class="cb-title-file">${bi(`Awards Night casebook · case file ${o.file} of 4`, `頒獎晚會事件簿・${caseZh(o.file)}`)}</p>
         <h2 class="cb-title-h">${esc(o.title_en)}<span lang="zh-Hant">${esc(o.title_zh)}</span></h2>
         <p class="cb-title-when"><b>${esc(o.time)}</b><span>${bi(o.place_en || "", o.place_zh || "")}</span></p>
         ${o.hook_en ? `<p class="cb-title-hook">${bi(o.hook_en, o.hook_zh)}</p>` : ""}
-        <button type="button" class="btn cb-title-go">${bi("Open the case file", "打開這一章")}</button></div></section>`;
+        <button type="button" class="btn cb-title-go">${bi("Open the case file", "打開這個案件")}</button></div></section>`;
     const go = () => { SFX.play("whoosh"); st.$rs.classList.remove("is-title"); o.onGo(); };
     $(".cb-title-go", st.body).addEventListener("click", go);
     $(".cb-title-go", st.body).focus({ preventScroll: true });
@@ -561,14 +569,15 @@ const CB = (() => {
 
   function closed(st, o) {   // o: wrap_en/zh, body (html), cases, why, onResults
     const why = o.why || {};
-    const { box } = st.overlay("cb-closed", `<div class="cb-closed-card"><div class="cb-closed-l"><p class="cb-closed-stamp">CASE CLOSED<small>${esc(o.stamp_zh || "結案")}</small></p>
+    // 11/23 review: it stays up until "See my results" (Escape and a click beside it used to drop you back on the board)
+    const { box, close } = st.overlay("cb-closed", `<div class="cb-closed-card"><div class="cb-closed-l"><p class="cb-closed-stamp">CASE CLOSED<small>${esc(o.stamp_zh || "結案")}</small></p>
       <p class="cb-closed-wrap">${bi(o.wrap_en || "", o.wrap_zh || "")}</p>${o.body || ""}</div>
       <div class="cb-closed-r">${(o.cases || []).length ? `<h3 class="cb-cases-title">${bi("The same moves in real cases", "真實案例裡的同一招")}<small>${bi("From the knowledge graph", "出自知識圖")}</small></h3>
       <div class="cb-cases">${o.cases.map((c) => caseHTML(c, why[c.key])).join("")}</div>` : ""}
-      <button type="button" class="btn cb-results">${bi("See my results", "看結果")}</button></div></div>`, "Case closed");
+      <button type="button" class="btn cb-results">${bi("See my results", "看結果")}</button></div></div>`, "Case closed", { stay: true });
     SFX.play("slam");
     if (!reduceMotion) { st.$rs.classList.remove("is-hit"); void st.$rs.offsetWidth; st.$rs.classList.add("is-slammed"); setTimeout(() => st.$rs.classList.remove("is-slammed"), 600); }
-    $(".cb-results", box).addEventListener("click", () => { box.remove(); o.onResults(); });
+    $(".cb-results", box).addEventListener("click", () => { close(); o.onResults(); });
     $(".cb-results", box).focus({ preventScroll: true });
   }
 
@@ -591,17 +600,17 @@ const CB = (() => {
     const box = el("div", "rs-finale");
     box.appendChild(G.done(`<div class="rx-report">
       <div class="rx-medal-wrap">${medal(rank.key)}</div>
-      <div><p class="rs-kicker">${bi(`Awards Night · case file ${o.file}`, `頒獎晚會事件簿・第 ${o.file} 章`)}</p><p class="rx-rank">${bi(rank.en, rank.zh)}</p><p class="g-end-lead">${bi(rank.line_en || "", rank.line_zh || "")}</p></div>
-      <div class="rx-score"><b>${o.score}</b><span>/ ${o.total}</span><small>${bi("case score", "本章分數")}</small></div></div>
+      <div><p class="rs-kicker">${bi(`Awards Night · case file ${o.file}`, `頒獎晚會事件簿・${caseZh(o.file)}`)}</p><p class="rx-rank">${bi(rank.en, rank.zh)}</p><p class="g-end-lead">${bi(rank.line_en || "", rank.line_zh || "")}</p></div>
+      <div class="rx-score"><b>${o.score}</b><span>/ ${o.total}</span><small>${bi("case score", "本案分數")}</small></div></div>
       <div class="rx-stats" style="grid-template-columns:repeat(${Math.min(6, o.stats.length)},minmax(0,1fr))">${o.stats.map((s) => `<div class="${s.hit ? "is-hit" : ""}"><b>${s.v}</b><span>${bi(s.en, s.zh)}</span></div>`).join("")}</div>
       ${o.body || ""}
-      ${nx ? `<a class="rs-next-case" href="/lakeside/games/${esc(o.next.key)}"><span class="rs-kicker">${bi("Next case file", "下一章")}</span>
+      ${nx ? `<a class="rs-next-case" href="/lakeside/games/${esc(o.next.key)}"><span class="rs-kicker">${bi("Next case file", "下一個案件")}</span>
         <b>${bi(nx[0], nx[1])}</b><span>${bi(o.next.en || "", o.next.zh || "")}</span></a>` : ""}`, o.again));
     st.body.innerHTML = "";
     st.body.appendChild(box);
     st.scene(o.scene, o.dusk == null ? 0.35 : o.dusk);
     if (rank.key === "gold") st.confetti();
-    G.meter(`<div class="rx-hud"><div class="rx-hud-pts"><b>${o.score}/${o.total}</b><span>${bi("case score", "本章分數")}</span></div></div>`);
+    G.meter(`<div class="rx-hud"><div class="rx-hud-pts"><b>${o.score}/${o.total}</b><span>${bi("case score", "本案分數")}</span></div></div>`);
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
     return Object.assign({}, rank, { saved });
   }
@@ -657,6 +666,8 @@ const CB = (() => {
     };
     knob.addEventListener("pointerup", end);
     knob.addEventListener("pointercancel", end);
+    // 11/23 review: the pointer was taken away mid-slide: the knob goes back and nothing is confirmed
+    knob.addEventListener("lostpointercapture", () => { if (!p) return; p = null; box.classList.remove("is-drag"); back(); });
     knob.addEventListener("keydown", (ev) => {
       if (box.classList.contains("is-off") || box.classList.contains("is-done")) return;
       if (ev.key === "ArrowRight") { ev.preventDefault(); k = Math.min(1, k + 0.25); set(k * max()); if (k >= 1) finish(); }
@@ -708,6 +719,15 @@ const CB = (() => {
     };
     handle.addEventListener("pointerup", end);
     handle.addEventListener("pointercancel", end);
+    // 11/23 review: the pointer was taken away mid-pull: the string disappears and nothing is answered
+    handle.addEventListener("lostpointercapture", () => {
+      if (!p) return;
+      if (p.over) p.over.classList.remove("is-string-over");
+      p = null;
+      handle.classList.remove("is-pulling");
+      const cork = $("#cbCork"); if (cork) cork.classList.remove("is-stringing");
+      const s = $("#cbLive"); if (s) s.innerHTML = "";
+    });
     // 11/22: from the keyboard the string goes line by line: Enter (or Space) here moves to the first piece of evidence, and
     // Enter on a line answers with it (review: this button did nothing on Enter, and the working route had no hint)
     handle.addEventListener("keydown", (ev) => {
@@ -719,6 +739,6 @@ const CB = (() => {
   }
   const spoolHTML = (en, zh) => `<button type="button" class="cb-spool" id="cbSpool"><i class="cb-pin" aria-hidden="true"></i><span>${bi(en, zh)}</span></button>`;
 
-  return { IMG, ICON, RULE, SFX, cap, slideHTML, slideCtl, stringFrom, spoolHTML, LV, lvIcon, lvChip, fill, mins, hhmm, pad2, mentor, analyst, face, personHTML, say, stage, brief, title, timeskip, streak, hud, loop, pauseLayer, over,
+  return { IMG, ICON, RULE, SFX, cap, slideHTML, slideCtl, stringFrom, spoolHTML, LV, lvIcon, lvChip, fill, mins, hhmm, pad2, caseZh, mentor, analyst, face, personHTML, say, stage, brief, title, timeskip, streak, hud, loop, pauseLayer, over,
     board, pinIn, solvedFx, refocus, cbSay, questions, nope, qPoints, drawStrings, addClose, closed, caseHTML, medal, finale, NEXT };
 })();

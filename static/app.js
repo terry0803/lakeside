@@ -1,5 +1,5 @@
 /* Lakeside IT Assistant: page logic. No external libraries. The tour fills the window (the iframe); the assistant is a
-   pop-up window over it, opened from the dock at the bottom right, and the mini map sits at the top right (minimap.js). */
+   pop-up window over it, opened from the two buttons at the top left, under the mini map (minimap.js). */
 "use strict";
 
 const $ = (s, el = document) => el.querySelector(s);
@@ -22,6 +22,10 @@ const PARAMS = new URLSearchParams(location.search), IN_FRAME = window.self !== 
 // ?full=1: the whole page even inside a frame (the buttons in the iStaging tours open it in iStaging's big window)
 let EMBED = PARAMS.has("embed") || (IN_FRAME && !PARAMS.has("full"));
 if (EMBED) document.documentElement.classList.add("is-embed");
+// 11/23 (review): the addresses of our own pages (this one, the fixed address, the GitHub copy, the laptop itself). Only
+// they may steer this page by message (open the window, move the tour, keep the column aside); a video or a web page in
+// an iStaging pop-up can reach this window too.
+const OURS = new Set([location.origin, "https://lakeside.taila701b6.ts.net", "https://terry0803.github.io", "http://127.0.0.1:8780", "http://localhost:8780"]);
 
 const PIN = '<svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0a4 4 0 0 0-4 4c0 3 4 8 4 8s4-5 4-8a4 4 0 0 0-4-4zm0 5.6A1.6 1.6 0 1 1 6 2.4a1.6 1.6 0 0 1 0 3.2z"/></svg>';
 const LABEL = {
@@ -69,16 +73,13 @@ function bump(node) {
 const zh = () => S.lastLang === "zh";
 const t = (en, z) => (zh() ? z : en);
 const pick = (o, f = "") => (o ? (zh() ? o[f ? f + "_zh" : "zh"] || o[f ? f + "_en" : "en"] : o[f ? f + "_en" : "en"] || o[f ? f + "_zh" : "zh"]) || "" : "");
+// a node's name in the cards' chips and lines: English first, then the Chinese, also after a question in Chinese (11/23
+// review: they had turned round after one)
 function both(o) {
   if (!o) return "";
   const a = o.en || "", b = o.zh || "";
-  if (!b || a === b) return esc(a || b);
-  return zh() ? `${esc(b)} <span class="tag">${esc(a)}</span>` : `${esc(a)} <span class="tag" lang="zh-Hant">${esc(b)}</span>`;
-}
-function roomName(r) {
-  if (!r) return "";
-  const it = zh() ? r.it_zh || r.zh : r.it_en || r.en, base = zh() ? r.name_zh || r.base_zh : r.name_en || r.base_en;
-  return it || base || r.key;
+  if (!a || !b || a === b) return esc(a || b);
+  return `${esc(a)} <span class="tag" lang="zh-Hant">${esc(b)}</span>`;
 }
 // 11/22 afternoon (the user: every English the visitor sees needs its Chinese next to it): fixed text, cards and place names
 // are shown in both languages, English first. Only the model's own answer, and the questions sent to it, follow the language
@@ -107,7 +108,7 @@ const PURPOSE_ZH = {
   "control: what it stops and which clauses it meets": "防護措施擋什麼、符合哪些條文", "department, its people and systems": "部門、人員和系統",
   "top hits and their neighbours": "最接近的結果和相鄰節點", "BM25 full-text search": "BM25 全文檢索", "bge-m3 vector search": "bge-m3 向量搜尋",
   "BM25 search over findings": "用 BM25 搜尋漏洞", "vector search over findings": "用向量搜尋漏洞", "phishing warning signs": "釣魚警訊", "what to do next": "接下來怎麼做",
-  "candidate findings": "候選漏洞", "number of weaknesses": "漏洞數量",
+  "candidate findings": "候選漏洞", "number of weaknesses": "漏洞數量", "where the clue for this lock is": "這道鎖的線索在哪裡",
 };
 const HOW_ZH = {
   "button": "按鈕", "looks like a pasted email (rule)": "看起來是貼上的信（規則判斷）", "model": "模型", "model output was not JSON, fell back to search": "模型輸出不是 JSON，改用搜尋",
@@ -115,6 +116,7 @@ const HOW_ZH = {
   "high": "高", "medium": "中", "low": "低", "none": "無", "contact question, person or team preferred": "問聯絡人，優先找人或團隊",
   "same name, concept preferred for 'explain'": "同名時說明優先用概念", "(the pasted message)": "（貼上的信）",
   "rules + model, evidence checked against the text": "規則加模型，引文已和原文核對", "hybrid search over findings + model judgement": "混合搜尋漏洞再由模型判斷",
+  "the report does not say what was seen (rule)": "回報沒有說看到什麼（規則判斷）",
 };
 const zhOf = (map, s) => { if (!s) return ""; if (map[s]) return map[s]; const m = /^redirect:(\w+)$/.exec(s); return m && LABEL[m[1]] ? `轉到${LABEL[m[1]][1]}` : ""; };
 const LTm = (map, s) => LT(s || "", zhOf(map, s));
@@ -167,10 +169,16 @@ function askAncestors(msg) {
   for (let i = 0; i < 6 && w; i++) { try { w.postMessage(msg, "*"); } catch { /* gone */ } if (w === window.top) break; w = w.parent; }
 }
 function probeOurPage(room) {
+  // 11/23 (review): where the browser lists the addresses of the pages around this one (Chrome) and none of them is ours,
+  // nobody will answer, so the window opens without the 0.6 s wait. A hidden address ("null") or no list: ask as before.
+  try {
+    const up = location.ancestorOrigins ? [...location.ancestorOrigins] : null;
+    if (up && !up.some((o) => o === "null" || OURS.has(o))) return Promise.resolve(false);
+  } catch { /* ask */ }
   return new Promise((resolve) => {
     let done = false;
     const onAck = (e) => {
-      if (done || !e.data || e.data.type !== "lakeside:ack") return;
+      if (done || !e.data || e.data.type !== "lakeside:ack" || !OURS.has(e.origin)) return;
       // 11/22: in a frame inside iStaging the browser keeps this page's storage apart from our page around it, so this
       // window would start its own progress; take the session of that page instead (same address only)
       if (e.data.session && e.origin === location.origin) { S.session = e.data.session; store.set("session", S.session); }
@@ -209,9 +217,18 @@ function stillTalking() {
 // a window that said so and was then closed before its next page came is not waited for
 let navFrom = null;
 function gameQuiet() {
+  // 11/23 (review): a tab in the background runs its timers, and the windows in it their heartbeats, only about once a
+  // minute; a check then could take a window that still talks for gone. Wait until the tab is in front again.
+  if (document.hidden) { gameTimer = setTimeout(gameQuiet, 1000); return; }
   if (navUntil) { let gone = false; try { gone = !navFrom || navFrom.closed; } catch { gone = true; } if (gone) navUntil = 0; }
   if (Date.now() < navUntil || stillTalking()) gameTimer = setTimeout(gameQuiet, 400); else gameOpen(false);
 }
+// back in front: the windows that were talking start counting again from now (their next heartbeat is a second away)
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) return;
+  const now = Date.now();
+  for (const w of talkers.keys()) talkers.set(w, now);
+});
 function gameOpen(on) {
   clearTimeout(gameTimer);
   if (on) gameTimer = setTimeout(gameQuiet, 2600);
@@ -255,6 +272,7 @@ window.addEventListener("message", (e) => {          // the other end: our full-
     if (d && d.type === "lakeside:game-exit" && e.origin === location.origin) closeGame();
     return;
   }
+  if (!OURS.has(e.origin)) return;                       // 11/23 (review): from our own pages only (OURS)
   if (d && (d.type === "lakeside:game-open" || d.type === "lakeside:game-alive" || d.type === "lakeside:popup-alive")) {
     if (d.type === "lakeside:game-open") navUntil = 0;   // the next page has arrived: a close from now on is a real one
     if (e.source) talkers.set(e.source, Date.now());
@@ -279,7 +297,7 @@ window.addEventListener("message", (e) => {          // the other end: our full-
     const toast = $("#tourToast");
     toast.innerHTML = `${PIN}<span>This is the full version: the map and the assistant are at the top left <span lang="zh-Hant">這裡就是完整版：地圖和小幫手都在左上角</span></span>`;
     toast.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove("show"), 4200);
-    try { e.source.postMessage({ type: "lakeside:ack" }, "*"); } catch { /* the window went away */ }
+    try { e.source.postMessage({ type: "lakeside:ack" }, e.origin); } catch { /* the window went away */ }
     return;
   }
   if (d && d.type === "lakeside:hello") {               // the assistant opened in iStaging's window: where the visitor is, then step aside
@@ -287,15 +305,20 @@ window.addEventListener("message", (e) => {          // the other end: our full-
     navUntil = 0;
     if (e.source) talkers.set(e.source, Date.now());
     gameOpen(true);
-    try { e.source.postMessage(e.origin === location.origin ? { type: "lakeside:ack", session: S.session } : { type: "lakeside:ack" }, "*"); } catch { /* the window went away */ }
+    // the answer goes to the address that asked (with the session only to our own address), not to whoever is there now
+    try { e.source.postMessage(e.origin === location.origin ? { type: "lakeside:ack", session: S.session } : { type: "lakeside:ack" }, e.origin); } catch { /* the window went away */ }
     return;
   }
-  if (d && d.type === "lakeside:goto") { if (S.byKey[d.room]) goTo(d.room); return; }      // the map inside iStaging's window, inside this page
+  // the map inside iStaging's window, inside this page: a jump, so the tour moves even to the scene it was opened at
+  if (d && d.type === "lakeside:goto") { if (S.byKey[d.room]) goTo(d.room, { jump: true }); return; }
   if (!d || d.type !== "lakeside:open") return;
   const r = S.byKey[d.room];
   openDesk(d.tab === "progress" ? "progress" : "chat");
-  if (r) { setHere(d.room); if (d.tab !== "progress") runAction("room_overview", "", t("What is in this place?", "這裡有什麼？")); }
-  try { e.source.postMessage({ type: "lakeside:ack" }, "*"); } catch { /* the window went away */ }
+  if (r) {
+    setHere(d.room);
+    if (d.tab !== "progress" && !runAction("room_overview", "", t("What is in this place?", "這裡有什麼？"))) busyNote($("#askForm"), true);
+  }
+  try { e.source.postMessage({ type: "lakeside:ack" }, e.origin); } catch { /* the window went away */ }
 });
 // the visitor is at this place (told by the tour, not chosen here): update everything except the tour itself
 async function setHere(key) {
@@ -309,19 +332,17 @@ async function setHere(key) {
 }
 
 /* ---------------------------------------------------------------- the pop-up window */
-let closeTimer = null, deskFrom = null, deskMorph = null, deskLater = null;      // deskMorph: { anims, ghosts, end }
+let closeTimer = null, deskFrom = null, deskMorph = null, deskLater = null;      // deskMorph: { anims, end, restore }
 /* 11/22 afternoon (the user: when the window shrinks, the other button just appears; let it split into the two buttons):
-   closing, the window's glass splits into two capsules that fly into the IT Assistant and Casebook buttons and become them;
-   opening, only the clicked button grows into the window and the other one fades where it is (the user found two shapes
-   growing on top of each other strange). Plain glass shapes (.desk-ghost) do the flying; the window and the buttons fade
-   under them at the two ends, so nothing appears or vanishes at once. Web Animations on fixed elements; none of it with
-   "reduce motion" or inside iStaging's window. */
+   closing, the window splits into the IT Assistant and Casebook buttons (foldIntoButtons); opening, only the clicked
+   button grows into the window and the other one fades where it is (the user found two shapes growing on top of each
+   other strange). The window and the buttons themselves move (splitDesk, foldIntoButtons), so nothing appears or
+   vanishes at once. Web Animations; none of it with "reduce motion" or inside iStaging's window. */
 function stopDeskMorph() {
   clearTimeout(deskLater); deskLater = null;
   const m = deskMorph; deskMorph = null;
   if (!m) return;
   for (const a of m.anims) a.cancel();
-  for (const g of m.ghosts) g.remove();
   $("#desk").style.transformOrigin = "";
   if (m.restore) m.restore();
   m.end();
@@ -351,7 +372,7 @@ function splitDesk(opening, end, mainBtn) {
   // the window is already there, small, where the button was; the buttons fade under it
   anims.push(d.animate([{ opacity: 0.4 }, { opacity: 1, offset: 0.3 }, { opacity: 1 }], { duration: T, fill: "both" }));
   btns.forEach((b, i) => anims.push(b.animate([{ opacity: 1 }, { opacity: 0 }], { duration: i === main ? 120 : 200, easing: "ease-out", fill: "forwards" })));
-  const mo = { anims, ghosts: [], end };
+  const mo = { anims, end };
   deskMorph = mo;
   Promise.all(anims.map((x) => x.finished)).then(() => {
     if (deskMorph !== mo) return;
@@ -411,7 +432,7 @@ function foldIntoButtons(d, btns, D, end) {
   P[0].b.style.zIndex = "2"; P[1].b.style.zIndex = "1";
   const anims = [d.animate(kd, { duration: TZ, fill: "both" }), P[0].b.animate(k0, { duration: TZ, fill: "both" }), P[1].b.animate(k1, { duration: TZ, fill: "both" })];
   const restore = () => { for (const p of P) { p.b.style.transformOrigin = ""; p.b.style.zIndex = ""; } };
-  const mo = { anims, ghosts: [], end, restore };
+  const mo = { anims, end, restore };
   deskMorph = mo;
   Promise.all(anims.map((x) => x.finished)).then(() => {
     if (deskMorph !== mo) return;
@@ -457,9 +478,12 @@ function openDesk(tab, fromBtn) {
   requestAnimationFrame(() => { moveInk(true); fitTabs(); });
   for (const b of document.querySelectorAll(".dock-btn")) b.setAttribute("aria-expanded", "true");
   if (tab) showTab(tab);
-  if (!EMBED) { store.set("deskOpen", true); store.set("seenDock", true); }
+  if (!EMBED) store.set("seenDock", true);
   const tip = $(".dock-tip"); if (tip) tip.remove();
   if (tab === "chat" || (!tab && !$("#pane-chat").hidden)) setTimeout(() => $("#askInput").focus({ preventScroll: true }), 60);
+  // 11/23 (review): opened on another tab, the focus goes to that tab; it stayed on the button, which then went away, and
+  // Esc and the keyboard did nothing
+  else if (wasHidden) setTimeout(() => { const s = $(".tabs [aria-selected=true]"); if (s && !d.hidden) s.focus({ preventScroll: true }); }, 60);
 }
 function closeDesk() {
   const d = $("#desk");
@@ -482,8 +506,9 @@ function closeDesk() {
     closeTimer = setTimeout(() => { d.classList.remove("is-closing"); d.hidden = true; }, RM.matches ? 0 : 280);
   }
   for (const b of document.querySelectorAll(".dock-btn")) b.setAttribute("aria-expanded", "false");
-  store.set("deskOpen", false);
-  $("#dockChat").focus({ preventScroll: true });
+  // 11/23 (review): the focus goes back to a button that is on the screen (with the big map open the two below are not)
+  const back = [deskFrom, $("#dockChat"), $("#dockGames"), $("#mmClose"), $("#mmMini"), $("#mmPill")].find((b) => b && b.isConnected && b.offsetParent !== null);
+  if (back) back.focus({ preventScroll: true });
   // 11/22 night (the user: the closing hitched): no resize event for the whole page (the small map drew itself again in
   // the first frame of the closing); only the big map, if it is open, depends on the window's width
   if (typeof Minimap !== "undefined" && Minimap.state() === "open") window.dispatchEvent(new Event("resize"));
@@ -493,7 +518,7 @@ function closeDesk() {
    it open a new window"). The game knows it is in here (?in=page) and its Back button asks this page to close the window.
    The game saves its own score; the Progress tab reads the scores again when the window closes. The window grows out of
    the button that opened it. A click outside the game, or Esc, closes it too. */
-let gameFrom = null, gameShut = null, gameHref = null, gameAnims = [];
+let gameFrom = null, gameShut = null, gameHref = null, gameAnims = [], gameClosedAt = 0;
 // where the closing window goes back to: the link of the game now in it (the next case may have followed), else the link it
 // was opened from, else the Casebook button; only one that is on the screen
 function onScreen(e) {
@@ -513,11 +538,10 @@ function gameBackTarget() {
 function openGame(href, fromEl) {
   let w = $("#gameWin");
   if (!w) {
-    w = el("section", "game-win", `<div class="game-frame"><iframe id="gameFrame" title="Mini-game 小遊戲" allow="autoplay"></iframe></div>`);
+    w = el("section", "game-win", `<div class="game-frame"><iframe id="gameFrame" title="Casebook 事件簿" allow="autoplay"></iframe></div>`);
     w.id = "gameWin"; w.hidden = true; w.tabIndex = -1;
-    w.setAttribute("role", "dialog"); w.setAttribute("aria-modal", "true"); w.setAttribute("aria-label", "Mini-game 小遊戲");
-    w.addEventListener("pointerdown", (e) => { if (e.target === w) closeGame(); });
-    w.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.preventDefault(); closeGame(); } });
+    w.setAttribute("role", "dialog"); w.setAttribute("aria-modal", "true"); w.setAttribute("aria-label", "Casebook 事件簿");
+    w.addEventListener("pointerdown", (e) => { if (e.target === w) closeGame(); });      // Esc: the page's own key handler (bindUi)
     document.body.appendChild(w);
   }
   clearTimeout(gameShut); w.classList.remove("is-closing");
@@ -543,6 +567,7 @@ function closeGame() {
   const w = $("#gameWin");
   if (!w || w.hidden || w.classList.contains("is-closing")) return;
   w.classList.add("is-closing");
+  gameClosedAt = performance.now();                      // the window behind ignores a second click for a moment (bindUi)
   const box = $(".game-frame", w), to = gameBackTarget(), toHref = to && to.getAttribute("href");
   const shut = () => {
     clearTimeout(gameShut);
@@ -610,16 +635,37 @@ function bindUi() {
   $("#dockGames").addEventListener("click", (e) => (shut() ? openDesk("progress", e.currentTarget) : $("#pane-progress").hidden ? showTab("progress") : closeDesk()));
   $("#deskClose").addEventListener("click", closeDesk);
   // 11/22 evening (the user: the tab highlight was off after making the window bigger or smaller): the window's width
-  // changes over 0.55 s, and the resize event sent at the click measured the tabs before that. The tab row is watched
+  // changes over 0.5 s, and the resize event sent at the click measured the tabs before that. The tab row is watched
   // instead (below), so the highlight follows the tabs on every frame of the change.
+  const sizeBtn = (big) => {           // 11/23 (review): the button says what a click will do now
+    const b = $("#deskBig");
+    b.setAttribute("aria-pressed", String(big));
+    b.title = big ? "Make the window smaller 縮小視窗" : "Make the window bigger 放大視窗";
+    b.setAttribute("aria-label", big ? "Make the window smaller" : "Make the window bigger");
+  };
   $("#deskBig").addEventListener("click", () => {
     const big = !$("#desk").classList.contains("is-big");
-    $("#desk").classList.toggle("is-big", big); $("#deskBig").setAttribute("aria-pressed", String(big)); store.set("deskBig", big);
+    $("#desk").classList.toggle("is-big", big); sizeBtn(big); store.set("deskBig", big);
+    // the big map beside it gets narrower or wider with it (style.css): draw it again at its new width
+    if (typeof Minimap !== "undefined" && Minimap.state() === "open") window.dispatchEvent(new Event("resize"));
   });
-  if (store.get("deskBig", false)) { $("#desk").classList.add("is-big"); $("#deskBig").setAttribute("aria-pressed", "true"); }
+  if (store.get("deskBig", false)) { $("#desk").classList.add("is-big"); sizeBtn(true); }
   // 11/22 evening: the settings panel grows open and folds away in CSS (.desk-settings transitions, display allow-discrete)
   $("#deskSet").addEventListener("click", () => { const s = $("#deskSettings"); s.hidden = !s.hidden; $("#deskSet").setAttribute("aria-expanded", String(!s.hidden)); });
-  $("#desk").addEventListener("keydown", (ev) => { if (ev.key === "Escape" && !ev.defaultPrevented) closeDesk(); });
+  // 11/23 (review): Esc anywhere on the page closes one thing at a time: the game window, then the big map, then this
+  // window. It listened on this window only, so it depended on where the focus was, and with the map open it closed both.
+  // While the list of places ("You are here") is open, Esc is that list's own.
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key !== "Escape" || ev.defaultPrevented || ev.isComposing) return;
+    let listOpen = false;
+    try { listOpen = $("#roomSelect").matches(":open"); } catch { listOpen = false; }      // :open is not known everywhere
+    if (listOpen || (ev.target instanceof Element && ev.target.closest("option, optgroup"))) return;
+    const gw = $("#gameWin");
+    if (gw && !gw.hidden) { ev.preventDefault(); closeGame(); return; }
+    if (EMBED) return;
+    if (typeof Minimap !== "undefined" && Minimap.state() === "open") { ev.preventDefault(); Minimap.setState("mini"); return; }
+    if (!$("#desk").hidden && !$("#desk").classList.contains("is-closing")) { ev.preventDefault(); closeDesk(); }
+  });
   // 11/22 night (the user: a click outside the assistant should shrink it back, the way the map does): a clear layer over
   // the tour while the window is open (the tour is in iStaging's frame, so its clicks never reach this page). It sits
   // under the map's layer, so with both open the first click shrinks the map and the next one the window. The small map
@@ -628,30 +674,64 @@ function bindUi() {
     const ds = document.createElement("div");
     ds.className = "desk-scrim"; ds.id = "deskScrim"; ds.setAttribute("aria-hidden", "true");
     $("#layout").insertBefore(ds, $("#side"));
-    ds.addEventListener("pointerdown", (ev) => { ev.preventDefault(); closeDesk(); });
+    ds.addEventListener("pointerdown", (ev) => {
+      ev.preventDefault();
+      // 11/23 (review): the second click of a double click outside a closing game lands here; it closed this window too
+      if (performance.now() - gameClosedAt < 450) return;
+      closeDesk();
+    });
   }
   for (const b of document.querySelectorAll(".tabs [role=tab]")) b.addEventListener("click", () => showTab(b.id.replace("tab-", "")));
   $("#tabs").addEventListener("scroll", fitTabs, { passive: true });
   window.addEventListener("resize", () => { moveInk(true); fitTabs(); });
-  if ("ResizeObserver" in window) new ResizeObserver(() => { moveInk(true); fitTabs(); }).observe($("#tabs"));
+  // the tabs themselves are watched too (11/23 review): the Progress badge one digit longer moves the tabs after it, while
+  // the row keeps its size
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver(() => { moveInk(true); fitTabs(); });
+    ro.observe($("#tabs"));
+    for (const b of document.querySelectorAll(".tabs [role=tab]")) ro.observe(b);
+  }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { moveInk(true); fitTabs(); });
-  for (const b of document.querySelectorAll("[data-lang]")) {
-    b.setAttribute("aria-pressed", String(b.dataset.lang === S.langPref));
+  // 11/23 (review): language and model are two radio groups (role="radio", aria-checked); Tab stops at the chosen one and
+  // the arrow keys move the choice
+  const check = (sel, on) => {
+    const all = [...document.querySelectorAll(sel)], stop = all.includes(on) ? on : all[0];
+    for (const x of all) { x.setAttribute("aria-checked", String(x === on)); x.tabIndex = x === stop ? 0 : -1; }
+  };
+  const langBtns = [...document.querySelectorAll("[data-lang]")], modelBtns = [...document.querySelectorAll("[data-model]")];
+  check("[data-lang]", langBtns.find((x) => x.dataset.lang === S.langPref));
+  check("[data-model]", modelBtns.find((x) => x.dataset.model === S.model));
+  for (const b of langBtns) {
     b.addEventListener("click", () => {
       S.langPref = b.dataset.lang; store.set("lang", S.langPref);
-      for (const x of document.querySelectorAll("[data-lang]")) x.setAttribute("aria-pressed", String(x === b));
+      check("[data-lang]", b);
       if (S.langPref !== "auto") S.lastLang = S.langPref;
     });
   }
-  for (const b of document.querySelectorAll("[data-model]")) {
-    b.setAttribute("aria-pressed", String(b.dataset.model === S.model));
+  for (const b of modelBtns) {
     b.addEventListener("click", async () => {
+      const was = S.model;
       S.model = b.dataset.model; store.set("model", S.model);
-      for (const x of document.querySelectorAll("[data-model]")) x.setAttribute("aria-pressed", String(x === b));
-      await post("/api/settings", { session: S.session, model: S.model });
+      check("[data-model]", b);
+      try { await post("/api/settings", { session: S.session, model: S.model }); }
+      catch {          // 11/23 (review): the server did not take it: back to the model it still uses, and say so
+        S.model = was; store.set("model", was);
+        check("[data-model]", modelBtns.find((x) => x.dataset.model === was));
+        sayNear(b.closest(".seg"), LB("Could not switch the model. Check that 啟動_AI助理.bat is running.", "換不了模型，請確認 啟動_AI助理.bat 有在執行。"), { err: true });
+      }
     });
   }
-  $("#roomSelect").addEventListener("change", (e) => goTo(e.target.value));
+  for (const g of document.querySelectorAll(".seg[role=radiogroup]")) g.addEventListener("keydown", (e) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    const all = [...g.querySelectorAll("[role=radio]")], i = all.indexOf(e.target);
+    if (!step || i < 0) return;
+    e.preventDefault();
+    const n = all[(i + step + all.length) % all.length];
+    n.focus(); n.click();
+  });
+  // 11/23 (review): the list is for saying where you are after walking in the tour (its title says so); it moves "you are
+  // here" and leaves the tour as it is. Before, it loaded that scene again in the tour.
+  $("#roomSelect").addEventListener("change", (e) => setHere(e.target.value));
   // 11/22 afternoon: a game link here opens the game window over the tour (Ctrl, Shift or the middle button still open a tab)
   if (!EMBED) document.addEventListener("click", (e) => {
     const a = e.target instanceof Element ? e.target.closest('a[href^="/lakeside/games/"]') : null;
@@ -665,11 +745,10 @@ function bindUi() {
   $("#askForm").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
   $("#askInput").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(); } });
   $("#askInput").addEventListener("input", growAsk);       // the box grows with a long question (up to 200 px)
-  post("/api/settings", { session: S.session, model: S.model }).then(updateState);
+  post("/api/settings", { session: S.session, model: S.model }).then(updateState).catch(() => { /* the status line says the server is down */ });
 }
 
 function showTab(name) {
-  store.set("deskTab", name);
   for (const b of document.querySelectorAll(".tabs [role=tab]")) b.setAttribute("aria-selected", String(b.id === "tab-" + name));
   const order = [...document.querySelectorAll(".tabs [role=tab]")].map((t) => t.id.replace("tab-", ""));
   const was = [...document.querySelectorAll(".pane")].find((p) => !p.hidden);
@@ -707,10 +786,13 @@ function fitTabs() {
   nav.classList.toggle("is-scroll", over);
   nav.classList.toggle("is-end", over && nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 2);
 }
+let flashTimer = null;
 function flashRoom() {
   const sel = $("#roomSelect");
   if (!sel || RM.matches) return;
   sel.classList.remove("is-changed"); void sel.offsetWidth; sel.classList.add("is-changed");
+  // 11/23 (review): off again once it has played; left on, the gold flash came back every time the window was opened
+  clearTimeout(flashTimer); flashTimer = setTimeout(() => sel.classList.remove("is-changed"), 1100);
 }
 
 async function post(url, body) {
@@ -718,14 +800,16 @@ async function post(url, body) {
   return r.json();
 }
 
+let healthTimer = null;
 async function checkHealth() {
+  clearTimeout(healthTimer);
   const el = $("#status");
   try {
     const h = await fetch("/api/health").then((r) => r.json());
     if (h.offline) {        // 11/22: the saved copy on GitHub Pages (pages/offline.js) while the laptop is off
       el.className = "status offline";
       el.innerHTML = L(`Saved copy from ${h.saved} · the AI is off`, `${h.saved} 存的離線版・AI 沒開`);
-      el.title = LT("The AI runs on the presenter's laptop and is not running right now. Saved answers, the map and the mini-games still work.", "AI 跑在報告用的筆電上，現在沒開。存好的回答、地圖和小遊戲照常能用。");
+      el.title = LT("The AI runs on the presenter's laptop and is not running right now. Saved answers, the map and the casebook still work.", "AI 跑在報告用的筆電上，現在沒開。存好的回答、地圖和事件簿照常能用。");
       return;
     }
     const ok = h.neo4j && h.ollama;
@@ -735,9 +819,12 @@ async function checkHealth() {
     el.innerHTML = ok ? `${L(`Knowledge graph: ${n} nodes`, `知識圖 ${n} 個節點`)} · ${esc(loaded)}`
       : L(`Not ready: ${!h.neo4j ? "Neo4j" : "Ollama"} is not running. Start it with 啟動_AI助理.bat`, `還沒準備好：${!h.neo4j ? "Neo4j" : "Ollama"} 沒有啟動，請執行 啟動_AI助理.bat`);
     el.title = ok ? LT(`Neo4j and the local models are running (${loaded})`, "Neo4j 和本機模型都在運作") : el.textContent;
-    if (ok && !(h.loaded || []).length) setTimeout(checkHealth, 4000);
+    // 11/23 (review): not ready yet: look again every 8 s, so the line turns green by itself once Neo4j and Ollama are up
+    if (!ok) healthTimer = setTimeout(checkHealth, 8000);
+    else if (!(h.loaded || []).length) healthTimer = setTimeout(checkHealth, 4000);
   } catch {
-    el.className = "status bad"; el.textContent = "The assistant server is not running. 助理後端沒有啟動。";
+    el.className = "status bad"; el.textContent = "The assistant server is not running. 小幫手的伺服器沒有啟動。";
+    healthTimer = setTimeout(checkHealth, 8000);
   }
 }
 
@@ -765,7 +852,15 @@ function fillRoomSelect() {
   }
 }
 
-let toastTimer = null;
+let toastTimer = null, tourUrl = "";
+// 11/23 (review): the tour's address is replaced, not added to the browser's history, so Back does not walk the hidden tour
+// through earlier scenes that "you are here" no longer matches. The first scene is the frame's own src.
+function showTour(url) {
+  const fr = $("#tour");
+  tourUrl = url;
+  if (!fr.getAttribute("src")) { fr.setAttribute("src", url); return; }
+  try { fr.contentWindow.location.replace(url); } catch { fr.setAttribute("src", url); }
+}
 async function goTo(key, opt = {}) {
   const r = S.byKey[key]; if (!r) return;
   if (EMBED && opt.jump) {         // inside iStaging: take the whole tour to that scene (a new tab if iStaging does not allow it)
@@ -777,9 +872,10 @@ async function goTo(key, opt = {}) {
   S.room = key; store.set("room", key);
   $("#roomSelect").value = key;
   if (moved) flashRoom();
-  if (typeof Minimap !== "undefined") Minimap.update(key);      // the mini map at the top right of the tour
-  const fr = $("#tour");
-  if (!EMBED && fr.getAttribute("src") !== r.url) fr.setAttribute("src", r.url);
+  if (typeof Minimap !== "undefined") Minimap.update(key);      // the mini map at the top left of the tour
+  // 11/23 (review): a jump the visitor asked for (the map, a Go to button, the map in iStaging's window) always moves the
+  // tour, also to the scene it was last sent to: the visitor may have walked on inside it since, which this page never hears
+  if (!EMBED && (opt.jump || tourUrl !== r.url)) showTour(r.url);
   if (!opt.quiet && !EMBED) {
     const toast = $("#tourToast");
     toast.innerHTML = `${PIN}<span>Opening <b>${esc(r.it_en)}</b> in the tour <span lang="zh-Hant">前往${esc(r.it_zh)}</span></span>`;
@@ -826,7 +922,7 @@ function renderEmpty() {
   starters.forEach(([en, z], i) => {
     const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.innerHTML = LB(en, z);
     b.style.setProperty("--i", i);
-    b.addEventListener("click", () => ask(zh() || S.langPref === "zh" ? z : en)); box.appendChild(b);
+    b.addEventListener("click", () => ask(zh() || S.langPref === "zh" ? z : en, box)); box.appendChild(b);
   });
 }
 
@@ -835,32 +931,70 @@ function growAsk() {
   inp.style.height = "";
   if (inp.value) inp.style.height = `${Math.min(200, inp.scrollHeight + 2)}px`;
 }
-function ask(text) {
+// near: where to say so if an answer is still coming (the box the button is in; the ask box when typed)
+function ask(text, near) {
   const inp = $("#askInput");
   const q = (text ?? inp.value).trim();
-  if (!q || S.busy) return;
+  if (!q) return false;
+  if (S.busy) { if (near) busyNote(near); else busyNote($("#askForm"), true); return false; }
   inp.value = ""; growAsk();
   stream("/api/chat", { session: S.session, message: q, room: S.room, lang: S.langPref }, q);
+  return true;
 }
 
+// true when it was sent; false while the last answer is still coming (the caller keeps what was typed and says so)
 function runAction(tool, target, label) {
-  if (S.busy) return;
+  if (S.busy) return false;
   showTab("chat");
   stream("/api/action", { session: S.session, tool, target, label, room: S.room, lang: S.langPref }, label);
+  return true;
 }
+// 11/23 (review): a short line next to what was pressed, gone after a few seconds. A question while the last answer was
+// still coming did nothing at all (and a pasted email was cleared); a failed save said nothing.
+function sayNear(at, html, opt = {}) {
+  if (!at || !at.isConnected) return;
+  const sib = opt.before ? at.previousElementSibling : at.nextElementSibling;
+  let n = sib && sib.classList.contains("near-note") ? sib : null;
+  if (!n) {
+    n = el("p", "near-note");
+    n.setAttribute("role", "status");
+    if (opt.before) at.before(n); else at.after(n);
+  }
+  n.classList.toggle("is-err", !!opt.err);
+  n.innerHTML = html;
+  clearTimeout(n.timer);
+  n.timer = setTimeout(() => n.remove(), 4500);
+}
+const busyNote = (at, before) => sayNear(at, LB("Still answering the last question. Try again when it is done.", "上一題還在回答，等它答完再按一次。"), { before });
 
 async function stream(url, body, shown) {
   S.busy = true; $("#askBtn").disabled = true;
   const th = $("#thread");
   if ($(".empty", th)) th.innerHTML = "";
+  th.setAttribute("aria-busy", "true");                     // 11/23 (review): screen readers wait for the whole answer
   const u = document.createElement("div"); u.className = "msg user"; u.innerHTML = `<div class="bubble">${esc(shown)}</div>`; th.appendChild(enter(u));
   const m = document.createElement("div"); m.className = "msg bot";
   m.innerHTML = `<div class="work"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="w">${L("Thinking about which tool to use", "判斷要用哪個工具")}</span></div><div class="answer"><span class="caret"></span></div>`;
   th.appendChild(m); setTimeout(() => enter(m), 90); th.scrollTop = th.scrollHeight;
   const ansEl = $(".answer", m), workEl = $(".work", m);
-  let text = "", card = null, finished = false;
+  let text = "", card = null, finished = false, resp = null, stalled = false, idle = null;
+  // 11/23 (review): the card comes before the words, so scrolling to the bottom showed the card's lower half while the
+  // answer grew above it, out of view. Now the start of this answer comes to the top when the card arrives and at the
+  // end, unless the visitor has scrolled the chat in the meantime.
+  let own = false;
+  const mine = () => { own = true; };
+  const mineKey = (e) => { if (/^(Page(Up|Down)|Arrow(Up|Down)|Home|End)$/.test(e.key)) own = true; };
+  const mineBar = (e) => { if (e.target === th) own = true; };          // the scroll bar
+  th.addEventListener("wheel", mine, { passive: true }); th.addEventListener("touchmove", mine, { passive: true });
+  th.addEventListener("keydown", mineKey); th.addEventListener("pointerdown", mineBar);
+  const showStart = () => { if (!own) th.scrollTo({ top: Math.max(0, m.offsetTop - th.offsetTop - 12) }); };
+  // 11/23 (review): 90 s without a word from the server: stop waiting (a stuck model kept every button dead for up to
+  // ten minutes) and say that the answer stopped
+  const ctl = typeof AbortController === "function" ? new AbortController() : null;
+  const wake = () => { clearTimeout(idle); idle = setTimeout(() => { stalled = true; if (ctl) ctl.abort(); }, 90000); };
+  wake();
   try {
-    const resp = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    resp = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined });
     if (resp.status === 429 || resp.status === 503) {        // visitors through the tunnel: the limits in server.py
       const j = await resp.json().catch(() => ({}));
       ansEl.innerHTML = `<p class="err">${esc(j.error || "Busy. 現在忙不過來。")}</p>`; finished = true; workEl.innerHTML = L("Not now", "稍後再問");
@@ -870,6 +1004,7 @@ async function stream(url, body, shown) {
     const reader = resp.body.getReader(); const dec = new TextDecoder(); let buf = "";
     for (;;) {
       const { value, done } = await reader.read(); if (done) break;
+      wake();
       buf += dec.decode(value, { stream: true });
       let i;
       while ((i = buf.indexOf("\n\n")) >= 0) {
@@ -884,21 +1019,36 @@ async function stream(url, body, shown) {
           const w = $(".w", workEl);
           if (w) { w.innerHTML = TOOL[d.tool] ? L(TOOL[d.tool][0] + "…", TOOL[d.tool][1] + "…") : esc(d.tool) + "…"; w.classList.remove("swap"); void w.offsetWidth; w.classList.add("swap"); }
         }
-        else if (ev === "card") { card = renderCard(d); m.insertBefore(enter(card, 1400), null); th.scrollTop = th.scrollHeight; }
+        else if (ev === "card") { card = renderCard(d); m.insertBefore(enter(card, 1400), null); showStart(); }
         else if (ev === "token") { text += d.text; ansEl.innerHTML = md(text) + '<span class="caret"></span>'; }
         else if (ev === "replace") { text = d.text; ansEl.innerHTML = md(text); }
         else if (ev === "error") { const e = document.createElement("p"); e.className = "err"; e.textContent = d.message; if (d.detail) e.title = d.detail; m.appendChild(e); }
-        else if (ev === "done") { finished = true; ansEl.innerHTML = md(d.answer || text); finish(m, d, workEl); }
+        else if (ev === "done") {
+          finished = true; ansEl.innerHTML = md(d.answer || text);
+          // 11/23 (review): a fault while drawing the rest keeps the answer and adds one line under it (the answer used to
+          // be replaced by "could not be reached")
+          try { finish(m, d, workEl); } catch (err) { m.appendChild(el("p", "err", LB("Part of this answer could not be shown.", "這個回答有一部分顯示不出來。"))); console.error(err); }
+        }
       }
     }
   } catch (e) {
-    ansEl.innerHTML = `<p class="err">${LB("The assistant could not be reached. Check that 啟動_AI助理.bat is running.", "連不到助理後端，請確認 啟動_AI助理.bat 有在執行。")}</p>`;
+    // 11/23 (review): no answer from the server at all: it could not be reached (the lines below used to write over this
+    // at once). Cut off on the way, or 90 s without a word: the lines below say it stopped, with what had come.
+    if (!resp && !stalled) {
+      finished = true;
+      ansEl.innerHTML = `<p class="err">${LB("The assistant could not be reached. Check that 啟動_AI助理.bat is running.", "連不到小幫手的伺服器，請確認 啟動_AI助理.bat 有在執行。")}</p>`;
+      workEl.innerHTML = L("Stopped", "已中斷");
+    }
   } finally {
+    clearTimeout(idle);
+    th.removeEventListener("wheel", mine); th.removeEventListener("touchmove", mine);
+    th.removeEventListener("keydown", mineKey); th.removeEventListener("pointerdown", mineBar);
     if (!finished) {
       ansEl.innerHTML = md(text) + `<p class="err">${LB("The answer stopped before it finished. Check that 啟動_AI助理.bat is still running, then ask again.", "回答中途斷了。請確認 啟動_AI助理.bat 還在執行，再問一次。")}</p>`;
       workEl.innerHTML = L("Stopped", "已中斷");
     }
-    S.busy = false; $("#askBtn").disabled = false; th.scrollTop = th.scrollHeight;
+    S.busy = false; $("#askBtn").disabled = false; th.removeAttribute("aria-busy");
+    showStart();
   }
 }
 
@@ -912,7 +1062,7 @@ function finish(m, d, workEl) {
   if (d.go && d.go.length) {
     const g = document.createElement("div"); g.className = "go";
     for (const r of d.go) {
-      const b = document.createElement("button"); b.type = "button"; b.className = "plate lg-rim lg-hi";
+      const b = document.createElement("button"); b.type = "button"; b.className = "plate lg-hi";
       b.innerHTML = `<span class="to">Go to ${esc(rnEn(r))}${rnZh(r) ? `<span class="zh-line" lang="zh-Hant">前往${esc(rnZh(r))}</span>` : ""}</span>${r.why_en ? `<span class="why">${LB(r.why_en, r.why_zh)}</span>` : ""}<span class="arr">${ARROW}</span>`;
       b.style.setProperty("--i", k++);
       b.addEventListener("click", () => goTo(r.key, { jump: true })); g.appendChild(b);
@@ -926,7 +1076,7 @@ function finish(m, d, workEl) {
       const asked = typeof q === "string" ? q : q.text || q.en;
       const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.innerHTML = typeof q === "string" ? esc(q) : L(q.en || q.text, q.zh);
       b.style.setProperty("--i", k++);
-      b.addEventListener("click", () => ask(asked)); f.appendChild(b);
+      b.addEventListener("click", () => ask(asked, f)); f.appendChild(b);
     }
     m.appendChild(enter(f));
   }
@@ -974,7 +1124,16 @@ function entityChip(x) {
   const b = el("button", "chip", both(x) + (x.tag_en ? `<span class="tag">${L(x.tag_en, x.tag_zh)}</span>` : ""));
   b.type = "button";
   if (x.refs && x.refs.length) b.title = x.refs.join(", ");
-  b.addEventListener("click", () => runAction("explain", x.en || x.zh, t(`Tell me about ${x.en}`, `說明${x.zh || x.en}`)));
+  b.addEventListener("click", () => { if (!runAction("explain", x.en || x.zh, t(`Tell me about ${x.en}`, `說明${x.zh || x.en}`))) busyNote(b.closest("ul, .items") || b); });
+  return b;
+}
+// an extension number, the same way everywhere (11/23 review): "ext. 3100 分機 3100", as in the mini-games
+const extL = (x) => L(`ext. ${x}`, `分機 ${x}`);
+
+// A stop behind a lock the player has to open in the tour: shown, not clickable.
+function lockedStop(r) {
+  const b = el("span", "roomlink is-locked", PIN + roomNameL(r));
+  b.title = LT("Open the lock in the tour to get here", "在導覽裡打開這道鎖才到得了");
   return b;
 }
 
@@ -1014,7 +1173,7 @@ function renderSections(card, secs) {
 }
 
 function renderCard(c) {
-  const card = el("section", "card lg-rim lg-hi");
+  const card = el("section", "card lg-hi");
   if (c.type === "steps") return stepsCard(card, c);
   if (c.type === "access") return accessCard(card, c);
   if (c.type === "route") return routeCard(card, c);
@@ -1039,7 +1198,7 @@ function accessCard(card, c) {
   if (!c.rows.length) body.innerHTML = `<tr><td colspan="3">${LB("Nobody may access or keep it.", "沒有任何職務可以存取或保存。")}</td></tr>`;
   for (const r of c.rows) {
     const tr = el("tr");
-    tr.innerHTML = `<td>${both(r.role)}${r.ext ? ` <span class="tag">ext. ${esc(r.ext)}（分機）</span>` : ""}</td><td><span class="lvl ${esc(r.level)}"><i></i>${L(r.level_en, r.level_zh)}</span></td><td>${LB(r.note_en, r.note_zh)}</td>`;
+    tr.innerHTML = `<td>${both(r.role)}${r.ext ? ` <span class="tag">${extL(r.ext)}</span>` : ""}</td><td><span class="lvl ${esc(r.level)}"><i></i>${L(r.level_en, r.level_zh)}</span></td><td>${LB(r.note_en, r.note_zh)}</td>`;
     body.appendChild(tr);
   }
   tb.appendChild(body); card.appendChild(tb);
@@ -1058,7 +1217,7 @@ function stepsCard(card, c) {
   for (const [n, s] of c.steps.entries()) {
     const li = el("li");
     li.style.setProperty("--i", Math.min(n, 8));
-    li.innerHTML = `<div><div>${LB(s.en, s.zh)}</div><div class="step-meta"><b>${pL(s.who)}</b>${s.ext ? ` · ext. ${esc(s.ext)}（分機）` : ""} · ${L(s.phase_en, s.phase_zh)}</div></div>`;
+    li.innerHTML = `<div><div>${LB(s.en, s.zh)}</div><div class="step-meta"><b>${pL(s.who)}</b>${s.ext ? ` · ${extL(s.ext)}` : ""} · ${L(s.phase_en, s.phase_zh)}</div></div>`;
     ol.appendChild(li);
   }
   card.appendChild(ol);
@@ -1070,7 +1229,7 @@ function stepsCard(card, c) {
   }
   if (c.contacts && c.contacts.length) {
     const ct = el("div", "contacts");
-    ct.innerHTML = c.contacts.map((r) => `<span>${both(r)}${r.ext ? ` <b>ext. ${esc(r.ext)}</b>（分機）` : ""}</span>`).join("");
+    ct.innerHTML = c.contacts.map((r) => `<span>${both(r)}${r.ext ? ` <b>${extL(r.ext)}</b>` : ""}</span>`).join("");
     card.appendChild(ct);
   }
   if (c.refs && c.refs.length) card.appendChild(el("div", "refs", `${L("Based on:", "依據：")} ${c.refs.map((x) => pL(x)).join("; ")}`));
@@ -1084,7 +1243,7 @@ function routeCard(card, c) {
   const r = el("div", "route");
   c.steps.forEach((s, i) => {
     if (i) { r.appendChild(el("span", "arrow", "›")); if (s.teleport) r.appendChild(el("span", "tele", L("teleport", "傳送點"))); }
-    r.appendChild(roomLink(s));
+    r.appendChild(s.locked ? lockedStop(s) : roomLink(s));      // 11/23: stops behind a lock are not a shortcut past it
   });
   card.appendChild(r);
   return card;
@@ -1107,8 +1266,9 @@ function emailCard(card, c) {
   if (c.rejected && c.rejected.length) card.appendChild(el("p", "refs", LB(`${c.rejected.length} sign(s) suggested by the model were dropped because the quoted words are not in the message.`, `模型另外提出 ${c.rejected.length} 個警訊，但引用的文字不在信裡，已排除。`)));
   if (c.procedure && c.procedure.en) {
     const b = el("button", "chip", L(`Open the procedure: ${c.procedure.en || ""}`, `打開流程：${c.procedure.zh || ""}`)); b.type = "button";
-    b.addEventListener("click", () => runAction("procedure", c.procedure.en, pick(c.procedure)));
-    const w = el("div", "follow"); w.appendChild(b); card.appendChild(w);
+    const w = el("div", "follow");
+    b.addEventListener("click", () => { if (!runAction("procedure", c.procedure.en, pick(c.procedure))) busyNote(w); });
+    w.appendChild(b); card.appendChild(w);
   }
   return card;
 }
@@ -1134,7 +1294,9 @@ function findingCard(card, c) {
 
 function progressCard(card, c) {
   card.appendChild(el("div", "card-head", `<h3>${L("Your progress", "你的進度")}</h3>`));
-  card.appendChild(el("p", "note", LB(`Weaknesses found: ${c.found} of ${c.total}. Places visited: ${c.visited} of ${c.rooms}.`, `找到的漏洞：${c.found} / ${c.total}。去過的地方：${c.visited} / ${c.rooms}。`)));
+  // 11/23: only the places asked about here (or opened from our map) are counted, not the ones walked to in the tour,
+  // so no "of 47"
+  card.appendChild(el("p", "note", LB(`Weaknesses found: ${c.found} of ${c.total}. Places you asked me about: ${c.visited}.`, `找到的漏洞：${c.found} / ${c.total}。問過小幫手的地方：${c.visited} 個。`)));
   card.appendChild(el("div", "bar", `<b style="width:${(100 * c.found) / Math.max(1, c.total)}%"></b>`));
   return card;
 }
@@ -1144,6 +1306,8 @@ function renderTrace(tr) {
   if (tr.offline) return document.createDocumentFragment();      // the saved copy's "AI is off" answer: nothing was looked up
   const d = el("details", "trace");
   d.innerHTML = `<summary>How I found this <span lang="zh-Hant">我怎麼查到的</span></summary>`;
+  // the time bar fills when it is opened, not again each time the chat is shown (11/23 review)
+  d.addEventListener("toggle", () => { if (d.open) enter(d, 1100); });
   const b = el("div", "trace-body");
   const tm = tr.timings || {};
   // where the time went: one bar in three parts, the same colours as the labels under it
@@ -1279,7 +1443,7 @@ const caseParts = (en, z) => [en.split(" · ")[0], en.split(" · ").slice(1).joi
 function renderTasks() {
   const box = $("#tasks"); box.innerHTML = "";
   const gs = el("section", "task-group");
-  gs.innerHTML = `<h2>Mini-games <span lang="zh-Hant">小遊戲</span></h2><p>The Awards Night casebook: four case files, each a shift and then a case board, about five minutes each. ${EMBED ? "They open in this window." : "They open in a window over the tour."} <span lang="zh-Hant">頒獎晚會事件簿共四章，每章先值班、再整理案情板，一章大約五分鐘，${EMBED ? "會在這個視窗裡打開" : "會在導覽上面開一個視窗"}。</span></p>`;
+  gs.innerHTML = `<h2>Casebook <span lang="zh-Hant">事件簿</span></h2><p>The Awards Night casebook: four cases, each a shift and then a case board, about five minutes each. ${EMBED ? "They open in this window." : "They open in a window over the tour."} <span lang="zh-Hant">頒獎晚會事件簿共四案，每案先值班、再整理案情板，一案大約五分鐘，${EMBED ? "會在這個視窗裡打開" : "會在導覽上面開一個視窗"}。</span></p>`;
   const gl = el("div", "task-list");
   for (const [k, en, z] of GAMES) {
     const [no, name, zname, zno] = caseParts(en, z);
@@ -1294,7 +1458,7 @@ function renderTasks() {
     const list = el("div", "task-list");
     for (const [tool, target, en, z] of g.items) {
       const b = el("button", "task", `<span class="en">${esc(en)}</span><span class="zh" lang="zh-Hant">${esc(z)}</span>`); b.type = "button";
-      b.addEventListener("click", () => runAction(tool, target, zh() || S.langPref === "zh" ? z : en));
+      b.addEventListener("click", () => { if (!runAction(tool, target, zh() || S.langPref === "zh" ? z : en)) busyNote(list); });
       list.appendChild(b);
     }
     sec.appendChild(list);
@@ -1306,7 +1470,13 @@ function renderTasks() {
     const sec = el("section", "task-group");
     sec.innerHTML = `<h2>${esc(en)} <span lang="zh-Hant">${esc(z)}</span></h2>`;
     const f = el("form", "paste"); f.innerHTML = `<textarea aria-label="${esc(en)}" placeholder="${esc(ph)}"></textarea><button type="submit">${tool === "check_email" ? "Check it 檢查" : "Report it 回報"}</button>`;
-    f.addEventListener("submit", (e) => { e.preventDefault(); const v = $("textarea", f).value.trim(); if (v) { runAction(tool, "", v); $("textarea", f).value = ""; } });
+    // 11/23 (review): cleared only once it has been sent; while the last answer is still coming the text stays, with a note
+    f.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const v = $("textarea", f).value.trim();
+      if (!v) return;
+      if (runAction(tool, "", v)) $("textarea", f).value = ""; else busyNote($("button", f));
+    });
     sec.appendChild(f); box.appendChild(sec);
   }
   box.appendChild(gs);
@@ -1322,6 +1492,7 @@ let ringWas = 0;
 function renderProgress(anim = true) {
   const v = $("#progressView"), st = S.state || { found_n: 0, visited: 0, found_items: [], visited_keys: [] };
   v.classList.toggle("no-anim", !anim);
+  if (anim) enter(v, 1300);          // the parts rise in once per drawing, not again each time the window is shown (11/23 review)
   const found = st.found_items || [], n = st.found_n || 0, total = Math.max(1, S.totalFindings || 17), GOAL = 10;
   const R = 40, C = 2 * Math.PI * R, off = (x) => (C * (1 - Math.min(1, x / total))).toFixed(1);
   const a = (2 * Math.PI * GOAL) / total, tick = (r) => `${(50 + r * Math.cos(a)).toFixed(1)} ${(50 + r * Math.sin(a)).toFixed(1)}`;
@@ -1347,11 +1518,11 @@ function renderProgress(anim = true) {
   v.appendChild(ul);
   const games = st.games || {};
   const played = GAMES.filter((g) => games[g[0]]).length;
-  v.appendChild(el("h2", "", `Mini-games <span lang="zh-Hant">小遊戲</span> · ${played} / ${GAMES.length}`));
+  v.appendChild(el("h2", "", `Casebook <span lang="zh-Hant">事件簿</span> · ${played} / ${GAMES.length}`));
   const cs = el("div", "cases");
   const tgt = "_self";                               // here: the game window (bindUi); inside iStaging's window: this window
   for (const [k, en, z, room] of GAMES) {           // one card per case, numbered like the red CASE boards in the tour
-    const r = games[k], [no, name, zname, zno] = caseParts(en, z), c = el("div", "case lg-rim lg-hi" + (r ? " is-played" : ""));
+    const r = games[k], [no, name, zname, zno] = caseParts(en, z), c = el("div", "case lg-hi" + (r ? " is-played" : ""));
     c.innerHTML = `<i class="case-no">${esc(no.toUpperCase())} <span lang="zh-Hant">${esc(zno)}</span></i>
       <span class="case-t">${esc(name)}<span lang="zh-Hant">${esc(zname)}</span></span>
       <span class="case-res">${r ? `${L("Best", "最佳")} <b>${r.best}</b> / ${r.total}${r.plays > 1 ? ` · ${L(`${r.plays} plays`, `玩了 ${r.plays} 次`)}` : ""}` : L("Not played yet", "還沒玩")}</span>
@@ -1360,7 +1531,9 @@ function renderProgress(anim = true) {
     cs.appendChild(c);
   }
   v.appendChild(cs);
-  const h = el("h2", "", `Places visited <span lang="zh-Hant">去過的地方</span> · ${st.visited || 0} / ${S.rooms.length}`); v.appendChild(h);
+  // 11/23: a place counts when it was asked about here or opened from our map, not when walked to with the tour's own
+  // arrows, so the heading says that and has no "of 47" to reach
+  const h = el("h2", "", `Places you asked me about <span lang="zh-Hant">問過小幫手的地方</span> · ${st.visited || 0}`); v.appendChild(h);
   const vis = new Set(st.visited_keys || []);
   const areas = el("div", "areas"), groups = {};
   for (const r of S.rooms) (groups[r.area_en] ||= { zh: r.area_zh, rooms: [] }).rooms.push(r);
@@ -1372,8 +1545,22 @@ function renderProgress(anim = true) {
     a.appendChild(w); areas.appendChild(a);
   }
   v.appendChild(areas);
+  // 11/23 (review): the progress is kept on the server and cannot come back, so the first click only asks to click again
+  // within 3 s
   const reset = el("button", "btn-plain", "Start over 重新開始"); reset.type = "button";
-  reset.addEventListener("click", async () => { updateState(await post("/api/settings", { session: S.session, reset: true })); renderProgress(true); });
+  let armed = null;
+  const say = (s) => { reset.firstChild.nodeValue = s; };          // the text only: the press's ripple is a child too
+  const disarm = () => { clearTimeout(armed); armed = null; say("Start over 重新開始"); reset.classList.remove("is-armed"); };
+  reset.addEventListener("click", async () => {
+    if (!armed) {
+      say("Click again to clear 再按一次就清除"); reset.classList.add("is-armed");
+      armed = setTimeout(disarm, 3000);
+      return;
+    }
+    disarm();
+    try { updateState(await post("/api/settings", { session: S.session, reset: true })); renderProgress(true); }
+    catch { sayNear(reset, LB("Could not clear the progress. Check that 啟動_AI助理.bat is running.", "清不掉進度，請確認 啟動_AI助理.bat 有在執行。"), { err: true }); }
+  });
   v.appendChild(reset);
   [...v.children].forEach((c, i) => c.style.setProperty("--i", Math.min(i, 10)));
 }
@@ -1383,7 +1570,7 @@ async function renderHow() {
   const v = $("#howView");
   if (v.dataset.done) return;
   v.dataset.done = "1";
-  v.innerHTML = `<h2>How the assistant works <span lang="zh-Hant">助理怎麼運作</span></h2>
+  v.innerHTML = `<h2>How the assistant works <span lang="zh-Hant">小幫手怎麼運作</span></h2>
   <p>Everything runs on the presenter's laptop. The page shows the iStaging tour full screen; this window, the casebook and the map open over it. Your question goes to a local language model (Ollama), which only chooses a tool and the words that name what you asked about. The tool matches those words to a node in the Neo4j knowledge graph and runs a fixed, read-only Cypher query. The model then writes the answer from those facts only.</p>
   <p lang="zh-Hant">全部在報告用的筆電上跑。畫面是全螢幕的 iStaging 導覽，這個視窗、事件簿和地圖都疊在上面。你的問題先交給筆電上的語言模型（Ollama），它只負責選工具、抓出你問的是什麼；工具把它對到 Neo4j 知識圖的節點，執行寫好的唯讀 Cypher，模型再只根據查到的資料寫回答。</p>
   <svg class="arch" viewBox="0 0 420 258" role="img" aria-label="Architecture: your question goes to the assistant server, which asks the local model and the Neo4j graph, then gives the answer and a card that can take you to a place in the tour">
@@ -1407,7 +1594,7 @@ async function renderHow() {
   <h2>Finding what you mean <span lang="zh-Hant">找出你問的是什麼</span></h2>
   <p>Three signals are combined with reciprocal rank fusion: exact names and aliases (English and Chinese), BM25 full-text search in Neo4j (CJK analyzer), and bge-m3 vector search in Neo4j's vector index, so 信用卡 finds “Payment Card Data”.</p>
   <p lang="zh-Hant">用 RRF 合併三種線索：中英文名稱和別名、Neo4j 的 BM25 全文檢索（中日韓分詞），還有 Neo4j 向量索引裡的 bge-m3 向量搜尋。所以打「信用卡」也找得到「Payment Card Data」。</p>
-  <h2>Safety of the assistant itself <span lang="zh-Hant">助理自己的資安</span></h2>
+  <h2>Safety of the assistant itself <span lang="zh-Hant">小幫手自己的資安</span></h2>
   <p>Read-only database transactions, parameterised queries, a JSON schema that limits the model to known tools, answers grounded in retrieved facts, quoted evidence checked against your text, no questions sent to outside AI services, and logs kept on the presenter's laptop.</p>
   <p lang="zh-Hant">資料庫只用唯讀交易，查詢一律帶參數。JSON schema 限定模型只能選已知的工具，回答只根據查到的資料，引用的證據會和你貼的原文核對。問題不會送到外面的 AI 服務，紀錄只存在報告用的筆電上。</p>
   <h2>Colours in the cards and the graph <span lang="zh-Hant">卡片和關係圖的顏色</span></h2>
@@ -1415,20 +1602,30 @@ async function renderHow() {
   <div class="legend">${Object.keys(LABEL).filter((l) => COLORS[l] && l !== "Area").map((l) => `<span data-t="${l}">${esc(LABEL[l][0])} <span lang="zh-Hant">${esc(LABEL[l][1])}</span></span>`).join("")}</div>
   <div id="schemaBox"><p>${L("Loading the graph schema…", "讀取知識圖結構中…")}</p></div>`;
   [...v.children].forEach((c, i) => c.style.setProperty("--i", Math.min(i, 12)));
+  enter(v, 1300);                  // the parts rise in when the tab is first drawn, not each time it is shown (11/23 review)
   try {
     const s = await fetch("/api/schema").then((r) => r.json());
-    const box = $("#schemaBox");
-    box.innerHTML = `<h2>What is in the graph <span lang="zh-Hant">知識圖裡有什麼</span></h2>`;
     const t1 = el("table", "kv"); t1.innerHTML = `<tr><th>${L("Node type", "節點類型")}</th><th>${L("Count", "數量")}</th></tr>` + s.labels.map((x) => `<tr><td>${LABEL[x.l] ? L(x.l, LABEL[x.l][1]) : esc(x.l)}</td><td>${x.c}</td></tr>`).join("");
     const t2 = el("table", "kv"); t2.innerHTML = `<tr><th>${L("Relationship (from → to)", "關係（從 → 到）")}</th><th>${L("Count", "數量")}</th></tr>` + s.pattern.map((x) => `<tr><td>${esc(x.a)} –${esc(x.t)}→ ${esc(x.b)}</td><td>${x.c}</td></tr>`).join("");
+    const box = $("#schemaBox");
+    box.innerHTML = `<h2>What is in the graph <span lang="zh-Hant">知識圖裡有什麼</span></h2>`;
     box.appendChild(t1); box.appendChild(t2);
-  } catch { /* the rest of the tab still helps */ }
+  } catch {
+    // 11/23 (review): a short note instead of "Loading…" for ever; the tab is drawn again the next time it is opened
+    const box = $("#schemaBox");
+    if (box) box.innerHTML = `<p class="err">${LB("The graph's structure could not be loaded. Try this tab again in a moment.", "讀不到知識圖的結構，等一下再點一次這個分頁。")}</p>`;
+    delete v.dataset.done;
+  }
 }
 
 /* ---------------------------------------------------------------- liquid glass (11/22 afternoon, third look)
-   The light on the glass follows the mouse (style.css .lg-hi reads --mx/--my), small glass things tilt a few degrees toward it,
-   and a press sends a ripple of light from that point. One update per frame; nothing of this on touch screens or with
-   "reduce motion". */
+   The light on the glass follows the mouse, small glass things tilt a few degrees toward it, and a press sends a ripple of
+   light from that point. One update per frame; nothing of this on touch screens or with "reduce motion".
+   11/23 (review, the user had seen dropped frames): the light is a small layer of its own inside each piece of glass
+   (span.lg-glow, style.css) moved with transform. Before, --mx/--my were written on the window or the big map itself, and
+   on every frame the styles of everything inside them (a long chat) were worked out again and the whole panel painted
+   again. Every box is measured first and only then is anything moved: a measure after a change made the browser lay
+   the page out again within the same frame. */
 (() => {
   const FINE = window.matchMedia ? window.matchMedia("(hover: hover) and (pointer: fine)").matches : false;
   const TILT = ".dock-btn, .mm-mini, .case, .plate";
@@ -1436,23 +1633,25 @@ async function renderHow() {
     "details.trace summary, .ask button, .task, .paste button, .case-play, .btn-plain";
   let last = null, raf = 0, tilted = null;
   const untilt = () => { if (tilted) { tilted.style.removeProperty("--rx"); tilted.style.removeProperty("--ry"); tilted = null; } };
+  // the glass's light, made the first time the pointer comes over it
+  const glowOf = (g) => {
+    let s = g.querySelector(":scope > .lg-glow");
+    if (!s) { s = document.createElement("span"); s.className = "lg-glow"; s.setAttribute("aria-hidden", "true"); g.appendChild(s); }
+    return s;
+  };
   function frame() {
     raf = 0;
     const ev = last, n = ev && ev.target instanceof Element ? ev.target : null;
     if (!n) return;
-    // the light: on the glass under the pointer and on the panel around it
-    let g = n.closest(".lg-hi");
-    for (let k = 0; g && k < 2; k++) {
-      const r = g.getBoundingClientRect();
-      g.style.setProperty("--mx", `${Math.round(ev.clientX - r.left)}px`);
-      g.style.setProperty("--my", `${Math.round(ev.clientY - r.top)}px`);
-      g = g.parentElement ? g.parentElement.closest(".lg-hi") : null;
-    }
-    // the tilt: only small things, a few degrees, and back with a spring when the pointer leaves
-    const t = n.closest(TILT);
+    // measure: the glass under the pointer and the panel around it, and the small thing that tilts
+    const lit = [];
+    for (let g = n.closest(".lg-hi"); g && lit.length < 2; g = g.parentElement ? g.parentElement.closest(".lg-hi") : null) lit.push([g, g.getBoundingClientRect()]);
+    const t = n.closest(TILT), tr = t ? t.getBoundingClientRect() : null;
+    // then move: the light, and the tilt (a few degrees, back with a spring when the pointer leaves)
+    for (const [g, r] of lit) glowOf(g).style.transform = `translate(${Math.round(ev.clientX - r.left)}px, ${Math.round(ev.clientY - r.top)}px)`;
     if (t !== tilted) untilt();
-    if (t) {
-      const r = t.getBoundingClientRect(), px = (ev.clientX - r.left) / r.width - 0.5, py = (ev.clientY - r.top) / r.height - 0.5, deg = t.matches(".case") ? 4 : 6;
+    if (t && tr.width && tr.height) {
+      const px = (ev.clientX - tr.left) / tr.width - 0.5, py = (ev.clientY - tr.top) / tr.height - 0.5, deg = t.matches(".case") ? 4 : 6;
       t.style.setProperty("--rx", `${(-py * deg).toFixed(2)}deg`);
       t.style.setProperty("--ry", `${(px * deg).toFixed(2)}deg`);
       tilted = t;

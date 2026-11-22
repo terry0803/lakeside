@@ -1,6 +1,6 @@
 /* The tour's mini map, second version (11/21 night). The maps are top views rendered in Blender, north up: the lake and
    the old town, the resort, and every building cut open from above (web/minimap/, boxes in content/minimap.yaml). A
-   small map sits at the top right of the tour all the time and shows where you are; click it to open the big map. Inside
+   small map sits at the top left of the tour all the time and shows where you are; click it to open the big map. Inside
    a building the big map shows that building's floor plan and its scenes; zoom out (the minus button, the wheel, or the
    name at the top) to the lake and the old town, where every outdoor place and every building is; click a building to
    go in, click a place to go there in the tour. Positions are where each panorama was shot in Blender. The tour does not
@@ -41,13 +41,13 @@ const Minimap = (() => {
     if (!M.data || !M.data.spots) return;
     const box = document.createElement("div");
     box.className = "mm"; box.id = "mm";
-    box.innerHTML = `<button type="button" class="mm-mini lg-rim lg-hi" id="mmMini" aria-controls="mmPanel" aria-expanded="false">
+    box.innerHTML = `<button type="button" class="mm-mini lg-hi" id="mmMini" aria-controls="mmPanel" aria-expanded="false">
         <svg class="mm-mini-svg" id="mmMiniSvg" aria-hidden="true"></svg>
         <span class="mm-mini-cap"><span class="mm-mini-t"><b id="mmHereEn"></b><small lang="zh-Hant" id="mmHereZh"></small></span>
           <span class="mm-mini-open">${ICON_OPEN}<span>Map <span lang="zh-Hant">地圖</span></span></span></span></button>
       <button type="button" class="mm-hide" id="mmHide" title="Hide the mini map 收起小地圖" aria-label="Hide the mini map">${ICON_HIDE}</button>
-      <button type="button" class="mm-pill lg-rim lg-hi" id="mmPill" title="Show the mini map 顯示小地圖" aria-label="Show the mini map" hidden><span class="mm-pill-ico">${ICON_MAP}</span><span class="dock-t"><b>Map</b><small lang="zh-Hant">地圖</small></span></button>
-      <section class="mm-panel lg-rim lg-hi" id="mmPanel" hidden aria-label="Map">
+      <button type="button" class="mm-pill lg-hi" id="mmPill" title="Show the mini map 顯示小地圖" aria-label="Show the mini map" hidden><span class="mm-pill-ico">${ICON_MAP}</span><span class="dock-t"><b>Map</b><small lang="zh-Hant">地圖</small></span></button>
+      <section class="mm-panel lg-hi" id="mmPanel" hidden aria-label="Map">
         <header class="mm-head"><nav class="mm-crumbs" id="mmCrumbs" aria-label="Where on the map"></nav>
           <button type="button" class="mm-x" id="mmClose" aria-label="Close the map">×</button></header>
         <div class="mm-view" id="mmView">
@@ -85,10 +85,10 @@ const Minimap = (() => {
     svg.addEventListener("pointermove", onMove);
     svg.addEventListener("pointerup", onUp);
     svg.addEventListener("pointercancel", onUp);
-    svg.addEventListener("pointerleave", () => tip(null));
+    svg.addEventListener("pointerleave", () => { moveEv = null; tip(null); });      // and no frame still on its way brings it back
     svg.addEventListener("click", onClick);
     svg.addEventListener("keydown", (ev) => { const t = ev.target.closest("[data-go],[data-b]"); if (t && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); activate(t); } });
-    document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && M.state === "open" && !EMBEDDED()) setState("mini"); });
+    // Esc: app.js has one key handler for the page (11/23), which shrinks this map first and the assistant's window next
     window.addEventListener("resize", () => { if (M.state === "open") render(); else renderMini(); });
     M.built = true;
     update((typeof S !== "undefined" && S.room) || null);
@@ -139,6 +139,7 @@ const Minimap = (() => {
     M.state = EMBEDDED() ? "open" : ["mini", "open", "hidden"].includes(s) ? s : "mini";
     if (!EMBEDDED()) store.set("state", M.state === "open" ? "mini" : M.state);
     const panel = q("#mmPanel"), mini = q("#mmMini"), hide = q("#mmHide");
+    const had = M.ready && q("#mm").contains(document.activeElement);      // the focus was on a part of the map
     tip(null);
     // everything for the new state; drawn: the morph already drew the map and moved the focus
     const apply = (drawn) => {
@@ -152,8 +153,10 @@ const Minimap = (() => {
       q("#mm").dataset.state = M.state;
       const scrim = q("#mmScrim"); if (scrim) scrim.classList.toggle("is-on", M.state === "open");
       if (M.state === "open" && !drawn) { focusRoom(M.room, true); render(); if (!EMBEDDED()) q("#mmClose").focus({ preventScroll: true }); }
-      if (M.state === "mini" && !drawn) { renderMini(); if (prev === "open") mini.focus({ preventScroll: true }); }
-      document.dispatchEvent(new CustomEvent("minimap:state", { detail: M.state }));
+      // 11/23 (review): folded into the Map button or grown back from it, the focus goes to the one now on the screen (it
+      // stayed on the button that went away)
+      if (M.state === "mini" && !drawn) { renderMini(); if (prev === "open" || (prev === "hidden" && had)) mini.focus({ preventScroll: true }); }
+      if (M.state === "hidden" && had) q("#mmPill").focus({ preventScroll: true });
     };
     const motion = !EMBEDDED() && !RM.matches && typeof panel.animate === "function";
     if (motion && prev === "mini" && M.state === "open" && shown([mini]).length) {
@@ -252,7 +255,6 @@ const Minimap = (() => {
     });
     return true;
   }
-  const toggle = (on) => setState(on === undefined ? (M.state === "open" ? "mini" : "open") : on ? "open" : "mini");
 
   /* The place changed (this map, the place list, a "Go there" button): move "you are here". */
   function update(key) {
@@ -313,9 +315,15 @@ const Minimap = (() => {
       if (M.mode === "plan") { const b = M.data.buildings[M.building]; imgs(g, (b.plan || {}).images); }
       else { const B = M.data.outdoor.box; g.appendChild(el("rect", { class: "mm-void", x: B[0] - 400, y: -B[3] - 400, width: B[2] - B[0] + 800, height: B[3] - B[1] + 800 })); imgs(g, M.data.outdoor.images); }
     }
+    // 11/23 (review): the marks, the names at the top and the key at the bottom depend on the layer, the place, the map's
+    // size and the zoom, not on where the view is; panning only moves the view. Before, every pointer move of a drag drew
+    // all of them again (and the "you are here" ring started over each time).
+    const size = svgSize(), sig = [layer, M.room, size[0], size[1], M.mode === "plan" ? "" : M.view.w.toFixed(4)].join("|");
+    if (sig === M.sig) { if (M.mode !== "plan") setView(svg, M.view); return; }
+    M.sig = sig;
     const marks = q("#mmMarks");
     marks.innerHTML = "";
-    if (M.mode === "plan" && M.building) drawPlan(svg, marks, M.building, svgSize(), false); else drawOutdoor(svg, marks, M.view, svgSize(), false);
+    if (M.mode === "plan" && M.building) drawPlan(svg, marks, M.building, size, false); else drawOutdoor(svg, marks, M.view, size, false);
     crumbs();
     foot();
     const zin = q('[data-z="in"]'), zout = q('[data-z="out"]');
@@ -351,10 +359,14 @@ const Minimap = (() => {
     drawOutdoor(svg, marks, keepOn({ x: s[0], y: s[1] - h * lift, w, h }, B), size, true);
   }
 
-  function drawOutdoor(svg, g, v, size, mini) {
-    const O = M.data.outdoor, k = size[0] / v.w, px = (n) => n / k;
+  // the part of the outdoor map in the window (centre and size in metres)
+  function setView(svg, v) {
     const [vx, vy] = P(v.x - v.w / 2, v.y + v.h / 2);
     svg.setAttribute("viewBox", `${vx} ${vy} ${v.w} ${v.h}`);
+  }
+  function drawOutdoor(svg, g, v, size, mini) {
+    const O = M.data.outdoor, k = size[0] / v.w, px = (n) => n / k;
+    setView(svg, v);
     svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
     const here = M.room, hereB = here ? buildingOf(here) : null, zoomedIn = k > 2.4;
     if (!mini && k < 3) for (const l of O.labels || []) { const [x, y] = P(l.x, l.y); g.appendChild(el("text", { class: "mm-area", x, y, "font-size": px(12.5), "text-anchor": "middle" }, `${e(l.en)}<tspan x="${x}" dy="${px(14)}" class="mm-area-zh">${e(l.zh)}</tspan>`)); }
@@ -462,7 +474,7 @@ const Minimap = (() => {
     if (M.mode === "plan") {
       const b = M.data.buildings[M.building];
       f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-close"></i>close-up <span lang="zh-Hant">近看</span></span><span><i class="mm-key is-here"></i>you <span lang="zh-Hant">你</span></span><span class="mm-foot-hint">${b.rooms.length} scenes inside · zoom out for outdoors <span lang="zh-Hant">室內 ${b.rooms.length} 個場景，縮小看室外</span></span>`;
-    } else f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-bld"></i>building, click to go in <span lang="zh-Hant">建築，點了進去</span></span><span><i class="mm-key is-here"></i>you <span lang="zh-Hant">你</span></span>`;
+    } else f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-bld"></i>building, click to go in <span lang="zh-Hant">建築，點一下就進去</span></span><span><i class="mm-key is-here"></i>you <span lang="zh-Hant">你</span></span>`;
   }
 
   /* ------------------------------------------------------------------ zoom, pan, click */
@@ -489,9 +501,17 @@ const Minimap = (() => {
     animate("is-in");
     render();
   }
+  // 11/23 (review): the zoom class goes once its animation has played. Left on, the zoom played again each time the big map
+  // grew out of the small one, after any building had been opened or left once.
+  let zoomDone = null;
   function animate(cls) {
-    const v = q("#mmView");
+    const v = q("#mmView"), svg = q("#mmSvg");
+    if (zoomDone) zoomDone();
     v.classList.remove("is-in", "is-out"); void v.offsetWidth; v.classList.add(cls);
+    const off = (ev) => { if (!ev || (ev.target === svg && /^mm-(in|out)$/.test(ev.animationName))) zoomDone(); };
+    const backstop = setTimeout(off, 1000);                // the map closed halfway: no animationend comes
+    zoomDone = () => { clearTimeout(backstop); svg.removeEventListener("animationend", off); v.classList.remove("is-in", "is-out"); zoomDone = null; };
+    svg.addEventListener("animationend", off);
   }
   const toMetres = (ev) => { const svg = q("#mmSvg"), p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; const m = p.matrixTransform(svg.getScreenCTM().inverse()); return [m.x, -m.y]; };
 
@@ -506,25 +526,37 @@ const Minimap = (() => {
     if (M.mode !== "outdoor" || ev.button !== 0) return;
     M.drag = { x: ev.clientX, y: ev.clientY, vx: M.view.x, vy: M.view.y, moved: false, id: ev.pointerId };
   }
+  // 11/23 (review): one update per frame, however many pointer moves come in; panning only moves the view (render)
+  let moveEv = null, moveRaf = 0;
   function onMove(ev) {
-    const t = ev.target.closest("[data-go],[data-b]");
-    tip(t, ev);
+    // a drag whose button came up outside the map (no pointerup here) ends now; it stayed, and the map then slid along
+    // under a mouse that was not pressed
+    if (M.drag && ev.buttons === 0) endDrag(false);
+    moveEv = ev;
+    if (!moveRaf) moveRaf = requestAnimationFrame(moveFrame);
+  }
+  function moveFrame() {
+    moveRaf = 0;
+    const ev = moveEv; moveEv = null;
+    if (!ev || M.state !== "open") return;
     const d = M.drag;
+    if (!d || !d.moved) tip(ev.target instanceof Element ? ev.target.closest("[data-go],[data-b]") : null, ev);
     if (!d) return;
     const dx = ev.clientX - d.x, dy = ev.clientY - d.y;
-    if (!d.moved && Math.hypot(dx, dy) > 4) { d.moved = true; try { q("#mmSvg").setPointerCapture(d.id); } catch { /* fine */ } q("#mmView").classList.add("is-panning"); }
+    if (!d.moved && Math.hypot(dx, dy) > 4) { d.moved = true; try { q("#mmSvg").setPointerCapture(d.id); } catch { /* fine */ } q("#mmView").classList.add("is-panning"); tip(null); }
     if (!d.moved) return;
     const k = ppm();
     M.view.x = d.vx - dx / k; M.view.y = d.vy + dy / k;
     clampView();
     render();
   }
-  function onUp() {
+  function endDrag(released) {
     const d = M.drag;
     M.drag = null;
     q("#mmView").classList.remove("is-panning");
-    if (d && d.moved) M.justPanned = performance.now();
+    if (released && d && d.moved) M.justPanned = performance.now();
   }
+  function onUp() { endDrag(true); }
   function onClick(ev) {
     if (M.justPanned && performance.now() - M.justPanned < 120) return;
     const t = ev.target.closest("[data-go],[data-b]");
@@ -545,10 +577,10 @@ const Minimap = (() => {
       M.hover = id;
       if (t.dataset.go) {
         const [en, zh] = nameOf(id), r = room(id);
-        box.innerHTML = `<b>${e(en)}</b><span lang="zh-Hant">${e(zh)}</span>${id === M.room ? `<em>You are here <span lang="zh-Hant">你在這裡</span></em>` : r && r.kind === "closeup" ? `<em>Close-up · click to go <span lang="zh-Hant">近看，點了過去</span></em>` : `<em>Click to go <span lang="zh-Hant">點了過去</span></em>`}`;
+        box.innerHTML = `<b>${e(en)}</b><span lang="zh-Hant">${e(zh)}</span>${id === M.room ? `<em>You are here <span lang="zh-Hant">你在這裡</span></em>` : r && r.kind === "closeup" ? `<em>Close-up · click to go <span lang="zh-Hant">近看，點一下就過去</span></em>` : `<em>Click to go <span lang="zh-Hant">點一下就過去</span></em>`}`;
       } else {
         const b = M.data.buildings[id];
-        box.innerHTML = `<b>${e(b.en)}</b><span lang="zh-Hant">${e(b.zh)}</span><em>${b.rooms.length} scene${b.rooms.length > 1 ? "s" : ""} inside · click to go in <span lang="zh-Hant">裡面 ${b.rooms.length} 個場景，點了進去</span></em>`;
+        box.innerHTML = `<b>${e(b.en)}</b><span lang="zh-Hant">${e(b.zh)}</span><em>${b.rooms.length} scene${b.rooms.length > 1 ? "s" : ""} inside · click to go in <span lang="zh-Hant">裡面 ${b.rooms.length} 個場景，點一下就進去</span></em>`;
       }
     }
     box.hidden = false;
@@ -560,6 +592,6 @@ const Minimap = (() => {
 
   document.addEventListener("DOMContentLoaded", init);
   // the Map tab was hidden while the page loaded: measure again and show where you are
-  const refresh = () => { if (!M.built) return; M.layer = ""; focusRoom(M.room, true); render(); };
-  return { update, toggle, setState, refresh, state: () => M.state };
+  const refresh = () => { if (!M.built) return; M.layer = ""; M.sig = ""; focusRoom(M.room, true); render(); };
+  return { update, setState, refresh, state: () => M.state };
 })();

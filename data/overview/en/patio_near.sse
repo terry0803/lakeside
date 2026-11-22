@@ -5,7 +5,7 @@ event: route
 data: {"tool": "room_overview", "target": "", "how": "button"}
 
 event: card
-data: {"type": "sections", "label": "Room", "title": {"en": "Patio Close-up · Wi-Fi Sign", "zh": "露台近看・Wi-Fi 說明牌"}, "subtitle": {"en": "Patio · Up Close", "zh": "露台近看"}, "text": {"en": "The Wi-Fi sign tells guests how to join the guest network.", "zh": "Wi-Fi 說明牌告訴客人怎麼連訪客網路。"}, "note": {"en": "Only guest network details belong on a public sign.", "zh": "公開的牌子上只能放訪客網路的資訊。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "wifi", "en": "Wi-Fi (Guest & Staff)", "zh": "無線網路（訪客與員工）"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "segmentation", "en": "Network Segmentation", "zh": "網段隔離"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}, {"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A"}, {"key": "lawn", "en": "Lawn · Assembly Point & Continuity", "zh": "湖邊草地・集合點與營運持續", "base_en": "Lakeside Lawn", "base_zh": "湖邊草地", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=19", "tour": "A"}, {"key": "pier", "en": "Pier · Deliveries & Vendors", "zh": "會館碼頭・進貨與廠商", "base_en": "Clubhouse Pier", "base_zh": "會館碼頭", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=20", "tour": "A"}]}]}
+data: {"type": "sections", "label": "Room", "title": {"en": "Patio Close-up · Wi-Fi Sign", "zh": "露台近看・Wi-Fi 說明牌"}, "subtitle": {"en": "Patio · Up Close", "zh": "露台近看"}, "text": {"en": "The Wi-Fi sign tells guests how to join the guest network.", "zh": "Wi-Fi 說明牌告訴客人怎麼連訪客網路。"}, "note": {"en": "Only guest network details belong on a public sign.", "zh": "公開的牌子上只能放訪客網路的資訊。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡藏著 1 個漏洞"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "wifi", "en": "Wi-Fi (Guest & Staff)", "zh": "無線網路（訪客與員工）"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "segmentation", "en": "Network Segmentation", "zh": "網段隔離"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}, {"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A"}, {"key": "lawn", "en": "Lawn · Assembly Point & Continuity", "zh": "湖邊草地・集合點與營運持續", "base_en": "Lakeside Lawn", "base_zh": "湖邊草地", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=19", "tour": "A"}, {"key": "pier", "en": "Pier · Deliveries & Vendors", "zh": "會館碼頭・進貨與廠商", "base_en": "Clubhouse Pier", "base_zh": "會館碼頭", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=20", "tour": "A"}]}]}
 
 event: token
 data: {"text": "This"}
@@ -122,22 +122,22 @@ event: token
 data: {"text": ","}
 
 event: token
-data: {"text": " demonstrating"}
+data: {"text": " which"}
 
 event: token
-data: {"text": " that"}
+data: {"text": " is"}
+
+event: token
+data: {"text": " the"}
 
 event: token
 data: {"text": " only"}
 
 event: token
-data: {"text": " guest"}
+data: {"text": " information"}
 
 event: token
-data: {"text": " network"}
-
-event: token
-data: {"text": " details"}
+data: {"text": " that"}
 
 event: token
 data: {"text": " should"}
@@ -149,40 +149,31 @@ event: token
 data: {"text": " on"}
 
 event: token
+data: {"text": " a"}
+
+event: token
 data: {"text": " public"}
 
 event: token
-data: {"text": " signs"}
+data: {"text": " sign"}
 
 event: token
 data: {"text": "."}
 
 event: token
-data: {"text": " You"}
-
-event: token
-data: {"text": " can"}
-
-event: token
-data: {"text": " see"}
+data: {"text": " The"}
 
 event: token
 data: {"text": " systems"}
 
 event: token
-data: {"text": " for"}
+data: {"text": " visible"}
 
 event: token
-data: {"text": " both"}
+data: {"text": " here"}
 
 event: token
-data: {"text": " Guest"}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " Staff"}
+data: {"text": " are"}
 
 event: token
 data: {"text": " Wi"}
@@ -191,16 +182,31 @@ event: token
 data: {"text": "-Fi"}
 
 event: token
-data: {"text": " here"}
+data: {"text": " ("}
 
 event: token
-data: {"text": ","}
+data: {"text": "Guest"}
 
 event: token
-data: {"text": " along"}
+data: {"text": " &"}
 
 event: token
-data: {"text": " with"}
+data: {"text": " Staff"}
+
+event: token
+data: {"text": "),"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " you"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
 
 event: token
 data: {"text": " controls"}
@@ -220,6 +226,54 @@ data: {"text": "mentation"}
 event: token
 data: {"text": "."}
 
+event: token
+data: {"text": " There"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " 1"}
+
+event: token
+data: {"text": " hidden"}
+
+event: token
+data: {"text": " security"}
+
+event: token
+data: {"text": " weakness"}
+
+event: token
+data: {"text": " in"}
+
+event: token
+data: {"text": " this"}
+
+event: token
+data: {"text": " room"}
+
+event: token
+data: {"text": " that"}
+
+event: token
+data: {"text": " you"}
+
+event: token
+data: {"text": " have"}
+
+event: token
+data: {"text": " not"}
+
+event: token
+data: {"text": " yet"}
+
+event: token
+data: {"text": " found"}
+
+event: token
+data: {"text": "."}
+
 event: done
-data: {"answer": "This room is the **Patio Close-up** (shown as 'Patio · Up Close' in the tour). It displays a Wi-Fi sign with instructions for joining the guest network, demonstrating that only guest network details should appear on public signs. You can see systems for both Guest and Staff Wi-Fi here, along with controls for Network Segmentation.", "go": [], "followups": [{"text": "What does the Wi-Fi (Guest & Staff) do?", "en": "What does the Wi-Fi (Guest & Staff) do?", "zh": "無線網路（訪客與員工）是做什麼的？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.03, "total_s": 8.04}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "patio_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "patio_near"}, "rows": 1, "ms": 7.8}], "graph": {"nodes": [{"key": "patio_near", "label": "Room", "en": "Patio · Up Close", "zh": "露台近看"}, {"key": "wifi", "label": "System", "en": "Wi-Fi (Guest & Staff)", "zh": "無線網路（訪客與員工）"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}], "edges": [{"a": "wifi", "t": "LOCATED_IN", "b": "patio_near"}, {"a": "segmentation", "t": "SEEN_IN", "b": "patio_near"}, {"a": "segmentation", "t": "PROTECTS", "b": "wifi"}]}, "tool_used": "room_overview", "facts": "Room: Patio Close-up · Wi-Fi Sign (called 'Patio · Up Close' in the tour)\nWhat it shows: The Wi-Fi sign tells guests how to join the guest network.\nKey lesson: Only guest network details belong on a public sign.\nSystems here: Wi-Fi (Guest & Staff)\nControls you can see: Network Segmentation\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Pool · Data Lake, Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), Lawn · Assembly Point & Continuity (called 'Lakeside Lawn' in the tour), Pier · Deliveries & Vendors (called 'Clubhouse Pier' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.03, "load_s": 0.01, "prompt_tokens": 603, "prompt_s": 2.28, "gen_tokens": 72, "gen_s": 5.72, "tok_per_s": 12.6, "first_token_s": 2.3}}, "state": {}}
+data: {"answer": "This room is the **Patio Close-up** (shown as 'Patio · Up Close' in the tour). It displays a Wi-Fi sign with instructions for joining the guest network, which is the only information that should appear on a public sign. The systems visible here are Wi-Fi (Guest & Staff), and you can see controls for Network Segmentation. There is 1 hidden security weakness in this room that you have not yet found.", "go": [], "followups": [{"text": "What does the Wi-Fi (Guest & Staff) do?", "en": "What does the Wi-Fi (Guest & Staff) do?", "zh": "無線網路（訪客與員工）是做什麼的？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.94, "total_s": 9.95}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "patio_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "patio_near"}, "rows": 1, "ms": 5.6}], "graph": {"nodes": [{"key": "patio_near", "label": "Room", "en": "Patio · Up Close", "zh": "露台近看"}, {"key": "wifi", "label": "System", "en": "Wi-Fi (Guest & Staff)", "zh": "無線網路（訪客與員工）"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}], "edges": [{"a": "wifi", "t": "LOCATED_IN", "b": "patio_near"}, {"a": "segmentation", "t": "SEEN_IN", "b": "patio_near"}, {"a": "segmentation", "t": "PROTECTS", "b": "wifi"}]}, "tool_used": "room_overview", "facts": "Room: Patio Close-up · Wi-Fi Sign (called 'Patio · Up Close' in the tour)\nWhat it shows: The Wi-Fi sign tells guests how to join the guest network.\nKey lesson: Only guest network details belong on a public sign.\nSystems here: Wi-Fi (Guest & Staff)\nControls you can see: Network Segmentation\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Pool · Data Lake, Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), Lawn · Assembly Point & Continuity (called 'Lakeside Lawn' in the tour), Pier · Deliveries & Vendors (called 'Clubhouse Pier' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.94, "load_s": 0.01, "prompt_tokens": 594, "prompt_s": 2.24, "gen_tokens": 91, "gen_s": 6.88, "tok_per_s": 13.2, "first_token_s": 3.06}}, "state": {}}
 

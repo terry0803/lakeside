@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<script src="/lakeside/offline.js?v=8f0a44afb3" data-load="/lakeside/static/app.js?v=7f3e5456ca /lakeside/static/minimap.js?v=2ac54b8391"></script>
+<script src="/lakeside/offline.js?v=f310d399f5" data-load="/lakeside/static/app.js?v=573f3ed2fb /lakeside/static/minimap.js?v=b01cc953c7"></script>
 <link rel="icon" href="data:,">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b3640">
 <title>Lakeside IT Assistant · IT 小幫手</title>
-<link rel="stylesheet" href="/lakeside/static/style.css?v=1209d1f3ee">
+<link rel="stylesheet" href="/lakeside/static/style.css?v=7ea3833705">
 </head>
 <body>
 <!-- 11/21 night: the tour fills the window, like iStaging on its own. The assistant, the casebook and the map open over it.
@@ -21,18 +21,18 @@
 
   <div class="side" id="side">
   <nav class="dock" id="dock" aria-label="Assistant">
-    <button type="button" class="dock-btn is-chat lg-rim lg-hi" id="dockChat" aria-controls="desk" aria-expanded="false">
+    <button type="button" class="dock-btn is-chat lg-hi" id="dockChat" aria-controls="desk" aria-expanded="false">
       <span class="dock-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.4 3.6a.4.4 0 0 1-.6-.3V16h-.5A.5.5 0 0 1 4 15.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9" cy="9.6" r="1.1" fill="currentColor"/><circle cx="12" cy="9.6" r="1.1" fill="currentColor"/><circle cx="15" cy="9.6" r="1.1" fill="currentColor"/></svg></span>
       <span class="dock-t"><b>IT Assistant</b><small lang="zh-Hant">IT 小幫手</small></span>
     </button>
-    <button type="button" class="dock-btn is-games lg-rim lg-hi" id="dockGames" aria-controls="desk" aria-expanded="false">
+    <button type="button" class="dock-btn is-games lg-hi" id="dockGames" aria-controls="desk" aria-expanded="false">
       <span class="dock-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h11.5a2 2 0 0 1 2 2V20a.5.5 0 0 1-.8.4L15 18.5H7a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
       <span class="dock-t"><b>Casebook</b><small lang="zh-Hant">事件簿</small></span><em id="dockGamesN">0/4</em>
     </button>
   </nav>
   </div>
 
-  <section class="desk lg-rim lg-hi" id="desk" aria-label="IT assistant" hidden>
+  <section class="desk lg-hi" id="desk" aria-label="IT assistant" hidden>
     <header class="desk-head">
       <div class="desk-bar">
         <div class="brand">
@@ -51,14 +51,14 @@
       <div class="desk-settings" id="deskSettings" hidden>
         <span class="set-l">Answers in <span lang="zh-Hant">回答語言</span></span>
         <div class="seg" role="radiogroup" aria-label="Answer language">
-          <button type="button" data-lang="auto" aria-pressed="true">Auto <span lang="zh-Hant">自動</span></button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
-          <button type="button" data-lang="zh" aria-pressed="false" lang="zh-Hant">中文</button>
+          <button type="button" role="radio" data-lang="auto" aria-checked="true">Auto <span lang="zh-Hant">自動</span></button>
+          <button type="button" role="radio" data-lang="en" aria-checked="false" tabindex="-1">EN</button>
+          <button type="button" role="radio" data-lang="zh" aria-checked="false" tabindex="-1" lang="zh-Hant">中文</button>
         </div>
         <span class="set-l">Model <span lang="zh-Hant">模型</span></span>
         <div class="seg" role="radiogroup" aria-label="Model">
-          <button type="button" data-model="qwen3.5:9b" aria-pressed="true" title="More accurate 比較準">9B</button>
-          <button type="button" data-model="qwen3.5:4b" aria-pressed="false" title="Faster 比較快">4B</button>
+          <button type="button" role="radio" data-model="qwen3.5:9b" aria-checked="true" title="More accurate 比較準">9B</button>
+          <button type="button" role="radio" data-model="qwen3.5:4b" aria-checked="false" tabindex="-1" title="Faster 比較快">4B</button>
         </div>
       </div>
       <label class="room-pick">

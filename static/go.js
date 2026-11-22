@@ -17,8 +17,11 @@
   try { opener = window.opener; } catch { opener = null; }
   if (!opener) { location.replace(full); return; }
   let settled = false;
+  // 11/23 (review): only our own full page may answer (this address, the fixed one, the laptop itself; the GitHub copy is
+  // this address when this tab is the GitHub copy too)
+  const OURS = [location.origin, "https://lakeside.taila701b6.ts.net", "http://127.0.0.1:8780", "http://localhost:8780"];
   const onAck = (e) => {
-    if (settled || !e.data || e.data.type !== "lakeside:ack") return;
+    if (settled || !e.data || e.data.type !== "lakeside:ack" || !OURS.includes(e.origin)) return;
     settled = true;
     window.removeEventListener("message", onAck);
     try { opener.top.focus(); } catch { /* the browser decides */ }

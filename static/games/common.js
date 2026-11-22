@@ -155,6 +155,44 @@ if (window.self !== window.top) {
     if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     if ((a.target && a.target !== "_self") || a.getAttribute("href").startsWith("#")) return;
     tell("lakeside:game-nav");
+    // 11/23 review: in our page's own game window the next case takes this one's place in the history (app.js opens the
+    // window with location.replace for the same reason), so the browser's Back button leaves the games instead of walking
+    // back through every case. Other links stay as they are.
+    if (G.inPage && a.classList.contains("rs-next-case")) { e.preventDefault(); location.replace(a.href); }
+  });
+}
+
+/* 11/23 (review G1): in our page's own game window the game has the keyboard, so Escape never reached the page around it.
+   Here Escape closes the window like the Back button, unless the game used that Escape itself (its pop-ups call
+   preventDefault) or something is in the player's hands: a pointer held down (a drag, a slide switch, a pulled string),
+   a stamp picked up, a copy being dragged, or the CASE CLOSED card on screen. The listener is on window, so it runs after
+   the games' own listeners on the page. */
+if (G.inPage) {
+  const down = new Set();
+  document.addEventListener("pointerdown", (e) => down.add(e.pointerId), true);
+  for (const t of ["pointerup", "pointercancel"]) document.addEventListener(t, (e) => down.delete(e.pointerId), true);
+  window.addEventListener("blur", () => down.clear());
+  const BUSY = ".ah-held, .rx-ghost, .ah-ghost, .mn-line-ghost, .ir-ghost, .ir-cc-ghost, .mn-slide.is-drag, .cb-spool.is-pulling, .cb-closed";
+  // Two presses: a player who presses Escape to get rid of a cut scene or a call would otherwise lose the whole shift.
+  // The first press only shows a note; a second one within 2.5 s leaves.
+  let armed = 0, note = null;
+  const hint = () => {
+    if (!note) {
+      note = document.createElement("div");
+      note.setAttribute("role", "status");
+      note.style.cssText = "position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:9999;padding:9px 16px;border-radius:12px;" +
+        "background:rgba(13,17,23,.92);border:1px solid rgba(255,255,255,.18);color:#fff;font:600 14px/1.35 system-ui,sans-serif;" +
+        "text-align:center;pointer-events:none;transition:opacity .2s";
+      note.innerHTML = bi("Press Esc again to leave this case", "再按一次 Esc 離開這個案件");
+      document.body.appendChild(note);
+    }
+    note.style.opacity = "1";
+    clearTimeout(hint.t); hint.t = setTimeout(() => { note.style.opacity = "0"; armed = 0; }, 2500);
+  };
+  window.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape" || e.defaultPrevented || e.repeat || e.isComposing || down.size || document.querySelector(BUSY)) return;
+    if (armed && performance.now() - armed < 2500) { armed = 0; if (note) note.style.opacity = "0"; G.back(); return; }
+    armed = performance.now(); hint();
   });
 }
 
@@ -165,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!r.ok) throw new Error(String(r.status));
     G.data = await r.json();
   } catch {
-    main.innerHTML = `<p class="g-error">${bi("Could not load the game. Start the assistant with 啟動_AI助理.bat and reload this page.", "讀不到遊戲資料。請先執行 啟動_AI助理.bat，再重新整理這一頁。")}</p>`;
+    main.innerHTML = `<p class="g-error">${bi("Could not load the game. Reload this page in a moment.", "讀不到遊戲資料，等一下再重新整理這一頁。")}</p>`;
     return;
   }
   G.foot(G.data);

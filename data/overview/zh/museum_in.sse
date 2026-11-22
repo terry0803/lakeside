@@ -38,39 +38,6 @@ event: token
 data: {"text": "展示"}
 
 event: token
-data: {"text": "真實"}
-
-event: token
-data: {"text": "發生"}
-
-event: token
-data: {"text": "過"}
-
-event: token
-data: {"text": "並"}
-
-event: token
-data: {"text": "改變"}
-
-event: token
-data: {"text": "資"}
-
-event: token
-data: {"text": "安"}
-
-event: token
-data: {"text": "做法"}
-
-event: token
-data: {"text": "的事件"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "例如"}
-
-event: token
 data: {"text": " Target"}
 
 event: token
@@ -98,10 +65,13 @@ event: token
 data: {"text": "村"}
 
 event: token
-data: {"text": "及"}
+data: {"text": "、"}
 
 event: token
-data: {"text": " Wanna"}
+data: {"text": "W"}
+
+event: token
+data: {"text": "anna"}
 
 event: token
 data: {"text": "C"}
@@ -111,6 +81,9 @@ data: {"text": "ry"}
 
 event: token
 data: {"text": " 等"}
+
+event: token
+data: {"text": "真實"}
 
 event: token
 data: {"text": "案例"}
@@ -125,16 +98,10 @@ event: token
 data: {"text": "在於"}
 
 event: token
-data: {"text": "許多"}
+data: {"text": "威脅"}
 
 event: token
-data: {"text": "攻擊"}
-
-event: token
-data: {"text": "都"}
-
-event: token
-data: {"text": "從"}
+data: {"text": "來自"}
 
 event: token
 data: {"text": "廠商"}
@@ -167,109 +134,7 @@ event: token
 data: {"text": "電話"}
 
 event: token
-data: {"text": "等基本"}
-
-event: token
-data: {"text": "環節"}
-
-event: token
-data: {"text": "開始"}
-
-event: token
 data: {"text": "，"}
-
-event: token
-data: {"text": "威脅"}
-
-event: token
-data: {"text": "包含"}
-
-event: token
-data: {"text": "第三方"}
-
-event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": "供應鏈"}
-
-event: token
-data: {"text": "入侵"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "電話"}
-
-event: token
-data: {"text": "社交"}
-
-event: token
-data: {"text": "工程"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "POS"}
-
-event: token
-data: {"text": " 記憶體"}
-
-event: token
-data: {"text": "側"}
-
-event: token
-data: {"text": "錄"}
-
-event: token
-data: {"text": "惡"}
-
-event: token
-data: {"text": "意"}
-
-event: token
-data: {"text": "程式"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "勒索"}
-
-event: token
-data: {"text": "軟體"}
-
-event: token
-data: {"text": "及"}
-
-event: token
-data: {"text": "未"}
-
-event: token
-data: {"text": "修"}
-
-event: token
-data: {"text": "補"}
-
-event: token
-data: {"text": "漏洞"}
-
-event: token
-data: {"text": "被"}
-
-event: token
-data: {"text": "利用"}
-
-event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "可"}
-
-event: token
-data: {"text": "看到的"}
 
 event: token
 data: {"text": "防護"}
@@ -278,7 +143,7 @@ event: token
 data: {"text": "措施"}
 
 event: token
-data: {"text": "有"}
+data: {"text": "包括"}
 
 event: token
 data: {"text": "修"}
@@ -311,37 +176,16 @@ event: token
 data: {"text": "管理"}
 
 event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "課程"}
-
-event: token
-data: {"text": "概念"}
-
-event: token
-data: {"text": "為"}
-
-event: token
-data: {"text": "供應鏈"}
-
-event: token
-data: {"text": "風險"}
-
-event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "您可以"}
+data: {"text": "你可以"}
 
 event: token
 data: {"text": "繼續"}
 
 event: token
-data: {"text": "前往"}
-
-event: token
-data: {"text": "「"}
+data: {"text": "走到"}
 
 event: token
 data: {"text": "市集"}
@@ -350,13 +194,7 @@ event: token
 data: {"text": "廣場"}
 
 event: token
-data: {"text": "」"}
-
-event: token
-data: {"text": "或"}
-
-event: token
-data: {"text": "「"}
+data: {"text": "・"}
 
 event: token
 data: {"text": "網路"}
@@ -365,11 +203,8 @@ event: token
 data: {"text": "銷售"}
 
 event: token
-data: {"text": "」。"}
-
-event: replace
-data: {"text": "這裡是「資安事件博物館」，展示真實發生過並改變資安做法的事件，例如 Target、Marriott、MGM 渡假村及 WannaCry 等案例。重點在於許多攻擊都從廠商帳號、未修補漏洞或一通電話等基本環節開始，威脅包含第三方與供應鏈入侵、電話社交工程、POS 記憶體側錄惡意程式、勒索軟體及未修補漏洞被利用。可看到的防護措施有修補與弱點管理、廠商風險管理，課程概念為供應鏈風險。你可以繼續前往「市集廣場」或「網路銷售」。"}
+data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是「資安事件博物館」，展示真實發生過並改變資安做法的事件，例如 Target、Marriott、MGM 渡假村及 WannaCry 等案例。重點在於許多攻擊都從廠商帳號、未修補漏洞或一通電話等基本環節開始，威脅包含第三方與供應鏈入侵、電話社交工程、POS 記憶體側錄惡意程式、勒索軟體及未修補漏洞被利用。可看到的防護措施有修補與弱點管理、廠商風險管理，課程概念為供應鏈風險。你可以繼續前往「市集廣場」或「網路銷售」。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}, {"text": "第三方與供應鏈入侵要怎麼防？", "en": "How do we prevent Third-Party & Supply-Chain compromise?", "zh": "第三方與供應鏈入侵要怎麼防？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 13.59, "total_s": 13.6}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "museum_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "museum_in"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "museum_in", "label": "Room", "en": "Museum of Cyber Incidents", "zh": "資安事件博物館"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "vishing", "label": "Threat", "en": "Phone Social Engineering", "zh": "電話社交工程"}, {"key": "pos_malware", "label": "Threat", "en": "POS Memory-Scraping Malware", "zh": "POS 記憶體側錄惡意程式"}, {"key": "ransomware", "label": "Threat", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "unpatched", "label": "Threat", "en": "Exploited Unpatched Software", "zh": "未修補漏洞被利用"}, {"key": "patch_management", "label": "Control", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "c_supply_chain_risk", "label": "Concept", "en": "Supply-Chain Risk", "zh": "供應鏈風險"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "museum_in"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "vishing", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "ransomware", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "pos_malware", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "unpatched", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "c_supply_chain_risk", "t": "TAUGHT_IN", "b": "museum_in"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "supply_chain"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "vendor_management"}, {"a": "patch_management", "t": "SEEN_IN", "b": "museum_in"}, {"a": "patch_management", "t": "MITIGATES", "b": "ransomware"}, {"a": "patch_management", "t": "MITIGATES", "b": "unpatched"}]}, "tool_used": "room_overview", "facts": "房間：資安事件博物館\n代表的資訊主題：真實發生過、改變資安做法的事件：Target、Marriott、MGM 渡假村、WannaCry 等。\n重點：很多有名的事件都從很基本的地方開始：廠商帳號、沒修補的漏洞、一通電話。\n這裡要注意的威脅：第三方與供應鏈入侵、電話社交工程、POS 記憶體側錄惡意程式、勒索軟體、未修補漏洞被利用\n看得到的防護措施：修補與弱點管理、廠商風險管理\n課程概念：供應鏈風險\n真實案例：Target 資料外洩事件（2013）、Marriott（喜達屋）訂房資料庫外洩（2018 年揭露）、SolarWinds 供應鏈攻擊（2020）、Equifax 資料外洩（2017）、Colonial Pipeline 勒索軟體（2021）、Log4Shell 漏洞（2021）、WannaCry 勒索軟體（2017）、MGM 渡假村網路攻擊（2023）\n可以走到：市集廣場・網路銷售", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 13.59, "load_s": 0.01, "prompt_tokens": 692, "prompt_s": 2.71, "gen_tokens": 124, "gen_s": 10.85, "tok_per_s": 11.4, "first_token_s": 2.74}}, "state": {}}
+data: {"answer": "這裡是「資安事件博物館」，展示 Target、Marriott、MGM 渡假村、WannaCry 等真實案例。重點在於威脅來自廠商帳號、未修補漏洞或一通電話，防護措施包括修補與弱點管理、廠商風險管理。你可以繼續走到市集廣場・網路銷售。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}, {"text": "第三方與供應鏈入侵要怎麼防？", "en": "How do we prevent Third-Party & Supply-Chain compromise?", "zh": "第三方與供應鏈入侵要怎麼防？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.7, "total_s": 7.71}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "museum_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "museum_in"}, "rows": 1, "ms": 6.8}], "graph": {"nodes": [{"key": "museum_in", "label": "Room", "en": "Museum of Cyber Incidents", "zh": "資安事件博物館"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "vishing", "label": "Threat", "en": "Phone Social Engineering", "zh": "電話社交工程"}, {"key": "pos_malware", "label": "Threat", "en": "POS Memory-Scraping Malware", "zh": "POS 記憶體側錄惡意程式"}, {"key": "ransomware", "label": "Threat", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "unpatched", "label": "Threat", "en": "Exploited Unpatched Software", "zh": "未修補漏洞被利用"}, {"key": "patch_management", "label": "Control", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "c_supply_chain_risk", "label": "Concept", "en": "Supply-Chain Risk", "zh": "供應鏈風險"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "museum_in"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "vishing", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "ransomware", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "pos_malware", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "unpatched", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "museum_in"}, {"a": "c_supply_chain_risk", "t": "TAUGHT_IN", "b": "museum_in"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "supply_chain"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "vendor_management"}, {"a": "patch_management", "t": "SEEN_IN", "b": "museum_in"}, {"a": "patch_management", "t": "MITIGATES", "b": "ransomware"}, {"a": "patch_management", "t": "MITIGATES", "b": "unpatched"}]}, "tool_used": "room_overview", "facts": "房間：資安事件博物館\n這裡講的是：真實發生過、改變資安做法的事件：Target、Marriott、MGM 渡假村、WannaCry 等。\n重點：很多有名的事件都從很基本的地方開始：廠商帳號、沒修補的漏洞、一通電話。\n這裡要注意的威脅：第三方與供應鏈入侵、電話社交工程、POS 記憶體側錄惡意程式、勒索軟體、未修補漏洞被利用\n看得到的防護措施：修補與弱點管理、廠商風險管理\n課程概念：供應鏈風險\n真實案例：Target 資料外洩事件（2013）、Marriott（喜達屋）訂房資料庫外洩（2018 年揭露）、SolarWinds 供應鏈攻擊（2020）、Equifax 資料外洩（2017）、Colonial Pipeline 勒索軟體（2021）、Log4Shell 漏洞（2021）、WannaCry 勒索軟體（2017）、MGM 渡假村網路攻擊（2023）\n可以走到：市集廣場・網路銷售", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.69, "load_s": 0.01, "prompt_tokens": 768, "prompt_s": 2.7, "gen_tokens": 69, "gen_s": 4.97, "tok_per_s": 13.9, "first_token_s": 2.72}}, "state": {}}
 

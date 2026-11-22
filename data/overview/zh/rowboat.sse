@@ -56,31 +56,28 @@ event: token
 data: {"text": "的是"}
 
 event: token
-data: {"text": "備"}
+data: {"text": "資料"}
+
+event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "第三"}
 
 event: token
 data: {"text": "份"}
 
 event: token
-data: {"text": "系統"}
+data: {"text": "副本"}
 
 event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "\n看得"}
+data: {"text": "\n系統"}
 
 event: token
-data: {"text": "到的"}
-
-event: token
-data: {"text": "防護"}
-
-event: token
-data: {"text": "措施"}
-
-event: token
-data: {"text": "包括"}
+data: {"text": "採用"}
 
 event: token
 data: {"text": " 3"}
@@ -107,7 +104,37 @@ event: token
 data: {"text": "原則"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "，"}
+
+event: token
+data: {"text": "其中"}
+
+event: token
+data: {"text": "一份"}
+
+event: token
+data: {"text": "資料"}
+
+event: token
+data: {"text": "存放在"}
+
+event: token
+data: {"text": "渡假"}
+
+event: token
+data: {"text": "村"}
+
+event: token
+data: {"text": "外"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n現場"}
+
+event: token
+data: {"text": "有"}
 
 event: token
 data: {"text": "離"}
@@ -116,7 +143,37 @@ event: token
 data: {"text": "線"}
 
 event: token
+data: {"text": "或"}
+
+event: token
+data: {"text": "不可"}
+
+event: token
+data: {"text": "改"}
+
+event: token
+data: {"text": "的"}
+
+event: token
 data: {"text": "副本"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "可用"}
+
+event: token
+data: {"text": "來"}
+
+event: token
+data: {"text": "防禦"}
+
+event: token
+data: {"text": "勒索"}
+
+event: token
+data: {"text": "軟體"}
 
 event: token
 data: {"text": "。"}
@@ -176,8 +233,14 @@ event: token
 data: {"text": "廠商"}
 
 event: token
+data: {"text": "繼續"}
+
+event: token
+data: {"text": "探索"}
+
+event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是「湖面上的小船・異地備份」房間，展示的是備份系統。\n看得到的防護措施包括 3-2-1 備份原則與離線副本。\n你可以走到燈塔・資安監控中心、會館碼頭・進貨與廠商。", "go": [], "followups": [{"text": "備份系統是做什麼的？", "en": "What does the Backup System do?", "zh": "備份系統是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.27, "total_s": 7.28}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "rowboat", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "rowboat"}, "rows": 1, "ms": 4.8}], "graph": {"nodes": [{"key": "rowboat", "label": "Room", "en": "On the Lake", "zh": "湖面上的小船"}, {"key": "backup", "label": "System", "en": "Backup System", "zh": "備份系統"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "c_bcp", "label": "Concept", "en": "BCP, RTO & RPO", "zh": "營運持續、RTO 與 RPO"}], "edges": [{"a": "backup", "t": "LOCATED_IN", "b": "rowboat"}, {"a": "c_bcp", "t": "TAUGHT_IN", "b": "rowboat"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "backup_321"}, {"a": "backup_321", "t": "SEEN_IN", "b": "rowboat"}]}, "tool_used": "room_overview", "facts": "房間：湖面上的小船・異地備份\n代表的資訊主題：一份資料被划離渡假村：3-2-1 備份原則裡放在別處的那一份。\n重點：三份資料、兩種媒介、一份放別處；再留一份離線或不可改的副本防勒索軟體。\n這裡的系統：備份系統\n看得到的防護措施：3-2-1 備份與離線副本\n課程概念：營運持續、RTO 與 RPO\n相關的處理流程：勒索軟體或檔案被加密\n可以走到：燈塔・資安監控中心、會館碼頭・進貨與廠商", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.27, "load_s": 0.01, "prompt_tokens": 589, "prompt_s": 2.14, "gen_tokens": 62, "gen_s": 5.11, "tok_per_s": 12.1, "first_token_s": 2.16}}, "state": {}}
+data: {"answer": "這裡是「湖面上的小船・異地備份」房間，展示的是資料的第三份副本。\n系統採用 3-2-1 備份原則，其中一份資料存放在渡假村外。\n現場有離線或不可改的副本，可用來防禦勒索軟體。\n你可以走到燈塔・資安監控中心、會館碼頭・進貨與廠商繼續探索。", "go": [], "followups": [{"text": "備份系統是做什麼的？", "en": "What does the Backup System do?", "zh": "備份系統是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.1, "total_s": 9.12}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "rowboat", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "rowboat"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "rowboat", "label": "Room", "en": "On the Lake", "zh": "湖面上的小船"}, {"key": "backup", "label": "System", "en": "Backup System", "zh": "備份系統"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "c_bcp", "label": "Concept", "en": "BCP, RTO & RPO", "zh": "營運持續、RTO 與 RPO"}], "edges": [{"a": "backup", "t": "LOCATED_IN", "b": "rowboat"}, {"a": "c_bcp", "t": "TAUGHT_IN", "b": "rowboat"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "backup_321"}, {"a": "backup_321", "t": "SEEN_IN", "b": "rowboat"}]}, "tool_used": "room_overview", "facts": "房間：湖面上的小船・異地備份\n這裡講的是：一份資料被划離渡假村：3-2-1 備份原則裡放在別處的那一份。\n重點：三份資料、兩種媒介、一份放別處；再留一份離線或不可改的副本防勒索軟體。\n這裡的系統：備份系統\n看得到的防護措施：3-2-1 備份與離線副本\n課程概念：營運持續、RTO 與 RPO\n相關的處理流程：勒索軟體或檔案被加密\n可以走到：燈塔・資安監控中心、會館碼頭・進貨與廠商", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.1, "load_s": 0.01, "prompt_tokens": 665, "prompt_s": 2.47, "gen_tokens": 84, "gen_s": 6.61, "tok_per_s": 12.7, "first_token_s": 2.49}}, "state": {}}
 

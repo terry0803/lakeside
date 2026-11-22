@@ -292,7 +292,7 @@ Games.access = function (d, main, replay) {
     }
     putBack(false);
   }
-  function heldKey(ev) { if (ev.key === "Escape") putBack(false); }
+  function heldKey(ev) { if (ev.key === "Escape") { ev.preventDefault(); putBack(false); } }      // 11/23: handled here, the game window stays open (common.js)
   function putBack(used) {
     if (!held) return;
     const g = held.g;
@@ -331,7 +331,8 @@ Games.access = function (d, main, replay) {
 
   async function decide(r, lv, how, pos) {
     if (S.answers[r.id]) return;
-    if (held) putBack(false);
+    // 11/23 review: someone else's patience running out doesn't take the stamp out of your hand; only the form you have open
+    if (held && r.id === S.open) putBack(false);
     S.answers[r.id] = lv; S.how[r.id] = how;
     if (pos) S.inkPos[r.id] = pos;
     const left = S.fuse[r.id] ? Math.max(0, S.fuse[r.id].left) : 0;
@@ -371,10 +372,11 @@ Games.access = function (d, main, replay) {
     } else {   // it timed out while you were on another form: a label floats up from the done list
       st.float($(`.ah-done-item[data-id="${r.id}"]`), `${bi(`${claimed(r)}: approved by someone else`, "別人照申請批了")}`, "is-miss");
     }
-    // the mentor's line
-    if (breach) say(r.impostor ? bi("You gave access to someone you hadn't verified. Call back the number HR has before you stamp.", "你給了一個沒核實身分的人權限。蓋章前先回撥人資系統裡的號碼。") : line(lines.much));
+    // the mentor's line. 11/23 review: a timeout gets the timeout line even when it let the crew in; the blame lines are
+    // only for stamps you made (someone else approved it as asked)
+    if (how === "timeout") say(bi(story.timeout_en, story.timeout_zh));
+    else if (breach) say(r.impostor ? bi("You gave access to someone you hadn't verified. Call back the number HR has before you stamp.", "你給了一個沒核實身分的人權限。蓋章前先回撥人資系統裡的號碼。") : line(lines.much));
     else if (r.impostor && lv === "none") say(S.verified[r.id] ? line(lines.caught) : line(lines.refused), "is-good");
-    else if (how === "timeout") say(bi(story.timeout_en, story.timeout_zh));
     else if (lv === r.answer) say(lv === r.ask ? line(lines.asked) : line(lines.right), "is-good");
     else if (rank(lv) > rank(r.answer)) say(line(lines.much));
     else say(line(lines.little));
@@ -386,6 +388,7 @@ Games.access = function (d, main, replay) {
       st.hit();
       S.hold += 1;
       await wait(900);
+      if (held) putBack(false);      // the cut scene covers the desk: a stamp still in your hand goes back on the rack
       const dm = r.damage || {};
       // the beats keep their spacing but start from when it actually happened
       const base = CB.mins((dm.beats || [])[0] && dm.beats[0].time), now = T0 + S.clock;
@@ -425,8 +428,9 @@ Games.access = function (d, main, replay) {
       : `<p class="ah-kg-line">${bi("Knowledge graph", "知識圖")} ${CB.lvChip(r.level)} ${r.note_en ? `<span class="ah-kg-note">${bi(r.note_en, r.note_zh)}</span>` : ""}</p>
         <p class="g-src">${r.level === "none" ? bi(`No CAN_ACCESS relationship from ${nm(p.role).name_en} to ${nm(r.data).name_en}.`, "知識圖裡這個職務和這份資料之間沒有 CAN_ACCESS 關係。")
           : `(:Role {key:'${esc(p.role)}'})-[:CAN_ACCESS {level:'${esc(r.level)}'}]-&gt;(:DataAsset {key:'${esc(r.data)}'})`}</p>`;
+    // 11/23 review: a timed-out form was stamped by someone else, so it doesn't say "your stamp"
     $("#ahOut").innerHTML = `<div class="ah-result ${verdict[0]}${animate ? " is-in" : ""}">
-      <p class="ah-verdict">${verdict[1]}<span class="ah-yours">${bi("Your stamp", "你蓋的")} ${CB.lvChip(lv)}</span></p>
+      <p class="ah-verdict">${verdict[1]}<span class="ah-yours">${how === "timeout" ? bi("The stamp", "蓋的是") : bi("Your stamp", "你蓋的")} ${CB.lvChip(lv)}</span></p>
       ${src}${pts ? `<p class="rx-pts">${pts}</p>` : ""}</div>`;
   }
 
@@ -601,6 +605,7 @@ Games.access = function (d, main, replay) {
   async function endShift() {
     S.over = true;
     loop.stop();
+    putBack(false);      // 11/23: nothing left in your hand when the desk closes
     const from = S.clock;
     for (let k = 1; k <= 10; k++) { S.clock = from + ((TEND - from) * k) / 10; H.clock(clockAt(S.clock)); await wait(70); }
     await wait(400);
@@ -635,7 +640,7 @@ Games.access = function (d, main, replay) {
     return `<ul class="ph-missed ah-missed">${list.map((r) => {
       const p = who(r), lv = S.answers[r.id];
       return `<li><span class="g-pill">${esc(r.time)}</span> <b>${esc(p.name)}</b> · ${bi(nm(r.data).name_en, nm(r.data).name_zh)}
-        <p>${bi("You", "你")} ${CB.lvChip(lv)}${S.how[r.id] === "timeout" ? ` <i>${bi("(timed out)", "（等太久）")}</i>` : ""} → ${bi("needed", "應該是")} ${CB.lvChip(r.answer)}
+        <p>${S.how[r.id] === "timeout" ? bi("Someone else", "別人") : bi("You", "你")} ${CB.lvChip(lv)}${S.how[r.id] === "timeout" ? ` <i>${bi("(timed out)", "（等太久）")}</i>` : ""} → ${bi("needed", "應該是")} ${CB.lvChip(r.answer)}
         ${r.impostor ? bi(` Not ${p.name}.`, " 不是本人。") : r.note_en ? ` ${bi(r.note_en, r.note_zh)}` : ""}</p></li>`;
     }).join("")}</ul>`;
   }
@@ -643,6 +648,7 @@ Games.access = function (d, main, replay) {
   function gameOver() {
     S.over = true;
     loop.stop();
+    putBack(false);
     st.$rs.classList.remove("is-paused");
     st.scene("ah_night", 0.2);
     const items = S.losses.map((r) => `<li>${bi((r.damage || {}).hit_en || "", (r.damage || {}).hit_zh || "")}</li>`).join("");

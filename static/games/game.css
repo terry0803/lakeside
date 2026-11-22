@@ -1768,8 +1768,10 @@ svg.tell.is-found { box-shadow: none; outline: 3px solid var(--pencil); outline-
 /* 03:25, and the bad ending */
 .mn-sum .rs-mentor { margin: 18px 0; }
 .mn-sum .rx-stats b small { margin-left: 3px; font-size: 14px; color: var(--ink-3); }
-.mn-late-call { margin: 12px 0 0; padding: 8px 12px; border-left: 3px solid var(--amber); background: #fdf6ea; font-size: 13.5px; }
-.mn-late-call span[lang] { display: block; color: var(--ink-2); }
+.mn-late-call, .mn-call-why { margin: 12px 0 0; padding: 8px 12px; border-left: 3px solid var(--amber); background: #fdf6ea; font-size: 13.5px; }
+.mn-late-call span[lang], .mn-call-why span[lang] { display: block; color: var(--ink-2); }
+/* 11/23 review: under a line of the night log, what the call in Jun-Hao's name still needed (games.yaml, the call's why) */
+.mn-why { display: block; margin-top: 3px; color: var(--ink); font-weight: 400; }
 .mn-over-phone { width: min(320px, 30vw); padding: 22px 18px; border: 3px solid #2d3438; border-radius: 30px; background: #0f1416; color: #f2f5f6; text-align: center; box-shadow: 0 24px 60px rgba(0, 0, 0, .6), 0 0 50px rgba(220, 40, 30, .25); }
 .mn-over-phone p { margin: 0; font-size: 13px; color: #9fb0ad; }
 .mn-over-phone p span[lang] { display: block; }
@@ -1963,6 +1965,10 @@ svg.tell.is-found { box-shadow: none; outline: 3px solid var(--pencil); outline-
 .mn-auth-no { background: #fde7e3; color: #8f2f20; }
 .mn-auth-yes { background: #1f4e9a; color: #fff; }
 .mn-auth-yes:disabled { background: #c7d0d8; color: #f4f6f8; cursor: not-allowed; }
+/* 11/23 review: put the app away without answering; the sign-in keeps waiting on the lock screen */
+.mn-auth-later { margin-top: 2px; padding: 6px 14px; border: 0; border-radius: 10px; background: none; color: #1f4e9a; font-size: 13px; font-weight: 600; cursor: pointer; }
+.mn-auth-later span[lang] { margin-left: 4px; font-weight: 400; }
+.mn-auth-later:hover { background: rgba(31, 78, 154, .08); }
 
 /* the door console on the laptop */
 .mn-con { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; margin-top: 10px; padding: 10px; border-radius: 6px; background: #161d20; color: #e9eef0; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06); transition: box-shadow .3s; }

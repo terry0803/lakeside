@@ -5,10 +5,13 @@ event: route
 data: {"tool": "room_overview", "target": "", "how": "button"}
 
 event: card
-data: {"type": "sections", "label": "Room", "title": {"en": "Corridor Far End · Server Room Entrance", "zh": "走廊盡頭・機房入口"}, "subtitle": {"en": "Corridor · Far End", "zh": "走廊盡頭"}, "text": {"en": "The server room door with its badge reader and camera.", "zh": "機房門口的讀卡機和監視器。"}, "note": {"en": "A restricted door must close and lock behind you every time.", "zh": "限制區的門每次都要關好、鎖好。"}, "badges": [{"en": "Weaknesses to find here: 2", "zh": "這裡有 2 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "access_control", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "cctv", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "tailgating", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "cctv_monitoring", "en": "CCTV Monitoring", "zh": "監視器監控"}, {"key": "physical_access", "en": "Physical Access Control", "zh": "實體門禁"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_risk", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "corridor", "en": "Staff Corridor & Physical Security", "zh": "員工走廊與實體安全", "base_en": "Corridor", "base_zh": "走廊", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=5", "tour": "A"}, {"key": "cellar", "en": "Server Room (Restricted)", "zh": "機房（限制進入）", "base_en": "Server Room", "base_zh": "機房", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=17", "tour": "A"}]}]}
+data: {"type": "sections", "label": "Room", "title": {"en": "Corridor Far End · Server Room Entrance", "zh": "走廊盡頭・機房入口"}, "subtitle": {"en": "Corridor · Far End", "zh": "走廊盡頭"}, "text": {"en": "The server room door with its badge reader and camera.", "zh": "機房門口的讀卡機和監視器。"}, "note": {"en": "A restricted door must close and lock behind you every time.", "zh": "限制區的門每次都要關好、鎖好。"}, "badges": [{"en": "Weaknesses to find here: 2", "zh": "這裡藏著 2 個漏洞"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "access_control", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "cctv", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "tailgating", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "cctv_monitoring", "en": "CCTV Monitoring", "zh": "監視器監控"}, {"key": "physical_access", "en": "Physical Access Control", "zh": "實體門禁"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_risk", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "corridor", "en": "Staff Corridor & Physical Security", "zh": "員工走廊與實體安全", "base_en": "Corridor", "base_zh": "走廊", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=5", "tour": "A"}, {"key": "cellar", "en": "Server Room (Restricted)", "zh": "機房（限制進入）", "base_en": "Server Room", "base_zh": "機房", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=17", "tour": "A"}]}]}
 
 event: token
 data: {"text": "This"}
+
+event: token
+data: {"text": " area"}
 
 event: token
 data: {"text": " is"}
@@ -47,7 +50,10 @@ event: token
 data: {"text": "**,"}
 
 event: token
-data: {"text": " showing"}
+data: {"text": " which"}
+
+event: token
+data: {"text": " features"}
 
 event: token
 data: {"text": " a"}
@@ -188,10 +194,58 @@ event: token
 data: {"text": " The"}
 
 event: token
-data: {"text": " area"}
+data: {"text": " primary"}
 
 event: token
-data: {"text": " highlights"}
+data: {"text": " lesson"}
+
+event: token
+data: {"text": " here"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " that"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " restricted"}
+
+event: token
+data: {"text": " door"}
+
+event: token
+data: {"text": " must"}
+
+event: token
+data: {"text": " close"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " lock"}
+
+event: token
+data: {"text": " behind"}
+
+event: token
+data: {"text": " you"}
+
+event: token
+data: {"text": " every"}
+
+event: token
+data: {"text": " time"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " prevent"}
 
 event: token
 data: {"text": " threats"}
@@ -236,119 +290,8 @@ event: token
 data: {"text": " Entry"}
 
 event: token
-data: {"text": "**,"}
-
-event: token
-data: {"text": " reminding"}
-
-event: token
-data: {"text": " you"}
-
-event: token
-data: {"text": " that"}
-
-event: token
-data: {"text": " the"}
-
-event: token
-data: {"text": " door"}
-
-event: token
-data: {"text": " must"}
-
-event: token
-data: {"text": " close"}
-
-event: token
-data: {"text": " and"}
-
-event: token
-data: {"text": " lock"}
-
-event: token
-data: {"text": " behind"}
-
-event: token
-data: {"text": " you"}
-
-event: token
-data: {"text": " every"}
-
-event: token
-data: {"text": " time"}
-
-event: token
-data: {"text": "."}
-
-event: token
-data: {"text": " There"}
-
-event: token
-data: {"text": " are"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "2"}
-
-event: token
-data: {"text": "**"}
-
-event: token
-data: {"text": " hidden"}
-
-event: token
-data: {"text": " security"}
-
-event: token
-data: {"text": " weaknesses"}
-
-event: token
-data: {"text": " in"}
-
-event: token
-data: {"text": " this"}
-
-event: token
-data: {"text": " room"}
-
-event: token
-data: {"text": " that"}
-
-event: token
-data: {"text": " you"}
-
-event: token
-data: {"text": " need"}
-
-event: token
-data: {"text": " to"}
-
-event: token
-data: {"text": " spot"}
-
-event: token
-data: {"text": ";"}
-
-event: token
-data: {"text": " do"}
-
-event: token
-data: {"text": " not"}
-
-event: token
-data: {"text": " reveal"}
-
-event: token
-data: {"text": " them"}
-
-event: token
-data: {"text": " yet"}
-
-event: token
-data: {"text": "."}
+data: {"text": "**."}
 
 event: done
-data: {"answer": "This is the **Corridor Far End · Server Room Entrance**, showing a restricted door with a badge reader and camera. You can see systems for **Badge Access Control** and **CCTV & Video Management**, along with controls like **CCTV Monitoring** and **Physical Access Control**. The area highlights threats such as **Tailgating** and **Unauthorised Entry**, reminding you that the door must close and lock behind you every time. There are **2** hidden security weaknesses in this room that you need to spot; do not reveal them yet.", "go": [], "followups": [{"text": "What does the Badge Access Control do?", "en": "What does the Badge Access Control do?", "zh": "門禁系統是做什麼的？"}, {"text": "How do we prevent tailgating & unauthorised entry?", "en": "How do we prevent tailgating & unauthorised entry?", "zh": "尾隨與未經授權進入要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 11.66, "total_s": 11.68}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "corridor_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "corridor_near"}, "rows": 1, "ms": 6.7}], "graph": {"nodes": [{"key": "corridor_near", "label": "Room", "en": "Corridor · Far End", "zh": "走廊盡頭"}, {"key": "access_control", "label": "System", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "cctv", "label": "System", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}, {"key": "tailgating", "label": "Threat", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}, {"key": "cctv_monitoring", "label": "Control", "en": "CCTV Monitoring", "zh": "監視器監控"}, {"key": "physical_access", "label": "Control", "en": "Physical Access Control", "zh": "實體門禁"}, {"key": "c_risk", "label": "Concept", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}], "edges": [{"a": "cctv", "t": "LOCATED_IN", "b": "corridor_near"}, {"a": "access_control", "t": "LOCATED_IN", "b": "corridor_near"}, {"a": "tailgating", "t": "TARGETS", "b": "access_control"}, {"a": "tailgating", "t": "SHOWN_IN", "b": "corridor_near"}, {"a": "c_risk", "t": "TAUGHT_IN", "b": "corridor_near"}, {"a": "physical_access", "t": "SEEN_IN", "b": "corridor_near"}, {"a": "physical_access", "t": "PROTECTS", "b": "access_control"}, {"a": "physical_access", "t": "MITIGATES", "b": "tailgating"}, {"a": "cctv_monitoring", "t": "SEEN_IN", "b": "corridor_near"}, {"a": "cctv_monitoring", "t": "MITIGATES", "b": "tailgating"}]}, "tool_used": "room_overview", "facts": "Room: Corridor Far End · Server Room Entrance (called 'Corridor · Far End' in the tour)\nWhat it shows: The server room door with its badge reader and camera.\nKey lesson: A restricted door must close and lock behind you every time.\nSystems here: Badge Access Control, CCTV & Video Management\nThreats shown here: Tailgating & Unauthorised Entry\nControls you can see: CCTV Monitoring, Physical Access Control\nConcepts: Risk = Likelihood × Impact\nHidden security weaknesses in this room: 2 (the player has to spot them; do not reveal them)\nExits: Staff Corridor & Physical Security, Server Room (Restricted)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 11.66, "load_s": 0.01, "prompt_tokens": 586, "prompt_s": 2.2, "gen_tokens": 115, "gen_s": 9.44, "tok_per_s": 12.2, "first_token_s": 2.22}}, "state": {}}
+data: {"answer": "This area is the **Corridor Far End · Server Room Entrance**, which features a restricted door with a badge reader and camera. You can see systems for **Badge Access Control** and **CCTV & Video Management**, along with controls like **CCTV Monitoring** and **Physical Access Control**. The primary lesson here is that the restricted door must close and lock behind you every time to prevent threats such as **Tailgating** and **Unauthorised Entry**.", "go": [], "followups": [{"text": "What does the Badge Access Control do?", "en": "What does the Badge Access Control do?", "zh": "門禁系統是做什麼的？"}, {"text": "How do we prevent tailgating & unauthorised entry?", "en": "How do we prevent tailgating & unauthorised entry?", "zh": "尾隨與未經授權進入要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.47, "total_s": 9.48}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "corridor_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "corridor_near"}, "rows": 1, "ms": 6.0}], "graph": {"nodes": [{"key": "corridor_near", "label": "Room", "en": "Corridor · Far End", "zh": "走廊盡頭"}, {"key": "access_control", "label": "System", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "cctv", "label": "System", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}, {"key": "tailgating", "label": "Threat", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}, {"key": "cctv_monitoring", "label": "Control", "en": "CCTV Monitoring", "zh": "監視器監控"}, {"key": "physical_access", "label": "Control", "en": "Physical Access Control", "zh": "實體門禁"}, {"key": "c_risk", "label": "Concept", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}], "edges": [{"a": "cctv", "t": "LOCATED_IN", "b": "corridor_near"}, {"a": "access_control", "t": "LOCATED_IN", "b": "corridor_near"}, {"a": "tailgating", "t": "TARGETS", "b": "access_control"}, {"a": "tailgating", "t": "SHOWN_IN", "b": "corridor_near"}, {"a": "c_risk", "t": "TAUGHT_IN", "b": "corridor_near"}, {"a": "physical_access", "t": "SEEN_IN", "b": "corridor_near"}, {"a": "physical_access", "t": "PROTECTS", "b": "access_control"}, {"a": "physical_access", "t": "MITIGATES", "b": "tailgating"}, {"a": "cctv_monitoring", "t": "SEEN_IN", "b": "corridor_near"}, {"a": "cctv_monitoring", "t": "MITIGATES", "b": "tailgating"}]}, "tool_used": "room_overview", "facts": "Room: Corridor Far End · Server Room Entrance (called 'Corridor · Far End' in the tour)\nWhat it shows: The server room door with its badge reader and camera.\nKey lesson: A restricted door must close and lock behind you every time.\nSystems here: Badge Access Control, CCTV & Video Management\nThreats shown here: Tailgating & Unauthorised Entry\nControls you can see: CCTV Monitoring, Physical Access Control\nConcepts: Risk = Likelihood × Impact\nHidden security weaknesses in this room: 2 (the player has to spot them; do not reveal them)\nExits: Staff Corridor & Physical Security, Server Room (Restricted)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.47, "load_s": 0.01, "prompt_tokens": 577, "prompt_s": 2.02, "gen_tokens": 96, "gen_s": 7.42, "tok_per_s": 12.9, "first_token_s": 2.04}}, "state": {}}
 

@@ -11,7 +11,10 @@ event: token
 data: {"text": "這裡"}
 
 event: token
-data: {"text": "是"}
+data: {"text": "展示"}
+
+event: token
+data: {"text": "的是"}
 
 event: token
 data: {"text": "「"}
@@ -47,6 +50,12 @@ event: token
 data: {"text": "，"}
 
 event: token
+data: {"text": "牆"}
+
+event: token
+data: {"text": "上的"}
+
+event: token
 data: {"text": "彩"}
 
 event: token
@@ -54,9 +63,6 @@ data: {"text": "繪"}
 
 event: token
 data: {"text": "玻璃"}
-
-event: token
-data: {"text": "上"}
 
 event: token
 data: {"text": "寫"}
@@ -140,7 +146,7 @@ event: token
 data: {"text": "措施"}
 
 event: token
-data: {"text": "包括"}
+data: {"text": "是"}
 
 event: token
 data: {"text": "資料"}
@@ -164,16 +170,25 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "您可以"}
+data: {"text": "這個"}
 
 event: token
-data: {"text": "走到"}
+data: {"text": "房間"}
 
 event: token
-data: {"text": "隔壁"}
+data: {"text": "在"}
 
 event: token
-data: {"text": "的"}
+data: {"text": "導覽"}
+
+event: token
+data: {"text": "裡"}
+
+event: token
+data: {"text": "也叫"}
+
+event: token
+data: {"text": "「"}
 
 event: token
 data: {"text": "隱私"}
@@ -185,38 +200,8 @@ event: token
 data: {"text": "教堂"}
 
 event: token
-data: {"text": "（"}
-
-event: token
-data: {"text": "導覽"}
-
-event: token
-data: {"text": "名稱"}
-
-event: token
-data: {"text": "："}
-
-event: token
-data: {"text": "湖畔"}
-
-event: token
-data: {"text": "教堂"}
-
-event: token
-data: {"text": "）"}
-
-event: token
-data: {"text": "繼續"}
-
-event: token
-data: {"text": "探索"}
-
-event: token
-data: {"text": "。"}
-
-event: replace
-data: {"text": "這裡是「教堂近看・個資原則」房間，彩繪玻璃上寫著六個個資原則：目的、最小化、正確、保存期限、安全、問責。看得到的防護措施包括資料最小化與保存期限。你可以走到隔壁的隱私小教堂（導覽名稱：湖畔教堂）繼續探索。"}
+data: {"text": "」。"}
 
 event: done
-data: {"answer": "這裡是「教堂近看・個資原則」房間，彩繪玻璃上寫著六個個資原則：目的、最小化、正確、保存期限、安全、問責。看得到的防護措施包括資料最小化與保存期限。你可以走到隔壁的隱私小教堂（導覽名稱：湖畔教堂）繼續探索。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.05, "total_s": 9.07}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "church_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "church_near"}, "rows": 1, "ms": 5.7}], "graph": {"nodes": [{"key": "church_near", "label": "Room", "en": "Chapel · Up Close", "zh": "教堂近看"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}, {"key": "c_privacy_principles", "label": "Concept", "en": "Privacy Principles", "zh": "個資保護原則"}], "edges": [{"a": "c_privacy_principles", "t": "TAUGHT_IN", "b": "church_near"}, {"a": "c_privacy_principles", "t": "RELATED_TO", "b": "retention_deletion"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "church_near"}]}, "tool_used": "room_overview", "facts": "房間：教堂近看・個資原則\n代表的資訊主題：近看每一片彩繪玻璃各寫著一個個資原則。\n重點：目的、最小化、正確、保存期限、安全、問責。\n看得到的防護措施：資料最小化與保存期限\n課程概念：個資保護原則\n可以走到：隱私小教堂（導覽裡的名稱：湖畔教堂）", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.05, "load_s": 0.01, "prompt_tokens": 535, "prompt_s": 2.68, "gen_tokens": 70, "gen_s": 6.25, "tok_per_s": 11.2, "first_token_s": 2.8}}, "state": {}}
+data: {"answer": "這裡展示的是「教堂近看・個資原則」房間，牆上的彩繪玻璃寫著六個個資原則：目的、最小化、正確、保存期限、安全、問責。看得到的防護措施是資料最小化與保存期限。這個房間在導覽裡也叫「隱私小教堂」。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.59, "total_s": 7.6}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "church_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "church_near"}, "rows": 1, "ms": 5.4}], "graph": {"nodes": [{"key": "church_near", "label": "Room", "en": "Chapel · Up Close", "zh": "教堂近看"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}, {"key": "c_privacy_principles", "label": "Concept", "en": "Privacy Principles", "zh": "個資保護原則"}], "edges": [{"a": "c_privacy_principles", "t": "TAUGHT_IN", "b": "church_near"}, {"a": "c_privacy_principles", "t": "RELATED_TO", "b": "retention_deletion"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "church_near"}]}, "tool_used": "room_overview", "facts": "房間：教堂近看・個資原則\n這裡講的是：近看每一片彩繪玻璃各寫著一個個資原則。\n重點：目的、最小化、正確、保存期限、安全、問責。\n看得到的防護措施：資料最小化與保存期限\n課程概念：個資保護原則\n可以走到：隱私小教堂（導覽裡的名稱：湖畔教堂）", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.58, "load_s": 0.0, "prompt_tokens": 611, "prompt_s": 2.51, "gen_tokens": 66, "gen_s": 5.05, "tok_per_s": 13.1, "first_token_s": 2.53}}, "state": {}}
 

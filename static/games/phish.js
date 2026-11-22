@@ -1,5 +1,5 @@
 /* Inbox Rush 收件匣大作戰, third version (11/21 afternoon): case file 1 of the Awards Night casebook. Two parts.
-   The shift, 16:00 to 19:30 at the cashier laptop in the restaurant: emails land on their own clock and several can burn
+   The shift, 16:00 to 19:00 at the cashier laptop in the restaurant: emails land on their own clock and several can burn
    at once. Drag one to the left to report it or to the right to keep it, or open it and look closer. Three calls, one
    hint, three shields; at 18:52 someone calls in a colleague's name.
    The case board, 21:00 at the lighthouse SOC: look up the senders' domains, check the invoice and read the fake pages'
@@ -24,7 +24,7 @@ Games.phish = function (d, main, replay) {
   const IMG = "/lakeside/static/games/img/scenes/";
   const TOTAL = d.emails.length + (CALL ? 1 : 0) + QS.length;
   const mins = (t) => { const m = /^(\d+):(\d+)/.exec(t || ""); return m ? +m[1] * 60 + +m[2] : 0; };
-  const T0 = mins(story.start || "16:00"), TEND = mins(story.dinner || "19:30") - T0;
+  const T0 = mins(story.start || "16:00"), TEND = mins(story.dinner || "19:00") - T0;
   const hhmm = (m) => { const t = Math.floor(T0 + m); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
   const money = (n) => "NT$ " + n.toLocaleString("en-US");
   const fill = (s, map) => String(s || "").replace(/\{(\w+)\}/g, (_, k) => (k in map ? map[k] : ""));
@@ -42,6 +42,9 @@ Games.phish = function (d, main, replay) {
   let S = null, B = null, said = 0;
   const pick = (list) => (list && list.length ? list[said++ % list.length] : null);
   const line = (list) => { const l = pick(list); return l ? bi(l.en, l.zh) : ""; };
+  // 11/23 review: a colleague who opened it lost their own account, so every later mention says so (not "your mailbox"):
+  // the cut scene, the result card when the email is opened again, the lists after three slips and on the results page
+  const damageOf = (e) => Object.assign({}, e.damage || {}, S && S.how[e.id] === "opened" && e.damage_opened ? e.damage_opened : {});
 
   main.classList.add("is-stage");
   main.innerHTML = `<div class="rs" id="rs"><div class="rs-bg" id="rsBg"></div><div class="rs-dusk" id="rsDusk"></div>
@@ -132,8 +135,8 @@ Games.phish = function (d, main, replay) {
     const rules = (story.rules || []).map((r) => (tiles ? `<li><span class="cb-rule-ic">${CB.RULE[r.icon] || ""}</span><p>${bi(r.en, r.zh)}</p></li>` : `<li>${bi(r.en, r.zh)}</li>`)).join("");
     $("#rsBody").innerHTML = `<section class="rs-brief has-rules">
       <div class="rs-brief-clock" aria-hidden="true"><span>Awards Night <i lang="zh-Hant">頒獎晚會</i></span>
-        <b>${esc(story.start || "16:00")}</b><span>Dinner ${esc(story.dinner || "19:30")} <i lang="zh-Hant">開飯</i></span>
-        <span class="rs-brief-file">Case file 1 <i lang="zh-Hant">事件簿第 1 章</i></span></div>
+        <b>${esc(story.start || "16:00")}</b><span>Dinner ${esc(story.dinner || "19:00")} <i lang="zh-Hant">開飯</i></span>
+        <span class="rs-brief-file">Case file 1 <i lang="zh-Hant">事件簿第一案</i></span></div>
       <div class="rs-brief-main">${mentorHTML(bi(story.intro_en || "", story.intro_zh || ""), true)}
         <p class="rs-brief-after">${bi("After dinner, the SOC will need your notes to work out who sent all this.", "晚宴後，資安監控中心要用你的線索找出這些信是誰寄的。")}</p>
         <button type="button" class="btn rs-start">${bi("Start my shift", "開始值班")}</button></div>
@@ -333,7 +336,7 @@ Games.phish = function (d, main, replay) {
   function hudInit() {
     G.meter(`<div class="rx-hud">
       <button type="button" class="rx-pause" data-pause aria-pressed="false">${ICON.pause}<span>${bi("Pause", "暫停")}</span></button>
-      <div class="rx-hud-clock"><b id="hudClock">${esc(story.start || "16:00")}</b><span>${bi(`dinner ${story.dinner || "19:30"}`, "開飯")}</span></div>
+      <div class="rx-hud-clock"><b id="hudClock">${esc(story.start || "16:00")}</b><span>${bi(`dinner ${story.dinner || "19:00"}`, "開飯")}</span></div>
       <div class="rx-hud-pts"><b id="hudPts">0</b><span>${bi("points", "分")}</span><i class="rx-streak" id="hudStreak" hidden></i></div>
       <div class="rx-hud-shields"><div id="hudShields" role="img"></div><span>${bi("shields", "盾牌")}</span></div></div>`);
     drawShields();
@@ -489,12 +492,13 @@ Games.phish = function (d, main, replay) {
   }
 
   function endDrag(g, x, y) {
-    if (x >= 0) moveDrag(g, x, y);
+    const drop = $("#rsDrop");
+    if (x >= 0 && drop) moveDrag(g, x, y);
     g.ghost.remove();
     g.btn.classList.remove("is-dragging");
-    const drop = $("#rsDrop");
-    drop.hidden = true; drop.classList.remove("on-report", "on-keep");
-    return x >= 0 ? g.zone : null;
+    // 11/23 review: the shift can end under a drag (the dinner or the end screen replaces the inbox); let go and nothing is left
+    if (drop) { drop.hidden = true; drop.classList.remove("on-report", "on-keep"); }
+    return x >= 0 && drop ? g.zone : null;
   }
 
   /* ------------------------------------------------------------------ the reading pane */
@@ -610,6 +614,7 @@ Games.phish = function (d, main, replay) {
 
   /* ------------------------------------------------------------------ the phone: three calls to check, and the 18:52 call */
   function phoneIdle() {
+    document.removeEventListener("keydown", phoneEsc);
     const box = $("#rsPhone");
     if (!box || callBusy() || S.call.dialing) return;
     const e = S.open && !S.answers[S.open] ? byId[S.open] : null;
@@ -633,6 +638,15 @@ Games.phish = function (d, main, replay) {
       <ul class="rs-contacts">${list}</ul></div>`;
     $(".rs-x", box).addEventListener("click", phoneIdle);
     for (const b of $$(".rs-contacts button", box)) b.addEventListener("click", () => call(e, contacts.find((c) => c.key === b.dataset.k)));
+    document.addEventListener("keydown", phoneEsc);
+  }
+  // 11/23 (review G1): Escape closes the list of numbers like its ×, and so doesn't close the game window (common.js)
+  function phoneEsc(ev) {
+    if (ev.key !== "Escape" || ev.defaultPrevented) return;
+    const box = $("#rsPhone");
+    if (!S || S.over || !box || !$(".rs-handset .rs-x", box)) return;
+    ev.preventDefault();
+    phoneIdle();
   }
 
   async function call(e, c) {
@@ -808,7 +822,7 @@ Games.phish = function (d, main, replay) {
     CB.SFX.play(right ? "good" : "bad");
     if (right && [3, 5, 8].includes(S.streak)) CB.streak(stage, S.streak);
     const hit = e.phish && a === "keep";
-    if (hit) { S.shields -= 1; S.losses.push(e); S.ntd += (e.damage && e.damage.ntd) || 0; drawShields(true); hitFlash(); }
+    if (hit) { S.shields -= 1; S.losses.push({ id: e.id, damage: damageOf(e) }); S.ntd += (e.damage && e.damage.ntd) || 0; drawShields(true); hitFlash(); }
     const left = S.shields;   // shields after this slip (cuts queue up if another comes first)
     markRow(e);
     countInbox();
@@ -834,7 +848,7 @@ Games.phish = function (d, main, replay) {
       S.hold += 1;
       await wait(500);
       const theirs = opened && e.keep_opened && e.keep_opened.length;
-      await cutScene(theirs ? e.keep_opened : e.keep, Object.assign({}, e.damage || {}, opened && e.damage_opened ? e.damage_opened : {}), plainSubj(e), left, subjZh(e));
+      await cutScene(theirs ? e.keep_opened : e.keep, damageOf(e), plainSubj(e), left, subjZh(e));
       S.hold -= 1; S.last = performance.now();
       if (S.shields <= 0) { if (!S.hold) gameOver(); return; }
     } else if (e.phish && a === "report") {
@@ -897,7 +911,7 @@ Games.phish = function (d, main, replay) {
           <button type="button" class="btn rs-cut-go">${bi(left > 0 ? "Back to the inbox" : "Continue", left > 0 ? "回到收件匣" : "繼續")}</button></div>`;
       cut.classList.remove("is-in"); void cut.offsetWidth; cut.classList.add("is-in");
       if (dm.ntd) setTimeout(() => countUp($("#rsNtd"), dm.ntd), reduceMotion ? 0 : 1300);
-      if (dm.inset === "sent") flood($(".rs-sent ol", cut), dm.sent || 200, subj, subjZh2);
+      if (dm.inset === "sent") flood($(".rs-sent ol", cut), dm.sent || 200, subj, subjZh2, dm.owner);
       $(".rs-cut-go", cut).focus({ preventScroll: true });
       $(".rs-cut-go", cut).addEventListener("click", () => { cut.hidden = true; cut.innerHTML = ""; if (body) body.inert = false; done(); });
     });
@@ -909,16 +923,19 @@ Games.phish = function (d, main, replay) {
       <p class="rs-bank-ok">✓ ${bi("Transfer completed", "轉帳完成")}</p><p class="rs-bank-amt">${money(dm.ntd || 0)}</p>
       <p class="rs-bank-to">${bi("To account", "轉入帳號")} <b>${esc(dm.account || "")}</b></p></div>`;
     if (dm.inset === "gm") return `<div class="rs-gm"><p>${bi(dm.quote_en || "", dm.quote_zh || "")}</p><span>${bi("General Manager", "總經理")}</span></div>`;
+    // 11/23 review: a colleague's account when a colleague opened it (games.yaml damage_opened.signin_en)
     if (dm.inset === "signin") return `<div class="rs-alert"><p class="rs-alert-app">Lakeside SSO · ${bi("Security alert", "安全通知")}</p>
-      <p class="rs-alert-title">${bi("New sign-in to your staff account", "你的員工帳號有新的登入")}</p>
+      <p class="rs-alert-title">${bi(dm.signin_en || "New sign-in to your staff account", dm.signin_zh || "你的員工帳號有新的登入")}</p>
       <p class="rs-alert-meta">${bi(dm.when || "", dm.when_zh || "")} · ${esc(dm.ip || "")} · ${bi("outside Taiwan", "國外")}</p></div>`;
     if (dm.inset === "sent") return `<div class="rs-sent"><p class="rs-sent-top">${bi("Sent items", "寄件備份")} · <b id="rsSentN">0</b></p><ol></ol></div>`;
     return "";
   }
 
-  function flood(ol, n, subj, zh) {
+  function flood(ol, n, subj, zh, owner) {
     // 11/22: the people's Chinese names as the other chapters write them (the Chinese lines call Wei-Ting at Ocean Fresh by his English name)
-    const names = [["Ivy Tsai", "蔡宜芳"], ["Chef Huang", "黃主廚"], ["Pei-Shan", "佩珊"], ["Kevin Wu", "吳凱文"], ["Grace Lin", "林思妤"], ["Front Desk", "櫃台"], ["Bar team", "酒吧組"], ["Night shift", "夜班"], ["Banquet team", "宴會組"], ["Wei-Ting"]];
+    // 11/23: a colleague's mailbox doesn't send to its own owner (games.yaml damage_opened.owner)
+    const names = [["Ivy Tsai", "蔡宜芳"], ["Chef Huang", "黃主廚"], ["Pei-Shan", "佩珊"], ["Kevin Wu", "吳凱文"], ["Grace Lin", "林思妤"], ["Front Desk", "櫃台"], ["Bar team", "酒吧組"], ["Night shift", "夜班"], ["Banquet team", "宴會組"], ["Wei-Ting"]]
+      .filter(([en]) => en !== owner);
     let k = 0;
     const tick2 = () => {
       if (!ol.isConnected || k >= n) return;
@@ -957,7 +974,7 @@ Games.phish = function (d, main, replay) {
       S.verified[e.id] ? `+${P.verify} ${bi("checked by phone", "打電話確認")}` : "", g.alarm ? `${g.alarm} ${bi("false alarm", "誤報")}` : ""].filter(Boolean);
     const pts = parts.length ? `<p class="rx-pts">${parts.join(" · ")}</p>` : "";
     if (e.phish && a === "keep") {
-      const dm = e.damage || {};
+      const dm = damageOf(e);
       return `<section class="rx-incident rs-mini-incident"><h3>${bi("What happened next", "接下來發生了什麼")}</h3>
         <p class="rx-hit"><span>${bi(dm.en || "", dm.zh || "")}</span>${dm.ntd ? `<b class="rx-ntd">${money(dm.ntd)}</b>` : ""}</p></section>`;
     }
@@ -1015,6 +1032,7 @@ Games.phish = function (d, main, replay) {
   async function endShift() {
     S.over = true;
     stopLoop();
+    for (const g of $$(".rx-ghost")) g.remove();      // 11/23 review: an email still being dragged when the shift ends
     $rs.classList.remove("is-ringing");
     const from = S.clock;
     for (let k = 1; k <= 10; k++) { S.clock = from + ((TEND - from) * k) / 10; drawClock(); await wait(70); }
@@ -1029,7 +1047,7 @@ Games.phish = function (d, main, replay) {
     const notes = S.notes.length + Object.values(S.found).reduce((n, f) => n + f.size, 0);
     const callTxt = { right: bi("hung up and called back", "掛掉回撥確認"), declined: bi("declined", "拒接"), missed: bi("missed: nothing given away", "沒接到：什麼都沒給出去"), read: bi("read out the code", "念出了驗證碼") }[S.call.result] || "";
     $("#rsBody").innerHTML = `<section class="rs-dinner">
-      <p class="rs-kicker">${bi(`${story.dinner || "19:30"} · Awards dinner`, "頒獎晚宴開始")}</p>
+      <p class="rs-kicker">${bi(`${story.dinner || "19:00"} · Awards dinner`, "頒獎晚宴開始")}</p>
       <h2 class="rs-dinner-title">${left === sh.shields ? bi("Not one attack got through.", "沒有一次被歹徒得逞。") : bi(`You made it to dinner with ${left} shield${left > 1 ? "s" : ""}.`, `撐到開飯了，還剩 ${left} 面盾牌。`)}</h2>
       <div class="rx-stats rs-dinner-stats">
         <div><b>${rightCount()}/${d.emails.length}</b><span>${bi("emails right", "判斷正確的信")}</span></div>
@@ -1042,9 +1060,9 @@ Games.phish = function (d, main, replay) {
       ${mentorHTML(notes ? bi(`Good work tonight. Jun-Hao from the SOC wants you at the lighthouse at ${BOARD.time || "21:00"}. Bring your notebook: ${notes} entries.`, `今晚辛苦了。資安監控中心的俊豪請你 ${BOARD.time || "21:00"} 到燈塔一趟，線索簿記得帶著，裡面有 ${notes} 筆。`)
         : bi(`Good work tonight. Jun-Hao from the SOC wants you at the lighthouse at ${BOARD.time || "21:00"}. Your notebook is empty, but the SOC has pinned up everything they have.`, `今晚辛苦了。資安監控中心的俊豪請你 ${BOARD.time || "21:00"} 到燈塔一趟。你的線索簿是空的，不過他們已經把手上的資料都釘在板子上了。`))}
       <button type="button" class="btn rs-start rs-to-board">${bi("Go to the lighthouse", "去燈塔")}</button></section>`;
-    G.meter(`<div class="rx-hud"><div class="rx-hud-clock"><b>${esc(story.dinner || "19:30")}</b><span>${bi("dinner", "開飯")}</span></div><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
+    G.meter(`<div class="rx-hud"><div class="rx-hud-clock"><b>${esc(story.dinner || "19:00")}</b><span>${bi("dinner", "開飯")}</span></div><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
     $(".rs-to-board").addEventListener("click", async () => {
-      await CB.timeskip(stage, { from: story.dinner || "19:30", to: BOARD.time || "21:00", place_en: "The SOC at the lighthouse", place_zh: "燈塔的資安監控中心", day_en: "Awards Night", day_zh: "頒獎晚會" });
+      await CB.timeskip(stage, { from: story.dinner || "19:00", to: BOARD.time || "21:00", place_en: "The SOC at the lighthouse", place_zh: "燈塔的資安監控中心", day_en: "Awards Night", day_zh: "頒獎晚會" });
       startBoard();
     });
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
@@ -1053,6 +1071,7 @@ Games.phish = function (d, main, replay) {
   function gameOver() {
     S.over = true;
     stopLoop();
+    for (const g of $$(".rx-ghost")) g.remove();
     $rs.classList.remove("is-ringing", "is-paused");
     setScene("rush_pos", 0);
     const lost = S.losses.map((x) => `<li>${bi(x.damage.en, x.damage.zh)}${x.damage.ntd ? ` <b>${money(x.damage.ntd)}</b>` : ""}</li>`).join("");
@@ -1178,10 +1197,16 @@ Games.phish = function (d, main, replay) {
         <i>${esc(r.supplier)} · ${bi(`due ${r.due}`, `${r.due_zh || r.due} 到期`)}</i></li>`).join("")}</ul></div>`;
   }
 
-  /* The log: the base lines plus a line for each trap you fell into during the shift. */
+  /* The log: the base lines plus a line for each trap that got through during the shift. 11/23 review: when a fuse ran out
+     and a colleague opened it, the line is the colleague's own account (games.yaml log.opened), so question 3 and the
+     closing card's "accounts the crew still holds" include it; when you kept it, the line is yours (log.you). */
   function logRows() {
-    const L = BOARD.log || {}, you = L.you || {}, rows = (L.rows || []).map((r) => Object.assign({ mine: false }, r));
-    for (const id of ["e1", "e3", "e8"]) if (you[id] && S.answers[id] === "keep" && S.how[id] !== "opened") rows.push(Object.assign({ mine: true }, you[id]));
+    const L = BOARD.log || {}, you = L.you || {}, opened = L.opened || {}, rows = (L.rows || []).map((r) => Object.assign({ mine: false }, r));
+    for (const id of new Set([...Object.keys(you), ...Object.keys(opened)])) {
+      if (id === "call" || S.answers[id] !== "keep") continue;
+      const theirs = S.how[id] === "opened", r = theirs ? opened[id] : you[id];
+      if (r) rows.push(Object.assign({ mine: !theirs }, r));
+    }
     if (you.call && S.call.result === "read") rows.push(Object.assign({ mine: true }, you.call));
     rows.sort((a, b) => mins(a.t) - mins(b.t));
     return rows.map((r, k) => Object.assign(r, { k }));
@@ -1429,7 +1454,7 @@ Games.phish = function (d, main, replay) {
       box.remove(); document.removeEventListener("keydown", esc2);
       if (back && back !== document.body && back.isConnected) back.focus({ preventScroll: true });
     };
-    const esc2 = (ev) => { if (ev.key === "Escape") close(); };
+    const esc2 = (ev) => { if (ev.key === "Escape") { ev.preventDefault(); close(); } };      // 11/23: handled here, so it doesn't also close the game window (common.js)
     document.addEventListener("keydown", esc2);
     $(".cb-reader-x", box).addEventListener("click", close);
     box.addEventListener("click", (ev) => { if (ev.target === box) close(); });
@@ -1478,8 +1503,8 @@ Games.phish = function (d, main, replay) {
     const box = el("div", "rs-finale");
     box.appendChild(G.done(`<div class="rx-report">
       <div class="rx-medal-wrap">${medal(rank.key)}</div>
-      <div><p class="rs-kicker">${bi("Awards Night · case file 1", "頒獎晚會事件簿・第 1 章")}</p><p class="rx-rank">${bi(rank.en, rank.zh)}</p><p class="g-end-lead">${bi(rank.line_en || "", rank.line_zh || "")}</p></div>
-      <div class="rx-score"><b>${score}</b><span>/ ${TOTAL}</span><small>${bi("case score", "本章分數")}</small></div></div>
+      <div><p class="rs-kicker">${bi("Awards Night · case file 1", "頒獎晚會事件簿・第一案")}</p><p class="rx-rank">${bi(rank.en, rank.zh)}</p><p class="g-end-lead">${bi(rank.line_en || "", rank.line_zh || "")}</p></div>
+      <div class="rx-score"><b>${score}</b><span>/ ${TOTAL}</span><small>${bi("case score", "本案分數")}</small></div></div>
       <div class="rx-stats">
         <div><b>${(S.points + B.pts).toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div>
         <div><b>${shiftOk}/${d.emails.length}</b><span>${bi("emails right", "判斷正確的信")}</span></div>
@@ -1489,7 +1514,7 @@ Games.phish = function (d, main, replay) {
         <div><b>${firstTry}/${QS.length}</b><span>${bi("solved first try", "一次就解開")}</span></div>
       </div>
       ${losses}${missed}
-      ${nextName ? `<a class="rs-next-case" href="/lakeside/games/${esc(BOARD.next)}"><span class="rs-kicker">${bi("Next case file", "下一章")}</span>
+      ${nextName ? `<a class="rs-next-case" href="/lakeside/games/${esc(BOARD.next)}"><span class="rs-kicker">${bi("Next case file", "下一個案件")}</span>
         <b>${bi(nextName[0], nextName[1])}</b><span>${bi(BOARD.next_en || "", BOARD.next_zh || "")}</span></a>` : ""}
       <details class="rx-signs-all"><summary>${bi("The warning signs, and where they appeared", "警訊和它們出現在哪幾封信")}</summary>
       <table class="g-table"><thead><tr><th>${bi("Sign", "警訊")}</th><th class="num">${bi("Weight", "權重")}</th><th>${bi("Emails", "信件")}</th></tr></thead><tbody>${rows}</tbody></table></details>`,
@@ -1499,7 +1524,7 @@ Games.phish = function (d, main, replay) {
     $("#rsBody").appendChild(box);
     setScene(BOARD.scene || "rush_fw", 0.35);
     if (rank.key === "gold") confetti();
-    G.meter(`<div class="rx-hud"><div class="rx-hud-pts"><b>${score}/${TOTAL}</b><span>${bi("case score", "本章分數")}</span></div></div>`);
+    G.meter(`<div class="rx-hud"><div class="rx-hud-pts"><b>${score}/${TOTAL}</b><span>${bi("case score", "本案分數")}</span></div></div>`);
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
   }
 

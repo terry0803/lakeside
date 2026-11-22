@@ -70,13 +70,17 @@ button, select, textarea, input { font: inherit; color: inherit; }
 [data-t="CaseStudy"] { --c: var(--t-case); }
 
 /* ---------------------------------------------------------------- the glass itself
-   .lg-rim: a 1px rim, bright where the light hits (top left) and again at the opposite corner, like the edge of thick glass.
-   .lg-hi: a soft highlight that follows the mouse (app.js sets --mx/--my). */
-.lg-hi::after {
-  content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .5s var(--e-out);
-  background: radial-gradient(var(--hr, 220px) circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, var(--ha, .16)), rgba(255, 255, 255, 0) 70%);
+   .lg-hi: a soft highlight that follows the mouse, --hr wide and --ha bright. 11/23 (review): it is a small layer of its
+   own (span.lg-glow, added by app.js the first time the pointer comes over the glass) moved with transform, so a move
+   repaints nothing else; before, --mx/--my on the window itself made the browser work out its whole contents again on
+   every frame. Its centre sits on the glass's top left corner until app.js moves it under the pointer. */
+.lg-hi > span.lg-glow {
+  position: absolute; left: calc(var(--hr, 220px) * -1); top: calc(var(--hr, 220px) * -1); z-index: 0; width: calc(var(--hr, 220px) * 2); height: calc(var(--hr, 220px) * 2);
+  pointer-events: none; opacity: 0; transition: opacity .5s var(--e-out);
+  background: radial-gradient(circle closest-side, rgba(255, 255, 255, var(--ha, .16)), rgba(255, 255, 255, 0) 70%);
 }
-.lg-hi:hover::after { opacity: 1; }
+.lg-hi:hover > span.lg-glow { opacity: 1; will-change: transform; }
+@starting-style { .lg-hi:hover > span.lg-glow { opacity: 0; } }
 /* light drifting inside the big panels (faint, so it never washes out the text) and, much stronger, behind everything inside
    iStaging's window */
 .orbs { position: absolute; inset: 0; z-index: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
@@ -100,6 +104,14 @@ button, select, textarea, input { font: inherit; color: inherit; }
   opacity: 0; transform: translate(-50%, 16px) scale(.94); pointer-events: none; transition: opacity .3s var(--e-out), transform .5s var(--e-spring);
 }
 .tour-toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+/* 11/23 (review): with the assistant's window open the note sits in the middle of the tour left of it, not partly under
+   it (the window is 460 px, or 780 px when bigger, 12 px from the right edge) */
+@media (min-width: 701px) {
+  .layout.is-desk .tour-toast { left: calc((100vw - 472px) / 2); max-width: min(540px, calc(100vw - 504px)); }
+}
+@media (min-width: 1000px) {
+  .layout.is-desk:has(.desk.is-big) .tour-toast { left: calc((100vw - 792px) / 2); max-width: min(540px, calc(100vw - 824px)); }
+}
 .tour-toast svg { width: 14px; height: 14px; flex: none; color: #ffd98a; }
 .tour-toast b { font-weight: 600; }
 .tour-toast span[lang] { color: var(--tx-2); }
@@ -204,6 +216,11 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .mm-panel .mm-head, .mm-panel .mm-foot { animation: fade-up .35s var(--e-out) .16s backwards; }
 .mm-panel .mm-svg { animation: mm-settle .6s var(--e-liquid) backwards; }
 .layout.is-desk .mm-panel { width: min(560px, calc(100vw - 512px)); }
+/* 11/23 (review): beside the bigger window (780 px) the big map leaves the same 24 px gap; at 1280 wide its × and zoom
+   buttons were under the window. Never narrower than the small map. */
+@media (min-width: 701px) {
+  html:not(.is-embed) .layout.is-desk:has(.desk.is-big) .mm-panel { width: min(560px, max(var(--colw), calc(100vw - 832px))); }
+}
 .mm-panel[hidden] { display: none; }
 .mm-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 10px 11px 18px; border-bottom: 1px solid var(--g-line); }
 .mm-crumbs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; min-width: 0; font-size: 13px; }
@@ -216,8 +233,10 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .mm-x { position: relative; display: grid; place-items: center; flex: none; width: 32px; height: 32px; padding: 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, .3); border-radius: 50%; background: rgba(255, 255, 255, .1); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; transition: background-color .2s, transform .45s var(--e-spring); }
 .mm-x:hover { background: rgba(255, 255, 255, .22); transform: rotate(90deg); }
 .mm-view { position: relative; height: min(560px, calc(100dvh - 200px)); overflow: hidden; background: #24484f; }
-.mm-view.is-in .mm-svg { animation: mm-in .45s var(--e-liquid); }
-.mm-view.is-out .mm-svg { animation: mm-out .45s var(--e-liquid); }
+/* entering a building or zooming out of it; minimap.js takes the class off once it has played (11/23 review). mm-settle stays
+   in the list, so taking it off does not start the map's settle once more */
+.mm-view.is-in .mm-svg { animation: mm-settle .6s var(--e-liquid) backwards, mm-in .45s var(--e-liquid); }
+.mm-view.is-out .mm-svg { animation: mm-settle .6s var(--e-liquid) backwards, mm-out .45s var(--e-liquid); }
 .mm-view.is-panning, .mm-view.is-panning .mm-svg { cursor: grabbing; }
 .mm-svg { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; user-select: none; }
 .mm-void { fill: #24484f; }
@@ -276,7 +295,9 @@ button, select, textarea, input { font: inherit; color: inherit; }
   position: absolute; top: 12px; right: 12px; bottom: 12px; z-index: 30; display: flex; flex-direction: column; width: min(460px, calc(100vw - 24px)); min-height: 0;
   overflow: hidden; border: 1px solid var(--g-rim); border-radius: 20px; background: var(--g-sheen); -webkit-backdrop-filter: var(--g-filter); backdrop-filter: var(--g-filter);
   box-shadow: var(--g-inner), var(--g-shadow); transform-origin: 100% 40%; --hr: 340px; --ha: .09;
-  animation: desk-in .62s var(--e-liquid); transition: width .55s var(--e-spring);
+  /* 11/23 (review): bigger or smaller on a calm curve that does not overshoot; the springy one went past the new width and
+     back, laying the whole chat out again for every frame of the extra swing */
+  animation: desk-in .62s var(--e-liquid); transition: width .5s cubic-bezier(.4, 0, .2, 1);
 }
 .desk > :not(.orbs) { position: relative; z-index: 1; }
 .desk[hidden] { display: none; }
@@ -315,7 +336,7 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .seg { display: inline-flex; padding: 3px; border-radius: 12px; background: rgba(0, 0, 0, .22); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .08); }
 .seg button { position: relative; padding: 4px 12px; overflow: hidden; border: 0; border-radius: 9px; background: none; font: 600 12.5px var(--font-head); color: var(--tx-2); cursor: pointer; transition: background-color .25s, color .25s, box-shadow .25s; }
 .seg button:hover { color: #fff; }
-.seg button[aria-pressed="true"] { background: rgba(255, 255, 255, .22); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 2px 8px rgba(0, 0, 0, .25); }
+.seg button[aria-checked="true"] { background: rgba(255, 255, 255, .22); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 2px 8px rgba(0, 0, 0, .25); }
 
 .room-pick { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px; margin: 10px 14px 0; font-size: 12.5px; color: var(--tx-2); }
 .room-l { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
@@ -479,6 +500,8 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .roomlink:active { transform: scale(.96); transition-duration: .1s; }
 .roomlink svg { width: 11px; height: 11px; flex: none; color: #ffd98a; }
 .roomlink.visited { border-color: rgba(142, 219, 162, .45); background: rgba(80, 200, 120, .2); }
+.roomlink.is-locked { opacity: .55; cursor: default; }      /* 11/23: a route stop behind a lock (app.js lockedStop) */
+.roomlink.is-locked:hover { transform: none; border-color: rgba(255, 255, 255, .22); background: rgba(255, 255, 255, .1); }
 .roomlink.visited svg { color: var(--moss); }
 .roomlink.unvisited { background: transparent; color: var(--tx-2); box-shadow: none; }
 .tree { margin: 0; padding-left: 18px; }
@@ -521,7 +544,9 @@ ol.steps li::before {
 .route .arrow { padding: 0 3px; color: var(--tx-3); }
 .route .tele { padding: 0 7px; border-radius: 999px; background: rgba(245, 170, 70, .26); color: #fff; font-size: 11.5px; }
 .meter { position: relative; height: 8px; margin: 9px 0 4px; overflow: hidden; border-radius: 4px; background: rgba(255, 255, 255, .12); }
-.meter b { position: absolute; inset: 0 auto 0 0; border-radius: 4px; transform-origin: 0 50%; animation: fill-x 1s var(--e-liquid) .15s backwards; }
+.meter b { position: absolute; inset: 0 auto 0 0; border-radius: 4px; transform-origin: 0 50%; }
+/* 11/23 (review): the bars fill while their card comes in (app.js enter), not again each time the chat is shown */
+.card.is-in .meter b { animation: fill-x 1s var(--e-liquid) .15s backwards; }
 .meter.high b { background: linear-gradient(90deg, #ff9c88, #ef4444); } .meter.medium b { background: linear-gradient(90deg, #fcd34d, #f59e0b); } .meter.low b { background: linear-gradient(90deg, #fde68a, #eab308); } .meter.none b { background: linear-gradient(90deg, #86efac, #22c55e); }
 .signs { margin: 8px 0 0; padding-left: 18px; font-size: 13.5px; }
 .signs li { margin-bottom: 6px; }
@@ -530,7 +555,8 @@ ol.steps li::before {
 .result { font: 650 16px var(--font-head); }
 .result.correct { color: var(--moss); } .result.other_room { color: var(--link); } .result.already { color: var(--tx-2); } .result.none { color: #ffd98a; } .result.close { color: var(--link); }
 .bar { height: 7px; margin: 7px 0 3px; overflow: hidden; border-radius: 4px; background: rgba(255, 255, 255, .12); }
-.bar b { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #4ade80, #86efac); transform-origin: 0 50%; animation: fill-x 1s var(--e-liquid) .1s backwards; }
+.bar b { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #4ade80, #86efac); transform-origin: 0 50%; }
+.card.is-in .bar b { animation: fill-x 1s var(--e-liquid) .1s backwards; }
 
 /* "go to" plates: the brass plates on the floor of the tour, as light gold glass */
 .go { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
@@ -565,7 +591,7 @@ details.trace[open]::details-content { block-size: auto; }
 .trace-body { margin-top: 8px; padding: 13px 14px; border-radius: 16px; background: rgba(0, 0, 0, .18); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 0 0 1px rgba(255, 255, 255, .07); }
 .tl { margin-bottom: 14px; }
 .tl-bar { display: flex; gap: 2px; height: 10px; overflow: hidden; border-radius: 5px; background: rgba(255, 255, 255, .1); }
-details[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s backwards; }
+details.trace.is-in[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s backwards; }   /* when it is opened (app.js renderTrace) */
 .tl-bar i { --c: #9fd0ff; display: block; flex: none; min-width: 4px; height: 100%; background: var(--c); box-shadow: 0 0 10px color-mix(in srgb, var(--c) 60%, transparent); }
 .tl-legend { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
 .tl-legend div { min-width: 0; }
@@ -636,6 +662,7 @@ details[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s backwards; }
 .task::after { content: ""; grid-column: 2; grid-row: 1 / span 2; width: 7px; height: 7px; margin-right: 3px; border-top: 2px solid var(--tx-3); border-right: 2px solid var(--tx-3); transform: rotate(45deg); transition: transform .45s var(--e-spring), border-color .2s; }
 .task:hover { background: rgba(255, 255, 255, .1); }
 .task:hover::after { border-color: #fff; transform: translateX(4px) rotate(45deg); }
+.task:focus-visible { outline-offset: -2px; }          /* inside the row: the list clips anything outside it (11/23 review) */
 .task .case-no { margin-right: 6px; }
 .paste { display: grid; gap: 8px; margin-top: 8px; }
 .paste textarea { min-height: 110px; padding: 11px 13px; border: 1px solid rgba(255, 255, 255, .26); border-radius: 16px; background: rgba(255, 255, 255, .1); color: #fff; resize: vertical; transition: border-color .2s, box-shadow .3s; }
@@ -689,9 +716,18 @@ details[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s backwards; }
 .area h3 span { font-family: var(--font-zh); font-weight: 400; color: var(--tx-3); }
 .area .items { gap: 5px; }
 .btn-plain { position: relative; margin-top: 18px; padding: 7px 16px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .26); border-radius: 12px; background: rgba(255, 255, 255, .1); color: var(--tx-2); font-size: 13.5px; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16); transition: border-color .2s, color .2s, background-color .2s, transform .45s var(--e-spring); }
-.btn-plain:hover { border-color: rgba(255, 156, 136, .6); background: rgba(255, 120, 95, .2); color: #fff; }
+.btn-plain:hover, .btn-plain.is-armed { border-color: rgba(255, 156, 136, .6); background: rgba(255, 120, 95, .2); color: #fff; }
+/* 11/23 (review): a short line next to what was pressed (app.js sayNear): "still answering", or a save that failed */
+.near-note { margin: 6px 0 0; color: #ffd98a; font-size: 12.5px; line-height: 1.4; animation: fade-up .3s var(--e-out); }
+.near-note.is-err { color: #ffc1b5; }
+.near-note .zh-line { color: inherit; }
+.pane > .near-note { margin: 0; padding: 8px 16px 0; }
+.paste .near-note { margin: 0; }
+.desk-settings .near-note { flex-basis: 100%; margin: 0; }
+.how .err { color: #ffc1b5; }
 .btn-plain:active { transform: scale(.95); transition-duration: .1s; }
-.progress-view > *, .how > * { animation: rise .45s var(--e-out) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
+/* once per drawing of the tab (app.js enter), not again each time the window or the tab is shown (11/23 review) */
+.progress-view.is-in > *, .how.is-in > * { animation: rise .45s var(--e-out) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
 .progress-view.no-anim > *, .how.no-anim > * { animation: none; }
 
 .how p { max-width: 70ch; margin: 0 0 10px; color: var(--tx-2); }
@@ -715,6 +751,7 @@ details[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s backwards; }
 }
 @media (max-width: 700px) {
   .desk, .desk.is-big { inset: 0; width: auto; border-radius: 0; border: 0; }
+  #deskBig { display: none; }                 /* the window fills the screen at both sizes here (11/23 review) */
   .side { top: 10px; left: 10px; }
   .mm-mini { width: 184px; height: 131px; }
   .mm-panel, .layout.is-desk .mm-panel { width: calc(100vw - 72px); }
@@ -774,7 +811,6 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 /* the big map grows out of the small map's frame and shrinks back into it */
 @keyframes mm-grow { from { clip-path: inset(0 calc(100% - var(--colw)) calc(100% - var(--colw) * 2 / 3 - 8px) 0 round 20px); } to { clip-path: inset(0 0 0 0 round 20px); } }
 @keyframes mm-settle { from { transform: scale(1.14); } }
-@keyframes drop-in { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
 @keyframes pane-in { from { opacity: 0; transform: translateY(8px); } }
 @keyframes msg-in { from { opacity: 0; transform: translateY(12px); } }
 @keyframes bubble-in { from { opacity: 0; transform: translateY(14px) scale(.9); } }
@@ -812,7 +848,8 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 .seg { background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
 
 /* ---------------------------------------------------------------- 11/22 afternoon: better motion */
-/* the window grows out of the button that opened it and shrinks back into it (app.js morphDesk, Web Animations) */
+/* the window grows out of the button that opened it and folds back into the two buttons (app.js splitDesk and
+   foldIntoButtons, Web Animations) */
 .desk.is-morph { animation: none !important; }
 .dock-btn.is-quiet { animation: none; }               /* no slide-in while the window lands in it */
 .dock.is-opening { pointer-events: none; }            /* 11/22 evening: faded while the window grows out of them */
@@ -858,11 +895,3 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 .tl-legend b .zl { flex-basis: 100%; padding-left: 13px; font: 500 11px var(--font-zh); color: var(--tx-3); }
 .case-go .roomlink { flex-wrap: wrap; }                 /* in the small case cards the Chinese place name goes under the English */
 .case-go .roomlink .zl { flex-basis: 100%; margin-left: 16px; }
-
-/* ---------------------------------------------------------------- 11/22 afternoon: the two glass capsules the window splits into
-   when it closes, and that the two buttons become when it opens (app.js splitDesk) */
-/* 11/22 evening (frame drops): the shape that flies between a button and the window has no backdrop blur. It changes
-   size on every frame, so the blur under it had to be worked out again each time; a darker tint stands in for the
-   glass for the half second it is moving. */
-.desk-ghost { position: fixed; z-index: 35; pointer-events: none; box-sizing: border-box; border: 1px solid var(--g-rim); border-radius: 20px;
-  background: rgba(24, 32, 44, .5); box-shadow: var(--g-inner); contain: strict; }

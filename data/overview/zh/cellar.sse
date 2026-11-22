@@ -23,58 +23,7 @@ event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "只有"}
-
-event: token
-data: {"text": "授權"}
-
-event: token
-data: {"text": "人員"}
-
-event: token
-data: {"text": "才能"}
-
-event: token
-data: {"text": "進入"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "每次"}
-
-event: token
-data: {"text": "進"}
-
-event: token
-data: {"text": "出"}
-
-event: token
-data: {"text": "都有"}
-
-event: token
-data: {"text": "紀錄"}
-
-event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "\n上"}
-
-event: token
-data: {"text": "鎖"}
-
-event: token
-data: {"text": "的"}
-
-event: token
-data: {"text": "門"}
-
-event: token
-data: {"text": "後"}
-
-event: token
-data: {"text": "藏"}
+data: {"text": "裡面"}
 
 event: token
 data: {"text": "有"}
@@ -128,10 +77,64 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "\n可見"}
+data: {"text": "所有"}
+
+event: token
+data: {"text": "設備"}
+
+event: token
+data: {"text": "都在"}
+
+event: token
+data: {"text": "上"}
+
+event: token
+data: {"text": "鎖"}
 
 event: token
 data: {"text": "的"}
+
+event: token
+data: {"text": "門"}
+
+event: token
+data: {"text": "後"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "沒"}
+
+event: token
+data: {"text": "授權"}
+
+event: token
+data: {"text": "進入"}
+
+event: token
+data: {"text": "會"}
+
+event: token
+data: {"text": "觸"}
+
+event: token
+data: {"text": "發"}
+
+event: token
+data: {"text": "警"}
+
+event: token
+data: {"text": "報"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "你可以"}
+
+event: token
+data: {"text": "看到"}
 
 event: token
 data: {"text": "防護"}
@@ -164,36 +167,6 @@ event: token
 data: {"text": "份"}
 
 event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": "離"}
-
-event: token
-data: {"text": "線"}
-
-event: token
-data: {"text": "副本"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "不斷"}
-
-event: token
-data: {"text": "電"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "發電"}
-
-event: token
-data: {"text": "機"}
-
-event: token
 data: {"text": "、"}
 
 event: token
@@ -218,7 +191,7 @@ event: token
 data: {"text": "禁"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "和"}
 
 event: token
 data: {"text": "防火"}
@@ -227,164 +200,8 @@ event: token
 data: {"text": "牆"}
 
 event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": "入侵"}
-
-event: token
-data: {"text": "偵"}
-
-event: token
-data: {"text": "測"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "以及"}
-
-event: token
-data: {"text": "網"}
-
-event: token
-data: {"text": "段"}
-
-event: token
-data: {"text": "隔離"}
-
-event: token
 data: {"text": "。"}
-
-event: token
-data: {"text": "\n若"}
-
-event: token
-data: {"text": "未經"}
-
-event: token
-data: {"text": "授權"}
-
-event: token
-data: {"text": "闖"}
-
-event: token
-data: {"text": "入"}
-
-event: token
-data: {"text": "會"}
-
-event: token
-data: {"text": "觸"}
-
-event: token
-data: {"text": "發"}
-
-event: token
-data: {"text": "警"}
-
-event: token
-data: {"text": "報"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "導致"}
-
-event: token
-data: {"text": "壞"}
-
-event: token
-data: {"text": "結局"}
-
-event: token
-data: {"text": "；"}
-
-event: token
-data: {"text": "主要"}
-
-event: token
-data: {"text": "威脅"}
-
-event: token
-data: {"text": "包含"}
-
-event: token
-data: {"text": "停"}
-
-event: token
-data: {"text": "電"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "火"}
-
-event: token
-data: {"text": "災"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "淹"}
-
-event: token
-data: {"text": "水"}
-
-event: token
-data: {"text": "及"}
-
-event: token
-data: {"text": "尾"}
-
-event: token
-data: {"text": "隨"}
-
-event: token
-data: {"text": "進入"}
-
-event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "\n您可以"}
-
-event: token
-data: {"text": "從"}
-
-event: token
-data: {"text": "這裡"}
-
-event: token
-data: {"text": "前往"}
-
-event: token
-data: {"text": "員工"}
-
-event: token
-data: {"text": "走廊"}
-
-event: token
-data: {"text": "與"}
-
-event: token
-data: {"text": "實體"}
-
-event: token
-data: {"text": "安全"}
-
-event: token
-data: {"text": "區域"}
-
-event: token
-data: {"text": "。"}
-
-event: replace
-data: {"text": "這裡是機房，只有授權人員才能進入，每次進出都有紀錄。\n上鎖的門後藏有伺服器、儲存設備、網路設備、不斷電系統和本地備份。\n可見的防護措施包括 3-2-1 備份與離線副本、不斷電、發電機、滅火設備、實體門禁、防火牆與入侵偵測，以及網段隔離。\n若未經授權闖入會觸發警報，導致壞結局；主要威脅包含停電、火災、淹水及尾隨進入。\n你可以從這裡前往員工走廊與實體安全區域。"}
 
 event: done
-data: {"answer": "這裡是機房，只有授權人員才能進入，每次進出都有紀錄。\n上鎖的門後藏有伺服器、儲存設備、網路設備、不斷電系統和本地備份。\n可見的防護措施包括 3-2-1 備份與離線副本、不斷電、發電機、滅火設備、實體門禁、防火牆與入侵偵測，以及網段隔離。\n若未經授權闖入會觸發警報，導致壞結局；主要威脅包含停電、火災、淹水及尾隨進入。\n你可以從這裡前往員工走廊與實體安全區域。", "go": [], "followups": [{"text": "網路交換器與網段（VLAN）是做什麼的？", "en": "What does the Network Switches & VLANs do?", "zh": "網路交換器與網段（VLAN）是做什麼的？"}, {"text": "停電、火災與淹水要怎麼防？", "en": "How do we prevent power outage, fire & flood?", "zh": "停電、火災與淹水要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 13.08, "total_s": 13.09}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "cellar", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "cellar"}, "rows": 1, "ms": 5.6}], "graph": {"nodes": [{"key": "cellar", "label": "Room", "en": "Server Room", "zh": "機房"}, {"key": "network", "label": "System", "en": "Network Switches & VLANs", "zh": "網路交換器與網段（VLAN）"}, {"key": "servers", "label": "System", "en": "Servers & Storage", "zh": "伺服器與儲存設備"}, {"key": "backup", "label": "System", "en": "Backup System", "zh": "備份系統"}, {"key": "firewall", "label": "System", "en": "Firewall", "zh": "防火牆"}, {"key": "access_control", "label": "System", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "power", "label": "System", "en": "UPS & Backup Generator", "zh": "不斷電系統與發電機"}, {"key": "environmental", "label": "Threat", "en": "Power Outage, Fire & Flood", "zh": "停電、火災與淹水"}, {"key": "tailgating", "label": "Threat", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "environmental_protection", "label": "Control", "en": "UPS, Generator & Fire Suppression", "zh": "不斷電、發電機與滅火設備"}, {"key": "physical_access", "label": "Control", "en": "Physical Access Control", "zh": "實體門禁"}, {"key": "firewall_ids", "label": "Control", "en": "Firewall & Intrusion Detection", "zh": "防火牆與入侵偵測"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}], "edges": [{"a": "environmental_protection", "t": "SEEN_IN", "b": "cellar"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "servers"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "power"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "network"}, {"a": "environmental_protection", "t": "MITIGATES", "b": "environmental"}, {"a": "firewall", "t": "LOCATED_IN", "b": "cellar"}, {"a": "network", "t": "LOCATED_IN", "b": "cellar"}, {"a": "access_control", "t": "LOCATED_IN", "b": "cellar"}, {"a": "servers", "t": "LOCATED_IN", "b": "cellar"}, {"a": "servers", "t": "HOSTS", "b": "access_control"}, {"a": "power", "t": "LOCATED_IN", "b": "cellar"}, {"a": "backup", "t": "LOCATED_IN", "b": "cellar"}, {"a": "tailgating", "t": "TARGETS", "b": "access_control"}, {"a": "tailgating", "t": "TARGETS", "b": "servers"}, {"a": "tailgating", "t": "TARGETS", "b": "network"}, {"a": "tailgating", "t": "SHOWN_IN", "b": "cellar"}, {"a": "environmental", "t": "TARGETS", "b": "network"}, {"a": "environmental", "t": "TARGETS", "b": "servers"}, {"a": "environmental", "t": "TARGETS", "b": "power"}, {"a": "environmental", "t": "SHOWN_IN", "b": "cellar"}, {"a": "segmentation", "t": "SEEN_IN", "b": "cellar"}, {"a": "segmentation", "t": "PROTECTS", "b": "network"}, {"a": "firewall_ids", "t": "SEEN_IN", "b": "cellar"}, {"a": "firewall_ids", "t": "PROTECTS", "b": "network"}, {"a": "backup_321", "t": "SEEN_IN", "b": "cellar"}, {"a": "backup_321", "t": "MITIGATES", "b": "environmental"}, {"a": "physical_access", "t": "SEEN_IN", "b": "cellar"}, {"a": "physical_access", "t": "PROTECTS", "b": "servers"}, {"a": "physical_access", "t": "PROTECTS", "b": "network"}, {"a": "physical_access", "t": "PROTECTS", "b": "access_control"}, {"a": "physical_access", "t": "MITIGATES", "b": "tailgating"}]}, "tool_used": "room_overview", "facts": "房間：機房（限制進入）\n代表的資訊主題：伺服器、儲存設備、網路設備、不斷電系統和本地備份都在上鎖的門後；沒授權闖進來會觸發警報（壞結局）。\n重點：只有授權的人能進機房，每次進出都有紀錄。\n這裡的系統：網路交換器與網段（VLAN）、伺服器與儲存設備、備份系統、防火牆、門禁系統、不斷電系統與發電機\n這裡要注意的威脅：停電、火災與淹水、尾隨與未經授權進入\n看得到的防護措施：3-2-1 備份與離線副本、不斷電、發電機與滅火設備、實體門禁、防火牆與入侵偵測、網段隔離\n可以走到：員工走廊與實體安全", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 13.07, "load_s": 0.01, "prompt_tokens": 628, "prompt_s": 2.13, "gen_tokens": 133, "gen_s": 10.91, "tok_per_s": 12.2, "first_token_s": 2.16}}, "state": {}}
+data: {"answer": "這裡是機房，裡面有伺服器、儲存設備、網路設備、不斷電系統和本地備份。所有設備都在上鎖的門後，沒授權進入會觸發警報。你可以看到防護措施包括 3-2-1 備份、滅火設備、實體門禁和防火牆。", "go": [], "followups": [{"text": "網路交換器與網段（VLAN）是做什麼的？", "en": "What does the Network Switches & VLANs do?", "zh": "網路交換器與網段（VLAN）是做什麼的？"}, {"text": "停電、火災與淹水要怎麼防？", "en": "How do we prevent power outage, fire & flood?", "zh": "停電、火災與淹水要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.63, "total_s": 7.65}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "cellar", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "cellar"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "cellar", "label": "Room", "en": "Server Room", "zh": "機房"}, {"key": "network", "label": "System", "en": "Network Switches & VLANs", "zh": "網路交換器與網段（VLAN）"}, {"key": "servers", "label": "System", "en": "Servers & Storage", "zh": "伺服器與儲存設備"}, {"key": "backup", "label": "System", "en": "Backup System", "zh": "備份系統"}, {"key": "firewall", "label": "System", "en": "Firewall", "zh": "防火牆"}, {"key": "access_control", "label": "System", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "power", "label": "System", "en": "UPS & Backup Generator", "zh": "不斷電系統與發電機"}, {"key": "environmental", "label": "Threat", "en": "Power Outage, Fire & Flood", "zh": "停電、火災與淹水"}, {"key": "tailgating", "label": "Threat", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "environmental_protection", "label": "Control", "en": "UPS, Generator & Fire Suppression", "zh": "不斷電、發電機與滅火設備"}, {"key": "physical_access", "label": "Control", "en": "Physical Access Control", "zh": "實體門禁"}, {"key": "firewall_ids", "label": "Control", "en": "Firewall & Intrusion Detection", "zh": "防火牆與入侵偵測"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}], "edges": [{"a": "environmental_protection", "t": "SEEN_IN", "b": "cellar"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "servers"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "power"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "network"}, {"a": "environmental_protection", "t": "MITIGATES", "b": "environmental"}, {"a": "firewall", "t": "LOCATED_IN", "b": "cellar"}, {"a": "network", "t": "LOCATED_IN", "b": "cellar"}, {"a": "access_control", "t": "LOCATED_IN", "b": "cellar"}, {"a": "servers", "t": "LOCATED_IN", "b": "cellar"}, {"a": "servers", "t": "HOSTS", "b": "access_control"}, {"a": "power", "t": "LOCATED_IN", "b": "cellar"}, {"a": "backup", "t": "LOCATED_IN", "b": "cellar"}, {"a": "tailgating", "t": "TARGETS", "b": "access_control"}, {"a": "tailgating", "t": "TARGETS", "b": "servers"}, {"a": "tailgating", "t": "TARGETS", "b": "network"}, {"a": "tailgating", "t": "SHOWN_IN", "b": "cellar"}, {"a": "environmental", "t": "TARGETS", "b": "network"}, {"a": "environmental", "t": "TARGETS", "b": "servers"}, {"a": "environmental", "t": "TARGETS", "b": "power"}, {"a": "environmental", "t": "SHOWN_IN", "b": "cellar"}, {"a": "segmentation", "t": "SEEN_IN", "b": "cellar"}, {"a": "segmentation", "t": "PROTECTS", "b": "network"}, {"a": "firewall_ids", "t": "SEEN_IN", "b": "cellar"}, {"a": "firewall_ids", "t": "PROTECTS", "b": "network"}, {"a": "backup_321", "t": "SEEN_IN", "b": "cellar"}, {"a": "backup_321", "t": "MITIGATES", "b": "environmental"}, {"a": "physical_access", "t": "SEEN_IN", "b": "cellar"}, {"a": "physical_access", "t": "PROTECTS", "b": "servers"}, {"a": "physical_access", "t": "PROTECTS", "b": "network"}, {"a": "physical_access", "t": "PROTECTS", "b": "access_control"}, {"a": "physical_access", "t": "MITIGATES", "b": "tailgating"}]}, "tool_used": "room_overview", "facts": "房間：機房（限制進入）\n這裡講的是：伺服器、儲存設備、網路設備、不斷電系統和本地備份都在上鎖的門後；沒授權闖進來會觸發警報（壞結局）。\n重點：只有授權的人能進機房，每次進出都有紀錄。\n這裡的系統：網路交換器與網段（VLAN）、伺服器與儲存設備、備份系統、防火牆、門禁系統、不斷電系統與發電機\n這裡要注意的威脅：停電、火災與淹水、尾隨與未經授權進入\n看得到的防護措施：3-2-1 備份與離線副本、不斷電、發電機與滅火設備、實體門禁、防火牆與入侵偵測、網段隔離\n可以走到：員工走廊與實體安全", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.63, "load_s": 0.0, "prompt_tokens": 704, "prompt_s": 2.44, "gen_tokens": 68, "gen_s": 5.16, "tok_per_s": 13.2, "first_token_s": 2.47}}, "state": {}}
 

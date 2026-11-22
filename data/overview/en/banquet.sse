@@ -11,9 +11,6 @@ event: token
 data: {"text": "This"}
 
 event: token
-data: {"text": " place"}
-
-event: token
 data: {"text": " is"}
 
 event: token
@@ -35,46 +32,25 @@ event: token
 data: {"text": "**,"}
 
 event: token
-data: {"text": " where"}
+data: {"text": " used"}
 
 event: token
-data: {"text": " Event"}
-
-event: token
-data: {"text": " registrations"}
-
-event: token
-data: {"text": " feed"}
+data: {"text": " by"}
 
 event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " CRM"}
+data: {"text": " Events"}
 
 event: token
-data: {"text": " and"}
+data: {"text": " &"}
 
 event: token
-data: {"text": " marketing"}
+data: {"text": " Sales"}
 
 event: token
-data: {"text": " uses"}
-
-event: token
-data: {"text": " guest"}
-
-event: token
-data: {"text": " data"}
-
-event: token
-data: {"text": " only"}
-
-event: token
-data: {"text": " with"}
-
-event: token
-data: {"text": " consent"}
+data: {"text": " department"}
 
 event: token
 data: {"text": "."}
@@ -89,61 +65,10 @@ event: token
 data: {"text": " see"}
 
 event: token
-data: {"text": " controls"}
-
-event: token
-data: {"text": " like"}
-
-event: token
-data: {"text": " the"}
-
-event: token
-data: {"text": " Privacy"}
-
-event: token
-data: {"text": " Notice"}
-
-event: token
-data: {"text": " &"}
-
-event: token
-data: {"text": " Consent"}
-
-event: token
-data: {"text": " here"}
-
-event: token
-data: {"text": ","}
-
-event: token
-data: {"text": " along"}
-
-event: token
-data: {"text": " with"}
-
-event: token
 data: {"text": " systems"}
 
 event: token
-data: {"text": " such"}
-
-event: token
-data: {"text": " as"}
-
-event: token
-data: {"text": " CRM"}
-
-event: token
-data: {"text": " &"}
-
-event: token
-data: {"text": " Loy"}
-
-event: token
-data: {"text": "alty"}
-
-event: token
-data: {"text": " and"}
+data: {"text": " for"}
 
 event: token
 data: {"text": " Event"}
@@ -152,7 +77,7 @@ event: token
 data: {"text": " Registration"}
 
 event: token
-data: {"text": " &"}
+data: {"text": ","}
 
 event: token
 data: {"text": " Check"}
@@ -161,73 +86,82 @@ event: token
 data: {"text": "-in"}
 
 event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " CRM"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " Loy"}
+
+event: token
+data: {"text": "alty"}
+
+event: token
+data: {"text": " here"}
+
+event: token
 data: {"text": "."}
 
 event: token
 data: {"text": " The"}
 
 event: token
-data: {"text": " department"}
+data: {"text": " area"}
 
 event: token
-data: {"text": " based"}
+data: {"text": " highlights"}
 
 event: token
-data: {"text": " here"}
-
-event: token
-data: {"text": " is"}
-
-event: token
-data: {"text": " Events"}
-
-event: token
-data: {"text": " &"}
-
-event: token
-data: {"text": " Sales"}
-
-event: token
-data: {"text": " ("}
-
-event: token
-data: {"text": "ext"}
-
-event: token
-data: {"text": "."}
-
-event: token
-data: {"text": " 3"}
-
-event: token
-data: {"text": "3"}
-
-event: token
-data: {"text": "0"}
-
-event: token
-data: {"text": "0"}
-
-event: token
-data: {"text": "),"}
-
-event: token
-data: {"text": " which"}
-
-event: token
-data: {"text": " handles"}
-
-event: token
-data: {"text": " threats"}
+data: {"text": " controls"}
 
 event: token
 data: {"text": " like"}
 
 event: token
-data: {"text": " Data"}
+data: {"text": " Privacy"}
 
 event: token
-data: {"text": " Sent"}
+data: {"text": " Notices"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " Consent"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " shows"}
+
+event: token
+data: {"text": " threats"}
+
+event: token
+data: {"text": " such"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " data"}
+
+event: token
+data: {"text": " being"}
+
+event: token
+data: {"text": " sent"}
 
 event: token
 data: {"text": " to"}
@@ -236,14 +170,14 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " Wrong"}
+data: {"text": " wrong"}
 
 event: token
-data: {"text": " Person"}
+data: {"text": " person"}
 
 event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This place is the **Banquet Hall**, where Event registrations feed the CRM and marketing uses guest data only with consent. You can see controls like the Privacy Notice & Consent here, along with systems such as CRM & Loyalty and Event Registration & Check-in. The department based here is Events & Sales (ext. 3300), which handles threats like Data Sent to the Wrong Person.", "go": [{"key": "garden_party", "en": "Garden Party · IoT & OT", "zh": "花園派對・物聯網與 OT", "base_en": "Garden Party", "base_zh": "花園派對", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=12", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the CRM & Loyalty do?", "en": "What does the CRM & Loyalty do?", "zh": "CRM 與會員系統是做什麼的？"}, {"text": "How do we prevent data sent to the wrong person?", "en": "How do we prevent data sent to the wrong person?", "zh": "資料寄錯人要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.44, "total_s": 8.45}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet"}, "rows": 1, "ms": 5.8}], "graph": {"nodes": [{"key": "banquet", "label": "Room", "en": "Banquet Hall", "zh": "宴會廳"}, {"key": "crm", "label": "System", "en": "CRM & Loyalty", "zh": "CRM 與會員系統"}, {"key": "event_system", "label": "System", "en": "Event Registration & Check-in", "zh": "活動報名報到系統"}, {"key": "misdelivery", "label": "Threat", "en": "Data Sent to the Wrong Person", "zh": "資料寄錯人"}, {"key": "privacy_notice_consent", "label": "Control", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "c_crm", "label": "Concept", "en": "Customer Relationship Management (CRM)", "zh": "顧客關係管理（CRM）"}], "edges": [{"a": "privacy_notice_consent", "t": "SEEN_IN", "b": "banquet"}, {"a": "crm", "t": "LOCATED_IN", "b": "banquet"}, {"a": "event_system", "t": "SENDS_TO", "b": "crm"}, {"a": "event_system", "t": "LOCATED_IN", "b": "banquet"}, {"a": "misdelivery", "t": "SHOWN_IN", "b": "banquet"}, {"a": "c_crm", "t": "TAUGHT_IN", "b": "banquet"}, {"a": "c_crm", "t": "RELATED_TO", "b": "crm"}]}, "tool_used": "room_overview", "facts": "Room: Banquet Hall · Events & CRM\nWhat it shows: Event registrations feed the CRM; marketing may use guests' data only for what they agreed to.\nKey lesson: Collect only what you need and stop marketing when a guest says no.\nDepartment based here: Events & Sales (ext. 3300)\nSystems here: CRM & Loyalty, Event Registration & Check-in\nThreats shown here: Data Sent to the Wrong Person\nControls you can see: Privacy Notice & Consent\nConcepts: Customer Relationship Management (CRM)\nProcedures to know: Personal data sent to the wrong person, A guest asks to see, correct or delete their data\nExits: Security Awareness Training Room, Stage Close-up · Award Programme (called 'Stage · Up Close' in the tour), Banquet TV Close-up · CRM Screen (called 'Banquet TV · Up Close' in the tour), Garden Party · IoT & OT", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.43, "load_s": 0.01, "prompt_tokens": 638, "prompt_s": 2.12, "gen_tokens": 81, "gen_s": 6.29, "tok_per_s": 12.9, "first_token_s": 2.15}}, "state": {}}
+data: {"answer": "This is the **Banquet Hall**, used by the Events & Sales department. You can see systems for Event Registration, Check-in, CRM, and Loyalty here. The area highlights controls like Privacy Notices and Consent, and shows threats such as data being sent to the wrong person.", "go": [{"key": "garden_party", "en": "Garden Party · IoT & OT", "zh": "花園派對・物聯網與 OT", "base_en": "Garden Party", "base_zh": "花園派對", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=12", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the CRM & Loyalty do?", "en": "What does the CRM & Loyalty do?", "zh": "CRM 與會員系統是做什麼的？"}, {"text": "How do we prevent data sent to the wrong person?", "en": "How do we prevent data sent to the wrong person?", "zh": "資料寄錯人要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.03, "total_s": 7.05}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet"}, "rows": 1, "ms": 7.6}], "graph": {"nodes": [{"key": "banquet", "label": "Room", "en": "Banquet Hall", "zh": "宴會廳"}, {"key": "crm", "label": "System", "en": "CRM & Loyalty", "zh": "CRM 與會員系統"}, {"key": "event_system", "label": "System", "en": "Event Registration & Check-in", "zh": "活動報名報到系統"}, {"key": "misdelivery", "label": "Threat", "en": "Data Sent to the Wrong Person", "zh": "資料寄錯人"}, {"key": "privacy_notice_consent", "label": "Control", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "c_crm", "label": "Concept", "en": "Customer Relationship Management (CRM)", "zh": "顧客關係管理（CRM）"}], "edges": [{"a": "privacy_notice_consent", "t": "SEEN_IN", "b": "banquet"}, {"a": "crm", "t": "LOCATED_IN", "b": "banquet"}, {"a": "event_system", "t": "SENDS_TO", "b": "crm"}, {"a": "event_system", "t": "LOCATED_IN", "b": "banquet"}, {"a": "misdelivery", "t": "SHOWN_IN", "b": "banquet"}, {"a": "c_crm", "t": "TAUGHT_IN", "b": "banquet"}, {"a": "c_crm", "t": "RELATED_TO", "b": "crm"}]}, "tool_used": "room_overview", "facts": "Room: Banquet Hall · Events & CRM\nWhat it shows: Event registrations feed the CRM; marketing may use guests' data only for what they agreed to.\nKey lesson: Collect only what you need and stop marketing when a guest says no.\nDepartment based here: Events & Sales (ext. 3300)\nSystems here: CRM & Loyalty, Event Registration & Check-in\nThreats shown here: Data Sent to the Wrong Person\nControls you can see: Privacy Notice & Consent\nConcepts: Customer Relationship Management (CRM)\nProcedures to know: Personal data sent to the wrong person, A guest asks to see, correct or delete their data\nExits: Security Awareness Training Room, Stage Close-up · Award Programme (called 'Stage · Up Close' in the tour), Banquet TV Close-up · CRM Screen (called 'Banquet TV · Up Close' in the tour), Garden Party · IoT & OT", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.03, "load_s": 0.01, "prompt_tokens": 629, "prompt_s": 2.51, "gen_tokens": 58, "gen_s": 4.5, "tok_per_s": 12.9, "first_token_s": 2.53}}, "state": {}}
 

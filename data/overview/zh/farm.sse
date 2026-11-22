@@ -11,10 +11,7 @@ event: token
 data: {"text": "這裡"}
 
 event: token
-data: {"text": "是"}
-
-event: token
-data: {"text": "「"}
+data: {"text": "有"}
 
 event: token
 data: {"text": "薰衣草"}
@@ -26,10 +23,7 @@ event: token
 data: {"text": "莊"}
 
 event: token
-data: {"text": "・"}
-
-event: token
-data: {"text": "智慧"}
+data: {"text": "的智慧"}
 
 event: token
 data: {"text": "感"}
@@ -39,36 +33,9 @@ data: {"text": "測"}
 
 event: token
 data: {"text": "器"}
-
-event: token
-data: {"text": "」"}
-
-event: token
-data: {"text": "房間"}
 
 event: token
 data: {"text": "，"}
-
-event: token
-data: {"text": "展示"}
-
-event: token
-data: {"text": "土壤"}
-
-event: token
-data: {"text": "和"}
-
-event: token
-data: {"text": "氣象"}
-
-event: token
-data: {"text": "感"}
-
-event: token
-data: {"text": "測"}
-
-event: token
-data: {"text": "器"}
 
 event: token
 data: {"text": "透過"}
@@ -83,40 +50,22 @@ event: token
 data: {"text": "器"}
 
 event: token
-data: {"text": "將"}
+data: {"text": "傳送"}
+
+event: token
+data: {"text": "土壤"}
+
+event: token
+data: {"text": "和"}
+
+event: token
+data: {"text": "氣象"}
 
 event: token
 data: {"text": "資料"}
 
 event: token
-data: {"text": "送"}
-
-event: token
-data: {"text": "進"}
-
-event: token
-data: {"text": "渡假"}
-
-event: token
-data: {"text": "村"}
-
-event: token
-data: {"text": "系統的"}
-
-event: token
-data: {"text": "運作"}
-
-event: token
 data: {"text": "。"}
-
-event: token
-data: {"text": "重點"}
-
-event: token
-data: {"text": "在於"}
-
-event: token
-data: {"text": "提醒"}
 
 event: token
 data: {"text": "物"}
@@ -146,22 +95,22 @@ event: token
 data: {"text": "更新"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "並"}
 
 event: token
-data: {"text": "修改"}
+data: {"text": "改"}
 
 event: token
 data: {"text": "密碼"}
 
 event: token
-data: {"text": "，"}
+data: {"text": "。"}
 
 event: token
-data: {"text": "以"}
+data: {"text": "請"}
 
 event: token
-data: {"text": "應對"}
+data: {"text": "注意"}
 
 event: token
 data: {"text": "不"}
@@ -176,13 +125,22 @@ event: token
 data: {"text": "聯網"}
 
 event: token
+data: {"text": "設備"}
+
+event: token
+data: {"text": "可能"}
+
+event: token
+data: {"text": "帶來的"}
+
+event: token
 data: {"text": "威脅"}
 
 event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "您可以"}
+data: {"text": "你可以"}
 
 event: token
 data: {"text": "走到"}
@@ -206,7 +164,10 @@ event: token
 data: {"text": "」"}
 
 event: token
-data: {"text": "查看"}
+data: {"text": "或"}
+
+event: token
+data: {"text": "「"}
 
 event: token
 data: {"text": "感"}
@@ -224,19 +185,22 @@ event: token
 data: {"text": "器"}
 
 event: token
+data: {"text": "」"}
+
+event: token
+data: {"text": "查看"}
+
+event: token
+data: {"text": "細節"}
+
+event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "或"}
+data: {"text": "也可以"}
 
 event: token
-data: {"text": "前往"}
-
-event: token
-data: {"text": "導覽"}
-
-event: token
-data: {"text": "中的"}
+data: {"text": "去"}
 
 event: token
 data: {"text": "「"}
@@ -272,14 +236,11 @@ event: token
 data: {"text": "網路"}
 
 event: token
-data: {"text": "設施"}
+data: {"text": "狀況"}
 
 event: token
 data: {"text": "。"}
 
-event: replace
-data: {"text": "這裡是「薰衣草農莊・智慧感測器」房間，展示土壤和氣象感測器透過閘道器將資料送進渡假村系統的運作。重點在於提醒物聯網設備跟電腦一樣需要定期更新與修改密碼，以應對不安全的物聯網威脅。你可以走到「農莊近看」查看感測閘道器，或前往導覽中的「湖畔露台」了解客人報到與無線網路設施。"}
-
 event: done
-data: {"answer": "這裡是「薰衣草農莊・智慧感測器」房間，展示土壤和氣象感測器透過閘道器將資料送進渡假村系統的運作。重點在於提醒物聯網設備跟電腦一樣需要定期更新與修改密碼，以應對不安全的物聯網威脅。你可以走到「農莊近看」查看感測閘道器，或前往導覽中的「湖畔露台」了解客人報到與無線網路設施。", "go": [], "followups": [{"text": "農莊感測器與閘道器是做什麼的？", "en": "What does the Farm Sensors & Gateway do?", "zh": "農莊感測器與閘道器是做什麼的？"}, {"text": "不安全的物聯網設備要怎麼防？", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.34, "total_s": 10.35}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "farm", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "farm"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "farm", "label": "Room", "en": "Lavender Farm", "zh": "薰衣草農莊"}, {"key": "farm_iot", "label": "System", "en": "Farm Sensors & Gateway", "zh": "農莊感測器與閘道器"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "farm_iot", "t": "LOCATED_IN", "b": "farm"}, {"a": "iot_default", "t": "TARGETS", "b": "farm_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "farm"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "farm"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "farm_iot"}]}, "tool_used": "room_overview", "facts": "房間：薰衣草農莊・智慧感測器\n代表的資訊主題：土壤和氣象感測器透過閘道器把資料送進渡假村的系統。\n重點：物聯網設備跟電腦一樣要更新、要改密碼。\n這裡的系統：農莊感測器與閘道器\n這裡要注意的威脅：不安全的物聯網設備\n課程概念：IT、OT 與物聯網\n可以走到：農莊近看・感測閘道器、客人報到與無線網路（導覽裡的名稱：湖畔露台）、市集廣場・網路銷售", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.33, "load_s": 0.01, "prompt_tokens": 575, "prompt_s": 2.22, "gen_tokens": 93, "gen_s": 8.09, "tok_per_s": 11.5, "first_token_s": 2.25}}, "state": {}}
+data: {"answer": "這裡有薰衣草農莊的智慧感測器，透過閘道器傳送土壤和氣象資料。物聯網設備跟電腦一樣需要定期更新並改密碼。請注意不安全的物聯網設備可能帶來的威脅。你可以走到「農莊近看」或「感測閘道器」查看細節，也可以去「湖畔露台」了解客人報到與無線網路狀況。", "go": [], "followups": [{"text": "農莊感測器與閘道器是做什麼的？", "en": "What does the Farm Sensors & Gateway do?", "zh": "農莊感測器與閘道器是做什麼的？"}, {"text": "不安全的物聯網設備要怎麼防？", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.15, "total_s": 9.16}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "farm", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "farm"}, "rows": 1, "ms": 7.2}], "graph": {"nodes": [{"key": "farm", "label": "Room", "en": "Lavender Farm", "zh": "薰衣草農莊"}, {"key": "farm_iot", "label": "System", "en": "Farm Sensors & Gateway", "zh": "農莊感測器與閘道器"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "farm_iot", "t": "LOCATED_IN", "b": "farm"}, {"a": "iot_default", "t": "TARGETS", "b": "farm_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "farm"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "farm"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "farm_iot"}]}, "tool_used": "room_overview", "facts": "房間：薰衣草農莊・智慧感測器\n這裡講的是：土壤和氣象感測器透過閘道器把資料送進渡假村的系統。\n重點：物聯網設備跟電腦一樣要更新、要改密碼。\n這裡的系統：農莊感測器與閘道器\n這裡要注意的威脅：不安全的物聯網設備\n課程概念：IT、OT 與物聯網\n可以走到：農莊近看・感測閘道器、客人報到與無線網路（導覽裡的名稱：湖畔露台）、市集廣場・網路銷售", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.15, "load_s": 0.01, "prompt_tokens": 651, "prompt_s": 2.49, "gen_tokens": 81, "gen_s": 6.58, "tok_per_s": 12.3, "first_token_s": 2.57}}, "state": {}}
 

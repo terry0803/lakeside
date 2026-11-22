@@ -17,7 +17,10 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " Security"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Security"}
 
 event: token
 data: {"text": " Awareness"}
@@ -27,6 +30,9 @@ data: {"text": " Training"}
 
 event: token
 data: {"text": " Room"}
+
+event: token
+data: {"text": "**,"}
 
 event: token
 data: {"text": " where"}
@@ -77,10 +83,10 @@ event: token
 data: {"text": " report"}
 
 event: token
-data: {"text": " anything"}
+data: {"text": " strange"}
 
 event: token
-data: {"text": " strange"}
+data: {"text": " activity"}
 
 event: token
 data: {"text": "."}
@@ -104,7 +110,10 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " Security"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Security"}
 
 event: token
 data: {"text": " Awareness"}
@@ -113,10 +122,16 @@ event: token
 data: {"text": " Platform"}
 
 event: token
+data: {"text": "**"}
+
+event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " Email"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Email"}
 
 event: token
 data: {"text": " &"}
@@ -125,7 +140,7 @@ event: token
 data: {"text": " Collaboration"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
 data: {"text": " along"}
@@ -143,7 +158,13 @@ event: token
 data: {"text": " as"}
 
 event: token
-data: {"text": " malware"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Mal"}
+
+event: token
+data: {"text": "ware"}
 
 event: token
 data: {"text": " from"}
@@ -152,19 +173,31 @@ event: token
 data: {"text": " USB"}
 
 event: token
-data: {"text": " drives"}
+data: {"text": " Dr"}
+
+event: token
+data: {"text": "ives"}
+
+event: token
+data: {"text": "**"}
 
 event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " phishing"}
+data: {"text": " **"}
 
 event: token
-data: {"text": " emails"}
+data: {"text": "Ph"}
 
 event: token
-data: {"text": "."}
+data: {"text": "ishing"}
+
+event: token
+data: {"text": " Email"}
+
+event: token
+data: {"text": "**."}
 
 event: token
 data: {"text": " Visible"}
@@ -176,80 +209,179 @@ event: token
 data: {"text": " include"}
 
 event: token
-data: {"text": " security"}
+data: {"text": " **"}
 
 event: token
-data: {"text": " awareness"}
+data: {"text": "Security"}
 
 event: token
-data: {"text": " training"}
+data: {"text": " Awareness"}
 
 event: token
-data: {"text": ","}
+data: {"text": " Training"}
 
 event: token
-data: {"text": " a"}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " strong"}
+data: {"text": " **"}
 
 event: token
-data: {"text": " password"}
+data: {"text": "Strong"}
 
 event: token
-data: {"text": " policy"}
+data: {"text": " Password"}
 
 event: token
-data: {"text": ","}
+data: {"text": " Policy"}
 
 event: token
-data: {"text": " email"}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " security"}
+data: {"text": " **"}
 
 event: token
-data: {"text": " filtering"}
+data: {"text": "Email"}
 
 event: token
-data: {"text": ","}
+data: {"text": " Security"}
 
 event: token
-data: {"text": " phishing"}
+data: {"text": " Filtering"}
 
 event: token
-data: {"text": " drills"}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " with"}
+data: {"text": " **"}
 
 event: token
-data: {"text": " a"}
+data: {"text": "Ph"}
 
 event: token
-data: {"text": " report"}
+data: {"text": "ishing"}
 
 event: token
-data: {"text": " button"}
+data: {"text": " Dr"}
 
 event: token
-data: {"text": ","}
+data: {"text": "ills"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " Report"}
+
+event: token
+data: {"text": " Button"}
+
+event: token
+data: {"text": "**,"}
 
 event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " multi"}
+data: {"text": " **"}
 
 event: token
-data: {"text": "-factor"}
+data: {"text": "Multi"}
 
 event: token
-data: {"text": " authentication"}
+data: {"text": "-F"}
 
 event: token
-data: {"text": "."}
+data: {"text": "actor"}
+
+event: token
+data: {"text": " Authentication"}
+
+event: token
+data: {"text": "**."}
+
+event: token
+data: {"text": " To"}
+
+event: token
+data: {"text": " leave"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " use"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Ban"}
+
+event: token
+data: {"text": "quet"}
+
+event: token
+data: {"text": " Door"}
+
+event: token
+data: {"text": "**"}
+
+event: token
+data: {"text": " ("}
+
+event: token
+data: {"text": "which"}
+
+event: token
+data: {"text": " requires"}
+
+event: token
+data: {"text": " an"}
+
+event: token
+data: {"text": " M"}
+
+event: token
+data: {"text": "FA"}
+
+event: token
+data: {"text": " check"}
+
+event: token
+data: {"text": ")"}
+
+event: token
+data: {"text": " or"}
+
+event: token
+data: {"text": " go"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "IT"}
+
+event: token
+data: {"text": " Help"}
+
+event: token
+data: {"text": " Desk"}
+
+event: token
+data: {"text": "**."}
 
 event: done
-data: {"answer": "This is the Security Awareness Training Room where staff learn to spot phishing, use strong passwords and MFA, and report anything strange. You can see systems like the Security Awareness Platform and Email & Collaboration, along with threats such as malware from USB drives and phishing emails. Visible controls include security awareness training, a strong password policy, email security filtering, phishing drills with a report button, and multi-factor authentication.", "go": [{"key": "door_38d0", "en": "Banquet Door · MFA Check", "zh": "宴會廳門口・多因素驗證", "base_en": "Banquet Hall Door (locked)", "base_zh": "宴會廳門口（上鎖）", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=8", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the Security Awareness Platform do?", "en": "What does the Security Awareness Platform do?", "zh": "資安教育訓練平台是做什麼的？"}, {"text": "How do we prevent malware from USB drives?", "en": "How do we prevent malware from USB drives?", "zh": "USB 惡意程式要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.96, "total_s": 8.97}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "play", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "play"}, "rows": 1, "ms": 5.3}], "graph": {"nodes": [{"key": "play", "label": "Room", "en": "Training Room", "zh": "資安訓練室"}, {"key": "lms", "label": "System", "en": "Security Awareness Platform", "zh": "資安教育訓練平台"}, {"key": "email", "label": "System", "en": "Email & Collaboration", "zh": "電子郵件與協作平台"}, {"key": "usb_malware", "label": "Threat", "en": "Malware from USB Drives", "zh": "USB 惡意程式"}, {"key": "phishing", "label": "Threat", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}, {"key": "password_policy", "label": "Control", "en": "Strong Password Policy", "zh": "密碼政策"}, {"key": "email_filtering", "label": "Control", "en": "Email Security Filtering", "zh": "郵件安全過濾"}, {"key": "phish_simulation", "label": "Control", "en": "Phishing Drills & Report Button", "zh": "釣魚演練與回報按鈕"}, {"key": "mfa", "label": "Control", "en": "Multi-Factor Authentication", "zh": "多因素驗證"}, {"key": "c_social_engineering", "label": "Concept", "en": "Social Engineering", "zh": "社交工程"}, {"key": "c_authentication", "label": "Concept", "en": "Authentication Factors", "zh": "驗證因素"}], "edges": [{"a": "email", "t": "LOCATED_IN", "b": "play"}, {"a": "lms", "t": "LOCATED_IN", "b": "play"}, {"a": "phishing", "t": "TARGETS", "b": "email"}, {"a": "phishing", "t": "SHOWN_IN", "b": "play"}, {"a": "usb_malware", "t": "SHOWN_IN", "b": "play"}, {"a": "c_authentication", "t": "TAUGHT_IN", "b": "play"}, {"a": "c_authentication", "t": "RELATED_TO", "b": "password_policy"}, {"a": "c_authentication", "t": "RELATED_TO", "b": "mfa"}, {"a": "c_social_engineering", "t": "TAUGHT_IN", "b": "play"}, {"a": "c_social_engineering", "t": "RELATED_TO", "b": "phishing"}, {"a": "c_social_engineering", "t": "RELATED_TO", "b": "awareness_training"}, {"a": "mfa", "t": "SEEN_IN", "b": "play"}, {"a": "mfa", "t": "PROTECTS", "b": "email"}, {"a": "mfa", "t": "MITIGATES", "b": "phishing"}, {"a": "password_policy", "t": "SEEN_IN", "b": "play"}, {"a": "password_policy", "t": "MITIGATES", "b": "phishing"}, {"a": "awareness_training", "t": "SEEN_IN", "b": "play"}, {"a": "awareness_training", "t": "MITIGATES", "b": "usb_malware"}, {"a": "awareness_training", "t": "MITIGATES", "b": "phishing"}, {"a": "phish_simulation", "t": "SEEN_IN", "b": "play"}, {"a": "phish_simulation", "t": "PROTECTS", "b": "email"}, {"a": "phish_simulation", "t": "MITIGATES", "b": "phishing"}, {"a": "email_filtering", "t": "SEEN_IN", "b": "play"}, {"a": "email_filtering", "t": "PROTECTS", "b": "email"}, {"a": "email_filtering", "t": "MITIGATES", "b": "phishing"}]}, "tool_used": "room_overview", "facts": "Room: Security Awareness Training Room\nWhat it shows: Staff learn to spot phishing, use strong passwords and MFA, and report anything strange.\nKey lesson: People are part of security: training and phishing drills mean fewer wrong clicks.\nSystems here: Security Awareness Platform, Email & Collaboration\nThreats shown here: Malware from USB Drives, Phishing Email\nControls you can see: Security Awareness Training, Strong Password Policy, Email Security Filtering, Phishing Drills & Report Button, Multi-Factor Authentication\nConcepts: Social Engineering, Authentication Factors\nProcedures to know: Clicked a phishing link or entered a password, Found an unknown USB drive, MFA prompts I did not start, Received a suspicious email\nExits: Banquet Door · MFA Check (called 'Banquet Hall Door (locked)' in the tour), IT Help Desk", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.96, "load_s": 0.01, "prompt_tokens": 620, "prompt_s": 2.17, "gen_tokens": 82, "gen_s": 6.76, "tok_per_s": 12.1, "first_token_s": 2.19}}, "state": {}}
+data: {"answer": "This is the **Security Awareness Training Room**, where staff learn to spot phishing, use strong passwords and MFA, and report strange activity. You can see systems like the **Security Awareness Platform** and **Email & Collaboration**, along with threats such as **Malware from USB Drives** and **Phishing Email**. Visible controls include **Security Awareness Training**, **Strong Password Policy**, **Email Security Filtering**, **Phishing Drills & Report Button**, and **Multi-Factor Authentication**. To leave, use the **Banquet Door** (which requires an MFA check) or go to the **IT Help Desk**.", "go": [{"key": "door_38d0", "en": "Banquet Door · MFA Check", "zh": "宴會廳門口・多因素驗證", "base_en": "Banquet Hall Door (locked)", "base_zh": "宴會廳門口（上鎖）", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=8", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the Security Awareness Platform do?", "en": "What does the Security Awareness Platform do?", "zh": "資安教育訓練平台是做什麼的？"}, {"text": "How do we prevent malware from USB drives?", "en": "How do we prevent malware from USB drives?", "zh": "USB 惡意程式要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 14.5, "total_s": 14.52}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "play", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "play"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "play", "label": "Room", "en": "Training Room", "zh": "資安訓練室"}, {"key": "lms", "label": "System", "en": "Security Awareness Platform", "zh": "資安教育訓練平台"}, {"key": "email", "label": "System", "en": "Email & Collaboration", "zh": "電子郵件與協作平台"}, {"key": "usb_malware", "label": "Threat", "en": "Malware from USB Drives", "zh": "USB 惡意程式"}, {"key": "phishing", "label": "Threat", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}, {"key": "password_policy", "label": "Control", "en": "Strong Password Policy", "zh": "密碼政策"}, {"key": "email_filtering", "label": "Control", "en": "Email Security Filtering", "zh": "郵件安全過濾"}, {"key": "phish_simulation", "label": "Control", "en": "Phishing Drills & Report Button", "zh": "釣魚演練與回報按鈕"}, {"key": "mfa", "label": "Control", "en": "Multi-Factor Authentication", "zh": "多因素驗證"}, {"key": "c_social_engineering", "label": "Concept", "en": "Social Engineering", "zh": "社交工程"}, {"key": "c_authentication", "label": "Concept", "en": "Authentication Factors", "zh": "驗證因素"}], "edges": [{"a": "email", "t": "LOCATED_IN", "b": "play"}, {"a": "lms", "t": "LOCATED_IN", "b": "play"}, {"a": "phishing", "t": "TARGETS", "b": "email"}, {"a": "phishing", "t": "SHOWN_IN", "b": "play"}, {"a": "usb_malware", "t": "SHOWN_IN", "b": "play"}, {"a": "c_authentication", "t": "TAUGHT_IN", "b": "play"}, {"a": "c_authentication", "t": "RELATED_TO", "b": "password_policy"}, {"a": "c_authentication", "t": "RELATED_TO", "b": "mfa"}, {"a": "c_social_engineering", "t": "TAUGHT_IN", "b": "play"}, {"a": "c_social_engineering", "t": "RELATED_TO", "b": "phishing"}, {"a": "c_social_engineering", "t": "RELATED_TO", "b": "awareness_training"}, {"a": "mfa", "t": "SEEN_IN", "b": "play"}, {"a": "mfa", "t": "PROTECTS", "b": "email"}, {"a": "mfa", "t": "MITIGATES", "b": "phishing"}, {"a": "password_policy", "t": "SEEN_IN", "b": "play"}, {"a": "password_policy", "t": "MITIGATES", "b": "phishing"}, {"a": "awareness_training", "t": "SEEN_IN", "b": "play"}, {"a": "awareness_training", "t": "MITIGATES", "b": "usb_malware"}, {"a": "awareness_training", "t": "MITIGATES", "b": "phishing"}, {"a": "phish_simulation", "t": "SEEN_IN", "b": "play"}, {"a": "phish_simulation", "t": "PROTECTS", "b": "email"}, {"a": "phish_simulation", "t": "MITIGATES", "b": "phishing"}, {"a": "email_filtering", "t": "SEEN_IN", "b": "play"}, {"a": "email_filtering", "t": "PROTECTS", "b": "email"}, {"a": "email_filtering", "t": "MITIGATES", "b": "phishing"}]}, "tool_used": "room_overview", "facts": "Room: Security Awareness Training Room\nWhat it shows: Staff learn to spot phishing, use strong passwords and MFA, and report anything strange.\nKey lesson: People are part of security: training and phishing drills mean fewer wrong clicks.\nSystems here: Security Awareness Platform, Email & Collaboration\nThreats shown here: Malware from USB Drives, Phishing Email\nControls you can see: Security Awareness Training, Strong Password Policy, Email Security Filtering, Phishing Drills & Report Button, Multi-Factor Authentication\nConcepts: Social Engineering, Authentication Factors\nProcedures to know: Clicked a phishing link or entered a password, Found an unknown USB drive, MFA prompts I did not start, Received a suspicious email\nExits: Banquet Door · MFA Check (called 'Banquet Hall Door (locked)' in the tour), IT Help Desk", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 14.5, "load_s": 0.0, "prompt_tokens": 611, "prompt_s": 2.53, "gen_tokens": 126, "gen_s": 11.03, "tok_per_s": 11.4, "first_token_s": 3.47}}, "state": {}}
 

@@ -5,7 +5,7 @@ event: route
 data: {"tool": "room_overview", "target": "", "how": "button"}
 
 event: card
-data: {"type": "sections", "label": "Room", "title": {"en": "Stage Close-up · Award Programme", "zh": "舞台近看・頒獎流程"}, "subtitle": {"en": "Stage · Up Close", "zh": "舞台近看"}, "text": {"en": "The stage where tonight's awards are presented.", "zh": "今晚頒獎的舞台。"}, "note": {"en": "Recognition helps good security habits stick.", "zh": "被表揚的好習慣比較容易留下來。"}, "badges": [], "sections": [{"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "awareness_training", "en": "Security Awareness Training", "zh": "資安意識訓練"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "banquet", "en": "Banquet Hall · Events & CRM", "zh": "宴會廳・活動與 CRM", "base_en": "Banquet Hall", "base_zh": "宴會廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=11", "tour": "A"}, {"key": "garden_party", "en": "Garden Party · IoT & OT", "zh": "花園派對・物聯網與 OT", "base_en": "Garden Party", "base_zh": "花園派對", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=12", "tour": "A"}]}]}
+data: {"type": "sections", "label": "Room", "title": {"en": "Stage Close-up · Award Programme", "zh": "舞台近看・頒獎流程"}, "subtitle": {"en": "Stage · Up Close", "zh": "舞台近看"}, "text": {"en": "The banquet stage with tonight's award programme; the awards themselves are presented in the Lake Pavilion theatre.", "zh": "宴會廳的舞台，上面是今晚的頒獎流程；頒獎在湖心館劇場舉行。"}, "note": {"en": "Recognition helps good security habits stick.", "zh": "被表揚的好習慣比較容易留下來。"}, "badges": [], "sections": [{"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "awareness_training", "en": "Security Awareness Training", "zh": "資安意識訓練"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "banquet", "en": "Banquet Hall · Events & CRM", "zh": "宴會廳・活動與 CRM", "base_en": "Banquet Hall", "base_zh": "宴會廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=11", "tour": "A"}, {"key": "garden_party", "en": "Garden Party · IoT & OT", "zh": "花園派對・物聯網與 OT", "base_en": "Garden Party", "base_zh": "花園派對", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=12", "tour": "A"}]}]}
 
 event: token
 data: {"text": "This"}
@@ -80,16 +80,19 @@ event: token
 data: {"text": " tour"}
 
 event: token
-data: {"text": "),"}
+data: {"text": ")."}
 
 event: token
-data: {"text": " which"}
+data: {"text": " It"}
 
 event: token
 data: {"text": " displays"}
 
 event: token
 data: {"text": " the"}
+
+event: token
+data: {"text": " banquet"}
 
 event: token
 data: {"text": " stage"}
@@ -104,19 +107,16 @@ event: token
 data: {"text": "'s"}
 
 event: token
-data: {"text": " awards"}
+data: {"text": " award"}
 
 event: token
-data: {"text": "."}
+data: {"text": " programme"}
 
 event: token
-data: {"text": " You"}
+data: {"text": " and"}
 
 event: token
-data: {"text": " can"}
-
-event: token
-data: {"text": " see"}
+data: {"text": " shows"}
 
 event: token
 data: {"text": " controls"}
@@ -137,22 +137,43 @@ event: token
 data: {"text": " Training"}
 
 event: token
-data: {"text": "**"}
+data: {"text": "**."}
 
 event: token
-data: {"text": " here"}
+data: {"text": " The"}
 
 event: token
-data: {"text": "."}
+data: {"text": " actual"}
 
 event: token
-data: {"text": " To"}
+data: {"text": " awards"}
 
 event: token
-data: {"text": " leave"}
+data: {"text": " are"}
+
+event: token
+data: {"text": " presented"}
+
+event: token
+data: {"text": " in"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " Lake"}
+
+event: token
+data: {"text": " Pavilion"}
+
+event: token
+data: {"text": " theatre"}
 
 event: token
 data: {"text": ","}
+
+event: token
+data: {"text": " which"}
 
 event: token
 data: {"text": " you"}
@@ -161,74 +182,14 @@ event: token
 data: {"text": " can"}
 
 event: token
-data: {"text": " go"}
+data: {"text": " see"}
 
 event: token
-data: {"text": " to"}
+data: {"text": " elsewhere"}
 
 event: token
-data: {"text": " the"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "Ban"}
-
-event: token
-data: {"text": "quet"}
-
-event: token
-data: {"text": " Hall"}
-
-event: token
-data: {"text": " ·"}
-
-event: token
-data: {"text": " Events"}
-
-event: token
-data: {"text": " &"}
-
-event: token
-data: {"text": " CRM"}
-
-event: token
-data: {"text": "**"}
-
-event: token
-data: {"text": " or"}
-
-event: token
-data: {"text": " the"}
-
-event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "G"}
-
-event: token
-data: {"text": "arden"}
-
-event: token
-data: {"text": " Party"}
-
-event: token
-data: {"text": " ·"}
-
-event: token
-data: {"text": " IoT"}
-
-event: token
-data: {"text": " &"}
-
-event: token
-data: {"text": " OT"}
-
-event: token
-data: {"text": "**."}
+data: {"text": "."}
 
 event: done
-data: {"answer": "This place is the **Stage Close-up · Award Programme** (shown as 'Stage · Up Close' in the tour), which displays the stage for tonight's awards. You can see controls for **Security Awareness Training** here. To leave, you can go to the **Banquet Hall · Events & CRM** or the **Garden Party · IoT & OT**.", "go": [], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.15, "total_s": 8.17}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet_near"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "banquet_near", "label": "Room", "en": "Stage · Up Close", "zh": "舞台近看"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}], "edges": [{"a": "awareness_training", "t": "SEEN_IN", "b": "banquet_near"}]}, "tool_used": "room_overview", "facts": "Room: Stage Close-up · Award Programme (called 'Stage · Up Close' in the tour)\nWhat it shows: The stage where tonight's awards are presented.\nKey lesson: Recognition helps good security habits stick.\nControls you can see: Security Awareness Training\nExits: Banquet Hall · Events & CRM, Garden Party · IoT & OT", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.15, "load_s": 0.01, "prompt_tokens": 515, "prompt_s": 1.99, "gen_tokens": 75, "gen_s": 6.14, "tok_per_s": 12.2, "first_token_s": 2.02}}, "state": {}}
+data: {"answer": "This place is the **Stage Close-up · Award Programme** (shown as 'Stage · Up Close' in the tour). It displays the banquet stage for tonight's award programme and shows controls for **Security Awareness Training**. The actual awards are presented in the Lake Pavilion theatre, which you can see elsewhere.", "go": [], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.56, "total_s": 6.57}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "banquet_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "banquet_near"}, "rows": 1, "ms": 5.0}], "graph": {"nodes": [{"key": "banquet_near", "label": "Room", "en": "Stage · Up Close", "zh": "舞台近看"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}], "edges": [{"a": "awareness_training", "t": "SEEN_IN", "b": "banquet_near"}]}, "tool_used": "room_overview", "facts": "Room: Stage Close-up · Award Programme (called 'Stage · Up Close' in the tour)\nWhat it shows: The banquet stage with tonight's award programme; the awards themselves are presented in the Lake Pavilion theatre.\nKey lesson: Recognition helps good security habits stick.\nControls you can see: Security Awareness Training\nExits: Banquet Hall · Events & CRM, Garden Party · IoT & OT", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.56, "load_s": 0.0, "prompt_tokens": 517, "prompt_s": 2.23, "gen_tokens": 62, "gen_s": 4.3, "tok_per_s": 14.4, "first_token_s": 2.25}}, "state": {}}
 

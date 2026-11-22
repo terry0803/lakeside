@@ -5,52 +5,13 @@ event: route
 data: {"tool": "room_overview", "target": "", "how": "button"}
 
 event: card
-data: {"type": "sections", "label": "Room", "title": {"en": "Villa Suite · Guest Privacy", "zh": "湖畔別墅套房・客人隱私"}, "subtitle": {"en": "Lake Villa Suite", "zh": "湖畔別墅套房"}, "text": {"en": "Inside the suite, the smart TV, voice controls and key card show how much guest data one room holds.", "zh": "套房裡的智慧電視、語音控制和房卡，看得出一間客房存了多少客人資料。"}, "note": {"en": "Reset every device at checkout so the next guest never sees the last one's data.", "zh": "退房時把每台裝置重設，下一位客人才不會看到前一位的資料。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "room_controls", "en": "Smart Room Controls & TV", "zh": "客房智慧控制與電視"}, {"key": "door_locks", "en": "Electronic Door Locks", "zh": "電子門鎖系統"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "checkout_reset", "en": "Checkout Privacy Reset", "zh": "退房隱私重設"}, {"key": "retention_deletion", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_checkout_reset", "en": "Smart room reset at checkout", "zh": "退房時重設智慧客房"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}]}]}
+data: {"type": "sections", "label": "Room", "title": {"en": "Villa Suite · Guest Privacy", "zh": "湖畔別墅套房・客人隱私"}, "subtitle": {"en": "Lake Villa Suite", "zh": "湖畔別墅套房"}, "text": {"en": "Inside the suite, the smart TV, voice controls and key card show how much guest data one room holds.", "zh": "套房裡的智慧電視、語音控制和房卡，看得出一間客房存了多少客人資料。"}, "note": {"en": "Reset every device at checkout so the next guest never sees the last one's data.", "zh": "退房時把每台裝置重設，下一位客人才不會看到前一位的資料。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡藏著 1 個漏洞"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "room_controls", "en": "Smart Room Controls & TV", "zh": "客房智慧控制與電視"}, {"key": "door_locks", "en": "Electronic Door Locks", "zh": "電子門鎖系統"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "checkout_reset", "en": "Checkout Privacy Reset", "zh": "退房隱私重設"}, {"key": "retention_deletion", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_checkout_reset", "en": "Smart room reset at checkout", "zh": "退房時重設智慧客房"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}]}]}
 
 event: token
 data: {"text": "這裡"}
 
 event: token
-data: {"text": "是"}
-
-event: token
-data: {"text": "「"}
-
-event: token
-data: {"text": "湖畔"}
-
-event: token
-data: {"text": "別"}
-
-event: token
-data: {"text": "墅"}
-
-event: token
-data: {"text": "套房"}
-
-event: token
-data: {"text": "・"}
-
-event: token
-data: {"text": "客人"}
-
-event: token
-data: {"text": "隱私"}
-
-event: token
-data: {"text": "」"}
-
-event: token
-data: {"text": "房間"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "主要"}
-
-event: token
-data: {"text": "展示"}
+data: {"text": "有"}
 
 event: token
 data: {"text": "智慧"}
@@ -71,7 +32,10 @@ event: token
 data: {"text": "控制"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "系統"}
+
+event: token
+data: {"text": "和"}
 
 event: token
 data: {"text": "房"}
@@ -80,13 +44,28 @@ event: token
 data: {"text": "卡"}
 
 event: token
-data: {"text": "等"}
+data: {"text": "。"}
+
+event: token
+data: {"text": "這些"}
 
 event: token
 data: {"text": "裝置"}
 
 event: token
-data: {"text": "。"}
+data: {"text": "會"}
+
+event: token
+data: {"text": "儲存"}
+
+event: token
+data: {"text": "客人"}
+
+event: token
+data: {"text": "資料"}
+
+event: token
+data: {"text": "，"}
 
 event: token
 data: {"text": "退房"}
@@ -107,134 +86,59 @@ event: token
 data: {"text": "每台"}
 
 event: token
-data: {"text": "裝置"}
-
-event: token
-data: {"text": "，"}
+data: {"text": "設備"}
 
 event: token
 data: {"text": "以"}
 
 event: token
-data: {"text": "確保"}
-
-event: token
-data: {"text": "下一"}
-
-event: token
-data: {"text": "位"}
-
-event: token
-data: {"text": "客人"}
-
-event: token
-data: {"text": "不會"}
-
-event: token
-data: {"text": "看到"}
-
-event: token
-data: {"text": "前"}
-
-event: token
-data: {"text": "一位"}
-
-event: token
-data: {"text": "的"}
-
-event: token
-data: {"text": "資料"}
-
-event: token
-data: {"text": "。"}
-
-event: token
-data: {"text": "此"}
-
-event: token
-data: {"text": "處"}
-
-event: token
-data: {"text": "可見"}
-
-event: token
-data: {"text": "客房"}
-
-event: token
-data: {"text": "智慧"}
-
-event: token
-data: {"text": "控制"}
-
-event: token
-data: {"text": "系統"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "電子"}
-
-event: token
-data: {"text": "門"}
-
-event: token
-data: {"text": "鎖"}
-
-event: token
-data: {"text": "系統"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "以及"}
-
-event: token
-data: {"text": "退房"}
+data: {"text": "保護"}
 
 event: token
 data: {"text": "隱私"}
 
 event: token
-data: {"text": "重"}
+data: {"text": "。"}
 
 event: token
-data: {"text": "設"}
+data: {"text": "你可以"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "往"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "泳池"}
+
+event: token
+data: {"text": "・"}
 
 event: token
 data: {"text": "資料"}
 
 event: token
-data: {"text": "最小"}
+data: {"text": "湖"}
 
 event: token
-data: {"text": "化"}
+data: {"text": "」"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "方向"}
 
 event: token
-data: {"text": "保存"}
+data: {"text": "走"}
 
 event: token
-data: {"text": "期限"}
+data: {"text": "繼續"}
 
 event: token
-data: {"text": "等"}
-
-event: token
-data: {"text": "防護"}
-
-event: token
-data: {"text": "措施"}
+data: {"text": "探索"}
 
 event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是「湖畔別墅套房・客人隱私」房間，主要展示智慧電視、語音控制與房卡等裝置。退房時必須重設每台裝置，以確保下一位客人不會看到前一位的資料。此處可見客房智慧控制系統、電子門鎖系統，以及退房隱私重設、資料最小化與保存期限等防護措施。", "go": [], "followups": [{"text": "客房智慧控制與電視是做什麼的？", "en": "What does the Smart Room Controls & TV do?", "zh": "客房智慧控制與電視是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.44, "total_s": 8.45}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "villa_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "villa_in"}, "rows": 1, "ms": 5.4}], "graph": {"nodes": [{"key": "villa_in", "label": "Room", "en": "Lake Villa Suite", "zh": "湖畔別墅套房"}, {"key": "room_controls", "label": "System", "en": "Smart Room Controls & TV", "zh": "客房智慧控制與電視"}, {"key": "door_locks", "label": "System", "en": "Electronic Door Locks", "zh": "電子門鎖系統"}, {"key": "checkout_reset", "label": "Control", "en": "Checkout Privacy Reset", "zh": "退房隱私重設"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}], "edges": [{"a": "checkout_reset", "t": "SEEN_IN", "b": "villa_in"}, {"a": "door_locks", "t": "LOCATED_IN", "b": "villa_in"}, {"a": "room_controls", "t": "LOCATED_IN", "b": "villa_in"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "villa_in"}]}, "tool_used": "room_overview", "facts": "房間：湖畔別墅套房・客人隱私\n代表的資訊主題：套房裡的智慧電視、語音控制和房卡，看得出一間客房存了多少客人資料。\n重點：退房時把每台裝置重設，下一位客人才不會看到前一位的資料。\n這裡的系統：客房智慧控制與電視、電子門鎖系統\n看得到的防護措施：退房隱私重設、資料最小化與保存期限\n相關的處理流程：退房時重設智慧客房\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：泳池・資料湖", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.43, "load_s": 0.01, "prompt_tokens": 581, "prompt_s": 2.25, "gen_tokens": 77, "gen_s": 6.16, "tok_per_s": 12.5, "first_token_s": 2.27}}, "state": {}}
+data: {"answer": "這裡有智慧電視、語音控制系統和房卡。這些裝置會儲存客人資料，退房時必須重設每台設備以保護隱私。你可以往「泳池・資料湖」方向走繼續探索。", "go": [], "followups": [{"text": "客房智慧控制與電視是做什麼的？", "en": "What does the Smart Room Controls & TV do?", "zh": "客房智慧控制與電視是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.0, "total_s": 6.02}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "villa_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "villa_in"}, "rows": 1, "ms": 7.8}], "graph": {"nodes": [{"key": "villa_in", "label": "Room", "en": "Lake Villa Suite", "zh": "湖畔別墅套房"}, {"key": "room_controls", "label": "System", "en": "Smart Room Controls & TV", "zh": "客房智慧控制與電視"}, {"key": "door_locks", "label": "System", "en": "Electronic Door Locks", "zh": "電子門鎖系統"}, {"key": "checkout_reset", "label": "Control", "en": "Checkout Privacy Reset", "zh": "退房隱私重設"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}], "edges": [{"a": "checkout_reset", "t": "SEEN_IN", "b": "villa_in"}, {"a": "door_locks", "t": "LOCATED_IN", "b": "villa_in"}, {"a": "room_controls", "t": "LOCATED_IN", "b": "villa_in"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "villa_in"}]}, "tool_used": "room_overview", "facts": "房間：湖畔別墅套房・客人隱私\n這裡講的是：套房裡的智慧電視、語音控制和房卡，看得出一間客房存了多少客人資料。\n重點：退房時把每台裝置重設，下一位客人才不會看到前一位的資料。\n這裡的系統：客房智慧控制與電視、電子門鎖系統\n看得到的防護措施：退房隱私重設、資料最小化與保存期限\n相關的處理流程：退房時重設智慧客房\n這個房間藏著 1 個漏洞（讓玩家自己找，不要說出來）\n可以走到：泳池・資料湖", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.0, "load_s": 0.01, "prompt_tokens": 655, "prompt_s": 2.58, "gen_tokens": 45, "gen_s": 3.4, "tok_per_s": 13.2, "first_token_s": 2.6}}, "state": {}}
 

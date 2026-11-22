@@ -53,7 +53,10 @@ event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "用於"}
+data: {"text": "主要"}
+
+event: token
+data: {"text": "用來"}
 
 event: token
 data: {"text": "回顧"}
@@ -80,13 +83,10 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "您可以"}
+data: {"text": "重點"}
 
 event: token
-data: {"text": "在此"}
-
-event: token
-data: {"text": "看到"}
+data: {"text": "在於"}
 
 event: token
 data: {"text": "每個"}
@@ -101,16 +101,10 @@ event: token
 data: {"text": "系統"}
 
 event: token
-data: {"text": "和"}
+data: {"text": "和人"}
 
 event: token
-data: {"text": "人員"}
-
-event: token
-data: {"text": "如何"}
-
-event: token
-data: {"text": "共同"}
+data: {"text": "都在"}
 
 event: token
 data: {"text": "保護"}
@@ -119,13 +113,13 @@ event: token
 data: {"text": "資料"}
 
 event: token
-data: {"text": "，"}
+data: {"text": "。"}
 
 event: token
-data: {"text": "並"}
+data: {"text": "你可以"}
 
 event: token
-data: {"text": "學習"}
+data: {"text": "看到"}
 
 event: token
 data: {"text": "風險"}
@@ -161,7 +155,7 @@ event: token
 data: {"text": "完整性"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "、"}
 
 event: token
 data: {"text": "可用性"}
@@ -176,34 +170,37 @@ event: token
 data: {"text": "）"}
 
 event: token
-data: {"text": "等"}
+data: {"text": "以及"}
+
+event: token
+data: {"text": "風險"}
+
+event: token
+data: {"text": "處理"}
+
+event: token
+data: {"text": "這些"}
 
 event: token
 data: {"text": "課程"}
 
 event: token
-data: {"text": "重點"}
+data: {"text": "概念"}
 
 event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "此外"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "您"}
-
-event: token
-data: {"text": "還可以"}
-
-event: token
 data: {"text": "走到"}
 
 event: token
-data: {"text": "「"}
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "還能"}
+
+event: token
+data: {"text": "查看"}
 
 event: token
 data: {"text": "渡假"}
@@ -221,16 +218,22 @@ event: token
 data: {"text": "地圖"}
 
 event: token
-data: {"text": "」（"}
+data: {"text": "（"}
 
 event: token
 data: {"text": "導覽"}
 
 event: token
-data: {"text": "中"}
+data: {"text": "裡"}
 
 event: token
-data: {"text": "稱為"}
+data: {"text": "的名"}
+
+event: token
+data: {"text": "稱"}
+
+event: token
+data: {"text": "："}
 
 event: token
 data: {"text": "熱"}
@@ -242,26 +245,8 @@ event: token
 data: {"text": "球"}
 
 event: token
-data: {"text": "）"}
-
-event: token
-data: {"text": "來"}
-
-event: token
-data: {"text": "查看"}
-
-event: token
-data: {"text": "相關"}
-
-event: token
-data: {"text": "資訊"}
-
-event: token
-data: {"text": "。"}
-
-event: replace
-data: {"text": "這裡是「搭熱氣球回家・總複習」房間，用於回顧整個渡假村的資料保護概念。你可以在此看到每個部門、系統和人員如何共同保護資料，並學習風險＝可能性×衝擊、機密性、完整性與可用性（CIA）等課程重點。此外，你還可以走到「渡假村資訊系統地圖」（導覽中稱為熱氣球）來查看相關資訊。"}
+data: {"text": "）。"}
 
 event: done
-data: {"answer": "這裡是「搭熱氣球回家・總複習」房間，用於回顧整個渡假村的資料保護概念。你可以在此看到每個部門、系統和人員如何共同保護資料，並學習風險＝可能性×衝擊、機密性、完整性與可用性（CIA）等課程重點。此外，你還可以走到「渡假村資訊系統地圖」（導覽中稱為熱氣球）來查看相關資訊。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.99, "total_s": 9.0}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "flight_home", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "flight_home"}, "rows": 1, "ms": 5.4}], "graph": {"nodes": [{"key": "flight_home", "label": "Room", "en": "Flight Home", "zh": "搭熱氣球回家"}, {"key": "c_risk", "label": "Concept", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}, {"key": "c_cia", "label": "Concept", "en": "CIA Triad", "zh": "機密性、完整性、可用性（CIA）"}, {"key": "c_risk_treatment", "label": "Concept", "en": "Risk Treatment", "zh": "風險處理"}], "edges": [{"a": "c_cia", "t": "TAUGHT_IN", "b": "flight_home"}, {"a": "c_risk", "t": "TAUGHT_IN", "b": "flight_home"}, {"a": "c_risk", "t": "RELATED_TO", "b": "c_risk_treatment"}, {"a": "c_risk_treatment", "t": "TAUGHT_IN", "b": "flight_home"}, {"a": "c_risk_treatment", "t": "RELATED_TO", "b": "c_risk"}]}, "tool_used": "room_overview", "facts": "房間：搭熱氣球回家・總複習\n代表的資訊主題：回頭看整個渡假村，複習今天學到的。\n重點：每個部門、系統和人都在保護資料。\n課程概念：風險＝可能性×衝擊、機密性、完整性、可用性（CIA）、風險處理\n可以走到：渡假村資訊系統地圖（導覽裡的名稱：熱氣球）", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.99, "load_s": 0.01, "prompt_tokens": 533, "prompt_s": 2.08, "gen_tokens": 85, "gen_s": 6.88, "tok_per_s": 12.3, "first_token_s": 2.1}}, "state": {}}
+data: {"answer": "這裡是「搭熱氣球回家・總複習」房間，主要用來回顧整個渡假村的資料保護概念。重點在於每個部門、系統和人都在保護資料。你可以看到風險＝可能性×衝擊、機密性、完整性、可用性（CIA）以及風險處理這些課程概念。走到這裡還能查看渡假村資訊系統地圖（導覽裡的名稱：熱氣球）。", "go": [], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.64, "total_s": 8.65}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "flight_home", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "flight_home"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "flight_home", "label": "Room", "en": "Flight Home", "zh": "搭熱氣球回家"}, {"key": "c_risk", "label": "Concept", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}, {"key": "c_cia", "label": "Concept", "en": "CIA Triad", "zh": "機密性、完整性、可用性（CIA）"}, {"key": "c_risk_treatment", "label": "Concept", "en": "Risk Treatment", "zh": "風險處理"}], "edges": [{"a": "c_cia", "t": "TAUGHT_IN", "b": "flight_home"}, {"a": "c_risk", "t": "TAUGHT_IN", "b": "flight_home"}, {"a": "c_risk", "t": "RELATED_TO", "b": "c_risk_treatment"}, {"a": "c_risk_treatment", "t": "TAUGHT_IN", "b": "flight_home"}, {"a": "c_risk_treatment", "t": "RELATED_TO", "b": "c_risk"}]}, "tool_used": "room_overview", "facts": "房間：搭熱氣球回家・總複習\n這裡講的是：回頭看整個渡假村，複習今天學到的。\n重點：每個部門、系統和人都在保護資料。\n課程概念：風險＝可能性×衝擊、機密性、完整性、可用性（CIA）、風險處理\n可以走到：渡假村資訊系統地圖（導覽裡的名稱：熱氣球）", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.64, "load_s": 0.01, "prompt_tokens": 609, "prompt_s": 2.58, "gen_tokens": 81, "gen_s": 6.03, "tok_per_s": 13.4, "first_token_s": 2.6}}, "state": {}}
 

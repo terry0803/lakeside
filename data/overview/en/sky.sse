@@ -239,6 +239,9 @@ event: token
 data: {"text": " IoT"}
 
 event: token
+data: {"text": ","}
+
+event: token
 data: {"text": " and"}
 
 event: token
@@ -251,16 +254,58 @@ event: token
 data: {"text": ")."}
 
 event: token
-data: {"text": " You"}
+data: {"text": " It"}
 
 event: token
-data: {"text": " will"}
+data: {"text": " illustrates"}
 
 event: token
-data: {"text": " also"}
+data: {"text": " that"}
 
 event: token
-data: {"text": " find"}
+data: {"text": " people"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " processes"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " technology"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " data"}
+
+event: token
+data: {"text": " together"}
+
+event: token
+data: {"text": " make"}
+
+event: token
+data: {"text": " an"}
+
+event: token
+data: {"text": " information"}
+
+event: token
+data: {"text": " system"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " covering"}
 
 event: token
 data: {"text": " concepts"}
@@ -272,10 +317,7 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "CIA"}
+data: {"text": " CIA"}
 
 event: token
 data: {"text": " Tri"}
@@ -284,44 +326,29 @@ event: token
 data: {"text": "ad"}
 
 event: token
-data: {"text": "**,"}
+data: {"text": ","}
 
 event: token
-data: {"text": " **"}
-
-event: token
-data: {"text": "Shared"}
+data: {"text": " Shared"}
 
 event: token
 data: {"text": " Responsibility"}
 
 event: token
-data: {"text": "**,"}
+data: {"text": ","}
 
 event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " **"}
+data: {"text": " Information"}
 
 event: token
-data: {"text": "Information"}
-
-event: token
-data: {"text": " System"}
-
-event: token
-data: {"text": "**"}
-
-event: token
-data: {"text": " displayed"}
-
-event: token
-data: {"text": " here"}
+data: {"text": " Systems"}
 
 event: token
 data: {"text": "."}
 
 event: done
-data: {"answer": "This place is the **Resort IT Map**, also known as the **'Hot-Air Balloon'** in the tour. From here you can see the whole resort where every department runs on connected information systems. The view highlights three landing routes: the **clubhouse** (main story), the **old town** (suppliers), and the **lake** (remote work, IoT and the SOC). You will also find concepts like the **CIA Triad**, **Shared Responsibility**, and **Information System** displayed here.", "go": [{"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 18.69, "total_s": 18.75}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "sky", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "sky"}, "rows": 1, "ms": 7.4}], "graph": {"nodes": [{"key": "sky", "label": "Room", "en": "Hot-Air Balloon", "zh": "熱氣球"}, {"key": "c_cia", "label": "Concept", "en": "CIA Triad", "zh": "機密性、完整性、可用性（CIA）"}, {"key": "c_shared_responsibility", "label": "Concept", "en": "Shared Responsibility (Cloud & SaaS)", "zh": "共同責任（雲端與 SaaS）"}, {"key": "c_information_system", "label": "Concept", "en": "Information System", "zh": "資訊系統"}], "edges": [{"a": "c_cia", "t": "TAUGHT_IN", "b": "sky"}, {"a": "c_information_system", "t": "TAUGHT_IN", "b": "sky"}, {"a": "c_shared_responsibility", "t": "TAUGHT_IN", "b": "sky"}]}, "tool_used": "room_overview", "facts": "Room: Resort IT Map (called 'Hot-Air Balloon' in the tour)\nWhat it shows: From the balloon you see the whole resort: every department runs on information systems, and they are all connected. Three landing routes: the clubhouse (main story), the old town (suppliers) and the lake (remote work, IoT and the SOC).\nKey lesson: People, processes, technology and data together make an information system.\nConcepts: CIA Triad, Shared Responsibility (Cloud & SaaS), Information System\nExits: Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), Harbour Square · Suppliers, Steamer Deck · Working on the Move", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 18.69, "load_s": 0.01, "prompt_tokens": 586, "prompt_s": 1.89, "gen_tokens": 106, "gen_s": 8.56, "tok_per_s": 12.4, "first_token_s": 10.13}}, "state": {}}
+data: {"answer": "This place is the **Resort IT Map**, also known as the **'Hot-Air Balloon'** in the tour. From here you can see the whole resort where every department runs on connected information systems. The view highlights three landing routes: the **clubhouse** (main story), the **old town** (suppliers), and the **lake** (remote work, IoT, and the SOC). It illustrates that people, processes, technology, and data together make an information system, covering concepts like the CIA Triad, Shared Responsibility, and Information Systems.", "go": [{"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.17, "answer_s": 9.36, "total_s": 9.56}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "sky", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "sky"}, "rows": 1, "ms": 167.0}], "graph": {"nodes": [{"key": "sky", "label": "Room", "en": "Hot-Air Balloon", "zh": "熱氣球"}, {"key": "c_cia", "label": "Concept", "en": "CIA Triad", "zh": "機密性、完整性、可用性（CIA）"}, {"key": "c_shared_responsibility", "label": "Concept", "en": "Shared Responsibility (Cloud & SaaS)", "zh": "共同責任（雲端與 SaaS）"}, {"key": "c_information_system", "label": "Concept", "en": "Information System", "zh": "資訊系統"}], "edges": [{"a": "c_cia", "t": "TAUGHT_IN", "b": "sky"}, {"a": "c_information_system", "t": "TAUGHT_IN", "b": "sky"}, {"a": "c_shared_responsibility", "t": "TAUGHT_IN", "b": "sky"}]}, "tool_used": "room_overview", "facts": "Room: Resort IT Map (called 'Hot-Air Balloon' in the tour)\nWhat it shows: From the balloon you see the whole resort: every department runs on information systems, and they are all connected. Three landing routes: the clubhouse (main story), the old town (suppliers) and the lake (remote work, IoT and the SOC).\nKey lesson: People, processes, technology and data together make an information system.\nConcepts: CIA Triad, Shared Responsibility (Cloud & SaaS), Information System\nExits: Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), Harbour Square · Suppliers, Steamer Deck · Working on the Move", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.36, "load_s": 0.01, "prompt_tokens": 577, "prompt_s": 1.84, "gen_tokens": 115, "gen_s": 6.86, "tok_per_s": 16.8, "first_token_s": 2.49}}, "state": {}}
 

@@ -665,9 +665,10 @@ Games.mfa = function (d, main, replay) {
       if (/^[0-9*#]$/.test(k)) { ev.preventDefault(); dialKey(k); }
       else if (k === "Backspace") { ev.preventDefault(); dialKey("del"); }
       else if (k === "Enter" && !(document.activeElement && document.activeElement.closest("button"))) { ev.preventDefault(); dialOut(); }
-      else if (k === "Escape") untake();
+      else if (k === "Escape") { ev.preventDefault(); untake(); }      // 11/23: handled here, the game window stays open (common.js)
     } else if (S.app === "auth") {
       if (/^[0-9]$/.test(k)) { ev.preventDefault(); authKey(k); } else if (k === "Backspace") { ev.preventDefault(); authKey("del"); }
+      else if (k === "Escape") { ev.preventDefault(); authLater(); }
     } else if (S.app === "call" && S.call && S.call.state === "talking" && S.call.pad && /^[0-9*#]$/.test(k)) { ev.preventDefault(); callKey(k); }
   }
 
@@ -828,7 +829,7 @@ Games.mfa = function (d, main, replay) {
       S.res[e.id] = "read";
       S.approved += 1;
       S.codeGiven = true;
-      addLog(clockAt(S.clock), bi(`Typed the code ${e.code} for a caller using Jun-Hao's name (${e.number}).`, `替冒充俊豪的來電（${e.number}）按出了驗證碼 ${e.code}。`), "is-bad");
+      addLog(clockAt(S.clock), bi(`Typed the code ${e.code} for a caller using Jun-Hao's name (${e.number}).`, `替冒充俊豪的來電（${e.number}）按出了驗證碼 ${e.code}。`) + whyLine("read"), "is-bad");
       return breach(e.damage, e);
     }
     if (wasFake) {
@@ -841,7 +842,13 @@ Games.mfa = function (d, main, replay) {
       : k === "declined" ? bi(`Declined a call from ${e.number}.`, `拒接了 ${e.number} 的來電。`)
       : k === "gaveup" ? bi(`"Jun-Hao" (${e.number}) hung up when you didn't type the code.`, `你一直沒按驗證碼，「俊豪」（${e.number}）就掛了。`)
       : bi(`Hung up on "Jun-Hao" (${e.number}).`, `掛掉「俊豪」（${e.number}）的電話。`);
-    addLog(clockAt(S.clock), txt, "is-miss");
+    // 11/23 review: until you have called 2199 yourself, the log says what is still missing (the "hang" option's why)
+    addLog(clockAt(S.clock), txt + (S.reported ? "" : whyLine("hang")), "is-miss");
+  }
+  // the reason under a line of the night log: the "why" of one of the call's options in games.yaml
+  function whyLine(k) {
+    const o = (CALL.options || []).find((x) => x.k === k);
+    return o && o.why_en ? `<span class="mn-why">${bi(o.why_en, o.why_zh)}</span>` : "";
   }
 
   function callFake() {   // you rang back the number that called you
@@ -942,6 +949,15 @@ Games.mfa = function (d, main, replay) {
     };
     card.addEventListener("pointerup", end);
     card.addEventListener("pointercancel", end);
+    // 11/23 review: the pointer was taken away under the drag: nothing is said, and the copy under the finger goes too
+    card.addEventListener("lostpointercapture", () => {
+      if (!p) return;
+      const { ghost } = p;
+      p = null;
+      card.classList.remove("is-lifted");
+      zone.classList.remove("is-target");
+      if (ghost) ghost.remove();
+    });
     card.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); onDrop(); } });
   }
 
@@ -1036,11 +1052,21 @@ Games.mfa = function (d, main, replay) {
       <p class="mn-auth-ask">${bi("Enter the number shown on your screen.", "輸入螢幕上顯示的號碼。")}</p>
       <div class="mn-auth-boxes" id="mnAuthBoxes"><b></b><b></b></div>
       ${keysHTML("mnAuthKeys", [["1", ""], ["2", ""], ["3", ""], ["4", ""], ["5", ""], ["6", ""], ["7", ""], ["8", ""], ["9", ""], ["", ""], ["0", ""], ["del", ""]])}
-      <div class="mn-auth-btns"><button type="button" class="mn-auth-no" id="mnAuthNo">${bi("No, it's not me", "不是我")}</button><button type="button" class="mn-auth-yes" id="mnAuthYes" disabled>${bi("Yes", "是我")}</button></div></div>`;
+      <div class="mn-auth-btns"><button type="button" class="mn-auth-no" id="mnAuthNo">${bi("No, it's not me", "不是我")}</button><button type="button" class="mn-auth-yes" id="mnAuthYes" disabled>${bi("Yes", "是我")}</button></div>
+      <button type="button" class="mn-auth-later" id="mnAuthLater">${bi("Later", "稍後")}</button></div>`;
     $("#mnAuthKeys").addEventListener("click", (ev) => { const b = ev.target.closest("[data-k]"); if (b) authKey(b.dataset.k); });
     $("#mnAuthNo").addEventListener("click", () => ownAnswer("deny"));
     $("#mnAuthYes").addEventListener("click", () => ownAnswer(o.typed));
+    $("#mnAuthLater").addEventListener("click", authLater);
     authDraw();
+  }
+  /* 11/23 review: put the app away without answering (Later, or Escape). The sign-in keeps waiting: its card on the lock
+     screen opens the app again, and the phone's dialler works in the meantime. */
+  function authLater() {
+    if (!S || S.app !== "auth") return;
+    untake();
+    CB.SFX.play("tap");
+    CB.refocus(".mn-nw.is-own .mn-n");      // the keyboard waits on that card: Enter opens the app again
   }
   function authKey(k) {
     const o = S.own;
@@ -1089,10 +1115,19 @@ Games.mfa = function (d, main, replay) {
   }
 
   /* ------------------------------------------------------------------ 03:25 */
+  // 11/23 review: the call in Jun-Hao's name. ✓ = no code typed for him, and 2199 called yourself (straight after the call,
+  // or a report to the SOC at any time in the night); △ = no code, but 2199 never called (no point); ✗ = the code typed.
+  // Under △ and ✗ the results say what was missing: the "why" of the option it comes closest to (games.yaml, the call's
+  // options: declined, missed and given up count as "hang").
+  const callMark = () => (S.res[CALL.id] === "read" ? "✗" : S.res[CALL.id] === "back" || S.reported ? "✓" : "△");
+  const callWhyHTML = () => {
+    const m = callMark(), o = m === "✓" || !S.res[CALL.id] ? null : (CALL.options || []).find((x) => x.k === (m === "✗" ? "read" : "hang"));
+    return o && o.why_en ? `<p class="mn-call-why">${bi(o.why_en, o.why_zh)}</p>` : "";
+  };
   const right = () => ({
     prompts: S.approved === 0 && S.res[CALL.id] !== "read" ? 1 : 0,
     doors: DOORS.filter((e) => (e.options.find((o) => o.k === S.res[e.id]) || {}).good).length,
-    call: S.res[CALL.id] === "back" ? 1 : 0,
+    call: callMark() === "✓" ? 1 : 0,
     own: S.res[OWN.id] === "ok" ? 1 : 0,
     report: S.reported && S.reported.allGood ? 1 : 0,
   });
@@ -1100,6 +1135,7 @@ Games.mfa = function (d, main, replay) {
 
   async function endShift() {
     if (S.over) return;
+    for (const g of $$(".mn-line-ghost")) g.remove();     // 11/23 review: 03:25 came while a line was still being dragged to the SOC
     for (const a of S.alerts.slice()) doorDone(a, "none");          // 03:25: whatever is still open ends the way it stands
     if (S.call && S.call.state !== "done" && S.call.state !== "sending") callEnd(S.call.state === "ringing" ? "missed" : "gaveup");
     if (S.own.state === "ready" || S.own.state === "prompt") ownResolve("late");
@@ -1126,9 +1162,10 @@ Games.mfa = function (d, main, replay) {
       <div class="rx-stats rs-dinner-stats">
         <div><b>${denied}${stopped ? `<small>+${stopped}</small>` : ""}</b><span>${bi(stopped ? "prompts denied, + stopped by your report" : "prompts denied", stopped ? "拒絕的通知，加上回報後停掉的" : "拒絕的通知")}</span></div>
         <div><b>${r.doors}/${DOORS.length}</b><span>${bi("door alerts handled", "門禁通知處理對的")}</span></div>
-        <div><b>${r.call ? "✓" : "✗"}</b><span>${bi("the call in Jun-Hao's name", "冒充俊豪的電話")}</span></div>
+        <div><b>${callMark()}</b><span>${bi("the call in Jun-Hao's name", "冒充俊豪的電話")}</span></div>
         <div><b>${r.report ? "✓" : S.reported ? "△" : "✗"}</b><span>${bi("reported to 2199", "打 2199 回報")}</span></div>
         <div><b class="rs-shields-row">${Array.from({ length: sh.shields }, (_, k) => CB.ICON.shield(k < S.shields)).join("")}</b><span>${bi("shields left", "剩下的盾牌")}</span></div></div>
+      ${callWhyHTML()}
       ${S.reported ? "" : `<p class="mn-late-call">${bi("03:24: the SOC called you. They had seen the prompts on their side and reset your password. Next time, call 2199 the moment it starts.", "03:24 資安監控中心打給你：他們那邊看到了這些通知，已經幫你重設密碼。下次一開始就打 2199。")}</p>`}
       ${CB.personHTML({ svg: CB.analyst(), name: ANALYST.name, name_zh: ANALYST.name_zh, role_en: ANALYST.role_en, role_zh: ANALYST.role_zh },
         bi(`Get some sleep. Security pulled the door log; I'll bring the sign-in logs. 07:30 at the policy board in the corridor.${S.log.length ? " Bring your night log." : ""}`,
@@ -1145,6 +1182,7 @@ Games.mfa = function (d, main, replay) {
   function gameOver() {
     S.over = true;
     loop.stop();
+    for (const g of $$(".mn-line-ghost")) g.remove();
     st.$rs.classList.remove("is-paused");
     st.scene("mn_hall", 0.15);
     const items = S.losses.map((x) => `<li>${bi(x.dm.hit_en, x.dm.hit_zh)}</li>`).join("");
@@ -1423,9 +1461,9 @@ Games.mfa = function (d, main, replay) {
     const clean = !S.approved && !doorOpened();
     CB.finale(st, { file: 3, ranks: clean ? story.ranks : story.ranks.filter((x) => x.key !== "gold"), score, total: TOTAL, scene: BOARD.scene, dusk: 0.3,
       stats: [{ v: (S.points + B.pts).toLocaleString("en-US"), en: "points", zh: "分" }, { v: `${denied}`, en: "prompts denied", zh: "拒絕的通知" },
-        { v: `${r.doors}/${DOORS.length}`, en: "door alerts", zh: "門禁通知" }, { v: r.call ? "✓" : "✗", en: "the fake SOC call", zh: "假冒的電話" },
+        { v: `${r.doors}/${DOORS.length}`, en: "door alerts", zh: "門禁通知" }, { v: callMark(), en: "the fake SOC call", zh: "假冒的電話" },
         { v: `${S.shields}/${sh.shields}`, en: "shields left", zh: "剩下的盾牌" }, { v: `${firstTry}/${QS.length}`, en: "solved first try", zh: "一次就解開" }],
-      body: S.losses.length ? `<ul class="rx-loss-list">${S.losses.map((x) => `<li>${bi(x.dm.hit_en, x.dm.hit_zh)}</li>`).join("")}</ul>` : "",
+      body: callWhyHTML() + (S.losses.length ? `<ul class="rx-loss-list">${S.losses.map((x) => `<li>${bi(x.dm.hit_en, x.dm.hit_zh)}</li>`).join("")}</ul>` : ""),
       next: { key: BOARD.next, en: BOARD.next_en, zh: BOARD.next_zh }, again: () => Games.mfa(d, main, true) });
     B = null;
   }

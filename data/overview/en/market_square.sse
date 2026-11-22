@@ -104,37 +104,49 @@ event: token
 data: {"text": " the"}
 
 event: token
-data: {"text": " Online"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Online"}
 
 event: token
 data: {"text": " Shop"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " Channel"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Channel"}
 
 event: token
 data: {"text": " Manager"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " Payment"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Payment"}
 
 event: token
 data: {"text": " Gateway"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " Online"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Online"}
 
 event: token
 data: {"text": " Booking"}
@@ -143,7 +155,7 @@ event: token
 data: {"text": " Engine"}
 
 event: token
-data: {"text": "."}
+data: {"text": "**."}
 
 event: token
 data: {"text": " You"}
@@ -164,7 +176,10 @@ event: token
 data: {"text": " as"}
 
 event: token
-data: {"text": " Payment"}
+data: {"text": " **"}
+
+event: token
+data: {"text": "Payment"}
 
 event: token
 data: {"text": " Page"}
@@ -176,16 +191,22 @@ event: token
 data: {"text": " Monitoring"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
-data: {"text": " Encryption"}
+data: {"text": " **"}
 
 event: token
-data: {"text": ","}
+data: {"text": "Encryption"}
 
 event: token
-data: {"text": " Web"}
+data: {"text": "**,"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Web"}
 
 event: token
 data: {"text": " Application"}
@@ -194,22 +215,25 @@ event: token
 data: {"text": " Firewall"}
 
 event: token
-data: {"text": ","}
+data: {"text": "**,"}
 
 event: token
 data: {"text": " and"}
 
 event: token
-data: {"text": " D"}
+data: {"text": " **"}
 
 event: token
-data: {"text": "Do"}
+data: {"text": "DD"}
 
 event: token
-data: {"text": "S"}
+data: {"text": "oS"}
 
 event: token
 data: {"text": " Protection"}
+
+event: token
+data: {"text": "**"}
 
 event: token
 data: {"text": " here"}
@@ -221,10 +245,22 @@ event: token
 data: {"text": " The"}
 
 event: token
-data: {"text": " Marketing"}
+data: {"text": " department"}
 
 event: token
-data: {"text": " department"}
+data: {"text": " based"}
+
+event: token
+data: {"text": " here"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Marketing"}
 
 event: token
 data: {"text": " ("}
@@ -248,20 +284,8 @@ event: token
 data: {"text": "0"}
 
 event: token
-data: {"text": ")"}
-
-event: token
-data: {"text": " is"}
-
-event: token
-data: {"text": " based"}
-
-event: token
-data: {"text": " here"}
-
-event: token
-data: {"text": "."}
+data: {"text": ")**."}
 
 event: done
-data: {"answer": "This place is **Market Square · Online Sales**, where the resort handles online room and souvenir sales via the booking engine and web shop. It contains systems like the Online Shop, Channel Manager, Payment Gateway, and Online Booking Engine. You can see controls such as Payment Page Script Monitoring, Encryption, Web Application Firewall, and DDoS Protection here. The Marketing department (ext. 1400) is based here.", "go": [], "followups": [{"text": "What does the Online Shop do?", "en": "What does the Online Shop do?", "zh": "線上商店是做什麼的？"}, {"text": "How do we prevent DDoS on online services?", "en": "How do we prevent DDoS on online services?", "zh": "分散式阻斷服務攻擊要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.14, "total_s": 10.16}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "market_square", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "market_square"}, "rows": 1, "ms": 7.2}], "graph": {"nodes": [{"key": "market_square", "label": "Room", "en": "Market Square", "zh": "市集廣場"}, {"key": "web_shop", "label": "System", "en": "Online Shop", "zh": "線上商店"}, {"key": "channel_manager", "label": "System", "en": "Channel Manager", "zh": "通路管理系統"}, {"key": "payment_gateway", "label": "System", "en": "Payment Gateway", "zh": "金流閘道"}, {"key": "booking_engine", "label": "System", "en": "Online Booking Engine", "zh": "線上訂房系統"}, {"key": "ddos", "label": "Threat", "en": "DDoS on Online Services", "zh": "分散式阻斷服務攻擊"}, {"key": "web_skimming", "label": "Threat", "en": "Web Skimming (Magecart)", "zh": "網頁側錄（Magecart）"}, {"key": "payment_page_monitoring", "label": "Control", "en": "Payment Page Script Monitoring", "zh": "付款頁面腳本監控"}, {"key": "encryption", "label": "Control", "en": "Encryption (Disk, Data & TLS)", "zh": "加密（磁碟、資料、傳輸）"}, {"key": "waf_ddos", "label": "Control", "en": "Web Application Firewall & DDoS Protection", "zh": "網站應用防火牆與 DDoS 防護"}, {"key": "c_tokenization", "label": "Concept", "en": "Tokenization", "zh": "代碼化"}, {"key": "c_pci_scope", "label": "Concept", "en": "Cardholder Data Environment (PCI scope)", "zh": "持卡人資料環境（PCI 範圍）"}, {"key": "c_shared_responsibility", "label": "Concept", "en": "Shared Responsibility (Cloud & SaaS)", "zh": "共同責任（雲端與 SaaS）"}], "edges": [{"a": "booking_engine", "t": "LOCATED_IN", "b": "market_square"}, {"a": "channel_manager", "t": "LOCATED_IN", "b": "market_square"}, {"a": "payment_gateway", "t": "LOCATED_IN", "b": "market_square"}, {"a": "web_shop", "t": "SENDS_TO", "b": "payment_gateway"}, {"a": "web_shop", "t": "LOCATED_IN", "b": "market_square"}, {"a": "web_skimming", "t": "TARGETS", "b": "booking_engine"}, {"a": "web_skimming", "t": "TARGETS", "b": "web_shop"}, {"a": "web_skimming", "t": "SHOWN_IN", "b": "market_square"}, {"a": "ddos", "t": "TARGETS", "b": "booking_engine"}, {"a": "ddos", "t": "TARGETS", "b": "web_shop"}, {"a": "ddos", "t": "SHOWN_IN", "b": "market_square"}, {"a": "c_tokenization", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_tokenization", "t": "RELATED_TO", "b": "payment_gateway"}, {"a": "c_pci_scope", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_shared_responsibility", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_shared_responsibility", "t": "RELATED_TO", "b": "payment_gateway"}, {"a": "payment_page_monitoring", "t": "SEEN_IN", "b": "market_square"}, {"a": "payment_page_monitoring", "t": "PROTECTS", "b": "web_shop"}, {"a": "payment_page_monitoring", "t": "PROTECTS", "b": "booking_engine"}, {"a": "payment_page_monitoring", "t": "MITIGATES", "b": "web_skimming"}, {"a": "waf_ddos", "t": "SEEN_IN", "b": "market_square"}, {"a": "waf_ddos", "t": "PROTECTS", "b": "booking_engine"}, {"a": "waf_ddos", "t": "PROTECTS", "b": "web_shop"}, {"a": "waf_ddos", "t": "MITIGATES", "b": "ddos"}, {"a": "encryption", "t": "SEEN_IN", "b": "market_square"}, {"a": "encryption", "t": "PROTECTS", "b": "booking_engine"}]}, "tool_used": "room_overview", "facts": "Room: Market Square · Online Sales\nWhat it shows: The resort sells rooms and souvenirs online through the booking engine and web shop, and a payment gateway handles payments.\nKey lesson: Protect the payment page and the website from skimming and attacks.\nDepartment based here: Marketing (ext. 1400)\nSystems here: Online Shop, Channel Manager, Payment Gateway, Online Booking Engine\nThreats shown here: DDoS on Online Services, Web Skimming (Magecart)\nControls you can see: Payment Page Script Monitoring, Encryption (Disk, Data & TLS), Web Application Firewall & DDoS Protection\nConcepts: Tokenization, Cardholder Data Environment (PCI scope), Shared Responsibility (Cloud & SaaS)\nExits: Museum of Cyber Incidents, Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), Lavender Farm · Smart Sensors, Harbour Square · Suppliers", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.14, "load_s": 0.01, "prompt_tokens": 634, "prompt_s": 2.42, "gen_tokens": 87, "gen_s": 7.69, "tok_per_s": 11.3, "first_token_s": 2.45}}, "state": {}}
+data: {"answer": "This place is **Market Square · Online Sales**, where the resort handles online room and souvenir sales via the booking engine and web shop. It contains systems like the **Online Shop**, **Channel Manager**, **Payment Gateway**, and **Online Booking Engine**. You can see controls such as **Payment Page Script Monitoring**, **Encryption**, **Web Application Firewall**, and **DDoS Protection** here. The department based here is **Marketing (ext. 1400)**.", "go": [], "followups": [{"text": "What does the Online Shop do?", "en": "What does the Online Shop do?", "zh": "線上商店是做什麼的？"}, {"text": "How do we prevent DDoS on online services?", "en": "How do we prevent DDoS on online services?", "zh": "分散式阻斷服務攻擊要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.61, "total_s": 9.63}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "market_square", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "market_square"}, "rows": 1, "ms": 7.8}], "graph": {"nodes": [{"key": "market_square", "label": "Room", "en": "Market Square", "zh": "市集廣場"}, {"key": "web_shop", "label": "System", "en": "Online Shop", "zh": "線上商店"}, {"key": "channel_manager", "label": "System", "en": "Channel Manager", "zh": "通路管理系統"}, {"key": "payment_gateway", "label": "System", "en": "Payment Gateway", "zh": "金流閘道"}, {"key": "booking_engine", "label": "System", "en": "Online Booking Engine", "zh": "線上訂房系統"}, {"key": "ddos", "label": "Threat", "en": "DDoS on Online Services", "zh": "分散式阻斷服務攻擊"}, {"key": "web_skimming", "label": "Threat", "en": "Web Skimming (Magecart)", "zh": "網頁側錄（Magecart）"}, {"key": "payment_page_monitoring", "label": "Control", "en": "Payment Page Script Monitoring", "zh": "付款頁面腳本監控"}, {"key": "encryption", "label": "Control", "en": "Encryption (Disk, Data & TLS)", "zh": "加密（磁碟、資料、傳輸）"}, {"key": "waf_ddos", "label": "Control", "en": "Web Application Firewall & DDoS Protection", "zh": "網站應用防火牆與 DDoS 防護"}, {"key": "c_tokenization", "label": "Concept", "en": "Tokenization", "zh": "代碼化"}, {"key": "c_pci_scope", "label": "Concept", "en": "Cardholder Data Environment (PCI scope)", "zh": "持卡人資料環境（PCI 範圍）"}, {"key": "c_shared_responsibility", "label": "Concept", "en": "Shared Responsibility (Cloud & SaaS)", "zh": "共同責任（雲端與 SaaS）"}], "edges": [{"a": "booking_engine", "t": "LOCATED_IN", "b": "market_square"}, {"a": "channel_manager", "t": "LOCATED_IN", "b": "market_square"}, {"a": "payment_gateway", "t": "LOCATED_IN", "b": "market_square"}, {"a": "web_shop", "t": "SENDS_TO", "b": "payment_gateway"}, {"a": "web_shop", "t": "LOCATED_IN", "b": "market_square"}, {"a": "web_skimming", "t": "TARGETS", "b": "booking_engine"}, {"a": "web_skimming", "t": "TARGETS", "b": "web_shop"}, {"a": "web_skimming", "t": "SHOWN_IN", "b": "market_square"}, {"a": "ddos", "t": "TARGETS", "b": "booking_engine"}, {"a": "ddos", "t": "TARGETS", "b": "web_shop"}, {"a": "ddos", "t": "SHOWN_IN", "b": "market_square"}, {"a": "c_tokenization", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_tokenization", "t": "RELATED_TO", "b": "payment_gateway"}, {"a": "c_pci_scope", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_shared_responsibility", "t": "TAUGHT_IN", "b": "market_square"}, {"a": "c_shared_responsibility", "t": "RELATED_TO", "b": "payment_gateway"}, {"a": "payment_page_monitoring", "t": "SEEN_IN", "b": "market_square"}, {"a": "payment_page_monitoring", "t": "PROTECTS", "b": "web_shop"}, {"a": "payment_page_monitoring", "t": "PROTECTS", "b": "booking_engine"}, {"a": "payment_page_monitoring", "t": "MITIGATES", "b": "web_skimming"}, {"a": "waf_ddos", "t": "SEEN_IN", "b": "market_square"}, {"a": "waf_ddos", "t": "PROTECTS", "b": "booking_engine"}, {"a": "waf_ddos", "t": "PROTECTS", "b": "web_shop"}, {"a": "waf_ddos", "t": "MITIGATES", "b": "ddos"}, {"a": "encryption", "t": "SEEN_IN", "b": "market_square"}, {"a": "encryption", "t": "PROTECTS", "b": "booking_engine"}]}, "tool_used": "room_overview", "facts": "Room: Market Square · Online Sales\nWhat it shows: The resort sells rooms and souvenirs online through the booking engine and web shop, and a payment gateway handles payments.\nKey lesson: Protect the payment page and the website from skimming and attacks.\nDepartment based here: Marketing (ext. 1400)\nSystems here: Online Shop, Channel Manager, Payment Gateway, Online Booking Engine\nThreats shown here: DDoS on Online Services, Web Skimming (Magecart)\nControls you can see: Payment Page Script Monitoring, Encryption (Disk, Data & TLS), Web Application Firewall & DDoS Protection\nConcepts: Tokenization, Cardholder Data Environment (PCI scope), Shared Responsibility (Cloud & SaaS)\nExits: Museum of Cyber Incidents, Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), Lavender Farm · Smart Sensors, Harbour Square · Suppliers", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.61, "load_s": 0.01, "prompt_tokens": 625, "prompt_s": 2.58, "gen_tokens": 95, "gen_s": 7.0, "tok_per_s": 13.6, "first_token_s": 2.61}}, "state": {}}
 

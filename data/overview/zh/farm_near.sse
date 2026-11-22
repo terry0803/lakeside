@@ -5,7 +5,7 @@ event: route
 data: {"tool": "room_overview", "target": "", "how": "button"}
 
 event: card
-data: {"type": "sections", "label": "Room", "title": {"en": "Farm Close-up · Sensor Gateway", "zh": "農莊近看・感測閘道器"}, "subtitle": {"en": "Farm · Up Close", "zh": "農莊近看"}, "text": {"en": "The sensor gateway box that connects the farm to the network.", "zh": "把農莊接上網路的感測閘道器。"}, "note": {"en": "Check the label: default passwords and old firmware are open doors.", "zh": "看一下標籤：預設密碼和舊韌體就是敞開的門。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "farm_iot", "en": "Farm Sensors & Gateway", "zh": "農莊感測器與閘道器"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "iot_default", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "patch_management", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "secure_config", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "farm", "en": "Lavender Farm · Smart Sensors", "zh": "薰衣草農莊・智慧感測器", "base_en": "Lavender Farm", "base_zh": "薰衣草農莊", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=7", "tour": "B"}]}]}
+data: {"type": "sections", "label": "Room", "title": {"en": "Farm Close-up · Sensor Gateway", "zh": "農莊近看・感測閘道器"}, "subtitle": {"en": "Farm · Up Close", "zh": "農莊近看"}, "text": {"en": "The sensor gateway box that connects the farm to the network.", "zh": "把農莊接上網路的感測閘道器。"}, "note": {"en": "Check the label: default passwords and old firmware are open doors.", "zh": "看一下標籤：預設密碼和舊韌體就是敞開的門。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡藏著 1 個漏洞"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "farm_iot", "en": "Farm Sensors & Gateway", "zh": "農莊感測器與閘道器"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "iot_default", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "patch_management", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "secure_config", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "farm", "en": "Lavender Farm · Smart Sensors", "zh": "薰衣草農莊・智慧感測器", "base_en": "Lavender Farm", "base_zh": "薰衣草農莊", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=7", "tour": "B"}]}]}
 
 event: token
 data: {"text": "這裡"}
@@ -62,7 +62,7 @@ event: token
 data: {"text": "的是"}
 
 event: token
-data: {"text": "將"}
+data: {"text": "把"}
 
 event: token
 data: {"text": "農"}
@@ -98,9 +98,6 @@ event: token
 data: {"text": "器"}
 
 event: token
-data: {"text": "系統"}
-
-event: token
 data: {"text": "。"}
 
 event: token
@@ -114,15 +111,6 @@ data: {"text": "標籤"}
 
 event: token
 data: {"text": "上的"}
-
-event: token
-data: {"text": "資訊"}
-
-event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "注意"}
 
 event: token
 data: {"text": "預"}
@@ -146,7 +134,16 @@ event: token
 data: {"text": "體"}
 
 event: token
-data: {"text": "屬於"}
+data: {"text": "，"}
+
+event: token
+data: {"text": "這兩"}
+
+event: token
+data: {"text": "項"}
+
+event: token
+data: {"text": "都是"}
 
 event: token
 data: {"text": "敞"}
@@ -155,110 +152,59 @@ event: token
 data: {"text": "開"}
 
 event: token
-data: {"text": "的安全"}
+data: {"text": "的"}
 
 event: token
-data: {"text": "漏洞"}
+data: {"text": "門"}
 
 event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "此"}
+data: {"text": "這個"}
 
 event: token
-data: {"text": "處"}
+data: {"text": "房間"}
 
 event: token
-data: {"text": "主要"}
+data: {"text": "藏"}
 
 event: token
-data: {"text": "威脅"}
+data: {"text": "著"}
 
 event: token
-data: {"text": "為"}
+data: {"text": " 1"}
 
 event: token
-data: {"text": "不"}
+data: {"text": " 個"}
 
 event: token
-data: {"text": "安全的"}
-
-event: token
-data: {"text": "物"}
-
-event: token
-data: {"text": "聯網"}
-
-event: token
-data: {"text": "設備"}
+data: {"text": "漏洞"}
 
 event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "建議"}
+data: {"text": "你可以"}
 
 event: token
-data: {"text": "您"}
+data: {"text": "繼續"}
 
 event: token
-data: {"text": "進行"}
+data: {"text": "探索"}
 
 event: token
-data: {"text": "修"}
+data: {"text": "來"}
 
 event: token
-data: {"text": "補"}
+data: {"text": "尋找"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "它"}
 
 event: token
-data: {"text": "弱"}
-
-event: token
-data: {"text": "點"}
-
-event: token
-data: {"text": "管理"}
-
-event: token
-data: {"text": "並"}
-
-event: token
-data: {"text": "設定"}
-
-event: token
-data: {"text": "安全"}
-
-event: token
-data: {"text": "組"}
-
-event: token
-data: {"text": "態"}
-
-event: token
-data: {"text": "（"}
-
-event: token
-data: {"text": "不使用"}
-
-event: token
-data: {"text": "預"}
-
-event: token
-data: {"text": "設"}
-
-event: token
-data: {"text": "密碼"}
-
-event: token
-data: {"text": "）。"}
-
-event: replace
-data: {"text": "這裡是「農莊近看・感測閘道器」房間，展示的是將農莊接上網路的感測閘道器系統。請查看標籤上的資訊，注意預設密碼和舊韌體屬於敞開的安全漏洞。此處主要威脅為不安全的物聯網設備，建議你進行修補、弱點管理並設定安全組態（不使用預設密碼）。"}
+data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是「農莊近看・感測閘道器」房間，展示的是將農莊接上網路的感測閘道器系統。請查看標籤上的資訊，注意預設密碼和舊韌體屬於敞開的安全漏洞。此處主要威脅為不安全的物聯網設備，建議你進行修補、弱點管理並設定安全組態（不使用預設密碼）。", "go": [], "followups": [{"text": "農莊感測器與閘道器是做什麼的？", "en": "What does the Farm Sensors & Gateway do?", "zh": "農莊感測器與閘道器是做什麼的？"}, {"text": "不安全的物聯網設備要怎麼防？", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.23, "total_s": 9.24}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "farm_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "farm_near"}, "rows": 1, "ms": 5.5}], "graph": {"nodes": [{"key": "farm_near", "label": "Room", "en": "Farm · Up Close", "zh": "農莊近看"}, {"key": "farm_iot", "label": "System", "en": "Farm Sensors & Gateway", "zh": "農莊感測器與閘道器"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "patch_management", "label": "Control", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "secure_config", "label": "Control", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}], "edges": [{"a": "farm_iot", "t": "LOCATED_IN", "b": "farm_near"}, {"a": "iot_default", "t": "TARGETS", "b": "farm_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "farm_near"}, {"a": "patch_management", "t": "SEEN_IN", "b": "farm_near"}, {"a": "patch_management", "t": "PROTECTS", "b": "farm_iot"}, {"a": "patch_management", "t": "MITIGATES", "b": "iot_default"}, {"a": "secure_config", "t": "SEEN_IN", "b": "farm_near"}, {"a": "secure_config", "t": "PROTECTS", "b": "farm_iot"}, {"a": "secure_config", "t": "MITIGATES", "b": "iot_default"}]}, "tool_used": "room_overview", "facts": "房間：農莊近看・感測閘道器\n代表的資訊主題：把農莊接上網路的感測閘道器。\n重點：看一下標籤：預設密碼和舊韌體就是敞開的門。\n這裡的系統：農莊感測器與閘道器\n這裡要注意的威脅：不安全的物聯網設備\n看得到的防護措施：修補與弱點管理、安全組態（不用預設密碼）\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：薰衣草農莊・智慧感測器", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.22, "load_s": 0.01, "prompt_tokens": 586, "prompt_s": 2.14, "gen_tokens": 87, "gen_s": 7.06, "tok_per_s": 12.3, "first_token_s": 2.16}}, "state": {}}
+data: {"answer": "這裡是「農莊近看・感測閘道器」房間，展示的是把農莊接上網路的感測閘道器。請查看標籤上的預設密碼和舊韌體，這兩項都是敞開的門。這個房間藏著 1 個漏洞，你可以繼續探索來尋找它。", "go": [], "followups": [{"text": "農莊感測器與閘道器是做什麼的？", "en": "What does the Farm Sensors & Gateway do?", "zh": "農莊感測器與閘道器是做什麼的？"}, {"text": "不安全的物聯網設備要怎麼防？", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.61, "total_s": 7.63}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "farm_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "farm_near"}, "rows": 1, "ms": 5.2}], "graph": {"nodes": [{"key": "farm_near", "label": "Room", "en": "Farm · Up Close", "zh": "農莊近看"}, {"key": "farm_iot", "label": "System", "en": "Farm Sensors & Gateway", "zh": "農莊感測器與閘道器"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "patch_management", "label": "Control", "en": "Patch & Vulnerability Management", "zh": "修補與弱點管理"}, {"key": "secure_config", "label": "Control", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}], "edges": [{"a": "farm_iot", "t": "LOCATED_IN", "b": "farm_near"}, {"a": "iot_default", "t": "TARGETS", "b": "farm_iot"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "farm_near"}, {"a": "patch_management", "t": "SEEN_IN", "b": "farm_near"}, {"a": "patch_management", "t": "PROTECTS", "b": "farm_iot"}, {"a": "patch_management", "t": "MITIGATES", "b": "iot_default"}, {"a": "secure_config", "t": "SEEN_IN", "b": "farm_near"}, {"a": "secure_config", "t": "PROTECTS", "b": "farm_iot"}, {"a": "secure_config", "t": "MITIGATES", "b": "iot_default"}]}, "tool_used": "room_overview", "facts": "房間：農莊近看・感測閘道器\n這裡講的是：把農莊接上網路的感測閘道器。\n重點：看一下標籤：預設密碼和舊韌體就是敞開的門。\n這裡的系統：農莊感測器與閘道器\n這裡要注意的威脅：不安全的物聯網設備\n看得到的防護措施：修補與弱點管理、安全組態（不用預設密碼）\n這個房間藏著 1 個漏洞（讓玩家自己找，不要說出來）\n可以走到：薰衣草農莊・智慧感測器", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.47, "load_s": 0.01, "prompt_tokens": 660, "prompt_s": 2.31, "gen_tokens": 72, "gen_s": 5.13, "tok_per_s": 14.0, "first_token_s": 2.34}}, "state": {}}
 

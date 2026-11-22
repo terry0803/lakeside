@@ -23,19 +23,13 @@ event: token
 data: {"text": "堤"}
 
 event: token
-data: {"text": "、"}
+data: {"text": "系統"}
 
 event: token
-data: {"text": "小"}
+data: {"text": "，"}
 
 event: token
-data: {"text": "燈"}
-
-event: token
-data: {"text": "塔"}
-
-event: token
-data: {"text": "、"}
+data: {"text": "包含"}
 
 event: token
 data: {"text": "防火"}
@@ -74,16 +68,13 @@ event: token
 data: {"text": "IPS"}
 
 event: token
-data: {"text": "）"}
+data: {"text": "）。"}
 
 event: token
-data: {"text": "系統"}
+data: {"text": "\n你可以"}
 
 event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "以及"}
+data: {"text": "看到"}
 
 event: token
 data: {"text": "網"}
@@ -95,22 +86,22 @@ event: token
 data: {"text": "隔離"}
 
 event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "防護"}
+
+event: token
 data: {"text": "措施"}
 
 event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "這些"}
-
-event: token
-data: {"text": "設施"}
+data: {"text": "\n這"}
 
 event: token
 data: {"text": "展示了"}
-
-event: token
-data: {"text": "「"}
 
 event: token
 data: {"text": "縱"}
@@ -122,16 +113,10 @@ event: token
 data: {"text": "防禦"}
 
 event: token
-data: {"text": "」"}
-
-event: token
 data: {"text": "的概念"}
 
 event: token
 data: {"text": "，"}
-
-event: token
-data: {"text": "說明"}
 
 event: token
 data: {"text": "單"}
@@ -149,80 +134,53 @@ event: token
 data: {"text": "不夠"}
 
 event: token
-data: {"text": "，"}
-
-event: token
-data: {"text": "還"}
-
-event: token
-data: {"text": "需要"}
-
-event: token
-data: {"text": "多"}
-
-event: token
-data: {"text": "層"}
-
-event: token
-data: {"text": "防護"}
+data: {"text": "用"}
 
 event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "你可以"}
+data: {"text": "\n小"}
 
 event: token
-data: {"text": "繼續"}
+data: {"text": "燈"}
 
 event: token
-data: {"text": "走到"}
+data: {"text": "塔"}
 
 event: token
-data: {"text": "蒸汽"}
+data: {"text": "代表"}
 
 event: token
-data: {"text": "船"}
+data: {"text": "入侵"}
 
 event: token
-data: {"text": "甲板"}
+data: {"text": "偵"}
 
 event: token
-data: {"text": "・"}
+data: {"text": "測"}
 
 event: token
-data: {"text": "行動"}
+data: {"text": "，"}
 
 event: token
-data: {"text": "辦公"}
+data: {"text": "有"}
 
 event: token
-data: {"text": "或"}
+data: {"text": "狀況"}
 
 event: token
-data: {"text": "港口"}
+data: {"text": "會"}
 
 event: token
-data: {"text": "廣場"}
+data: {"text": "亮"}
 
 event: token
-data: {"text": "・"}
-
-event: token
-data: {"text": "供應商"}
-
-event: token
-data: {"text": "查看"}
-
-event: token
-data: {"text": "其他"}
-
-event: token
-data: {"text": "區域"}
+data: {"text": "起來"}
 
 event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡有防波堤、小燈塔、防火牆、入侵偵測與防禦（IDS/IPS）系統，以及網段隔離措施。這些設施展示了「縱深防禦」的概念，說明單靠防火牆不夠，還需要多層防護。你可以繼續走到蒸汽船甲板・行動辦公或港口廣場・供應商查看其他區域。", "go": [], "followups": [{"text": "防火牆是做什麼的？", "en": "What does the Firewall do?", "zh": "防火牆是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.81, "total_s": 8.82}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "breakwater", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "breakwater"}, "rows": 1, "ms": 6.7}], "graph": {"nodes": [{"key": "breakwater", "label": "Room", "en": "Breakwater", "zh": "防波堤"}, {"key": "firewall", "label": "System", "en": "Firewall", "zh": "防火牆"}, {"key": "ids", "label": "System", "en": "Intrusion Detection & Prevention (IDS/IPS)", "zh": "入侵偵測與防禦（IDS/IPS）"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}, {"key": "firewall_ids", "label": "Control", "en": "Firewall & Intrusion Detection", "zh": "防火牆與入侵偵測"}, {"key": "c_defense_in_depth", "label": "Concept", "en": "Defense in Depth", "zh": "縱深防禦"}], "edges": [{"a": "firewall", "t": "LOCATED_IN", "b": "breakwater"}, {"a": "ids", "t": "LOCATED_IN", "b": "breakwater"}, {"a": "c_defense_in_depth", "t": "TAUGHT_IN", "b": "breakwater"}, {"a": "c_defense_in_depth", "t": "RELATED_TO", "b": "firewall_ids"}, {"a": "c_defense_in_depth", "t": "RELATED_TO", "b": "segmentation"}, {"a": "segmentation", "t": "SEEN_IN", "b": "breakwater"}, {"a": "firewall_ids", "t": "SEEN_IN", "b": "breakwater"}]}, "tool_used": "room_overview", "facts": "房間：防波堤・網路邊界\n代表的資訊主題：防波堤擋住外面的浪，就像防火牆；小燈塔像入侵偵測，有狀況就亮起來。\n重點：縱深防禦：只有防火牆不夠。\n這裡的系統：防火牆、入侵偵測與防禦（IDS/IPS）\n看得到的防護措施：網段隔離、防火牆與入侵偵測\n課程概念：縱深防禦\n可以走到：蒸汽船甲板・行動辦公、港口廣場・供應商", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.81, "load_s": 0.01, "prompt_tokens": 560, "prompt_s": 2.33, "gen_tokens": 73, "gen_s": 6.45, "tok_per_s": 11.3, "first_token_s": 2.36}}, "state": {}}
+data: {"answer": "這裡有防波堤系統，包含防火牆、入侵偵測與防禦（IDS/IPS）。\n你可以看到網段隔離的防護措施。\n這展示了縱深防禦的概念，單靠防火牆不夠用。\n小燈塔代表入侵偵測，有狀況會亮起來。", "go": [], "followups": [{"text": "防火牆是做什麼的？", "en": "What does the Firewall do?", "zh": "防火牆是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.54, "total_s": 7.55}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "breakwater", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "breakwater"}, "rows": 1, "ms": 5.6}], "graph": {"nodes": [{"key": "breakwater", "label": "Room", "en": "Breakwater", "zh": "防波堤"}, {"key": "firewall", "label": "System", "en": "Firewall", "zh": "防火牆"}, {"key": "ids", "label": "System", "en": "Intrusion Detection & Prevention (IDS/IPS)", "zh": "入侵偵測與防禦（IDS/IPS）"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}, {"key": "firewall_ids", "label": "Control", "en": "Firewall & Intrusion Detection", "zh": "防火牆與入侵偵測"}, {"key": "c_defense_in_depth", "label": "Concept", "en": "Defense in Depth", "zh": "縱深防禦"}], "edges": [{"a": "firewall", "t": "LOCATED_IN", "b": "breakwater"}, {"a": "ids", "t": "LOCATED_IN", "b": "breakwater"}, {"a": "c_defense_in_depth", "t": "TAUGHT_IN", "b": "breakwater"}, {"a": "c_defense_in_depth", "t": "RELATED_TO", "b": "firewall_ids"}, {"a": "c_defense_in_depth", "t": "RELATED_TO", "b": "segmentation"}, {"a": "segmentation", "t": "SEEN_IN", "b": "breakwater"}, {"a": "firewall_ids", "t": "SEEN_IN", "b": "breakwater"}]}, "tool_used": "room_overview", "facts": "房間：防波堤・網路邊界\n這裡講的是：防波堤擋住外面的浪，就像防火牆；小燈塔像入侵偵測，有狀況就亮起來。\n重點：縱深防禦：只有防火牆不夠。\n這裡的系統：防火牆、入侵偵測與防禦（IDS/IPS）\n看得到的防護措施：網段隔離、防火牆與入侵偵測\n課程概念：縱深防禦\n可以走到：蒸汽船甲板・行動辦公、港口廣場・供應商", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.53, "load_s": 0.01, "prompt_tokens": 636, "prompt_s": 2.63, "gen_tokens": 62, "gen_s": 4.89, "tok_per_s": 12.7, "first_token_s": 2.65}}, "state": {}}
 

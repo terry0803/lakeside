@@ -2,7 +2,7 @@
    The iStaging buttons point here instead of straight at the presenter's laptop:
    - the laptop's assistant is ready: this page goes on to the same address on the laptop (the live assistant and games);
    - it is not (laptop off, server stopped, or the model or the graph not running): the saved copy opens. The map, the
-     place overviews recorded on 2026-11-22, Progress, How it works and the four mini-games work; a new question to the AI
+     place overviews recorded on 2026-11-23, Progress, How it works and the four mini-games work; a new question to the AI
      gets a short note that the AI is off.
    In the saved copy the answers of the laptop's /api/... come from data/ through the fetch() below.
    Built by 知識後端/助理/pages/build_pages.py; edit the template there, not the copy in the site.
@@ -11,7 +11,7 @@
    works; the laptop is not tried when the page around would block it. */
 "use strict";
 (() => {
-  const LIVE = "https://lakeside.taila701b6.ts.net", BASE = "/lakeside", SAVED = "2026-11-22";
+  const LIVE = "https://lakeside.taila701b6.ts.net", BASE = "/lakeside", SAVED = "2026-11-23";
   const GAMES = ["phish", "access", "mfa", "ir"];
   const me = document.currentScript;
   const load = ((me && me.dataset.load) || "").split(/\s+/).filter(Boolean);

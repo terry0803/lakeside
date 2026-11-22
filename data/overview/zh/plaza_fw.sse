@@ -5,7 +5,7 @@ event: route
 data: {"tool": "room_overview", "target": "", "how": "button"}
 
 event: card
-data: {"type": "sections", "label": "Room", "title": {"en": "Plaza · Signage & Public Kiosk", "zh": "湖邊廣場・數位看板與資訊站"}, "subtitle": {"en": "Lakeside Plaza at Night", "zh": "夜晚的湖邊廣場"}, "text": {"en": "Digital signs and a public kiosk show event information; cameras watch the plaza. After 21:00 the bridge to the Lake Pavilion is a staff gate: its code is the SOC's extension, the number you call to report phishing.", "zh": "數位看板和公共資訊站顯示活動資訊，廣場有監視器。晚上九點以後，往湖心館的橋頭是員工通道，密碼是資安監控中心的分機，也就是回報釣魚要打的號碼。"}, "note": {"en": "Lock down public screens and tell people where cameras record them.", "zh": "公共螢幕要鎖好；有監視器的地方要告知。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "signage", "en": "Digital Signage", "zh": "數位看板"}, {"key": "kiosk", "en": "Public Information Kiosk", "zh": "公共資訊站"}, {"key": "event_iot", "en": "Event Lighting & Fireworks Controllers", "zh": "活動燈光與煙火控制器"}, {"key": "cctv", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "signage_hijack", "en": "Signage & Kiosk Tampering", "zh": "看板與資訊站遭竄改"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "kiosk_lockdown", "en": "Kiosk Lockdown & Signage Access Control", "zh": "資訊站鎖定與看板權限"}, {"key": "secure_config", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}, {"key": "privacy_notice_consent", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "cctv_monitoring", "en": "CCTV Monitoring", "zh": "監視器監控"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "pav_lobby", "en": "Lobby · BI Dashboards", "zh": "湖心館大廳・BI 儀表板", "base_en": "Lake Pavilion Lobby", "base_zh": "湖心館大廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=14", "tour": "A"}]}]}
+data: {"type": "sections", "label": "Room", "title": {"en": "Plaza · Signage & Public Kiosk", "zh": "湖邊廣場・數位看板與資訊站"}, "subtitle": {"en": "Lakeside Plaza at Night", "zh": "夜晚的湖邊廣場"}, "text": {"en": "Digital signs and a public kiosk show event information; cameras watch the plaza. After 21:00 the bridge to the Lake Pavilion is a staff gate: its code is the SOC's extension, the number you call to report phishing.", "zh": "數位看板和公共資訊站顯示活動資訊，廣場有監視器。晚上九點以後，往湖心館的橋頭是員工通道，密碼是資安監控中心的分機，也就是回報釣魚要打的號碼。"}, "note": {"en": "Lock down public screens and tell people where cameras record them.", "zh": "公共螢幕要鎖好；有監視器的地方要告知。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "signage", "en": "Digital Signage", "zh": "數位看板"}, {"key": "kiosk", "en": "Public Information Kiosk", "zh": "公共資訊站"}, {"key": "event_iot", "en": "Event Lighting & Fireworks Controllers", "zh": "活動燈光與煙火控制器"}, {"key": "cctv", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "signage_hijack", "en": "Signage & Kiosk Tampering", "zh": "看板與資訊站遭竄改"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "kiosk_lockdown", "en": "Kiosk Lockdown & Signage Access Control", "zh": "資訊站鎖定與看板權限"}, {"key": "secure_config", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}, {"key": "privacy_notice_consent", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "cctv_monitoring", "en": "CCTV Monitoring", "zh": "監視器監控"}]}]}
 
 event: token
 data: {"text": "這裡"}
@@ -41,9 +41,6 @@ event: token
 data: {"text": "燈光"}
 
 event: token
-data: {"text": "與"}
-
-event: token
 data: {"text": "煙"}
 
 event: token
@@ -77,7 +74,7 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "重點"}
+data: {"text": "  \n重點"}
 
 event: token
 data: {"text": "是"}
@@ -101,10 +98,7 @@ event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "且"}
-
-event: token
-data: {"text": "若有"}
+data: {"text": "有"}
 
 event: token
 data: {"text": "監視"}
@@ -116,7 +110,10 @@ event: token
 data: {"text": "地方"}
 
 event: token
-data: {"text": "需"}
+data: {"text": "也要"}
+
+event: token
+data: {"text": "記得"}
 
 event: token
 data: {"text": "告知"}
@@ -125,61 +122,55 @@ event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "若"}
+data: {"text": "  \n晚上"}
 
 event: token
-data: {"text": "發現"}
+data: {"text": "九"}
 
 event: token
-data: {"text": "看板"}
+data: {"text": "點"}
 
 event: token
-data: {"text": "或"}
+data: {"text": "後"}
 
 event: token
-data: {"text": "資訊"}
+data: {"text": "往"}
 
 event: token
-data: {"text": "站"}
+data: {"text": "湖"}
 
 event: token
-data: {"text": "遭"}
+data: {"text": "心"}
 
 event: token
-data: {"text": "竄"}
+data: {"text": "館"}
 
 event: token
-data: {"text": "改"}
+data: {"text": "的"}
+
+event: token
+data: {"text": "橋"}
+
+event: token
+data: {"text": "頭"}
+
+event: token
+data: {"text": "是"}
+
+event: token
+data: {"text": "員工"}
+
+event: token
+data: {"text": "通道"}
 
 event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "請"}
+data: {"text": "密碼"}
 
 event: token
-data: {"text": "回報"}
-
-event: token
-data: {"text": "釣"}
-
-event: token
-data: {"text": "魚"}
-
-event: token
-data: {"text": "要"}
-
-event: token
-data: {"text": "打的"}
-
-event: token
-data: {"text": "號碼"}
-
-event: token
-data: {"text": "（"}
-
-event: token
-data: {"text": "即"}
+data: {"text": "就是"}
 
 event: token
 data: {"text": "資"}
@@ -191,7 +182,7 @@ event: token
 data: {"text": "監控"}
 
 event: token
-data: {"text": "中心"}
+data: {"text": "中心的"}
 
 event: token
 data: {"text": "分"}
@@ -200,8 +191,29 @@ event: token
 data: {"text": "機"}
 
 event: token
+data: {"text": "（"}
+
+event: token
+data: {"text": "也是"}
+
+event: token
+data: {"text": "回報"}
+
+event: token
+data: {"text": "釣"}
+
+event: token
+data: {"text": "魚"}
+
+event: token
+data: {"text": "用的"}
+
+event: token
+data: {"text": "號碼"}
+
+event: token
 data: {"text": "）。"}
 
 event: done
-data: {"answer": "這裡有數位看板、公共資訊站、活動燈光與煙火控制器，以及監視器與錄影系統。重點是公共螢幕要鎖好，且若有監視器的地方需告知。若發現看板或資訊站遭竄改，請回報釣魚要打的號碼（即資安監控中心分機）。", "go": [{"key": "pav_lobby", "en": "Lobby · BI Dashboards", "zh": "湖心館大廳・BI 儀表板", "base_en": "Lake Pavilion Lobby", "base_zh": "湖心館大廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=14", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "數位看板是做什麼的？", "en": "What does the Digital Signage do?", "zh": "數位看板是做什麼的？"}, {"text": "看板與資訊站遭竄改要怎麼防？", "en": "How do we prevent signage & kiosk tampering?", "zh": "看板與資訊站遭竄改要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.53, "total_s": 7.55}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "plaza_fw", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "plaza_fw"}, "rows": 1, "ms": 6.2}], "graph": {"nodes": [{"key": "plaza_fw", "label": "Room", "en": "Lakeside Plaza at Night", "zh": "夜晚的湖邊廣場"}, {"key": "signage", "label": "System", "en": "Digital Signage", "zh": "數位看板"}, {"key": "kiosk", "label": "System", "en": "Public Information Kiosk", "zh": "公共資訊站"}, {"key": "event_iot", "label": "System", "en": "Event Lighting & Fireworks Controllers", "zh": "活動燈光與煙火控制器"}, {"key": "cctv", "label": "System", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}, {"key": "signage_hijack", "label": "Threat", "en": "Signage & Kiosk Tampering", "zh": "看板與資訊站遭竄改"}, {"key": "kiosk_lockdown", "label": "Control", "en": "Kiosk Lockdown & Signage Access Control", "zh": "資訊站鎖定與看板權限"}, {"key": "secure_config", "label": "Control", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}, {"key": "privacy_notice_consent", "label": "Control", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "cctv_monitoring", "label": "Control", "en": "CCTV Monitoring", "zh": "監視器監控"}], "edges": [{"a": "privacy_notice_consent", "t": "SEEN_IN", "b": "plaza_fw"}, {"a": "kiosk_lockdown", "t": "SEEN_IN", "b": "plaza_fw"}, {"a": "kiosk_lockdown", "t": "PROTECTS", "b": "signage"}, {"a": "kiosk_lockdown", "t": "PROTECTS", "b": "kiosk"}, {"a": "kiosk_lockdown", "t": "MITIGATES", "b": "signage_hijack"}, {"a": "cctv", "t": "LOCATED_IN", "b": "plaza_fw"}, {"a": "signage", "t": "LOCATED_IN", "b": "plaza_fw"}, {"a": "kiosk", "t": "LOCATED_IN", "b": "plaza_fw"}, {"a": "event_iot", "t": "LOCATED_IN", "b": "plaza_fw"}, {"a": "signage_hijack", "t": "TARGETS", "b": "signage"}, {"a": "signage_hijack", "t": "TARGETS", "b": "kiosk"}, {"a": "signage_hijack", "t": "SHOWN_IN", "b": "plaza_fw"}, {"a": "secure_config", "t": "SEEN_IN", "b": "plaza_fw"}, {"a": "secure_config", "t": "PROTECTS", "b": "kiosk"}, {"a": "secure_config", "t": "PROTECTS", "b": "signage"}, {"a": "secure_config", "t": "PROTECTS", "b": "event_iot"}, {"a": "secure_config", "t": "MITIGATES", "b": "signage_hijack"}, {"a": "cctv_monitoring", "t": "SEEN_IN", "b": "plaza_fw"}]}, "tool_used": "room_overview", "facts": "房間：湖邊廣場・數位看板與資訊站（導覽裡的名稱：夜晚的湖邊廣場）\n代表的資訊主題：數位看板和公共資訊站顯示活動資訊，廣場有監視器。晚上九點以後，往湖心館的橋頭是員工通道，密碼是資安監控中心的分機，也就是回報釣魚要打的號碼。\n重點：公共螢幕要鎖好；有監視器的地方要告知。\n這裡的系統：數位看板、公共資訊站、活動燈光與煙火控制器、監視器與錄影系統\n這裡要注意的威脅：看板與資訊站遭竄改\n看得到的防護措施：資訊站鎖定與看板權限、安全組態（不用預設密碼）、個資告知與同意、監視器監控\n可以走到：湖心館大廳・BI 儀表板", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.51, "load_s": 0.01, "prompt_tokens": 629, "prompt_s": 2.14, "gen_tokens": 67, "gen_s": 5.34, "tok_per_s": 12.5, "first_token_s": 2.17}}, "state": {}}
+data: {"answer": "這裡有數位看板、公共資訊站、活動燈光煙火控制器，以及監視器與錄影系統。  \n重點是公共螢幕要鎖好，有監視器的地方也要記得告知。  \n晚上九點後往湖心館的橋頭是員工通道，密碼就是資安監控中心的分機（也是回報釣魚用的號碼）。", "go": [], "followups": [{"text": "數位看板是做什麼的？", "en": "What does the Digital Signage do?", "zh": "數位看板是做什麼的？"}, {"text": "看板與資訊站遭竄改要怎麼防？", "en": "How do we prevent signage & kiosk tampering?", "zh": "看板與資訊站遭竄改要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.7, "total_s": 8.71}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "plaza_fw", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "plaza_fw"}, "rows": 1, "ms": 6.5}], "graph": {"nodes": [{"key": "plaza_fw", "label": "Room", "en": "Lakeside Plaza at Night", "zh": "夜晚的湖邊廣場"}, {"key": "signage", "label": "System", "en": "Digital Signage", "zh": "數位看板"}, {"key": "kiosk", "label": "System", "en": "Public Information Kiosk", "zh": "公共資訊站"}, {"key": "event_iot", "label": "System", "en": "Event Lighting & Fireworks Controllers", "zh": "活動燈光與煙火控制器"}, {"key": "cctv", "label": "System", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}, {"key": "signage_hijack", "label": "Threat", "en": "Signage & Kiosk Tampering", "zh": "看板與資訊站遭竄改"}, {"key": "kiosk_lockdown", "label": "Control", "en": "Kiosk Lockdown & Signage Access Control", "zh": "資訊站鎖定與看板權限"}, {"key": "secure_config", "label": "Control", "en": "Secure Configuration (No Default Passwords)", "zh": "安全組態（不用預設密碼）"}, {"key": "privacy_notice_consent", "label": "Control", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "cctv_monitoring", "label": "Control", "en": "CCTV Monitoring", "zh": "監視器監控"}], "edges": [{"a": "privacy_notice_consent", "t": "SEEN_IN", "b": "plaza_fw"}, {"a": "kiosk_lockdown", "t": "SEEN_IN", "b": "plaza_fw"}, {"a": "kiosk_lockdown", "t": "PROTECTS", "b": "signage"}, {"a": "kiosk_lockdown", "t": "PROTECTS", "b": "kiosk"}, {"a": "kiosk_lockdown", "t": "MITIGATES", "b": "signage_hijack"}, {"a": "cctv", "t": "LOCATED_IN", "b": "plaza_fw"}, {"a": "signage", "t": "LOCATED_IN", "b": "plaza_fw"}, {"a": "kiosk", "t": "LOCATED_IN", "b": "plaza_fw"}, {"a": "event_iot", "t": "LOCATED_IN", "b": "plaza_fw"}, {"a": "signage_hijack", "t": "TARGETS", "b": "signage"}, {"a": "signage_hijack", "t": "TARGETS", "b": "kiosk"}, {"a": "signage_hijack", "t": "SHOWN_IN", "b": "plaza_fw"}, {"a": "secure_config", "t": "SEEN_IN", "b": "plaza_fw"}, {"a": "secure_config", "t": "PROTECTS", "b": "kiosk"}, {"a": "secure_config", "t": "PROTECTS", "b": "signage"}, {"a": "secure_config", "t": "PROTECTS", "b": "event_iot"}, {"a": "secure_config", "t": "MITIGATES", "b": "signage_hijack"}, {"a": "cctv_monitoring", "t": "SEEN_IN", "b": "plaza_fw"}]}, "tool_used": "room_overview", "facts": "房間：湖邊廣場・數位看板與資訊站（導覽裡的名稱：夜晚的湖邊廣場）\n這裡講的是：數位看板和公共資訊站顯示活動資訊，廣場有監視器。晚上九點以後，往湖心館的橋頭是員工通道，密碼是資安監控中心的分機，也就是回報釣魚要打的號碼。\n重點：公共螢幕要鎖好；有監視器的地方要告知。\n要繼續往前走：晚上九點以後，往湖心館的橋只開給員工：在門口輸入資安監控中心的分機當密碼，就是負責接釣魚信回報的那個團隊。不知道分機幾號的話，可以問我。\n這裡的系統：數位看板、公共資訊站、活動燈光與煙火控制器、監視器與錄影系統\n這裡要注意的威脅：看板與資訊站遭竄改\n看得到的防護措施：資訊站鎖定與看板權限、安全組態（不用預設密碼）、個資告知與同意、監視器監控", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.69, "load_s": 0.01, "prompt_tokens": 745, "prompt_s": 2.94, "gen_tokens": 72, "gen_s": 5.73, "tok_per_s": 12.6, "first_token_s": 2.96}}, "state": {}}
 

@@ -47,7 +47,55 @@ event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "位於"}
+data: {"text": "顯示"}
+
+event: token
+data: {"text": " POS"}
+
+event: token
+data: {"text": " 和"}
+
+event: token
+data: {"text": "訂房"}
+
+event: token
+data: {"text": "資料"}
+
+event: token
+data: {"text": "轉"}
+
+event: token
+data: {"text": "成的"}
+
+event: token
+data: {"text": "住房"}
+
+event: token
+data: {"text": "率"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "平均"}
+
+event: token
+data: {"text": "房價"}
+
+event: token
+data: {"text": "等"}
+
+event: token
+data: {"text": "指標"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n部門"}
+
+event: token
+data: {"text": "屬於"}
 
 event: token
 data: {"text": "管理部"}
@@ -74,122 +122,98 @@ event: token
 data: {"text": "0"}
 
 event: token
-data: {"text": "）。"}
+data: {"text": "），"}
 
 event: token
 data: {"text": "系統"}
 
 event: token
-data: {"text": "將"}
+data: {"text": "包含"}
 
 event: token
-data: {"text": " POS"}
+data: {"text": " BI"}
 
 event: token
-data: {"text": " 和"}
-
-event: token
-data: {"text": "訂房"}
+data: {"text": " 與"}
 
 event: token
 data: {"text": "資料"}
 
 event: token
-data: {"text": "轉"}
+data: {"text": "倉"}
 
 event: token
-data: {"text": "化為"}
-
-event: token
-data: {"text": "住房"}
-
-event: token
-data: {"text": "率"}
-
-event: token
-data: {"text": "、"}
-
-event: token
-data: {"text": "平均"}
-
-event: token
-data: {"text": "房價"}
-
-event: token
-data: {"text": "及"}
-
-event: token
-data: {"text": "每"}
-
-event: token
-data: {"text": "間"}
-
-event: token
-data: {"text": "可售"}
-
-event: token
-data: {"text": "房"}
-
-event: token
-data: {"text": "收入"}
-
-event: token
-data: {"text": "等"}
-
-event: token
-data: {"text": "指標"}
+data: {"text": "儲"}
 
 event: token
 data: {"text": "。"}
 
 event: token
-data: {"text": "重點"}
+data: {"text": "\n你可以"}
 
 event: token
-data: {"text": "在於"}
+data: {"text": "繼續"}
 
 event: token
-data: {"text": "如何"}
+data: {"text": "走到"}
 
 event: token
-data: {"text": "整理"}
+data: {"text": "湖"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "邊"}
 
 event: token
-data: {"text": "整合"}
+data: {"text": "廣場"}
 
 event: token
-data: {"text": "資料"}
+data: {"text": "看"}
+
+event: token
+data: {"text": "數位"}
+
+event: token
+data: {"text": "看板"}
 
 event: token
 data: {"text": "，"}
 
 event: token
-data: {"text": "使其"}
+data: {"text": "或"}
 
 event: token
-data: {"text": "成為"}
+data: {"text": "去"}
 
 event: token
-data: {"text": "對"}
+data: {"text": " K"}
 
 event: token
-data: {"text": "的"}
+data: {"text": "PI"}
 
 event: token
-data: {"text": "資訊"}
+data: {"text": " 牆"}
 
 event: token
-data: {"text": "與"}
+data: {"text": "、"}
 
 event: token
-data: {"text": "知識"}
+data: {"text": "劇場"}
+
+event: token
+data: {"text": "看"}
+
+event: token
+data: {"text": "頒獎"}
+
+event: token
+data: {"text": "晚"}
+
+event: token
+data: {"text": "會"}
 
 event: token
 data: {"text": "。"}
 
 event: done
-data: {"answer": "這裡是湖心館大廳的 BI 儀表板，位於管理部（分機 1000）。系統將 POS 和訂房資料轉化為住房率、平均房價及每間可售房收入等指標。重點在於如何整理與整合資料，使其成為對的資訊與知識。", "go": [{"key": "pav_theater", "en": "Theater · Awards Night", "zh": "湖心館劇場・頒獎晚會", "base_en": "Lake Pavilion Theater", "base_zh": "湖心館劇場", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=15", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "BI 與資料倉儲是做什麼的？", "en": "What does the BI & Data Warehouse do?", "zh": "BI 與資料倉儲是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.25, "total_s": 7.26}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_lobby", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_lobby"}, "rows": 1, "ms": 5.6}], "graph": {"nodes": [{"key": "pav_lobby", "label": "Room", "en": "Lake Pavilion Lobby", "zh": "湖心館大廳"}, {"key": "bi", "label": "System", "en": "BI & Data Warehouse", "zh": "BI 與資料倉儲"}, {"key": "c_warehouse_lake", "label": "Concept", "en": "Data Warehouse vs Data Lake", "zh": "資料倉儲與資料湖"}, {"key": "c_bi_kpi", "label": "Concept", "en": "BI & Hotel KPIs", "zh": "商業智慧與飯店指標"}, {"key": "c_dikw", "label": "Concept", "en": "DIKW Pyramid", "zh": "DIKW 金字塔（資料、資訊、知識、智慧）"}], "edges": [{"a": "bi", "t": "LOCATED_IN", "b": "pav_lobby"}, {"a": "c_dikw", "t": "TAUGHT_IN", "b": "pav_lobby"}, {"a": "c_dikw", "t": "RELATED_TO", "b": "bi"}, {"a": "c_bi_kpi", "t": "TAUGHT_IN", "b": "pav_lobby"}, {"a": "c_bi_kpi", "t": "RELATED_TO", "b": "bi"}, {"a": "c_warehouse_lake", "t": "TAUGHT_IN", "b": "pav_lobby"}, {"a": "c_warehouse_lake", "t": "RELATED_TO", "b": "bi"}]}, "tool_used": "room_overview", "facts": "房間：湖心館大廳・BI 儀表板\n代表的資訊主題：儀表板把 POS 和訂房資料變成住房率、平均房價、每間可售房收入這些指標。\n重點：資料要整理、整合、給對的人看，才會變成資訊和知識。\n在這裡的部門：管理部（分機 1000）\n這裡的系統：BI 與資料倉儲\n課程概念：資料倉儲與資料湖、商業智慧與飯店指標、DIKW 金字塔（資料、資訊、知識、智慧）\n可以走到：湖邊廣場・數位看板與資訊站（導覽裡的名稱：夜晚的湖邊廣場）、大廳水池對面・KPI 牆、湖心館劇場・頒獎晚會", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.25, "load_s": 0.01, "prompt_tokens": 614, "prompt_s": 2.08, "gen_tokens": 65, "gen_s": 5.14, "tok_per_s": 12.6, "first_token_s": 2.11}}, "state": {}}
+data: {"answer": "這裡是湖心館大廳的 BI 儀表板，顯示 POS 和訂房資料轉成的住房率、平均房價等指標。\n部門屬於管理部（分機 1000），系統包含 BI 與資料倉儲。\n你可以繼續走到湖邊廣場看數位看板，或去 KPI 牆、劇場看頒獎晚會。", "go": [{"key": "pav_theater", "en": "Theater · Awards Night", "zh": "湖心館劇場・頒獎晚會", "base_en": "Lake Pavilion Theater", "base_zh": "湖心館劇場", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=15", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "BI 與資料倉儲是做什麼的？", "en": "What does the BI & Data Warehouse do?", "zh": "BI 與資料倉儲是做什麼的？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.41, "total_s": 8.43}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_lobby", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_lobby"}, "rows": 1, "ms": 6.8}], "graph": {"nodes": [{"key": "pav_lobby", "label": "Room", "en": "Lake Pavilion Lobby", "zh": "湖心館大廳"}, {"key": "bi", "label": "System", "en": "BI & Data Warehouse", "zh": "BI 與資料倉儲"}, {"key": "c_warehouse_lake", "label": "Concept", "en": "Data Warehouse vs Data Lake", "zh": "資料倉儲與資料湖"}, {"key": "c_bi_kpi", "label": "Concept", "en": "BI & Hotel KPIs", "zh": "商業智慧與飯店指標"}, {"key": "c_dikw", "label": "Concept", "en": "DIKW Pyramid", "zh": "DIKW 金字塔（資料、資訊、知識、智慧）"}], "edges": [{"a": "bi", "t": "LOCATED_IN", "b": "pav_lobby"}, {"a": "c_dikw", "t": "TAUGHT_IN", "b": "pav_lobby"}, {"a": "c_dikw", "t": "RELATED_TO", "b": "bi"}, {"a": "c_bi_kpi", "t": "TAUGHT_IN", "b": "pav_lobby"}, {"a": "c_bi_kpi", "t": "RELATED_TO", "b": "bi"}, {"a": "c_warehouse_lake", "t": "TAUGHT_IN", "b": "pav_lobby"}, {"a": "c_warehouse_lake", "t": "RELATED_TO", "b": "bi"}]}, "tool_used": "room_overview", "facts": "房間：湖心館大廳・BI 儀表板\n這裡講的是：儀表板把 POS 和訂房資料變成住房率、平均房價、每間可售房收入這些指標。\n重點：資料要整理、整合、給對的人看，才會變成資訊和知識。\n在這裡的部門：管理部（分機 1000）\n這裡的系統：BI 與資料倉儲\n課程概念：資料倉儲與資料湖、商業智慧與飯店指標、DIKW 金字塔（資料、資訊、知識、智慧）\n可以走到：湖邊廣場・數位看板與資訊站（導覽裡的名稱：夜晚的湖邊廣場）、大廳水池對面・KPI 牆、湖心館劇場・頒獎晚會", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.41, "load_s": 0.0, "prompt_tokens": 690, "prompt_s": 2.67, "gen_tokens": 77, "gen_s": 5.72, "tok_per_s": 13.5, "first_token_s": 2.69}}, "state": {}}
 
