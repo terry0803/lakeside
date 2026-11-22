@@ -1,0 +1,246 @@
+event: start
+data: {"session": "offline", "lang": "en"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Bakery · Supplier Portal", "zh": "麵包店・供應商入口網站"}, "subtitle": {"en": "Bakery", "zh": "麵包店"}, "text": {"en": "The bakery receives the resort's orders through the supplier portal.", "zh": "麵包店透過供應商入口網站接渡假村的訂單。"}, "note": {"en": "Every supplier user needs their own login, never a shared one.", "zh": "供應商的每個人都要有自己的帳號，不能共用。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "supplier_portal", "en": "Supplier Portal", "zh": "供應商入口網站"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "supply_chain", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "vendor_management", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "unique_ids", "en": "Individual Accounts (No Shared Logins)", "zh": "個人帳號（不共用）"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "town_square", "en": "Harbour Square · Suppliers", "zh": "港口廣場・供應商", "base_en": "Harbour Square", "base_zh": "港口廣場", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=1", "tour": "B"}]}]}
+
+event: token
+data: {"text": "This"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "B"}
+
+event: token
+data: {"text": "ak"}
+
+event: token
+data: {"text": "ery"}
+
+event: token
+data: {"text": " ·"}
+
+event: token
+data: {"text": " Supplier"}
+
+event: token
+data: {"text": " Portal"}
+
+event: token
+data: {"text": "**"}
+
+event: token
+data: {"text": " room"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " It"}
+
+event: token
+data: {"text": " shows"}
+
+event: token
+data: {"text": " how"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " bakery"}
+
+event: token
+data: {"text": " receives"}
+
+event: token
+data: {"text": " orders"}
+
+event: token
+data: {"text": " via"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Supplier"}
+
+event: token
+data: {"text": " Portal"}
+
+event: token
+data: {"text": "**."}
+
+event: token
+data: {"text": " You"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": " for"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Vendor"}
+
+event: token
+data: {"text": " Risk"}
+
+event: token
+data: {"text": " Management"}
+
+event: token
+data: {"text": "**,"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Individual"}
+
+event: token
+data: {"text": " Accounts"}
+
+event: token
+data: {"text": " ("}
+
+event: token
+data: {"text": "No"}
+
+event: token
+data: {"text": " Shared"}
+
+event: token
+data: {"text": " Log"}
+
+event: token
+data: {"text": "ins"}
+
+event: token
+data: {"text": ")**,"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " a"}
+
+event: token
+data: {"text": " threat"}
+
+event: token
+data: {"text": " of"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Third"}
+
+event: token
+data: {"text": "-"}
+
+event: token
+data: {"text": "Party"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " Supply"}
+
+event: token
+data: {"text": "-"}
+
+event: token
+data: {"text": "Chain"}
+
+event: token
+data: {"text": " Comp"}
+
+event: token
+data: {"text": "romise"}
+
+event: token
+data: {"text": "**."}
+
+event: token
+data: {"text": " There"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "1"}
+
+event: token
+data: {"text": " hidden"}
+
+event: token
+data: {"text": " security"}
+
+event: token
+data: {"text": " weakness"}
+
+event: token
+data: {"text": "**"}
+
+event: token
+data: {"text": " in"}
+
+event: token
+data: {"text": " this"}
+
+event: token
+data: {"text": " room"}
+
+event: token
+data: {"text": " that"}
+
+event: token
+data: {"text": " you"}
+
+event: token
+data: {"text": " have"}
+
+event: token
+data: {"text": " not"}
+
+event: token
+data: {"text": " found"}
+
+event: token
+data: {"text": " yet"}
+
+event: token
+data: {"text": "."}
+
+event: done
+data: {"answer": "This is the **Bakery · Supplier Portal** room. It shows how the bakery receives orders via the **Supplier Portal**. You can see controls for **Vendor Risk Management**, **Individual Accounts (No Shared Logins)**, and a threat of **Third-Party & Supply-Chain Compromise**. There is **1 hidden security weakness** in this room that you have not found yet.", "go": [], "followups": [{"text": "What does the Supplier Portal do?", "en": "What does the Supplier Portal do?", "zh": "供應商入口網站是做什麼的？"}, {"text": "How do we prevent Third-Party & Supply-Chain compromise?", "en": "How do we prevent Third-Party & Supply-Chain compromise?", "zh": "第三方與供應鏈入侵要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.19, "total_s": 9.2}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "bakery_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "bakery_in"}, "rows": 1, "ms": 5.7}], "graph": {"nodes": [{"key": "bakery_in", "label": "Room", "en": "Bakery", "zh": "麵包店"}, {"key": "supplier_portal", "label": "System", "en": "Supplier Portal", "zh": "供應商入口網站"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "unique_ids", "label": "Control", "en": "Individual Accounts (No Shared Logins)", "zh": "個人帳號（不共用）"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "bakery_in"}, {"a": "vendor_management", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "supplier_portal", "t": "LOCATED_IN", "b": "bakery_in"}, {"a": "supply_chain", "t": "TARGETS", "b": "supplier_portal"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "bakery_in"}, {"a": "unique_ids", "t": "SEEN_IN", "b": "bakery_in"}, {"a": "unique_ids", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "unique_ids", "t": "MITIGATES", "b": "supply_chain"}]}, "tool_used": "room_overview", "facts": "Room: Bakery · Supplier Portal\nWhat it shows: The bakery receives the resort's orders through the supplier portal.\nKey lesson: Every supplier user needs their own login, never a shared one.\nSystems here: Supplier Portal\nThreats shown here: Third-Party & Supply-Chain Compromise\nControls you can see: Vendor Risk Management, Individual Accounts (No Shared Logins)\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Harbour Square · Suppliers", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.19, "load_s": 0.01, "prompt_tokens": 554, "prompt_s": 2.55, "gen_tokens": 79, "gen_s": 6.62, "tok_per_s": 11.9, "first_token_s": 2.57}}, "state": {}}
+

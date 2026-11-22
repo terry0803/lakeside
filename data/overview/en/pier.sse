@@ -1,0 +1,315 @@
+event: start
+data: {"session": "offline", "lang": "en"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Pier · Deliveries & Vendors", "zh": "會館碼頭・進貨與廠商"}, "subtitle": {"en": "Clubhouse Pier", "zh": "會館碼頭"}, "text": {"en": "Suppliers deliver by boat; vendors also deliver software, support and remote access.", "zh": "供應商從碼頭送貨；廠商也提供軟體、維護和遠端連線。"}, "note": {"en": "Assess vendors before trusting them, and confirm any change to their bank details by phone.", "zh": "廠商要先評估；對方說要換匯款帳戶，一定打電話確認。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "supplier_portal", "en": "Supplier Portal", "zh": "供應商入口網站"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "bec", "en": "Business Email Compromise", "zh": "商務郵件詐騙"}, {"key": "supply_chain", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "vendor_remote_access", "en": "Time-Limited Vendor Access", "zh": "廠商限時遠端存取"}, {"key": "payment_callback", "en": "Payment Change Call-Back", "zh": "匯款變更回撥確認"}, {"key": "vendor_management", "en": "Vendor Risk Management", "zh": "廠商風險管理"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_erp", "en": "Enterprise Resource Planning (ERP)", "zh": "企業資源規劃（ERP）"}, {"key": "c_supply_chain_risk", "en": "Supply-Chain Risk", "zh": "供應鏈風險"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_vendor_access", "en": "A vendor needs remote access", "zh": "廠商要遠端連線"}, {"key": "proc_bank_change", "en": "A supplier asks to change their bank details", "zh": "供應商要求變更匯款帳戶"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "lawn", "en": "Lawn · Assembly Point & Continuity", "zh": "湖邊草地・集合點與營運持續", "base_en": "Lakeside Lawn", "base_zh": "湖邊草地", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=19", "tour": "A"}, {"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A"}, {"key": "rowboat", "en": "On the Lake · Offsite Backup", "zh": "湖面上的小船・異地備份", "base_en": "On the Lake", "base_zh": "湖面上的小船", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=10", "tour": "B"}, {"key": "boat_deck", "en": "Steamer Deck · Working on the Move", "zh": "蒸汽船甲板・行動辦公", "base_en": "Steamer Deck", "base_zh": "蒸汽船甲板", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=8", "tour": "B"}, {"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}]}]}
+
+event: token
+data: {"text": "This"}
+
+event: token
+data: {"text": " place"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "P"}
+
+event: token
+data: {"text": "ier"}
+
+event: token
+data: {"text": " ·"}
+
+event: token
+data: {"text": " Deliver"}
+
+event: token
+data: {"text": "ies"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " V"}
+
+event: token
+data: {"text": "endors"}
+
+event: token
+data: {"text": "**"}
+
+event: token
+data: {"text": " ("}
+
+event: token
+data: {"text": "shown"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " '"}
+
+event: token
+data: {"text": "Club"}
+
+event: token
+data: {"text": "house"}
+
+event: token
+data: {"text": " Pier"}
+
+event: token
+data: {"text": "'"}
+
+event: token
+data: {"text": " in"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " tour"}
+
+event: token
+data: {"text": ")."}
+
+event: token
+data: {"text": " It"}
+
+event: token
+data: {"text": " displays"}
+
+event: token
+data: {"text": " suppliers"}
+
+event: token
+data: {"text": " delivering"}
+
+event: token
+data: {"text": " by"}
+
+event: token
+data: {"text": " boat"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " vendors"}
+
+event: token
+data: {"text": " providing"}
+
+event: token
+data: {"text": " software"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " support"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " remote"}
+
+event: token
+data: {"text": " access"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " You"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": " like"}
+
+event: token
+data: {"text": " Time"}
+
+event: token
+data: {"text": "-L"}
+
+event: token
+data: {"text": "imited"}
+
+event: token
+data: {"text": " Vendor"}
+
+event: token
+data: {"text": " Access"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " Payment"}
+
+event: token
+data: {"text": " Change"}
+
+event: token
+data: {"text": " Call"}
+
+event: token
+data: {"text": "-"}
+
+event: token
+data: {"text": "Back"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " Vendor"}
+
+event: token
+data: {"text": " Risk"}
+
+event: token
+data: {"text": " Management"}
+
+event: token
+data: {"text": " here"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " The"}
+
+event: token
+data: {"text": " Finance"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " Proc"}
+
+event: token
+data: {"text": "urement"}
+
+event: token
+data: {"text": " department"}
+
+event: token
+data: {"text": " ("}
+
+event: token
+data: {"text": "ext"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " 1"}
+
+event: token
+data: {"text": "6"}
+
+event: token
+data: {"text": "0"}
+
+event: token
+data: {"text": "0"}
+
+event: token
+data: {"text": ")"}
+
+event: token
+data: {"text": " operates"}
+
+event: token
+data: {"text": " from"}
+
+event: token
+data: {"text": " this"}
+
+event: token
+data: {"text": " location"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " which"}
+
+event: token
+data: {"text": " also"}
+
+event: token
+data: {"text": " highlights"}
+
+event: token
+data: {"text": " threats"}
+
+event: token
+data: {"text": " such"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " Business"}
+
+event: token
+data: {"text": " Email"}
+
+event: token
+data: {"text": " Comp"}
+
+event: token
+data: {"text": "romise"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " Supply"}
+
+event: token
+data: {"text": "-"}
+
+event: token
+data: {"text": "Chain"}
+
+event: token
+data: {"text": " Comp"}
+
+event: token
+data: {"text": "romise"}
+
+event: token
+data: {"text": "."}
+
+event: done
+data: {"answer": "This place is **Pier · Deliveries & Vendors** (shown as 'Clubhouse Pier' in the tour). It displays suppliers delivering by boat and vendors providing software, support, and remote access. You can see controls like Time-Limited Vendor Access, Payment Change Call-Back, and Vendor Risk Management here. The Finance & Procurement department (ext. 1600) operates from this location, which also highlights threats such as Business Email Compromise and Supply-Chain Compromise.", "go": [], "followups": [{"text": "What does the Supplier Portal do?", "en": "What does the Supplier Portal do?", "zh": "供應商入口網站是做什麼的？"}, {"text": "How do we prevent business email compromise?", "en": "How do we prevent business email compromise?", "zh": "商務郵件詐騙要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.04, "total_s": 9.05}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pier", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pier"}, "rows": 1, "ms": 6.1}], "graph": {"nodes": [{"key": "pier", "label": "Room", "en": "Clubhouse Pier", "zh": "會館碼頭"}, {"key": "supplier_portal", "label": "System", "en": "Supplier Portal", "zh": "供應商入口網站"}, {"key": "bec", "label": "Threat", "en": "Business Email Compromise", "zh": "商務郵件詐騙"}, {"key": "supply_chain", "label": "Threat", "en": "Third-Party & Supply-Chain Compromise", "zh": "第三方與供應鏈入侵"}, {"key": "vendor_remote_access", "label": "Control", "en": "Time-Limited Vendor Access", "zh": "廠商限時遠端存取"}, {"key": "payment_callback", "label": "Control", "en": "Payment Change Call-Back", "zh": "匯款變更回撥確認"}, {"key": "vendor_management", "label": "Control", "en": "Vendor Risk Management", "zh": "廠商風險管理"}, {"key": "c_erp", "label": "Concept", "en": "Enterprise Resource Planning (ERP)", "zh": "企業資源規劃（ERP）"}, {"key": "c_supply_chain_risk", "label": "Concept", "en": "Supply-Chain Risk", "zh": "供應鏈風險"}], "edges": [{"a": "vendor_management", "t": "SEEN_IN", "b": "pier"}, {"a": "vendor_management", "t": "PROTECTS", "b": "supplier_portal"}, {"a": "vendor_management", "t": "MITIGATES", "b": "bec"}, {"a": "vendor_management", "t": "MITIGATES", "b": "supply_chain"}, {"a": "vendor_remote_access", "t": "SEEN_IN", "b": "pier"}, {"a": "vendor_remote_access", "t": "MITIGATES", "b": "supply_chain"}, {"a": "supplier_portal", "t": "LOCATED_IN", "b": "pier"}, {"a": "bec", "t": "SHOWN_IN", "b": "pier"}, {"a": "supply_chain", "t": "TARGETS", "b": "supplier_portal"}, {"a": "supply_chain", "t": "SHOWN_IN", "b": "pier"}, {"a": "c_erp", "t": "TAUGHT_IN", "b": "pier"}, {"a": "c_supply_chain_risk", "t": "TAUGHT_IN", "b": "pier"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "supply_chain"}, {"a": "c_supply_chain_risk", "t": "RELATED_TO", "b": "vendor_management"}, {"a": "payment_callback", "t": "SEEN_IN", "b": "pier"}, {"a": "payment_callback", "t": "MITIGATES", "b": "bec"}]}, "tool_used": "room_overview", "facts": "Room: Pier · Deliveries & Vendors (called 'Clubhouse Pier' in the tour)\nWhat it shows: Suppliers deliver by boat; vendors also deliver software, support and remote access.\nKey lesson: Assess vendors before trusting them, and confirm any change to their bank details by phone.\nDepartment based here: Finance & Procurement (ext. 1600)\nSystems here: Supplier Portal\nThreats shown here: Business Email Compromise, Third-Party & Supply-Chain Compromise\nControls you can see: Time-Limited Vendor Access, Payment Change Call-Back, Vendor Risk Management\nConcepts: Enterprise Resource Planning (ERP), Supply-Chain Risk\nProcedures to know: A vendor needs remote access, A supplier asks to change their bank details\nExits: Lawn · Assembly Point & Continuity (called 'Lakeside Lawn' in the tour), Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour), On the Lake · Offsite Backup, Steamer Deck · Working on the Move, Pool · Data Lake", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.04, "load_s": 0.0, "prompt_tokens": 665, "prompt_s": 2.73, "gen_tokens": 103, "gen_s": 6.29, "tok_per_s": 16.4, "first_token_s": 2.75}}, "state": {}}
+

@@ -1,0 +1,222 @@
+event: start
+data: {"session": "offline", "lang": "zh"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Fireplace Close-up · Ordering Tablet", "zh": "壁爐近看・點餐平板"}, "subtitle": {"en": "Fireplace · Up Close", "zh": "壁爐近看"}, "text": {"en": "A shared tablet servers use to take orders at the tables.", "zh": "服務生在桌邊點餐用的共用平板。"}, "note": {"en": "Shared devices lock automatically and everyone logs in as themselves.", "zh": "共用裝置要自動鎖定，每個人用自己的帳號登入。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "order_tablet", "en": "Ordering Tablet", "zh": "點餐平板"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "shoulder_surfing", "en": "Shoulder Surfing & Screen Exposure", "zh": "偷窺與螢幕外露"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "clear_desk", "en": "Clear Desk & Clear Screen", "zh": "桌面淨空與螢幕淨空"}, {"key": "session_lock", "en": "Screen Lock & Session Timeout", "zh": "螢幕鎖定與閒置登出"}, {"key": "unique_ids", "en": "Individual Accounts (No Shared Logins)", "zh": "個人帳號（不共用）"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "hall", "en": "Restaurant POS", "zh": "餐廳收銀系統", "base_en": "Restaurant", "base_zh": "餐廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=3", "tour": "A"}]}]}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "有"}
+
+event: token
+data: {"text": "壁"}
+
+event: token
+data: {"text": "爐"}
+
+event: token
+data: {"text": "近"}
+
+event: token
+data: {"text": "看"}
+
+event: token
+data: {"text": "・"}
+
+event: token
+data: {"text": "點"}
+
+event: token
+data: {"text": "餐"}
+
+event: token
+data: {"text": "平板"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "是用"}
+
+event: token
+data: {"text": "於"}
+
+event: token
+data: {"text": "服務"}
+
+event: token
+data: {"text": "生"}
+
+event: token
+data: {"text": "桌"}
+
+event: token
+data: {"text": "邊"}
+
+event: token
+data: {"text": "點"}
+
+event: token
+data: {"text": "餐"}
+
+event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "共用"}
+
+event: token
+data: {"text": "裝置"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "請"}
+
+event: token
+data: {"text": "務必"}
+
+event: token
+data: {"text": "確保"}
+
+event: token
+data: {"text": "桌面"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "螢幕"}
+
+event: token
+data: {"text": "淨"}
+
+event: token
+data: {"text": "空"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "設定"}
+
+event: token
+data: {"text": "閒"}
+
+event: token
+data: {"text": "置"}
+
+event: token
+data: {"text": "登"}
+
+event: token
+data: {"text": "出"}
+
+event: token
+data: {"text": "並"}
+
+event: token
+data: {"text": "使用"}
+
+event: token
+data: {"text": "個人"}
+
+event: token
+data: {"text": "帳號"}
+
+event: token
+data: {"text": "登入"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "以"}
+
+event: token
+data: {"text": "防范"}
+
+event: token
+data: {"text": "偷"}
+
+event: token
+data: {"text": "窺"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "螢幕"}
+
+event: token
+data: {"text": "外露"}
+
+event: token
+data: {"text": "威脅"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "房間"}
+
+event: token
+data: {"text": "內"}
+
+event: token
+data: {"text": "藏"}
+
+event: token
+data: {"text": "有一個"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "漏洞"}
+
+event: token
+data: {"text": "待"}
+
+event: token
+data: {"text": "你"}
+
+event: token
+data: {"text": "發現"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "目前"}
+
+event: token
+data: {"text": "進度"}
+
+event: token
+data: {"text": "顯示"}
+
+event: token
+data: {"text": "尚未"}
+
+event: token
+data: {"text": "找到"}
+
+event: token
+data: {"text": "。"}
+
+event: replace
+data: {"text": "這裡有壁爐近看・點餐平板，是用於服務生桌邊點餐的共用裝置。請務必確保桌面與螢幕淨空、設定閒置登出並使用個人帳號登入，以防範偷窺與螢幕外露威脅。房間內藏有一個資安漏洞待你發現，目前進度顯示尚未找到。"}
+
+event: done
+data: {"answer": "這裡有壁爐近看・點餐平板，是用於服務生桌邊點餐的共用裝置。請務必確保桌面與螢幕淨空、設定閒置登出並使用個人帳號登入，以防範偷窺與螢幕外露威脅。房間內藏有一個資安漏洞待你發現，目前進度顯示尚未找到。", "go": [], "followups": [{"text": "點餐平板是做什麼的？", "en": "What does the Ordering Tablet do?", "zh": "點餐平板是做什麼的？"}, {"text": "偷窺與螢幕外露要怎麼防？", "en": "How do we prevent shoulder surfing & screen exposure?", "zh": "偷窺與螢幕外露要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.7, "total_s": 6.71}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "hall_fire", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "hall_fire"}, "rows": 1, "ms": 7.4}], "graph": {"nodes": [{"key": "hall_fire", "label": "Room", "en": "Fireplace · Up Close", "zh": "壁爐近看"}, {"key": "order_tablet", "label": "System", "en": "Ordering Tablet", "zh": "點餐平板"}, {"key": "shoulder_surfing", "label": "Threat", "en": "Shoulder Surfing & Screen Exposure", "zh": "偷窺與螢幕外露"}, {"key": "clear_desk", "label": "Control", "en": "Clear Desk & Clear Screen", "zh": "桌面淨空與螢幕淨空"}, {"key": "session_lock", "label": "Control", "en": "Screen Lock & Session Timeout", "zh": "螢幕鎖定與閒置登出"}, {"key": "unique_ids", "label": "Control", "en": "Individual Accounts (No Shared Logins)", "zh": "個人帳號（不共用）"}], "edges": [{"a": "order_tablet", "t": "LOCATED_IN", "b": "hall_fire"}, {"a": "shoulder_surfing", "t": "SHOWN_IN", "b": "hall_fire"}, {"a": "unique_ids", "t": "SEEN_IN", "b": "hall_fire"}, {"a": "unique_ids", "t": "PROTECTS", "b": "order_tablet"}, {"a": "unique_ids", "t": "MITIGATES", "b": "shoulder_surfing"}, {"a": "session_lock", "t": "SEEN_IN", "b": "hall_fire"}, {"a": "session_lock", "t": "PROTECTS", "b": "order_tablet"}, {"a": "session_lock", "t": "MITIGATES", "b": "shoulder_surfing"}, {"a": "clear_desk", "t": "SEEN_IN", "b": "hall_fire"}, {"a": "clear_desk", "t": "MITIGATES", "b": "shoulder_surfing"}]}, "tool_used": "room_overview", "facts": "房間：壁爐近看・點餐平板\n代表的資訊主題：服務生在桌邊點餐用的共用平板。\n重點：共用裝置要自動鎖定，每個人用自己的帳號登入。\n這裡的系統：點餐平板\n這裡要注意的威脅：偷窺與螢幕外露\n看得到的防護措施：桌面淨空與螢幕淨空、螢幕鎖定與閒置登出、個人帳號（不共用）\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：餐廳收銀系統", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.69, "load_s": 0.0, "prompt_tokens": 569, "prompt_s": 2.39, "gen_tokens": 71, "gen_s": 4.28, "tok_per_s": 16.6, "first_token_s": 2.41}}, "state": {}}
+

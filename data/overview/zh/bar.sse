@@ -1,0 +1,243 @@
+event: start
+data: {"session": "offline", "lang": "zh"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Bar Inventory & ERP", "zh": "酒吧庫存與 ERP"}, "subtitle": {"en": "Bar", "zh": "酒吧"}, "text": {"en": "Every bottle is scanned into the ERP; POS sales reduce stock and low stock creates purchase orders to suppliers.", "zh": "每瓶酒都掃條碼進 ERP；POS 賣出就扣庫存，庫存不夠就產生採購單給供應商。"}, "note": {"en": "Audit trails and segregation of duties stop one person from both counting and adjusting stock.", "zh": "操作紀錄和職務分離，讓同一個人不能又盤點又改庫存。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "pos", "en": "Point of Sale (POS)", "zh": "餐飲收銀系統（POS）"}, {"key": "erp", "en": "ERP · Inventory & Purchasing", "zh": "ERP 庫存與採購"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "insider_fraud", "en": "Insider Misuse & Fraud", "zh": "內部人員濫用與舞弊"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "sod", "en": "Segregation of Duties", "zh": "職務分離"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_erp", "en": "Enterprise Resource Planning (ERP)", "zh": "企業資源規劃（ERP）"}, {"key": "c_audit_trail", "en": "Audit Trail", "zh": "稽核軌跡"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "corridor", "en": "Staff Corridor & Physical Security", "zh": "員工走廊與實體安全", "base_en": "Corridor", "base_zh": "走廊", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=5", "tour": "A"}, {"key": "bar_near", "en": "Bar Close-up · Scanner & Stock Screen", "zh": "酒吧近看・掃描器與庫存畫面", "base_en": "Bar · Up Close", "base_zh": "酒吧近看", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=24", "tour": "A"}, {"key": "hall", "en": "Restaurant POS", "zh": "餐廳收銀系統", "base_en": "Restaurant", "base_zh": "餐廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=3", "tour": "A"}]}]}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "是"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "酒吧"}
+
+event: token
+data: {"text": "庫存"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": " ERP"}
+
+event: token
+data: {"text": "」"}
+
+event: token
+data: {"text": "房間"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "主要"}
+
+event: token
+data: {"text": "展示"}
+
+event: token
+data: {"text": "餐飲"}
+
+event: token
+data: {"text": "收"}
+
+event: token
+data: {"text": "銀"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "（"}
+
+event: token
+data: {"text": "POS"}
+
+event: token
+data: {"text": "）"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": " ERP"}
+
+event: token
+data: {"text": " 庫存"}
+
+event: token
+data: {"text": "採購"}
+
+event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "運作"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n您可以"}
+
+event: token
+data: {"text": "看到"}
+
+event: token
+data: {"text": "每"}
+
+event: token
+data: {"text": "瓶"}
+
+event: token
+data: {"text": "酒"}
+
+event: token
+data: {"text": "掃"}
+
+event: token
+data: {"text": "條"}
+
+event: token
+data: {"text": "碼"}
+
+event: token
+data: {"text": "進"}
+
+event: token
+data: {"text": " ERP"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "賣"}
+
+event: token
+data: {"text": "出"}
+
+event: token
+data: {"text": "即"}
+
+event: token
+data: {"text": "扣"}
+
+event: token
+data: {"text": "庫存"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "以及"}
+
+event: token
+data: {"text": "庫存"}
+
+event: token
+data: {"text": "不足"}
+
+event: token
+data: {"text": "時"}
+
+event: token
+data: {"text": "自動"}
+
+event: token
+data: {"text": "產生"}
+
+event: token
+data: {"text": "採購"}
+
+event: token
+data: {"text": "單"}
+
+event: token
+data: {"text": "的流程"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n重點"}
+
+event: token
+data: {"text": "在於"}
+
+event: token
+data: {"text": "操作"}
+
+event: token
+data: {"text": "紀錄"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "職務"}
+
+event: token
+data: {"text": "分離"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "防止"}
+
+event: token
+data: {"text": "同一"}
+
+event: token
+data: {"text": "人"}
+
+event: token
+data: {"text": "同時"}
+
+event: token
+data: {"text": "盤"}
+
+event: token
+data: {"text": "點"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "修改"}
+
+event: token
+data: {"text": "庫存"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "以"}
+
+event: token
+data: {"text": "防范"}
+
+event: token
+data: {"text": "內部"}
+
+event: token
+data: {"text": "舞弊"}
+
+event: token
+data: {"text": "。"}
+
+event: replace
+data: {"text": "這裡是「酒吧庫存與 ERP」房間，主要展示餐飲收銀系統（POS）與 ERP 庫存採購的運作。\n你可以看到每瓶酒掃條碼進 ERP、賣出即扣庫存，以及庫存不足時自動產生採購單的流程。\n重點在於操作紀錄與職務分離，防止同一人同時盤點與修改庫存，以防範內部舞弊。"}
+
+event: done
+data: {"answer": "這裡是「酒吧庫存與 ERP」房間，主要展示餐飲收銀系統（POS）與 ERP 庫存採購的運作。\n你可以看到每瓶酒掃條碼進 ERP、賣出即扣庫存，以及庫存不足時自動產生採購單的流程。\n重點在於操作紀錄與職務分離，防止同一人同時盤點與修改庫存，以防範內部舞弊。", "go": [{"key": "corridor", "en": "Staff Corridor & Physical Security", "zh": "員工走廊與實體安全", "base_en": "Corridor", "base_zh": "走廊", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=5", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "餐飲收銀系統（POS）是做什麼的？", "en": "What does the Point of Sale (POS) do?", "zh": "餐飲收銀系統（POS）是做什麼的？"}, {"text": "內部人員濫用與舞弊要怎麼防？", "en": "How do we prevent insider misuse & fraud?", "zh": "內部人員濫用與舞弊要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.31, "total_s": 7.32}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "bar", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "bar"}, "rows": 1, "ms": 5.8}], "graph": {"nodes": [{"key": "bar", "label": "Room", "en": "Bar", "zh": "酒吧"}, {"key": "pos", "label": "System", "en": "Point of Sale (POS)", "zh": "餐飲收銀系統（POS）"}, {"key": "erp", "label": "System", "en": "ERP · Inventory & Purchasing", "zh": "ERP 庫存與採購"}, {"key": "insider_fraud", "label": "Threat", "en": "Insider Misuse & Fraud", "zh": "內部人員濫用與舞弊"}, {"key": "sod", "label": "Control", "en": "Segregation of Duties", "zh": "職務分離"}, {"key": "c_erp", "label": "Concept", "en": "Enterprise Resource Planning (ERP)", "zh": "企業資源規劃（ERP）"}, {"key": "c_audit_trail", "label": "Concept", "en": "Audit Trail", "zh": "稽核軌跡"}], "edges": [{"a": "pos", "t": "SENDS_TO", "b": "erp"}, {"a": "pos", "t": "LOCATED_IN", "b": "bar"}, {"a": "erp", "t": "LOCATED_IN", "b": "bar"}, {"a": "insider_fraud", "t": "TARGETS", "b": "pos"}, {"a": "insider_fraud", "t": "TARGETS", "b": "erp"}, {"a": "insider_fraud", "t": "SHOWN_IN", "b": "bar"}, {"a": "c_erp", "t": "TAUGHT_IN", "b": "bar"}, {"a": "c_erp", "t": "RELATED_TO", "b": "erp"}, {"a": "c_audit_trail", "t": "TAUGHT_IN", "b": "bar"}, {"a": "sod", "t": "SEEN_IN", "b": "bar"}, {"a": "sod", "t": "PROTECTS", "b": "erp"}, {"a": "sod", "t": "MITIGATES", "b": "insider_fraud"}]}, "tool_used": "room_overview", "facts": "房間：酒吧庫存與 ERP\n代表的資訊主題：每瓶酒都掃條碼進 ERP；POS 賣出就扣庫存，庫存不夠就產生採購單給供應商。\n重點：操作紀錄和職務分離，讓同一個人不能又盤點又改庫存。\n這裡的系統：餐飲收銀系統（POS）、ERP 庫存與採購\n這裡要注意的威脅：內部人員濫用與舞弊\n看得到的防護措施：職務分離\n課程概念：企業資源規劃（ERP）、稽核軌跡\n可以走到：員工走廊與實體安全、酒吧近看・掃描器與庫存畫面、餐廳收銀系統", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.23, "load_s": 0.0, "prompt_tokens": 585, "prompt_s": 2.45, "gen_tokens": 80, "gen_s": 4.75, "tok_per_s": 16.8, "first_token_s": 2.48}}, "state": {}}
+

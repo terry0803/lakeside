@@ -1,0 +1,231 @@
+event: start
+data: {"session": "offline", "lang": "en"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Restaurant at Night · POS Down", "zh": "夜晚的餐廳・收銀系統停擺"}, "subtitle": {"en": "Restaurant at Night", "zh": "夜晚的餐廳"}, "text": {"en": "Someone clicked a phishing link on the POS PC; ransomware encrypted the systems and the restaurant cannot take orders (bad ending).", "zh": "有人在收銀電腦點了釣魚連結，勒索軟體把系統加密，餐廳沒辦法點餐（壞結局）。"}, "note": {"en": "Offline backups, segmentation and a practised response plan decide how fast you recover.", "zh": "離線備份、網段隔離和演練過的應變計畫，決定多快能恢復。"}, "badges": [], "sections": [{"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "phishing", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "ransomware", "en": "Ransomware", "zh": "勒索軟體"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "bcp_dr", "en": "Business Continuity & Disaster Recovery", "zh": "營運持續與災難復原"}, {"key": "backup_321", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "incident_response", "en": "Incident Response Plan & SOC", "zh": "事件應變計畫與資安監控中心"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_bcp", "en": "BCP, RTO & RPO", "zh": "營運持續、RTO 與 RPO"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_ransomware", "en": "Ransomware or encrypted files", "zh": "勒索軟體或檔案被加密"}, {"key": "proc_phish_clicked", "en": "Clicked a phishing link or entered a password", "zh": "點了釣魚連結或輸入了密碼"}, {"key": "proc_pos_outage", "en": "The POS is down", "zh": "收銀系統當機"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "hall", "en": "Restaurant POS", "zh": "餐廳收銀系統", "base_en": "Restaurant", "base_zh": "餐廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=3", "tour": "A"}]}]}
+
+event: token
+data: {"text": "This"}
+
+event: token
+data: {"text": " place"}
+
+event: token
+data: {"text": " shows"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " \""}
+
+event: token
+data: {"text": "Restaurant"}
+
+event: token
+data: {"text": " at"}
+
+event: token
+data: {"text": " Night"}
+
+event: token
+data: {"text": "\""}
+
+event: token
+data: {"text": " where"}
+
+event: token
+data: {"text": " a"}
+
+event: token
+data: {"text": " phishing"}
+
+event: token
+data: {"text": " link"}
+
+event: token
+data: {"text": " on"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " POS"}
+
+event: token
+data: {"text": " PC"}
+
+event: token
+data: {"text": " led"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " ransom"}
+
+event: token
+data: {"text": "ware"}
+
+event: token
+data: {"text": " encryption"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " preventing"}
+
+event: token
+data: {"text": " order"}
+
+event: token
+data: {"text": " taking"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " You"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": " like"}
+
+event: token
+data: {"text": " 3"}
+
+event: token
+data: {"text": "-"}
+
+event: token
+data: {"text": "2"}
+
+event: token
+data: {"text": "-"}
+
+event: token
+data: {"text": "1"}
+
+event: token
+data: {"text": " Back"}
+
+event: token
+data: {"text": "ups"}
+
+event: token
+data: {"text": " with"}
+
+event: token
+data: {"text": " an"}
+
+event: token
+data: {"text": " Offline"}
+
+event: token
+data: {"text": " Copy"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " Incident"}
+
+event: token
+data: {"text": " Response"}
+
+event: token
+data: {"text": " Plan"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " SOC"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " concepts"}
+
+event: token
+data: {"text": " such"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " B"}
+
+event: token
+data: {"text": "CP"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " R"}
+
+event: token
+data: {"text": "TO"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " R"}
+
+event: token
+data: {"text": "PO"}
+
+event: token
+data: {"text": " displayed"}
+
+event: token
+data: {"text": " here"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " The"}
+
+event: token
+data: {"text": " exit"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " labeled"}
+
+event: token
+data: {"text": " \""}
+
+event: token
+data: {"text": "Restaurant"}
+
+event: token
+data: {"text": " POS"}
+
+event: token
+data: {"text": "\"."}
+
+event: done
+data: {"answer": "This place shows the \"Restaurant at Night\" where a phishing link on the POS PC led to ransomware encryption, preventing order taking. You can see controls like 3-2-1 Backups with an Offline Copy, Incident Response Plan & SOC, and concepts such as BCP, RTO & RPO displayed here. The exit is labeled \"Restaurant POS\".", "go": [], "followups": [{"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}, {"text": "How do we prevent phishing email?", "en": "How do we prevent phishing email?", "zh": "釣魚郵件要怎麼防？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.88, "total_s": 6.9}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "hallnight", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "hallnight"}, "rows": 1, "ms": 5.7}], "graph": {"nodes": [{"key": "hallnight", "label": "Room", "en": "Restaurant at Night", "zh": "夜晚的餐廳"}, {"key": "phishing", "label": "Threat", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "ransomware", "label": "Threat", "en": "Ransomware", "zh": "勒索軟體"}, {"key": "bcp_dr", "label": "Control", "en": "Business Continuity & Disaster Recovery", "zh": "營運持續與災難復原"}, {"key": "backup_321", "label": "Control", "en": "3-2-1 Backups with an Offline Copy", "zh": "3-2-1 備份與離線副本"}, {"key": "incident_response", "label": "Control", "en": "Incident Response Plan & SOC", "zh": "事件應變計畫與資安監控中心"}, {"key": "c_bcp", "label": "Concept", "en": "BCP, RTO & RPO", "zh": "營運持續、RTO 與 RPO"}], "edges": [{"a": "phishing", "t": "SHOWN_IN", "b": "hallnight"}, {"a": "ransomware", "t": "SHOWN_IN", "b": "hallnight"}, {"a": "c_bcp", "t": "TAUGHT_IN", "b": "hallnight"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "backup_321"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "bcp_dr"}, {"a": "backup_321", "t": "SEEN_IN", "b": "hallnight"}, {"a": "backup_321", "t": "MITIGATES", "b": "ransomware"}, {"a": "bcp_dr", "t": "SEEN_IN", "b": "hallnight"}, {"a": "bcp_dr", "t": "MITIGATES", "b": "ransomware"}, {"a": "incident_response", "t": "SEEN_IN", "b": "hallnight"}, {"a": "incident_response", "t": "MITIGATES", "b": "phishing"}, {"a": "incident_response", "t": "MITIGATES", "b": "ransomware"}]}, "tool_used": "room_overview", "facts": "Room: Restaurant at Night · POS Down\nWhat it shows: Someone clicked a phishing link on the POS PC; ransomware encrypted the systems and the restaurant cannot take orders (bad ending).\nKey lesson: Offline backups, segmentation and a practised response plan decide how fast you recover.\nThreats shown here: Phishing Email, Ransomware\nControls you can see: Business Continuity & Disaster Recovery, 3-2-1 Backups with an Offline Copy, Incident Response Plan & SOC\nConcepts: BCP, RTO & RPO\nProcedures to know: Ransomware or encrypted files, Clicked a phishing link or entered a password, The POS is down\nExits: Restaurant POS", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.88, "load_s": 0.01, "prompt_tokens": 589, "prompt_s": 2.4, "gen_tokens": 75, "gen_s": 4.46, "tok_per_s": 16.8, "first_token_s": 2.42}}, "state": {}}
+

@@ -1,0 +1,225 @@
+event: start
+data: {"session": "offline", "lang": "zh"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路"}, "subtitle": {"en": "Lakeside Patio", "zh": "湖畔露台"}, "text": {"en": "Guests arrive here, check in on the PMS and look for the Wi-Fi sign to get online.", "zh": "客人在這裡抵達，用 PMS 辦報到，再看 Wi-Fi 牌子連上網路。"}, "note": {"en": "Keep guest and staff networks apart, and tell guests how their data is used when you collect it.", "zh": "訪客和員工網路要隔開；收集客人資料時要先告知用途。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "wifi", "en": "Wi-Fi (Guest & Staff)", "zh": "無線網路（訪客與員工）"}, {"key": "crm", "en": "CRM & Loyalty", "zh": "CRM 與會員系統"}, {"key": "pms", "en": "Property Management System (PMS)", "zh": "飯店管理系統（PMS）"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "shoulder_surfing", "en": "Shoulder Surfing & Screen Exposure", "zh": "偷窺與螢幕外露"}, {"key": "evil_twin", "en": "Rogue Wi-Fi & Eavesdropping", "zh": "假冒熱點與竊聽"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "segmentation", "en": "Network Segmentation", "zh": "網段隔離"}, {"key": "privacy_notice_consent", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_personal_data", "en": "Personal Data", "zh": "個人資料"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "pier", "en": "Pier · Deliveries & Vendors", "zh": "會館碼頭・進貨與廠商", "base_en": "Clubhouse Pier", "base_zh": "會館碼頭", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=20", "tour": "A"}, {"key": "hall", "en": "Restaurant POS", "zh": "餐廳收銀系統", "base_en": "Restaurant", "base_zh": "餐廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=3", "tour": "A"}, {"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}, {"key": "lawn", "en": "Lawn · Assembly Point & Continuity", "zh": "湖邊草地・集合點與營運持續", "base_en": "Lakeside Lawn", "base_zh": "湖邊草地", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=19", "tour": "A"}, {"key": "patio_near", "en": "Patio Close-up · Wi-Fi Sign", "zh": "露台近看・Wi-Fi 說明牌", "base_en": "Patio · Up Close", "base_zh": "露台近看", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=21", "tour": "A"}]}]}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "是"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "湖畔"}
+
+event: token
+data: {"text": "露台"}
+
+event: token
+data: {"text": "」（"}
+
+event: token
+data: {"text": "櫃"}
+
+event: token
+data: {"text": "台"}
+
+event: token
+data: {"text": "部"}
+
+event: token
+data: {"text": "），"}
+
+event: token
+data: {"text": "主要"}
+
+event: token
+data: {"text": "用於"}
+
+event: token
+data: {"text": "客人"}
+
+event: token
+data: {"text": "報"}
+
+event: token
+data: {"text": "到"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "透過"}
+
+event: token
+data: {"text": " P"}
+
+event: token
+data: {"text": "MS"}
+
+event: token
+data: {"text": " 系統"}
+
+event: token
+data: {"text": "處理"}
+
+event: token
+data: {"text": "入住"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "以及"}
+
+event: token
+data: {"text": "連接"}
+
+event: token
+data: {"text": "無線"}
+
+event: token
+data: {"text": "網路"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n請"}
+
+event: token
+data: {"text": "注意"}
+
+event: token
+data: {"text": "訪"}
+
+event: token
+data: {"text": "客"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "員工"}
+
+event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "網路"}
+
+event: token
+data: {"text": "需"}
+
+event: token
+data: {"text": "隔離"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "且"}
+
+event: token
+data: {"text": "收集"}
+
+event: token
+data: {"text": "個"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "前"}
+
+event: token
+data: {"text": "必須"}
+
+event: token
+data: {"text": "告知"}
+
+event: token
+data: {"text": "用途"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n可"}
+
+event: token
+data: {"text": "在此"}
+
+event: token
+data: {"text": "觀察"}
+
+event: token
+data: {"text": "防護"}
+
+event: token
+data: {"text": "措施"}
+
+event: token
+data: {"text": "（"}
+
+event: token
+data: {"text": "如"}
+
+event: token
+data: {"text": "網"}
+
+event: token
+data: {"text": "段"}
+
+event: token
+data: {"text": "隔離"}
+
+event: token
+data: {"text": "）"}
+
+event: token
+data: {"text": "及"}
+
+event: token
+data: {"text": "潛在"}
+
+event: token
+data: {"text": "威脅"}
+
+event: token
+data: {"text": "（"}
+
+event: token
+data: {"text": "如"}
+
+event: token
+data: {"text": "假冒"}
+
+event: token
+data: {"text": "熱"}
+
+event: token
+data: {"text": "點"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "螢幕"}
+
+event: token
+data: {"text": "外露"}
+
+event: token
+data: {"text": "）。"}
+
+event: done
+data: {"answer": "這裡是「湖畔露台」（櫃台部），主要用於客人報到、透過 PMS 系統處理入住，以及連接無線網路。\n請注意訪客與員工的網路需隔離，且收集個資前必須告知用途。\n可在此觀察防護措施（如網段隔離）及潛在威脅（如假冒熱點、螢幕外露）。", "go": [{"key": "hall", "en": "Restaurant POS", "zh": "餐廳收銀系統", "base_en": "Restaurant", "base_zh": "餐廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=3", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "無線網路（訪客與員工）是做什麼的？", "en": "What does the Wi-Fi (Guest & Staff) do?", "zh": "無線網路（訪客與員工）是做什麼的？"}, {"text": "偷窺與螢幕外露要怎麼防？", "en": "How do we prevent shoulder surfing & screen exposure?", "zh": "偷窺與螢幕外露要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.19, "total_s": 7.21}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "patio", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "patio"}, "rows": 1, "ms": 8.1}], "graph": {"nodes": [{"key": "patio", "label": "Room", "en": "Lakeside Patio", "zh": "湖畔露台"}, {"key": "wifi", "label": "System", "en": "Wi-Fi (Guest & Staff)", "zh": "無線網路（訪客與員工）"}, {"key": "crm", "label": "System", "en": "CRM & Loyalty", "zh": "CRM 與會員系統"}, {"key": "pms", "label": "System", "en": "Property Management System (PMS)", "zh": "飯店管理系統（PMS）"}, {"key": "shoulder_surfing", "label": "Threat", "en": "Shoulder Surfing & Screen Exposure", "zh": "偷窺與螢幕外露"}, {"key": "evil_twin", "label": "Threat", "en": "Rogue Wi-Fi & Eavesdropping", "zh": "假冒熱點與竊聽"}, {"key": "segmentation", "label": "Control", "en": "Network Segmentation", "zh": "網段隔離"}, {"key": "privacy_notice_consent", "label": "Control", "en": "Privacy Notice & Consent", "zh": "個資告知與同意"}, {"key": "c_personal_data", "label": "Concept", "en": "Personal Data", "zh": "個人資料"}], "edges": [{"a": "privacy_notice_consent", "t": "SEEN_IN", "b": "patio"}, {"a": "pms", "t": "SENDS_TO", "b": "crm"}, {"a": "pms", "t": "LOCATED_IN", "b": "patio"}, {"a": "crm", "t": "LOCATED_IN", "b": "patio"}, {"a": "wifi", "t": "LOCATED_IN", "b": "patio"}, {"a": "evil_twin", "t": "TARGETS", "b": "wifi"}, {"a": "evil_twin", "t": "SHOWN_IN", "b": "patio"}, {"a": "shoulder_surfing", "t": "TARGETS", "b": "crm"}, {"a": "shoulder_surfing", "t": "SHOWN_IN", "b": "patio"}, {"a": "c_personal_data", "t": "TAUGHT_IN", "b": "patio"}, {"a": "segmentation", "t": "SEEN_IN", "b": "patio"}, {"a": "segmentation", "t": "PROTECTS", "b": "wifi"}]}, "tool_used": "room_overview", "facts": "房間：客人報到與無線網路（導覽裡的名稱：湖畔露台）\n代表的資訊主題：客人在這裡抵達，用 PMS 辦報到，再看 Wi-Fi 牌子連上網路。\n重點：訪客和員工網路要隔開；收集客人資料時要先告知用途。\n在這裡的部門：櫃台部（分機 1200）\n這裡的系統：無線網路（訪客與員工）、CRM 與會員系統、飯店管理系統（PMS）\n這裡要注意的威脅：偷窺與螢幕外露、假冒熱點與竊聽\n看得到的防護措施：網段隔離、個資告知與同意\n課程概念：個人資料\n可以走到：會館碼頭・進貨與廠商、餐廳收銀系統、泳池・資料湖、湖邊草地・集合點與營運持續、露台近看・Wi-Fi 說明牌", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.18, "load_s": 0.01, "prompt_tokens": 641, "prompt_s": 2.73, "gen_tokens": 75, "gen_s": 4.43, "tok_per_s": 16.9, "first_token_s": 2.76}}, "state": {}}
+

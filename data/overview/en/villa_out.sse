@@ -1,0 +1,183 @@
+event: start
+data: {"session": "offline", "lang": "en"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Lake Villas · Smart Rooms", "zh": "湖畔別墅・智慧客房"}, "subtitle": {"en": "Lake Villas", "zh": "湖畔別墅"}, "text": {"en": "Electronic locks, smart thermostats and TVs connect each villa to the resort's systems.", "zh": "電子門鎖、智慧溫控和電視把每間別墅連上渡假村的系統。"}, "note": {"en": "Room technology must be secure and must forget the guest when they leave.", "zh": "客房的科技要安全，客人走了也要把他的資料清掉。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "room_controls", "en": "Smart Room Controls & TV", "zh": "客房智慧控制與電視"}, {"key": "door_locks", "en": "Electronic Door Locks", "zh": "電子門鎖系統"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "iot_default", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "checkout_reset", "en": "Checkout Privacy Reset", "zh": "退房隱私重設"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_it_ot", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_checkout_reset", "en": "Smart room reset at checkout", "zh": "退房時重設智慧客房"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "villa_in", "en": "Villa Suite · Guest Privacy", "zh": "湖畔別墅套房・客人隱私", "base_en": "Lake Villa Suite", "base_zh": "湖畔別墅套房", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=17", "tour": "B"}, {"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}]}]}
+
+event: token
+data: {"text": "This"}
+
+event: token
+data: {"text": " place"}
+
+event: token
+data: {"text": " contains"}
+
+event: token
+data: {"text": " electronic"}
+
+event: token
+data: {"text": " locks"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " smart"}
+
+event: token
+data: {"text": " ther"}
+
+event: token
+data: {"text": "most"}
+
+event: token
+data: {"text": "ats"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " TVs"}
+
+event: token
+data: {"text": " that"}
+
+event: token
+data: {"text": " connect"}
+
+event: token
+data: {"text": " vill"}
+
+event: token
+data: {"text": "as"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " resort"}
+
+event: token
+data: {"text": " systems"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " You"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " these"}
+
+event: token
+data: {"text": " items"}
+
+event: token
+data: {"text": " in"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Lake"}
+
+event: token
+data: {"text": " Villas"}
+
+event: token
+data: {"text": " ·"}
+
+event: token
+data: {"text": " Smart"}
+
+event: token
+data: {"text": " Rooms"}
+
+event: token
+data: {"text": "**"}
+
+event: token
+data: {"text": " section"}
+
+event: token
+data: {"text": " of"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " tour"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " The"}
+
+event: token
+data: {"text": " area"}
+
+event: token
+data: {"text": " highlights"}
+
+event: token
+data: {"text": " threats"}
+
+event: token
+data: {"text": " like"}
+
+event: token
+data: {"text": " insecure"}
+
+event: token
+data: {"text": " IoT"}
+
+event: token
+data: {"text": " devices"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " shows"}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": " such"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " Checkout"}
+
+event: token
+data: {"text": " Privacy"}
+
+event: token
+data: {"text": " Reset"}
+
+event: token
+data: {"text": "."}
+
+event: done
+data: {"answer": "This place contains electronic locks, smart thermostats, and TVs that connect villas to resort systems. You can see these items in the **Lake Villas · Smart Rooms** section of the tour. The area highlights threats like insecure IoT devices and shows controls such as Checkout Privacy Reset.", "go": [], "followups": [{"text": "What does the Smart Room Controls & TV do?", "en": "What does the Smart Room Controls & TV do?", "zh": "客房智慧控制與電視是做什麼的？"}, {"text": "How do we prevent insecure IoT devices?", "en": "How do we prevent insecure IoT devices?", "zh": "不安全的物聯網設備要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 7.93, "total_s": 7.95}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "villa_out", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "villa_out"}, "rows": 1, "ms": 7.8}], "graph": {"nodes": [{"key": "villa_out", "label": "Room", "en": "Lake Villas", "zh": "湖畔別墅"}, {"key": "room_controls", "label": "System", "en": "Smart Room Controls & TV", "zh": "客房智慧控制與電視"}, {"key": "door_locks", "label": "System", "en": "Electronic Door Locks", "zh": "電子門鎖系統"}, {"key": "iot_default", "label": "Threat", "en": "Insecure IoT Devices", "zh": "不安全的物聯網設備"}, {"key": "checkout_reset", "label": "Control", "en": "Checkout Privacy Reset", "zh": "退房隱私重設"}, {"key": "c_it_ot", "label": "Concept", "en": "IT, OT & IoT", "zh": "IT、OT 與物聯網"}], "edges": [{"a": "checkout_reset", "t": "SEEN_IN", "b": "villa_out"}, {"a": "door_locks", "t": "LOCATED_IN", "b": "villa_out"}, {"a": "room_controls", "t": "LOCATED_IN", "b": "villa_out"}, {"a": "iot_default", "t": "TARGETS", "b": "room_controls"}, {"a": "iot_default", "t": "TARGETS", "b": "door_locks"}, {"a": "iot_default", "t": "SHOWN_IN", "b": "villa_out"}, {"a": "c_it_ot", "t": "TAUGHT_IN", "b": "villa_out"}, {"a": "c_it_ot", "t": "RELATED_TO", "b": "room_controls"}]}, "tool_used": "room_overview", "facts": "Room: Lake Villas · Smart Rooms\nWhat it shows: Electronic locks, smart thermostats and TVs connect each villa to the resort's systems.\nKey lesson: Room technology must be secure and must forget the guest when they leave.\nDepartment based here: Housekeeping & Facilities (ext. 1700)\nSystems here: Smart Room Controls & TV, Electronic Door Locks\nThreats shown here: Insecure IoT Devices\nControls you can see: Checkout Privacy Reset\nConcepts: IT, OT & IoT\nProcedures to know: Smart room reset at checkout\nExits: Villa Suite · Guest Privacy (called 'Lake Villa Suite' in the tour), Pool · Data Lake", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 7.93, "load_s": 0.01, "prompt_tokens": 587, "prompt_s": 2.93, "gen_tokens": 58, "gen_s": 4.98, "tok_per_s": 11.7, "first_token_s": 2.95}}, "state": {}}
+

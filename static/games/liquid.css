@@ -1,0 +1,108 @@
+/* Mini-games, 11/22 afternoon: the frame, simple and quiet (loaded after game.css).
+   The page around the stage is one plain dark grey and the bar on top a slightly lighter grey, with every control in the
+   same grey pill and white text (the user: the bar was too busy, "simple colours"). The title card is clear glass, the
+   briefing and pop-ups frosted glass with dark text, buttons glass blue. The game boards and every size inside the
+   1440 x 800 stage are untouched. */
+:root {
+  --lake: #2563eb; --lake-2: #3b82f6; --lake-wash: #e3ebff; --shallows: #f1f5fb; --mist: #dbe3ee;
+  --ink: #0f172a; --ink-2: #334155; --ink-3: #475569;
+  --e-spring: cubic-bezier(.34, 1.36, .64, 1);
+  --e-out: cubic-bezier(.22, .9, .24, 1);
+  --glass-btn: rgba(44, 112, 226, .86);
+  --glass-btn-2: rgba(28, 82, 196, .9);
+  /* the plain greys of the frame */
+  --g-bg: #0d1117; --g-bar: #161b22; --g-pill: #21262d; --g-pill-hi: #2b323b; --g-edge: #30363d; --g-text: #e6edf3; --g-text-2: #9da7b3;
+}
+html, body.is-fit { background: var(--g-bg); }
+
+/* ---------------------------------------------------------------- the bar on top: one grey, one pill style */
+.g-top {
+  position: relative; margin: 10px 12px 0; padding: 7px 10px 7px 12px !important; border: 1px solid var(--g-edge); border-radius: 16px;
+  background: var(--g-bar); box-shadow: none; color: var(--g-text); text-shadow: none;
+}
+.g-back, .g-foot summary, .g-sound, .g-top .rx-pause {
+  position: relative; overflow: hidden; border: 1px solid var(--g-edge) !important; border-radius: 999px !important; background: var(--g-pill) !important; color: var(--g-text) !important;
+  transition: background-color .2s, transform .45s var(--e-spring);
+}
+.g-back { padding: 6px 14px 6px 9px !important; }
+.g-back:hover, .g-foot summary:hover, .g-sound:hover, .g-top .rx-pause:hover { background: var(--g-pill-hi) !important; }
+.g-back:active, .g-foot summary:active, .g-sound:active, .g-top .rx-pause:active { transform: scale(.95); transition-duration: .1s; }
+.g-back span, .g-foot summary span[lang], .g-sound span[lang], .g-top .rx-pause span[lang] { color: var(--g-text-2) !important; }
+.g-sound[aria-pressed="false"] { color: var(--g-text-2) !important; }
+.g-top .rx-pause { white-space: nowrap; }                 /* one line: Pause 暫停 */
+.g-top .rx-pause[aria-pressed="true"] { background: var(--g-text) !important; border-color: var(--g-text) !important; color: var(--g-bg) !important; }
+.g-top .rx-pause[aria-pressed="true"] span[lang] { color: var(--g-bg) !important; }
+.g-title { color: var(--g-text); }
+.g-title span { color: var(--g-text-2) !important; }
+.g-meter, .g-meter-sub, .g-top .rx-hud > div > span { color: var(--g-text-2); }
+.g-meter b, .g-top .rx-hud b { color: var(--g-text); }
+.g-top .rx-hud-loss.is-hit b { color: #f85149; }
+.g-top .rx-streak { background: var(--g-text); color: var(--g-bg); }
+#hudShields { color: var(--g-text); }
+#hudShields svg.is-off { color: #f85149; opacity: .6; }
+.g-step { background: var(--g-edge); }
+.g-step.is-done { background: var(--g-text); }
+.g-foot-panel { border: 1px solid rgba(255, 255, 255, .6); border-radius: 16px; background: rgba(255, 255, 255, .96); box-shadow: 0 16px 40px rgba(0, 0, 0, .35); text-shadow: none; }
+
+/* ---------------------------------------------------------------- the stage: a rounded window */
+body.is-fit .g-main.is-stage { width: auto; margin: 10px 12px 12px; overflow: hidden; border: 1px solid var(--g-edge); border-radius: 16px; box-shadow: none; isolation: isolate; }
+
+/* ---------------------------------------------------------------- the title card of each case: clear glass over the scene */
+.cb-title-in {
+  position: relative; border: 1px solid rgba(255, 255, 255, .3); border-radius: 20px !important; background: rgba(255, 255, 255, .05) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(170%) contrast(.62) brightness(.6); backdrop-filter: blur(14px) saturate(170%) contrast(.62) brightness(.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 18px 44px rgba(0, 0, 0, .3);
+}
+.cb-title-file { border-color: rgba(255, 255, 255, .35) !important; background: rgba(255, 255, 255, .06); }
+.cb-title-go {
+  position: relative; overflow: hidden; border: 1px solid rgba(160, 205, 255, .55) !important; border-radius: 999px !important; color: #fff !important;
+  background: linear-gradient(145deg, var(--glass-btn), var(--glass-btn-2)) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 10px 26px rgba(10, 40, 110, .35) !important;
+  transition: transform .45s var(--e-spring), filter .2s;
+}
+.cb-title-go span[lang] { color: #fff !important; opacity: .9; }
+.cb-title-go:hover { filter: brightness(1.08); transform: translateY(-2px); }
+.cb-title-go:active { transform: scale(.96); transition-duration: .1s; }
+
+/* ---------------------------------------------------------------- buttons: glass capsules that spring back */
+.btn {
+  position: relative; border-radius: 999px; border-color: rgba(160, 205, 255, .55);
+  background: linear-gradient(145deg, var(--glass-btn), var(--glass-btn-2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 6px 16px rgba(10, 40, 110, .25);
+  transition: filter .2s, transform .45s var(--e-spring), box-shadow .3s;
+}
+.btn:hover { background: linear-gradient(145deg, var(--glass-btn), var(--glass-btn-2)); border-color: rgba(160, 205, 255, .7); filter: brightness(1.08); }
+.btn:active { transform: scale(.96); transition-duration: .1s; }
+.btn-ghost, .btn-ghost:hover { background: rgba(255, 255, 255, .78); color: var(--lake); border-color: rgba(37, 99, 235, .25); box-shadow: inset 0 1px 0 #fff; }
+.btn-ghost:hover { background: rgba(255, 255, 255, .95); filter: none; }
+.btn-alert, .btn-alert:hover { background: rgba(200, 55, 35, .9); border-color: rgba(255, 180, 160, .55); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 6px 16px rgba(120, 30, 15, .25); }
+.g-ripple-wrap { position: absolute; inset: 0; z-index: 3; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.g-ripple { position: absolute; left: var(--x); top: var(--y); width: var(--s); height: var(--s); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%) scale(0);
+  background: radial-gradient(circle, rgba(255, 255, 255, .5), rgba(255, 255, 255, .14) 45%, rgba(255, 255, 255, 0) 70%); animation: g-ripple .6s var(--e-out) forwards; }
+@keyframes g-ripple { to { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
+
+/* ---------------------------------------------------------------- the briefing, pop-ups, toasts: frosted glass, dark text */
+.rs-brief { border: 1px solid rgba(255, 255, 255, .6); border-radius: 20px; background: rgba(255, 255, 255, .78) !important; -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%); box-shadow: 0 20px 50px rgba(0, 0, 0, .28); }
+.rs-brief-clock { background: rgba(29, 78, 216, .9) !important; }
+.rs-brief-clock i { color: #dbe7ff !important; }
+.rs-brief-file { color: #dbe7ff !important; }
+.rs-brief-main .rx-say { background: rgba(255, 255, 255, .6) !important; }
+.rs-toast { border: 1px solid rgba(255, 255, 255, .6); border-radius: 20px !important; background: rgba(255, 255, 255, .84) !important; -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); box-shadow: 0 14px 34px rgba(0, 0, 0, .28) !important; }
+.rs-paused > div { border: 1px solid rgba(255, 255, 255, .6); border-radius: 20px !important; background: rgba(255, 255, 255, .84) !important; -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); }
+.rs-finale .g-end { border: 1px solid rgba(255, 255, 255, .6) !important; border-radius: 20px !important; background: rgba(255, 255, 255, .84) !important; -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%); }
+.rs-cut-text, .rs-over-text { border-radius: 20px !important; }
+.rs-next-case { border: 1px solid rgba(160, 205, 255, .45); border-radius: 20px !important; background: rgba(29, 78, 216, .88) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 10px 24px rgba(10, 40, 110, .3) !important; transition: transform .45s var(--e-spring), filter .2s; }
+.rs-next-case:hover { filter: brightness(1.08); transform: translateY(-2px); }
+.rs-next-case > span:last-child, .rs-next-case b span[lang], .rs-next-case > span:last-child span[lang] { color: #e5edff !important; }
+.g-close-hint { border: 1px solid rgba(160, 205, 255, .45); border-radius: 20px !important; background: rgba(29, 78, 216, .88) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 14px 34px rgba(0, 0, 0, .3) !important; }
+.g-close-hint p[lang] { color: #e5edff !important; }
+
+/* ---------------------------------------------------------------- 11/22 afternoon: the game comes in gently
+   The page is dark from the first frame (before, it was light grey until the stage was ready and then turned dark), the bar on
+   top fades in, the loading line only shows if loading takes a moment, and the stage fades in when the questions are in. */
+body { background: var(--g-bg); transition: none; }
+.g-top { animation: g-in .36s var(--e-out) both; }
+.g-main.is-stage { animation: g-in .5s var(--e-out) both; }
+.g-loading { padding: 34px 0; color: var(--g-text-2); text-align: center; animation: g-in .4s var(--e-out) .3s both; }
+.g-loading span { color: var(--g-text-2); }
+.g-error { color: #ff7b72; text-align: center; }
+@keyframes g-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .g-top, .g-main.is-stage, .g-loading { animation: none; } }

@@ -1,0 +1,213 @@
+event: start
+data: {"session": "offline", "lang": "zh"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Theater · Awards Night", "zh": "湖心館劇場・頒獎晚會"}, "subtitle": {"en": "Lake Pavilion Theater", "zh": "湖心館劇場"}, "text": {"en": "The staff awards night celebrates each department's security work; the new IT staff member can win Security Champion.", "zh": "員工頒獎晚會表揚各部門的資安成果，新人有機會拿到資安新人獎。"}, "note": {"en": "Security is continual improvement: plan, do, check, act.", "zh": "資安要持續改善：計畫、執行、檢查、改進。"}, "badges": [], "sections": [{"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_risk_treatment", "en": "Risk Treatment", "zh": "風險處理"}, {"key": "c_pdca", "en": "PDCA & the ISMS", "zh": "PDCA 與資訊安全管理系統"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "pav_lobby", "en": "Lobby · BI Dashboards", "zh": "湖心館大廳・BI 儀表板", "base_en": "Lake Pavilion Lobby", "base_zh": "湖心館大廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=14", "tour": "A"}, {"key": "flight_home", "en": "Flight Home · Recap", "zh": "搭熱氣球回家・總複習", "base_en": "Flight Home", "base_zh": "搭熱氣球回家", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=16", "tour": "A"}, {"key": "pav_theater_near", "en": "Theater Front Row · Department Posters", "zh": "劇場前排・部門海報", "base_en": "Theater · Front Row", "base_zh": "劇場前排", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=29", "tour": "A"}, {"key": "sky", "en": "Resort IT Map", "zh": "渡假村資訊系統地圖", "base_en": "Hot-Air Balloon", "base_zh": "熱氣球", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=1", "tour": "A"}]}]}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "是"}
+
+event: token
+data: {"text": "湖"}
+
+event: token
+data: {"text": "心"}
+
+event: token
+data: {"text": "館"}
+
+event: token
+data: {"text": "劇場"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "正在"}
+
+event: token
+data: {"text": "舉辦"}
+
+event: token
+data: {"text": "員工"}
+
+event: token
+data: {"text": "頒獎"}
+
+event: token
+data: {"text": "晚"}
+
+event: token
+data: {"text": "會"}
+
+event: token
+data: {"text": "以"}
+
+event: token
+data: {"text": "表"}
+
+event: token
+data: {"text": "揚"}
+
+event: token
+data: {"text": "各"}
+
+event: token
+data: {"text": "部門"}
+
+event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "成果"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "現場"}
+
+event: token
+data: {"text": "重點"}
+
+event: token
+data: {"text": "在於"}
+
+event: token
+data: {"text": "強調"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "需"}
+
+event: token
+data: {"text": "持續"}
+
+event: token
+data: {"text": "改善"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "遵循"}
+
+event: token
+data: {"text": "計畫"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "執行"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "檢查"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "改進"}
+
+event: token
+data: {"text": "（"}
+
+event: token
+data: {"text": "PD"}
+
+event: token
+data: {"text": "CA"}
+
+event: token
+data: {"text": "）"}
+
+event: token
+data: {"text": "循環"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "您可以"}
+
+event: token
+data: {"text": "在此"}
+
+event: token
+data: {"text": "處"}
+
+event: token
+data: {"text": "看到"}
+
+event: token
+data: {"text": "關於"}
+
+event: token
+data: {"text": "風險"}
+
+event: token
+data: {"text": "處理"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "PD"}
+
+event: token
+data: {"text": "CA"}
+
+event: token
+data: {"text": " 與"}
+
+event: token
+data: {"text": "資訊"}
+
+event: token
+data: {"text": "安全管理"}
+
+event: token
+data: {"text": "系統的"}
+
+event: token
+data: {"text": "課程"}
+
+event: token
+data: {"text": "概念"}
+
+event: token
+data: {"text": "海"}
+
+event: token
+data: {"text": "報"}
+
+event: token
+data: {"text": "。"}
+
+event: replace
+data: {"text": "這裡是湖心館劇場，正在舉辦員工頒獎晚會以表揚各部門的資安成果。現場重點在於強調資安需持續改善，遵循計畫、執行、檢查、改進（PDCA）循環。你可以在此處看到關於風險處理、PDCA 與資訊安全管理系統的課程概念海報。"}
+
+event: done
+data: {"answer": "這裡是湖心館劇場，正在舉辦員工頒獎晚會以表揚各部門的資安成果。現場重點在於強調資安需持續改善，遵循計畫、執行、檢查、改進（PDCA）循環。你可以在此處看到關於風險處理、PDCA 與資訊安全管理系統的課程概念海報。", "go": [{"key": "flight_home", "en": "Flight Home · Recap", "zh": "搭熱氣球回家・總複習", "base_en": "Flight Home", "base_zh": "搭熱氣球回家", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=16", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.49, "total_s": 6.5}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "pav_theater", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "pav_theater"}, "rows": 1, "ms": 6.4}], "graph": {"nodes": [{"key": "pav_theater", "label": "Room", "en": "Lake Pavilion Theater", "zh": "湖心館劇場"}, {"key": "c_risk_treatment", "label": "Concept", "en": "Risk Treatment", "zh": "風險處理"}, {"key": "c_pdca", "label": "Concept", "en": "PDCA & the ISMS", "zh": "PDCA 與資訊安全管理系統"}], "edges": [{"a": "c_risk_treatment", "t": "TAUGHT_IN", "b": "pav_theater"}, {"a": "c_pdca", "t": "TAUGHT_IN", "b": "pav_theater"}]}, "tool_used": "room_overview", "facts": "房間：湖心館劇場・頒獎晚會\n代表的資訊主題：員工頒獎晚會表揚各部門的資安成果，新人有機會拿到資安新人獎。\n重點：資安要持續改善：計畫、執行、檢查、改進。\n課程概念：風險處理、PDCA 與資訊安全管理系統\n可以走到：湖心館大廳・BI 儀表板、搭熱氣球回家・總複習、劇場前排・部門海報、渡假村資訊系統地圖（導覽裡的名稱：熱氣球）", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.49, "load_s": 0.0, "prompt_tokens": 567, "prompt_s": 2.47, "gen_tokens": 68, "gen_s": 4.0, "tok_per_s": 17.0, "first_token_s": 2.49}}, "state": {}}
+

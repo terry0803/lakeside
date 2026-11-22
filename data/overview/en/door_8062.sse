@@ -1,0 +1,189 @@
+event: start
+data: {"session": "offline", "lang": "en"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Banquet Door · Failed Login", "zh": "宴會廳門口・驗證失敗"}, "subtitle": {"en": "Banquet Hall Door (wrong code)", "zh": "宴會廳門口（密碼錯誤）"}, "text": {"en": "A wrong code is rejected and logged; repeated failures would lock the account and alert the SOC.", "zh": "輸錯被拒絕，也被記錄；連續失敗會鎖帳號並通知資安監控中心。"}, "note": {"en": "Failed logins are a warning sign to watch, not just a nuisance.", "zh": "登入失敗是要注意的警訊。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "event_system", "en": "Event Registration & Check-in", "zh": "活動報名報到系統"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "mfa_fatigue", "en": "MFA Fatigue (Push Bombing)", "zh": "多因素驗證疲勞攻擊"}, {"key": "credential_stuffing", "en": "Password Guessing & Credential Stuffing", "zh": "密碼猜測與撞庫"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "mfa", "en": "Multi-Factor Authentication", "zh": "多因素驗證"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_authentication", "en": "Authentication Factors", "zh": "驗證因素"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_unexpected_mfa", "en": "MFA prompts I did not start", "zh": "收到不是自己發起的多因素驗證通知"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "door_6d03", "en": "Banquet Door · Access Granted", "zh": "宴會廳門口・驗證通過", "base_en": "Banquet Hall Door (open)", "base_zh": "宴會廳門口（打開）", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=10", "tour": "A"}, {"key": "play", "en": "Security Awareness Training Room", "zh": "資安訓練室", "base_en": "Training Room", "base_zh": "資安訓練室", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=7", "tour": "A"}]}]}
+
+event: token
+data: {"text": "This"}
+
+event: token
+data: {"text": " area"}
+
+event: token
+data: {"text": " shows"}
+
+event: token
+data: {"text": " a"}
+
+event: token
+data: {"text": " failed"}
+
+event: token
+data: {"text": " login"}
+
+event: token
+data: {"text": " attempt"}
+
+event: token
+data: {"text": " where"}
+
+event: token
+data: {"text": " a"}
+
+event: token
+data: {"text": " wrong"}
+
+event: token
+data: {"text": " code"}
+
+event: token
+data: {"text": " was"}
+
+event: token
+data: {"text": " rejected"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " logged"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " Re"}
+
+event: token
+data: {"text": "peated"}
+
+event: token
+data: {"text": " failures"}
+
+event: token
+data: {"text": " would"}
+
+event: token
+data: {"text": " lock"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " account"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " alert"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " SOC"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " You"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " systems"}
+
+event: token
+data: {"text": " for"}
+
+event: token
+data: {"text": " Event"}
+
+event: token
+data: {"text": " Registration"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " Check"}
+
+event: token
+data: {"text": "-in"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": " like"}
+
+event: token
+data: {"text": " Multi"}
+
+event: token
+data: {"text": "-F"}
+
+event: token
+data: {"text": "actor"}
+
+event: token
+data: {"text": " Authentication"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " threats"}
+
+event: token
+data: {"text": " such"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " M"}
+
+event: token
+data: {"text": "FA"}
+
+event: token
+data: {"text": " Fat"}
+
+event: token
+data: {"text": "igue"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " Password"}
+
+event: token
+data: {"text": " Guess"}
+
+event: token
+data: {"text": "ing"}
+
+event: token
+data: {"text": "."}
+
+event: done
+data: {"answer": "This area shows a failed login attempt where a wrong code was rejected and logged. Repeated failures would lock the account and alert the SOC. You can see systems for Event Registration & Check-in, controls like Multi-Factor Authentication, and threats such as MFA Fatigue and Password Guessing.", "go": [], "followups": [{"text": "What does the Event Registration & Check-in do?", "en": "What does the Event Registration & Check-in do?", "zh": "活動報名報到系統是做什麼的？"}, {"text": "How do we prevent MFA fatigue (push bombing)?", "en": "How do we prevent MFA fatigue (push bombing)?", "zh": "多因素驗證疲勞攻擊要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.29, "total_s": 6.3}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "door_8062", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "door_8062"}, "rows": 1, "ms": 6.1}], "graph": {"nodes": [{"key": "door_8062", "label": "Room", "en": "Banquet Hall Door (wrong code)", "zh": "宴會廳門口（密碼錯誤）"}, {"key": "event_system", "label": "System", "en": "Event Registration & Check-in", "zh": "活動報名報到系統"}, {"key": "mfa_fatigue", "label": "Threat", "en": "MFA Fatigue (Push Bombing)", "zh": "多因素驗證疲勞攻擊"}, {"key": "credential_stuffing", "label": "Threat", "en": "Password Guessing & Credential Stuffing", "zh": "密碼猜測與撞庫"}, {"key": "mfa", "label": "Control", "en": "Multi-Factor Authentication", "zh": "多因素驗證"}, {"key": "c_authentication", "label": "Concept", "en": "Authentication Factors", "zh": "驗證因素"}], "edges": [{"a": "event_system", "t": "LOCATED_IN", "b": "door_8062"}, {"a": "credential_stuffing", "t": "SHOWN_IN", "b": "door_8062"}, {"a": "mfa_fatigue", "t": "SHOWN_IN", "b": "door_8062"}, {"a": "c_authentication", "t": "TAUGHT_IN", "b": "door_8062"}, {"a": "c_authentication", "t": "RELATED_TO", "b": "mfa"}, {"a": "mfa", "t": "SEEN_IN", "b": "door_8062"}, {"a": "mfa", "t": "MITIGATES", "b": "credential_stuffing"}]}, "tool_used": "room_overview", "facts": "Room: Banquet Door · Failed Login (called 'Banquet Hall Door (wrong code)' in the tour)\nWhat it shows: A wrong code is rejected and logged; repeated failures would lock the account and alert the SOC.\nKey lesson: Failed logins are a warning sign to watch, not just a nuisance.\nSystems here: Event Registration & Check-in\nThreats shown here: MFA Fatigue (Push Bombing), Password Guessing & Credential Stuffing\nControls you can see: Multi-Factor Authentication\nConcepts: Authentication Factors\nProcedures to know: MFA prompts I did not start\nExits: Banquet Door · Access Granted (called 'Banquet Hall Door (open)' in the tour), Security Awareness Training Room", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.28, "load_s": 0.01, "prompt_tokens": 598, "prompt_s": 2.76, "gen_tokens": 60, "gen_s": 3.5, "tok_per_s": 17.2, "first_token_s": 2.79}}, "state": {}}
+

@@ -1,0 +1,297 @@
+event: start
+data: {"session": "offline", "lang": "zh"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Security Awareness Training Room", "zh": "資安訓練室"}, "subtitle": {"en": "Training Room", "zh": "資安訓練室"}, "text": {"en": "Staff learn to spot phishing, use strong passwords and MFA, and report anything strange.", "zh": "員工在這裡學會認出釣魚信、用好密碼和多因素驗證、看到怪事就回報。"}, "note": {"en": "People are part of security: training and phishing drills mean fewer wrong clicks.", "zh": "人也是資安的一環：訓練和演練能讓人少點錯。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "lms", "en": "Security Awareness Platform", "zh": "資安教育訓練平台"}, {"key": "email", "en": "Email & Collaboration", "zh": "電子郵件與協作平台"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "usb_malware", "en": "Malware from USB Drives", "zh": "USB 惡意程式"}, {"key": "phishing", "en": "Phishing Email", "zh": "釣魚郵件"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "awareness_training", "en": "Security Awareness Training", "zh": "資安意識訓練"}, {"key": "password_policy", "en": "Strong Password Policy", "zh": "密碼政策"}, {"key": "email_filtering", "en": "Email Security Filtering", "zh": "郵件安全過濾"}, {"key": "phish_simulation", "en": "Phishing Drills & Report Button", "zh": "釣魚演練與回報按鈕"}, {"key": "mfa", "en": "Multi-Factor Authentication", "zh": "多因素驗證"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_social_engineering", "en": "Social Engineering", "zh": "社交工程"}, {"key": "c_authentication", "en": "Authentication Factors", "zh": "驗證因素"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_phish_clicked", "en": "Clicked a phishing link or entered a password", "zh": "點了釣魚連結或輸入了密碼"}, {"key": "proc_usb_found", "en": "Found an unknown USB drive", "zh": "撿到來路不明的 USB"}, {"key": "proc_unexpected_mfa", "en": "MFA prompts I did not start", "zh": "收到不是自己發起的多因素驗證通知"}, {"key": "proc_phish_report", "en": "Received a suspicious email", "zh": "收到可疑郵件"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "door_38d0", "en": "Banquet Door · MFA Check", "zh": "宴會廳門口・多因素驗證", "base_en": "Banquet Hall Door (locked)", "base_zh": "宴會廳門口（上鎖）", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=8", "tour": "A"}, {"key": "billiard", "en": "IT Help Desk", "zh": "資訊服務台", "base_en": "IT Help Desk", "base_zh": "資訊服務台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=6", "tour": "A"}]}]}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "是"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "訓練"}
+
+event: token
+data: {"text": "室"}
+
+event: token
+data: {"text": "」"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "主要"}
+
+event: token
+data: {"text": "用於"}
+
+event: token
+data: {"text": "學習"}
+
+event: token
+data: {"text": "認"}
+
+event: token
+data: {"text": "出"}
+
+event: token
+data: {"text": "釣"}
+
+event: token
+data: {"text": "魚"}
+
+event: token
+data: {"text": "信"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "設定"}
+
+event: token
+data: {"text": "好"}
+
+event: token
+data: {"text": "密碼"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "多"}
+
+event: token
+data: {"text": "因素"}
+
+event: token
+data: {"text": "驗證"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "並"}
+
+event: token
+data: {"text": "了解"}
+
+event: token
+data: {"text": "人"}
+
+event: token
+data: {"text": "也是"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "的重要"}
+
+event: token
+data: {"text": "環節"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "房間"}
+
+event: token
+data: {"text": "內的"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "包含"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "教育"}
+
+event: token
+data: {"text": "訓練"}
+
+event: token
+data: {"text": "平台"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "電子郵件"}
+
+event: token
+data: {"text": "協"}
+
+event: token
+data: {"text": "作"}
+
+event: token
+data: {"text": "平台"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "可"}
+
+event: token
+data: {"text": "看到"}
+
+event: token
+data: {"text": " USB"}
+
+event: token
+data: {"text": " 惡"}
+
+event: token
+data: {"text": "意"}
+
+event: token
+data: {"text": "程式"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "釣"}
+
+event: token
+data: {"text": "魚"}
+
+event: token
+data: {"text": "郵件"}
+
+event: token
+data: {"text": "等"}
+
+event: token
+data: {"text": "威脅"}
+
+event: token
+data: {"text": "以及"}
+
+event: token
+data: {"text": "資"}
+
+event: token
+data: {"text": "安"}
+
+event: token
+data: {"text": "意識"}
+
+event: token
+data: {"text": "訓練"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "郵件"}
+
+event: token
+data: {"text": "安全"}
+
+event: token
+data: {"text": "過濾"}
+
+event: token
+data: {"text": "等"}
+
+event: token
+data: {"text": "防護"}
+
+event: token
+data: {"text": "措施"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "你可以"}
+
+event: token
+data: {"text": "從"}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "走到"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "宴"}
+
+event: token
+data: {"text": "會"}
+
+event: token
+data: {"text": "廳"}
+
+event: token
+data: {"text": "門口"}
+
+event: token
+data: {"text": "（"}
+
+event: token
+data: {"text": "上"}
+
+event: token
+data: {"text": "鎖"}
+
+event: token
+data: {"text": "）」"}
+
+event: token
+data: {"text": "或"}
+
+event: token
+data: {"text": "前往"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "資訊"}
+
+event: token
+data: {"text": "服務"}
+
+event: token
+data: {"text": "台"}
+
+event: token
+data: {"text": "」。"}
+
+event: done
+data: {"answer": "這裡是「資安訓練室」，主要用於學習認出釣魚信、設定好密碼與多因素驗證，並了解人也是資安的重要環節。房間內的系統包含資安教育訓練平台與電子郵件協作平台，可看到 USB 惡意程式、釣魚郵件等威脅以及資安意識訓練、郵件安全過濾等防護措施。你可以從這裡走到「宴會廳門口（上鎖）」或前往「資訊服務台」。", "go": [{"key": "door_38d0", "en": "Banquet Door · MFA Check", "zh": "宴會廳門口・多因素驗證", "base_en": "Banquet Hall Door (locked)", "base_zh": "宴會廳門口（上鎖）", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=8", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "資安教育訓練平台是做什麼的？", "en": "What does the Security Awareness Platform do?", "zh": "資安教育訓練平台是做什麼的？"}, {"text": "USB 惡意程式要怎麼防？", "en": "How do we prevent malware from USB drives?", "zh": "USB 惡意程式要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.43, "total_s": 8.45}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "play", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "play"}, "rows": 1, "ms": 7.8}], "graph": {"nodes": [{"key": "play", "label": "Room", "en": "Training Room", "zh": "資安訓練室"}, {"key": "lms", "label": "System", "en": "Security Awareness Platform", "zh": "資安教育訓練平台"}, {"key": "email", "label": "System", "en": "Email & Collaboration", "zh": "電子郵件與協作平台"}, {"key": "usb_malware", "label": "Threat", "en": "Malware from USB Drives", "zh": "USB 惡意程式"}, {"key": "phishing", "label": "Threat", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "awareness_training", "label": "Control", "en": "Security Awareness Training", "zh": "資安意識訓練"}, {"key": "password_policy", "label": "Control", "en": "Strong Password Policy", "zh": "密碼政策"}, {"key": "email_filtering", "label": "Control", "en": "Email Security Filtering", "zh": "郵件安全過濾"}, {"key": "phish_simulation", "label": "Control", "en": "Phishing Drills & Report Button", "zh": "釣魚演練與回報按鈕"}, {"key": "mfa", "label": "Control", "en": "Multi-Factor Authentication", "zh": "多因素驗證"}, {"key": "c_social_engineering", "label": "Concept", "en": "Social Engineering", "zh": "社交工程"}, {"key": "c_authentication", "label": "Concept", "en": "Authentication Factors", "zh": "驗證因素"}], "edges": [{"a": "email", "t": "LOCATED_IN", "b": "play"}, {"a": "lms", "t": "LOCATED_IN", "b": "play"}, {"a": "phishing", "t": "TARGETS", "b": "email"}, {"a": "phishing", "t": "SHOWN_IN", "b": "play"}, {"a": "usb_malware", "t": "SHOWN_IN", "b": "play"}, {"a": "c_authentication", "t": "TAUGHT_IN", "b": "play"}, {"a": "c_authentication", "t": "RELATED_TO", "b": "password_policy"}, {"a": "c_authentication", "t": "RELATED_TO", "b": "mfa"}, {"a": "c_social_engineering", "t": "TAUGHT_IN", "b": "play"}, {"a": "c_social_engineering", "t": "RELATED_TO", "b": "phishing"}, {"a": "c_social_engineering", "t": "RELATED_TO", "b": "awareness_training"}, {"a": "mfa", "t": "SEEN_IN", "b": "play"}, {"a": "mfa", "t": "PROTECTS", "b": "email"}, {"a": "mfa", "t": "MITIGATES", "b": "phishing"}, {"a": "password_policy", "t": "SEEN_IN", "b": "play"}, {"a": "password_policy", "t": "MITIGATES", "b": "phishing"}, {"a": "awareness_training", "t": "SEEN_IN", "b": "play"}, {"a": "awareness_training", "t": "MITIGATES", "b": "usb_malware"}, {"a": "awareness_training", "t": "MITIGATES", "b": "phishing"}, {"a": "phish_simulation", "t": "SEEN_IN", "b": "play"}, {"a": "phish_simulation", "t": "PROTECTS", "b": "email"}, {"a": "phish_simulation", "t": "MITIGATES", "b": "phishing"}, {"a": "email_filtering", "t": "SEEN_IN", "b": "play"}, {"a": "email_filtering", "t": "PROTECTS", "b": "email"}, {"a": "email_filtering", "t": "MITIGATES", "b": "phishing"}]}, "tool_used": "room_overview", "facts": "房間：資安訓練室\n代表的資訊主題：員工在這裡學會認出釣魚信、用好密碼和多因素驗證、看到怪事就回報。\n重點：人也是資安的一環：訓練和演練能讓人少點錯。\n這裡的系統：資安教育訓練平台、電子郵件與協作平台\n這裡要注意的威脅：USB 惡意程式、釣魚郵件\n看得到的防護措施：資安意識訓練、密碼政策、郵件安全過濾、釣魚演練與回報按鈕、多因素驗證\n課程概念：社交工程、驗證因素\n相關的處理流程：點了釣魚連結或輸入了密碼、撿到來路不明的 USB、收到不是自己發起的多因素驗證通知、收到可疑郵件\n可以走到：宴會廳門口・多因素驗證（導覽裡的名稱：宴會廳門口（上鎖））、資訊服務台", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.43, "load_s": 0.0, "prompt_tokens": 636, "prompt_s": 2.63, "gen_tokens": 97, "gen_s": 5.78, "tok_per_s": 16.8, "first_token_s": 2.65}}, "state": {}}
+

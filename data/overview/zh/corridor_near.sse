@@ -1,0 +1,204 @@
+event: start
+data: {"session": "offline", "lang": "zh"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Corridor Far End · Server Room Entrance", "zh": "走廊盡頭・機房入口"}, "subtitle": {"en": "Corridor · Far End", "zh": "走廊盡頭"}, "text": {"en": "The server room door with its badge reader and camera.", "zh": "機房門口的讀卡機和監視器。"}, "note": {"en": "A restricted door must close and lock behind you every time.", "zh": "限制區的門每次都要關好、鎖好。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "access_control", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "cctv", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "tailgating", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "cctv_monitoring", "en": "CCTV Monitoring", "zh": "監視器監控"}, {"key": "physical_access", "en": "Physical Access Control", "zh": "實體門禁"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_risk", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "corridor", "en": "Staff Corridor & Physical Security", "zh": "員工走廊與實體安全", "base_en": "Corridor", "base_zh": "走廊", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=5", "tour": "A"}, {"key": "cellar", "en": "Server Room (Restricted)", "zh": "機房（限制進入）", "base_en": "Server Room", "base_zh": "機房", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=17", "tour": "A"}]}]}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "是"}
+
+event: token
+data: {"text": "機"}
+
+event: token
+data: {"text": "房"}
+
+event: token
+data: {"text": "入口"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "可以看到"}
+
+event: token
+data: {"text": "門"}
+
+event: token
+data: {"text": "禁"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "監視"}
+
+event: token
+data: {"text": "器"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "錄影"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "請"}
+
+event: token
+data: {"text": "務必"}
+
+event: token
+data: {"text": "將"}
+
+event: token
+data: {"text": "機"}
+
+event: token
+data: {"text": "房的"}
+
+event: token
+data: {"text": "門"}
+
+event: token
+data: {"text": "每次"}
+
+event: token
+data: {"text": "關"}
+
+event: token
+data: {"text": "好"}
+
+event: token
+data: {"text": "並"}
+
+event: token
+data: {"text": "鎖"}
+
+event: token
+data: {"text": "好"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "以"}
+
+event: token
+data: {"text": "防范"}
+
+event: token
+data: {"text": "尾"}
+
+event: token
+data: {"text": "隨"}
+
+event: token
+data: {"text": "或"}
+
+event: token
+data: {"text": "未經"}
+
+event: token
+data: {"text": "授權"}
+
+event: token
+data: {"text": "進入"}
+
+event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "威脅"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "此"}
+
+event: token
+data: {"text": "處"}
+
+event: token
+data: {"text": "屬於"}
+
+event: token
+data: {"text": "限制"}
+
+event: token
+data: {"text": "區"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "僅"}
+
+event: token
+data: {"text": "能"}
+
+event: token
+data: {"text": "通往"}
+
+event: token
+data: {"text": "員工"}
+
+event: token
+data: {"text": "走廊"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "實體"}
+
+event: token
+data: {"text": "安全"}
+
+event: token
+data: {"text": "區域"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "無法"}
+
+event: token
+data: {"text": "直接"}
+
+event: token
+data: {"text": "進入"}
+
+event: token
+data: {"text": "機"}
+
+event: token
+data: {"text": "房"}
+
+event: token
+data: {"text": "。"}
+
+event: replace
+data: {"text": "這裡是機房入口，可以看到門禁系統、監視器與錄影系統。請務必將機房的門每次關好並鎖好，以防範尾隨或未經授權進入的威脅。此處屬於限制區，僅能通往員工走廊與實體安全區域，無法直接進入機房。"}
+
+event: done
+data: {"answer": "這裡是機房入口，可以看到門禁系統、監視器與錄影系統。請務必將機房的門每次關好並鎖好，以防範尾隨或未經授權進入的威脅。此處屬於限制區，僅能通往員工走廊與實體安全區域，無法直接進入機房。", "go": [], "followups": [{"text": "門禁系統是做什麼的？", "en": "What does the Badge Access Control do?", "zh": "門禁系統是做什麼的？"}, {"text": "尾隨與未經授權進入要怎麼防？", "en": "How do we prevent tailgating & unauthorised entry?", "zh": "尾隨與未經授權進入要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.14, "total_s": 8.16}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "corridor_near", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "corridor_near"}, "rows": 1, "ms": 8.1}], "graph": {"nodes": [{"key": "corridor_near", "label": "Room", "en": "Corridor · Far End", "zh": "走廊盡頭"}, {"key": "access_control", "label": "System", "en": "Badge Access Control", "zh": "門禁系統"}, {"key": "cctv", "label": "System", "en": "CCTV & Video Management", "zh": "監視器與錄影系統"}, {"key": "tailgating", "label": "Threat", "en": "Tailgating & Unauthorised Entry", "zh": "尾隨與未經授權進入"}, {"key": "cctv_monitoring", "label": "Control", "en": "CCTV Monitoring", "zh": "監視器監控"}, {"key": "physical_access", "label": "Control", "en": "Physical Access Control", "zh": "實體門禁"}, {"key": "c_risk", "label": "Concept", "en": "Risk = Likelihood × Impact", "zh": "風險＝可能性×衝擊"}], "edges": [{"a": "cctv", "t": "LOCATED_IN", "b": "corridor_near"}, {"a": "access_control", "t": "LOCATED_IN", "b": "corridor_near"}, {"a": "tailgating", "t": "TARGETS", "b": "access_control"}, {"a": "tailgating", "t": "SHOWN_IN", "b": "corridor_near"}, {"a": "c_risk", "t": "TAUGHT_IN", "b": "corridor_near"}, {"a": "physical_access", "t": "SEEN_IN", "b": "corridor_near"}, {"a": "physical_access", "t": "PROTECTS", "b": "access_control"}, {"a": "physical_access", "t": "MITIGATES", "b": "tailgating"}, {"a": "cctv_monitoring", "t": "SEEN_IN", "b": "corridor_near"}, {"a": "cctv_monitoring", "t": "MITIGATES", "b": "tailgating"}]}, "tool_used": "room_overview", "facts": "房間：走廊盡頭・機房入口\n代表的資訊主題：機房門口的讀卡機和監視器。\n重點：限制區的門每次都要關好、鎖好。\n這裡的系統：門禁系統、監視器與錄影系統\n這裡要注意的威脅：尾隨與未經授權進入\n看得到的防護措施：監視器監控、實體門禁\n課程概念：風險＝可能性×衝擊\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：員工走廊與實體安全、機房（限制進入）", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.14, "load_s": 0.01, "prompt_tokens": 577, "prompt_s": 2.76, "gen_tokens": 64, "gen_s": 5.35, "tok_per_s": 12.0, "first_token_s": 2.79}}, "state": {}}
+

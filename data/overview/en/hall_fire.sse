@@ -1,0 +1,195 @@
+event: start
+data: {"session": "offline", "lang": "en"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Fireplace Close-up · Ordering Tablet", "zh": "壁爐近看・點餐平板"}, "subtitle": {"en": "Fireplace · Up Close", "zh": "壁爐近看"}, "text": {"en": "A shared tablet servers use to take orders at the tables.", "zh": "服務生在桌邊點餐用的共用平板。"}, "note": {"en": "Shared devices lock automatically and everyone logs in as themselves.", "zh": "共用裝置要自動鎖定，每個人用自己的帳號登入。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "order_tablet", "en": "Ordering Tablet", "zh": "點餐平板"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "shoulder_surfing", "en": "Shoulder Surfing & Screen Exposure", "zh": "偷窺與螢幕外露"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "clear_desk", "en": "Clear Desk & Clear Screen", "zh": "桌面淨空與螢幕淨空"}, {"key": "session_lock", "en": "Screen Lock & Session Timeout", "zh": "螢幕鎖定與閒置登出"}, {"key": "unique_ids", "en": "Individual Accounts (No Shared Logins)", "zh": "個人帳號（不共用）"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "hall", "en": "Restaurant POS", "zh": "餐廳收銀系統", "base_en": "Restaurant", "base_zh": "餐廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=3", "tour": "A"}]}]}
+
+event: token
+data: {"text": "This"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " Fireplace"}
+
+event: token
+data: {"text": " Close"}
+
+event: token
+data: {"text": "-up"}
+
+event: token
+data: {"text": " room"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " where"}
+
+event: token
+data: {"text": " you"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " a"}
+
+event: token
+data: {"text": " shared"}
+
+event: token
+data: {"text": " tablet"}
+
+event: token
+data: {"text": " used"}
+
+event: token
+data: {"text": " by"}
+
+event: token
+data: {"text": " servers"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " take"}
+
+event: token
+data: {"text": " orders"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " The"}
+
+event: token
+data: {"text": " screen"}
+
+event: token
+data: {"text": " displays"}
+
+event: token
+data: {"text": " threats"}
+
+event: token
+data: {"text": " like"}
+
+event: token
+data: {"text": " shoulder"}
+
+event: token
+data: {"text": " surfing"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": " such"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " clear"}
+
+event: token
+data: {"text": " desk"}
+
+event: token
+data: {"text": " policies"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " automatic"}
+
+event: token
+data: {"text": " screen"}
+
+event: token
+data: {"text": " locks"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " session"}
+
+event: token
+data: {"text": " timeouts"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " individual"}
+
+event: token
+data: {"text": " accounts"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " You"}
+
+event: token
+data: {"text": " may"}
+
+event: token
+data: {"text": " also"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " an"}
+
+event: token
+data: {"text": " exit"}
+
+event: token
+data: {"text": " leading"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " Restaurant"}
+
+event: token
+data: {"text": " POS"}
+
+event: token
+data: {"text": " system"}
+
+event: token
+data: {"text": "."}
+
+event: done
+data: {"answer": "This is the Fireplace Close-up room, where you can see a shared tablet used by servers to take orders. The screen displays threats like shoulder surfing and controls such as clear desk policies, automatic screen locks, session timeouts, and individual accounts. You may also see an exit leading to the Restaurant POS system.", "go": [], "followups": [{"text": "What does the Ordering Tablet do?", "en": "What does the Ordering Tablet do?", "zh": "點餐平板是做什麼的？"}, {"text": "How do we prevent shoulder surfing & screen exposure?", "en": "How do we prevent shoulder surfing & screen exposure?", "zh": "偷窺與螢幕外露要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 6.34, "total_s": 6.35}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "hall_fire", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "hall_fire"}, "rows": 1, "ms": 6.8}], "graph": {"nodes": [{"key": "hall_fire", "label": "Room", "en": "Fireplace · Up Close", "zh": "壁爐近看"}, {"key": "order_tablet", "label": "System", "en": "Ordering Tablet", "zh": "點餐平板"}, {"key": "shoulder_surfing", "label": "Threat", "en": "Shoulder Surfing & Screen Exposure", "zh": "偷窺與螢幕外露"}, {"key": "clear_desk", "label": "Control", "en": "Clear Desk & Clear Screen", "zh": "桌面淨空與螢幕淨空"}, {"key": "session_lock", "label": "Control", "en": "Screen Lock & Session Timeout", "zh": "螢幕鎖定與閒置登出"}, {"key": "unique_ids", "label": "Control", "en": "Individual Accounts (No Shared Logins)", "zh": "個人帳號（不共用）"}], "edges": [{"a": "order_tablet", "t": "LOCATED_IN", "b": "hall_fire"}, {"a": "shoulder_surfing", "t": "SHOWN_IN", "b": "hall_fire"}, {"a": "unique_ids", "t": "SEEN_IN", "b": "hall_fire"}, {"a": "unique_ids", "t": "PROTECTS", "b": "order_tablet"}, {"a": "unique_ids", "t": "MITIGATES", "b": "shoulder_surfing"}, {"a": "session_lock", "t": "SEEN_IN", "b": "hall_fire"}, {"a": "session_lock", "t": "PROTECTS", "b": "order_tablet"}, {"a": "session_lock", "t": "MITIGATES", "b": "shoulder_surfing"}, {"a": "clear_desk", "t": "SEEN_IN", "b": "hall_fire"}, {"a": "clear_desk", "t": "MITIGATES", "b": "shoulder_surfing"}]}, "tool_used": "room_overview", "facts": "Room: Fireplace Close-up · Ordering Tablet (called 'Fireplace · Up Close' in the tour)\nWhat it shows: A shared tablet servers use to take orders at the tables.\nKey lesson: Shared devices lock automatically and everyone logs in as themselves.\nSystems here: Ordering Tablet\nThreats shown here: Shoulder Surfing & Screen Exposure\nControls you can see: Clear Desk & Clear Screen, Screen Lock & Session Timeout, Individual Accounts (No Shared Logins)\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Restaurant POS", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 6.33, "load_s": 0.01, "prompt_tokens": 570, "prompt_s": 2.53, "gen_tokens": 62, "gen_s": 3.78, "tok_per_s": 16.4, "first_token_s": 2.55}}, "state": {}}
+

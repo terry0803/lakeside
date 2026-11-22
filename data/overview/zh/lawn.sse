@@ -1,0 +1,378 @@
+event: start
+data: {"session": "offline", "lang": "zh"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Lawn · Assembly Point & Continuity", "zh": "湖邊草地・集合點與營運持續"}, "subtitle": {"en": "Lakeside Lawn", "zh": "湖邊草地"}, "text": {"en": "The emergency assembly point; the business continuity plan says how the resort keeps running when systems or power fail.", "zh": "緊急集合點；營運持續計畫寫著系統或電力出問題時渡假村怎麼繼續營運。"}, "note": {"en": "Know the manual fallback for your job before you need it.", "zh": "事先知道自己的工作在系統掛掉時怎麼用人工替代。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "power", "en": "UPS & Backup Generator", "zh": "不斷電系統與發電機"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "environmental", "en": "Power Outage, Fire & Flood", "zh": "停電、火災與淹水"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "bcp_dr", "en": "Business Continuity & Disaster Recovery", "zh": "營運持續與災難復原"}, {"key": "environmental_protection", "en": "UPS, Generator & Fire Suppression", "zh": "不斷電、發電機與滅火設備"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_bcp", "en": "BCP, RTO & RPO", "zh": "營運持續、RTO 與 RPO"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_pos_outage", "en": "The POS is down", "zh": "收銀系統當機"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "sky", "en": "Resort IT Map", "zh": "渡假村資訊系統地圖", "base_en": "Hot-Air Balloon", "base_zh": "熱氣球", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=1", "tour": "A"}, {"key": "pier", "en": "Pier · Deliveries & Vendors", "zh": "會館碼頭・進貨與廠商", "base_en": "Clubhouse Pier", "base_zh": "會館碼頭", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=20", "tour": "A"}, {"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}, {"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A"}]}]}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "是"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "湖"}
+
+event: token
+data: {"text": "邊"}
+
+event: token
+data: {"text": "草地"}
+
+event: token
+data: {"text": "・"}
+
+event: token
+data: {"text": "集合"}
+
+event: token
+data: {"text": "點"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "營運"}
+
+event: token
+data: {"text": "持續"}
+
+event: token
+data: {"text": "」"}
+
+event: token
+data: {"text": "房間"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "主要"}
+
+event: token
+data: {"text": "展示"}
+
+event: token
+data: {"text": "緊急"}
+
+event: token
+data: {"text": "集合"}
+
+event: token
+data: {"text": "點"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "營運"}
+
+event: token
+data: {"text": "持續"}
+
+event: token
+data: {"text": "計畫"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n您可以"}
+
+event: token
+data: {"text": "看到"}
+
+event: token
+data: {"text": "不斷"}
+
+event: token
+data: {"text": "電"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "發電"}
+
+event: token
+data: {"text": "機"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "滅"}
+
+event: token
+data: {"text": "火"}
+
+event: token
+data: {"text": "設備"}
+
+event: token
+data: {"text": "等"}
+
+event: token
+data: {"text": "防護"}
+
+event: token
+data: {"text": "措施"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "並"}
+
+event: token
+data: {"text": "學習"}
+
+event: token
+data: {"text": "在"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "或"}
+
+event: token
+data: {"text": "電力"}
+
+event: token
+data: {"text": "出"}
+
+event: token
+data: {"text": "問題"}
+
+event: token
+data: {"text": "時"}
+
+event: token
+data: {"text": "如何"}
+
+event: token
+data: {"text": "以"}
+
+event: token
+data: {"text": "人工"}
+
+event: token
+data: {"text": "替代"}
+
+event: token
+data: {"text": "工作"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n相關"}
+
+event: token
+data: {"text": "流程"}
+
+event: token
+data: {"text": "包含"}
+
+event: token
+data: {"text": "收"}
+
+event: token
+data: {"text": "銀"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "當"}
+
+event: token
+data: {"text": "機的"}
+
+event: token
+data: {"text": "處理"}
+
+event: token
+data: {"text": "方式"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "課程"}
+
+event: token
+data: {"text": "概念"}
+
+event: token
+data: {"text": "涵蓋"}
+
+event: token
+data: {"text": "營運"}
+
+event: token
+data: {"text": "持續"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "R"}
+
+event: token
+data: {"text": "TO"}
+
+event: token
+data: {"text": " 與"}
+
+event: token
+data: {"text": " R"}
+
+event: token
+data: {"text": "PO"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "\n導覽"}
+
+event: token
+data: {"text": "中"}
+
+event: token
+data: {"text": "可"}
+
+event: token
+data: {"text": "前往"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "熱"}
+
+event: token
+data: {"text": "氣"}
+
+event: token
+data: {"text": "球"}
+
+event: token
+data: {"text": "」（"}
+
+event: token
+data: {"text": "渡假"}
+
+event: token
+data: {"text": "村"}
+
+event: token
+data: {"text": "資訊"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "地圖"}
+
+event: token
+data: {"text": "）、"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "會"}
+
+event: token
+data: {"text": "館"}
+
+event: token
+data: {"text": "碼頭"}
+
+event: token
+data: {"text": "・"}
+
+event: token
+data: {"text": "進"}
+
+event: token
+data: {"text": "貨"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "廠商"}
+
+event: token
+data: {"text": "」、「"}
+
+event: token
+data: {"text": "泳池"}
+
+event: token
+data: {"text": "・"}
+
+event: token
+data: {"text": "資料"}
+
+event: token
+data: {"text": "湖"}
+
+event: token
+data: {"text": "」"}
+
+event: token
+data: {"text": "及"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "湖畔"}
+
+event: token
+data: {"text": "露台"}
+
+event: token
+data: {"text": "」（"}
+
+event: token
+data: {"text": "客人"}
+
+event: token
+data: {"text": "報"}
+
+event: token
+data: {"text": "到"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "無線"}
+
+event: token
+data: {"text": "網路"}
+
+event: token
+data: {"text": "）。"}
+
+event: replace
+data: {"text": "這裡是「湖邊草地・集合點與營運持續」房間，主要展示緊急集合點與營運持續計畫。\n你可以看到不斷電系統、發電機與滅火設備等防護措施，並學習在系統或電力出問題時如何以人工替代工作。\n相關流程包含收銀系統當機的處理方式，課程概念涵蓋營運持續、RTO 與 RPO。\n導覽中可前往「熱氣球」（渡假村資訊系統地圖）、「會館碼頭・進貨與廠商」、「泳池・資料湖」及「湖畔露台」（客人報到與無線網路）。"}
+
+event: done
+data: {"answer": "這裡是「湖邊草地・集合點與營運持續」房間，主要展示緊急集合點與營運持續計畫。\n你可以看到不斷電系統、發電機與滅火設備等防護措施，並學習在系統或電力出問題時如何以人工替代工作。\n相關流程包含收銀系統當機的處理方式，課程概念涵蓋營運持續、RTO 與 RPO。\n導覽中可前往「熱氣球」（渡假村資訊系統地圖）、「會館碼頭・進貨與廠商」、「泳池・資料湖」及「湖畔露台」（客人報到與無線網路）。", "go": [], "followups": [{"text": "不斷電系統與發電機是做什麼的？", "en": "What does the UPS & Backup Generator do?", "zh": "不斷電系統與發電機是做什麼的？"}, {"text": "停電、火災與淹水要怎麼防？", "en": "How do we prevent power outage, fire & flood?", "zh": "停電、火災與淹水要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 10.48, "total_s": 10.49}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "lawn", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "lawn"}, "rows": 1, "ms": 5.7}], "graph": {"nodes": [{"key": "lawn", "label": "Room", "en": "Lakeside Lawn", "zh": "湖邊草地"}, {"key": "power", "label": "System", "en": "UPS & Backup Generator", "zh": "不斷電系統與發電機"}, {"key": "environmental", "label": "Threat", "en": "Power Outage, Fire & Flood", "zh": "停電、火災與淹水"}, {"key": "bcp_dr", "label": "Control", "en": "Business Continuity & Disaster Recovery", "zh": "營運持續與災難復原"}, {"key": "environmental_protection", "label": "Control", "en": "UPS, Generator & Fire Suppression", "zh": "不斷電、發電機與滅火設備"}, {"key": "c_bcp", "label": "Concept", "en": "BCP, RTO & RPO", "zh": "營運持續、RTO 與 RPO"}], "edges": [{"a": "environmental_protection", "t": "SEEN_IN", "b": "lawn"}, {"a": "environmental_protection", "t": "PROTECTS", "b": "power"}, {"a": "environmental_protection", "t": "MITIGATES", "b": "environmental"}, {"a": "power", "t": "LOCATED_IN", "b": "lawn"}, {"a": "environmental", "t": "TARGETS", "b": "power"}, {"a": "environmental", "t": "SHOWN_IN", "b": "lawn"}, {"a": "c_bcp", "t": "TAUGHT_IN", "b": "lawn"}, {"a": "c_bcp", "t": "RELATED_TO", "b": "bcp_dr"}, {"a": "bcp_dr", "t": "SEEN_IN", "b": "lawn"}, {"a": "bcp_dr", "t": "MITIGATES", "b": "environmental"}]}, "tool_used": "room_overview", "facts": "房間：湖邊草地・集合點與營運持續\n代表的資訊主題：緊急集合點；營運持續計畫寫著系統或電力出問題時渡假村怎麼繼續營運。\n重點：事先知道自己的工作在系統掛掉時怎麼用人工替代。\n這裡的系統：不斷電系統與發電機\n這裡要注意的威脅：停電、火災與淹水\n看得到的防護措施：營運持續與災難復原、不斷電、發電機與滅火設備\n課程概念：營運持續、RTO 與 RPO\n相關的處理流程：收銀系統當機\n可以走到：渡假村資訊系統地圖（導覽裡的名稱：熱氣球）、會館碼頭・進貨與廠商、泳池・資料湖、客人報到與無線網路（導覽裡的名稱：湖畔露台）", "converted_to_traditional": true, "answer_stats": {"model": "qwen3.5:9b", "wall_s": 10.48, "load_s": 0.0, "prompt_tokens": 624, "prompt_s": 2.7, "gen_tokens": 126, "gen_s": 7.76, "tok_per_s": 16.2, "first_token_s": 2.72}}, "state": {}}
+

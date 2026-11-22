@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="/lakeside/offline.js" data-load="/lakeside/static/app.js /lakeside/static/minimap.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b3640">
+<title>Lakeside IT Assistant · IT 小幫手</title>
+<link rel="stylesheet" href="/lakeside/static/style.css">
+</head>
+<body>
+<!-- 11/21 night: the tour fills the window, like iStaging on its own. The assistant, the casebook and the map open over it.
+     11/22 afternoon: third look (style.css): liquid glass over the tour, light drifting inside the windows. -->
+<main class="layout" id="layout">
+  <div class="orbs bg-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <section class="tour" aria-label="360° tour">
+    <iframe id="tour" title="Lakeside Resort 360° tour" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" allowfullscreen></iframe>
+    <div class="tour-toast" id="tourToast" role="status" aria-live="polite"></div>
+  </section>
+
+  <div class="side" id="side">
+  <nav class="dock" id="dock" aria-label="Assistant">
+    <button type="button" class="dock-btn is-chat lg-rim lg-hi" id="dockChat" aria-controls="desk" aria-expanded="false">
+      <span class="dock-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.4 3.6a.4.4 0 0 1-.6-.3V16h-.5A.5.5 0 0 1 4 15.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9" cy="9.6" r="1.1" fill="currentColor"/><circle cx="12" cy="9.6" r="1.1" fill="currentColor"/><circle cx="15" cy="9.6" r="1.1" fill="currentColor"/></svg></span>
+      <span class="dock-t"><b>IT Assistant</b><small lang="zh-Hant">IT 小幫手</small></span>
+    </button>
+    <button type="button" class="dock-btn is-games lg-rim lg-hi" id="dockGames" aria-controls="desk" aria-expanded="false">
+      <span class="dock-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h11.5a2 2 0 0 1 2 2V20a.5.5 0 0 1-.8.4L15 18.5H7a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <span class="dock-t"><b>Casebook</b><small lang="zh-Hant">事件簿</small></span><em id="dockGamesN">0/4</em>
+    </button>
+  </nav>
+  </div>
+
+  <section class="desk lg-rim lg-hi" id="desk" aria-label="IT assistant" hidden>
+    <header class="desk-head">
+      <div class="desk-bar">
+        <div class="brand">
+          <h1>Lakeside IT Assistant <span lang="zh-Hant">IT 小幫手</span></h1>
+          <p class="status" id="status">Connecting to the knowledge graph… <span lang="zh-Hant">正在連線到知識圖…</span></p>
+        </div>
+        <div class="desk-win">
+          <button type="button" class="win-btn" id="deskSet" aria-expanded="false" aria-controls="deskSettings" title="Language and model 語言與模型" aria-label="Language and model">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h8M14.5 5.5H17M3 14.5h2.5M9 14.5h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12.7" cy="5.5" r="1.9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="7.2" cy="14.5" r="1.9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+          <button type="button" class="win-btn" id="deskBig" aria-pressed="false" title="Make the window bigger 放大視窗" aria-label="Make the window bigger">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 3h5v5M17 3l-5.5 5.5M8 17H3v-5M3 17l5.5-5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="win-btn" id="deskClose" title="Close 關閉" aria-label="Close">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+      <div class="desk-settings" id="deskSettings" hidden>
+        <span class="set-l">Answers in <span lang="zh-Hant">回答語言</span></span>
+        <div class="seg" role="radiogroup" aria-label="Answer language">
+          <button type="button" data-lang="auto" aria-pressed="true">Auto <span lang="zh-Hant">自動</span></button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="zh" aria-pressed="false" lang="zh-Hant">中文</button>
+        </div>
+        <span class="set-l">Model <span lang="zh-Hant">模型</span></span>
+        <div class="seg" role="radiogroup" aria-label="Model">
+          <button type="button" data-model="qwen3.5:9b" aria-pressed="true" title="More accurate 比較準">9B</button>
+          <button type="button" data-model="qwen3.5:4b" aria-pressed="false" title="Faster 比較快">4B</button>
+        </div>
+      </div>
+      <label class="room-pick">
+        <span class="room-l"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0a4 4 0 0 0-4 4c0 3 4 8 4 8s4-5 4-8a4 4 0 0 0-4-4zm0 5.6A1.6 1.6 0 1 1 6 2.4a1.6 1.6 0 0 1 0 3.2z"/></svg>You are here <span lang="zh-Hant">你在這裡</span></span>
+        <select id="roomSelect" aria-label="Current room" title="Walked somewhere else in the tour? Pick the place here. 在導覽裡走到別處時，請在這裡選。"></select>
+      </label>
+      <nav class="tabs" role="tablist" id="tabs">
+        <button role="tab" id="tab-chat" aria-controls="pane-chat" aria-selected="true"><b>Chat</b><span lang="zh-Hant">對話</span></button>
+        <button role="tab" id="tab-map" aria-controls="pane-map" aria-selected="false"><b>Map</b><span lang="zh-Hant">地圖</span></button>
+        <button role="tab" id="tab-tasks" aria-controls="pane-tasks" aria-selected="false"><b>Quick tasks</b><span lang="zh-Hant">常用</span></button>
+        <button role="tab" id="tab-progress" aria-controls="pane-progress" aria-selected="false"><b>Progress <i id="progBadge" class="badge-count">0</i></b><span lang="zh-Hant">進度</span></button>
+        <button role="tab" id="tab-how" aria-controls="pane-how" aria-selected="false"><b>How it works</b><span lang="zh-Hant">原理</span></button>
+        <span class="tab-ink" aria-hidden="true"></span>
+      </nav>
+    </header>
+
+    <div class="pane" id="pane-chat" role="tabpanel" aria-labelledby="tab-chat">
+      <div class="thread" id="thread" aria-live="polite"></div>
+      <form class="ask" id="askForm">
+        <textarea id="askInput" rows="2" maxlength="6000" placeholder="Ask about systems, data, risks or what to do. 問系統、資料、風險，或出事了怎麼辦。" aria-label="Your question"></textarea>
+        <button type="submit" id="askBtn"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 10h11M10.5 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ask <span lang="zh-Hant">送出</span></span></button>
+      </form>
+    </div>
+
+    <div class="pane" id="pane-tasks" role="tabpanel" aria-labelledby="tab-tasks" hidden>
+      <div class="tasks" id="tasks"></div>
+    </div>
+
+    <div class="pane" id="pane-progress" role="tabpanel" aria-labelledby="tab-progress" hidden>
+      <div class="progress-view" id="progressView"></div>
+    </div>
+
+    <div class="pane" id="pane-map" role="tabpanel" aria-labelledby="tab-map" hidden>
+      <div class="map-host" id="mapHost"></div>
+    </div>
+
+    <div class="pane" id="pane-how" role="tabpanel" aria-labelledby="tab-how" hidden>
+      <div class="how" id="howView"></div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,192 @@
+event: start
+data: {"session": "offline", "lang": "zh"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Steamer Saloon · Public Wi-Fi", "zh": "蒸汽船船艙・公共 Wi-Fi"}, "subtitle": {"en": "Steamer Saloon", "zh": "蒸汽船船艙"}, "text": {"en": "The saloon offers open Wi-Fi to passengers, including a suspicious look-alike network.", "zh": "船艙提供乘客公共 Wi-Fi，其中還有一個名字很像的可疑熱點。"}, "note": {"en": "Treat public Wi-Fi as hostile: VPN on, no admin work.", "zh": "把公共 Wi-Fi 當成不安全：開 VPN，不做管理工作。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "vpn", "en": "VPN Gateway", "zh": "VPN 閘道"}, {"key": "endpoints", "en": "Staff Laptops, PCs & Phones", "zh": "員工筆電、電腦與手機"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "evil_twin", "en": "Rogue Wi-Fi & Eavesdropping", "zh": "假冒熱點與竊聽"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "vpn_remote", "en": "VPN for Remote Access", "zh": "遠端連線使用 VPN"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "boat_deck", "en": "Steamer Deck · Working on the Move", "zh": "蒸汽船甲板・行動辦公", "base_en": "Steamer Deck", "base_zh": "蒸汽船甲板", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=8", "tour": "B"}]}]}
+
+event: token
+data: {"text": "這裡"}
+
+event: token
+data: {"text": "是"}
+
+event: token
+data: {"text": "「"}
+
+event: token
+data: {"text": "蒸汽"}
+
+event: token
+data: {"text": "船"}
+
+event: token
+data: {"text": "船"}
+
+event: token
+data: {"text": "艙"}
+
+event: token
+data: {"text": "」"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "提供"}
+
+event: token
+data: {"text": "公共"}
+
+event: token
+data: {"text": " Wi"}
+
+event: token
+data: {"text": "-Fi"}
+
+event: token
+data: {"text": " 但"}
+
+event: token
+data: {"text": "存在"}
+
+event: token
+data: {"text": "假冒"}
+
+event: token
+data: {"text": "熱"}
+
+event: token
+data: {"text": "點"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "竊"}
+
+event: token
+data: {"text": "聽"}
+
+event: token
+data: {"text": "威脅"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "請"}
+
+event: token
+data: {"text": "將"}
+
+event: token
+data: {"text": "公共"}
+
+event: token
+data: {"text": " Wi"}
+
+event: token
+data: {"text": "-Fi"}
+
+event: token
+data: {"text": " 視為"}
+
+event: token
+data: {"text": "不安全"}
+
+event: token
+data: {"text": "，"}
+
+event: token
+data: {"text": "並"}
+
+event: token
+data: {"text": "開啟"}
+
+event: token
+data: {"text": " VPN"}
+
+event: token
+data: {"text": " 進行"}
+
+event: token
+data: {"text": "遠"}
+
+event: token
+data: {"text": "端"}
+
+event: token
+data: {"text": "連線"}
+
+event: token
+data: {"text": "以"}
+
+event: token
+data: {"text": "保護"}
+
+event: token
+data: {"text": "資料"}
+
+event: token
+data: {"text": "。"}
+
+event: token
+data: {"text": "房間"}
+
+event: token
+data: {"text": "內"}
+
+event: token
+data: {"text": "可見"}
+
+event: token
+data: {"text": "的"}
+
+event: token
+data: {"text": "系統"}
+
+event: token
+data: {"text": "包含"}
+
+event: token
+data: {"text": " VPN"}
+
+event: token
+data: {"text": " 閘"}
+
+event: token
+data: {"text": "道"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "員工"}
+
+event: token
+data: {"text": "筆"}
+
+event: token
+data: {"text": "電"}
+
+event: token
+data: {"text": "、"}
+
+event: token
+data: {"text": "電腦"}
+
+event: token
+data: {"text": "與"}
+
+event: token
+data: {"text": "手機"}
+
+event: token
+data: {"text": "。"}
+
+event: done
+data: {"answer": "這裡是「蒸汽船船艙」，提供公共 Wi-Fi 但存在假冒熱點與竊聽威脅。請將公共 Wi-Fi 視為不安全，並開啟 VPN 進行遠端連線以保護資料。房間內可見的系統包含 VPN 閘道、員工筆電、電腦與手機。", "go": [], "followups": [{"text": "VPN 閘道是做什麼的？", "en": "What does the VPN Gateway do?", "zh": "VPN 閘道是做什麼的？"}, {"text": "假冒熱點與竊聽要怎麼防？", "en": "How do we prevent rogue Wi-Fi & eavesdropping?", "zh": "假冒熱點與竊聽要怎麼防？"}, {"text": "接下來要去哪？", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "zh", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 9.22, "total_s": 9.23}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "boat_cabin", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "boat_cabin"}, "rows": 1, "ms": 5.9}], "graph": {"nodes": [{"key": "boat_cabin", "label": "Room", "en": "Steamer Saloon", "zh": "蒸汽船船艙"}, {"key": "vpn", "label": "System", "en": "VPN Gateway", "zh": "VPN 閘道"}, {"key": "endpoints", "label": "System", "en": "Staff Laptops, PCs & Phones", "zh": "員工筆電、電腦與手機"}, {"key": "evil_twin", "label": "Threat", "en": "Rogue Wi-Fi & Eavesdropping", "zh": "假冒熱點與竊聽"}, {"key": "vpn_remote", "label": "Control", "en": "VPN for Remote Access", "zh": "遠端連線使用 VPN"}], "edges": [{"a": "endpoints", "t": "LOCATED_IN", "b": "boat_cabin"}, {"a": "vpn", "t": "LOCATED_IN", "b": "boat_cabin"}, {"a": "evil_twin", "t": "TARGETS", "b": "endpoints"}, {"a": "evil_twin", "t": "SHOWN_IN", "b": "boat_cabin"}, {"a": "vpn_remote", "t": "SEEN_IN", "b": "boat_cabin"}, {"a": "vpn_remote", "t": "PROTECTS", "b": "endpoints"}, {"a": "vpn_remote", "t": "MITIGATES", "b": "evil_twin"}]}, "tool_used": "room_overview", "facts": "房間：蒸汽船船艙・公共 Wi-Fi\n代表的資訊主題：船艙提供乘客公共 Wi-Fi，其中還有一個名字很像的可疑熱點。\n重點：把公共 Wi-Fi 當成不安全：開 VPN，不做管理工作。\n這裡的系統：VPN 閘道、員工筆電、電腦與手機\n這裡要注意的威脅：假冒熱點與竊聽\n看得到的防護措施：遠端連線使用 VPN\n這個房間藏著 1 個資安漏洞（要玩家自己找，不要說出來）\n可以走到：蒸汽船甲板・行動辦公", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 9.21, "load_s": 0.01, "prompt_tokens": 578, "prompt_s": 2.91, "gen_tokens": 68, "gen_s": 6.27, "tok_per_s": 10.8, "first_token_s": 2.94}}, "state": {}}
+

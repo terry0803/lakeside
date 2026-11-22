@@ -1,0 +1,219 @@
+event: start
+data: {"session": "offline", "lang": "en"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Villa Suite · Guest Privacy", "zh": "湖畔別墅套房・客人隱私"}, "subtitle": {"en": "Lake Villa Suite", "zh": "湖畔別墅套房"}, "text": {"en": "Inside the suite, the smart TV, voice controls and key card show how much guest data one room holds.", "zh": "套房裡的智慧電視、語音控制和房卡，看得出一間客房存了多少客人資料。"}, "note": {"en": "Reset every device at checkout so the next guest never sees the last one's data.", "zh": "退房時把每台裝置重設，下一位客人才不會看到前一位的資料。"}, "badges": [{"en": "Weaknesses to find here: 1", "zh": "這裡有 1 個漏洞待找"}], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "room_controls", "en": "Smart Room Controls & TV", "zh": "客房智慧控制與電視"}, {"key": "door_locks", "en": "Electronic Door Locks", "zh": "電子門鎖系統"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "checkout_reset", "en": "Checkout Privacy Reset", "zh": "退房隱私重設"}, {"key": "retention_deletion", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_checkout_reset", "en": "Smart room reset at checkout", "zh": "退房時重設智慧客房"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "pool", "en": "Pool · Data Lake", "zh": "泳池・資料湖", "base_en": "Pool", "base_zh": "泳池", "url": "https://livetour.istaging.com/335dad66-2cf9-43fc-a1dc-a9af776c16e2?index=14", "tour": "B"}]}]}
+
+event: token
+data: {"text": "This"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " Villa"}
+
+event: token
+data: {"text": " Suite"}
+
+event: token
+data: {"text": " ("}
+
+event: token
+data: {"text": "shown"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " '"}
+
+event: token
+data: {"text": "Lake"}
+
+event: token
+data: {"text": " Villa"}
+
+event: token
+data: {"text": " Suite"}
+
+event: token
+data: {"text": "'"}
+
+event: token
+data: {"text": " in"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " tour"}
+
+event: token
+data: {"text": "),"}
+
+event: token
+data: {"text": " which"}
+
+event: token
+data: {"text": " contains"}
+
+event: token
+data: {"text": " a"}
+
+event: token
+data: {"text": " smart"}
+
+event: token
+data: {"text": " TV"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " voice"}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " an"}
+
+event: token
+data: {"text": " electronic"}
+
+event: token
+data: {"text": " door"}
+
+event: token
+data: {"text": " lock"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " You"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " these"}
+
+event: token
+data: {"text": " systems"}
+
+event: token
+data: {"text": " demonstrate"}
+
+event: token
+data: {"text": " how"}
+
+event: token
+data: {"text": " much"}
+
+event: token
+data: {"text": " guest"}
+
+event: token
+data: {"text": " data"}
+
+event: token
+data: {"text": " one"}
+
+event: token
+data: {"text": " room"}
+
+event: token
+data: {"text": " holds"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " To"}
+
+event: token
+data: {"text": " protect"}
+
+event: token
+data: {"text": " privacy"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " you"}
+
+event: token
+data: {"text": " must"}
+
+event: token
+data: {"text": " reset"}
+
+event: token
+data: {"text": " every"}
+
+event: token
+data: {"text": " device"}
+
+event: token
+data: {"text": " at"}
+
+event: token
+data: {"text": " checkout"}
+
+event: token
+data: {"text": " so"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " next"}
+
+event: token
+data: {"text": " guest"}
+
+event: token
+data: {"text": " never"}
+
+event: token
+data: {"text": " sees"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " last"}
+
+event: token
+data: {"text": " one"}
+
+event: token
+data: {"text": "'s"}
+
+event: token
+data: {"text": " data"}
+
+event: token
+data: {"text": "."}
+
+event: done
+data: {"answer": "This is the Villa Suite (shown as 'Lake Villa Suite' in the tour), which contains a smart TV, voice controls, and an electronic door lock. You can see these systems demonstrate how much guest data one room holds. To protect privacy, you must reset every device at checkout so the next guest never sees the last one's data.", "go": [], "followups": [{"text": "What does the Smart Room Controls & TV do?", "en": "What does the Smart Room Controls & TV do?", "zh": "客房智慧控制與電視是做什麼的？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.43, "total_s": 8.45}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "villa_in", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "villa_in"}, "rows": 1, "ms": 6.8}], "graph": {"nodes": [{"key": "villa_in", "label": "Room", "en": "Lake Villa Suite", "zh": "湖畔別墅套房"}, {"key": "room_controls", "label": "System", "en": "Smart Room Controls & TV", "zh": "客房智慧控制與電視"}, {"key": "door_locks", "label": "System", "en": "Electronic Door Locks", "zh": "電子門鎖系統"}, {"key": "checkout_reset", "label": "Control", "en": "Checkout Privacy Reset", "zh": "退房隱私重設"}, {"key": "retention_deletion", "label": "Control", "en": "Data Minimization & Retention Schedule", "zh": "資料最小化與保存期限"}], "edges": [{"a": "checkout_reset", "t": "SEEN_IN", "b": "villa_in"}, {"a": "door_locks", "t": "LOCATED_IN", "b": "villa_in"}, {"a": "room_controls", "t": "LOCATED_IN", "b": "villa_in"}, {"a": "retention_deletion", "t": "SEEN_IN", "b": "villa_in"}]}, "tool_used": "room_overview", "facts": "Room: Villa Suite · Guest Privacy (called 'Lake Villa Suite' in the tour)\nWhat it shows: Inside the suite, the smart TV, voice controls and key card show how much guest data one room holds.\nKey lesson: Reset every device at checkout so the next guest never sees the last one's data.\nSystems here: Smart Room Controls & TV, Electronic Door Locks\nControls you can see: Checkout Privacy Reset, Data Minimization & Retention Schedule\nProcedures to know: Smart room reset at checkout\nHidden security weaknesses in this room: 1 (the player has to spot them; do not reveal them)\nExits: Pool · Data Lake", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.43, "load_s": 0.01, "prompt_tokens": 582, "prompt_s": 2.83, "gen_tokens": 70, "gen_s": 5.58, "tok_per_s": 12.6, "first_token_s": 2.85}}, "state": {}}
+

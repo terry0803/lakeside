@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="/lakeside/offline.js" data-load="/lakeside/static/go.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08121f">
+<title>IT Assistant · IT 小幫手</title>
+<style>
+  /* the same clear glass as the assistant (style.css, 11/22 afternoon), over the night aurora */
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflow: hidden; color: #fff;
+         background: radial-gradient(130% 90% at 0% 0%, #12345a, #08121f 62%), #08121f;
+         font: 16px/1.6 "Segoe UI Variable Text", "Segoe UI", "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif; }
+  .orbs { position: fixed; inset: 0; pointer-events: none; }
+  .orbs i { position: absolute; width: 70vmax; aspect-ratio: 1; border-radius: 50%; will-change: transform; }
+  .orbs i:nth-child(1) { left: -20vmax; top: -25vmax; background: radial-gradient(circle, rgba(59, 130, 246, .7), transparent 64%); animation: a 24s ease-in-out infinite alternate; }
+  .orbs i:nth-child(2) { right: -25vmax; top: 0; background: radial-gradient(circle, rgba(20, 184, 166, .4), transparent 64%); animation: b 30s ease-in-out infinite alternate; }
+  .orbs i:nth-child(3) { left: 0; bottom: -35vmax; background: radial-gradient(circle, rgba(6, 182, 212, .55), transparent 64%); animation: c 36s ease-in-out infinite alternate; }
+  main { position: relative; max-width: 420px; margin: 24px; padding: 30px 30px 28px; text-align: center; border: 1px solid rgba(255, 255, 255, .3); border-radius: 20px;
+         background: linear-gradient(140deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .03) 40%, rgba(255, 255, 255, .06));
+         -webkit-backdrop-filter: blur(26px) saturate(150%) brightness(.8); backdrop-filter: blur(26px) saturate(150%) brightness(.8);
+         box-shadow: inset 0 1px 0 rgba(255, 255, 255, .42), inset 0 0 24px rgba(255, 255, 255, .05), 0 30px 70px rgba(0, 0, 0, .35);
+         animation: in .6s cubic-bezier(.2, .9, .2, 1) both; }
+  h1 { margin: 0 0 6px; font: 650 20px/1.3 "Segoe UI Variable Display", "Segoe UI", "Microsoft JhengHei", sans-serif; }
+  p { margin: 0; color: #f0f4f8; }
+  .spin { width: 24px; height: 24px; margin: 0 auto 16px; border: 2px solid rgba(255, 255, 255, .25); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+  #done[hidden], #wait[hidden] { display: none; }
+  @keyframes in { from { opacity: 0; transform: translateY(12px) scale(.96); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes a { to { transform: translate(20vmax, 25vmax) scale(1.2); } }
+  @keyframes b { to { transform: translate(-20vmax, 20vmax) scale(.85); } }
+  @keyframes c { to { transform: translate(25vmax, -20vmax) scale(1.15); } }
+  @media (prefers-reduced-motion: reduce) { main, .spin, .orbs i { animation: none; } }
+</style>
+</head>
+<body>
+<div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+<main>
+  <div id="wait">
+    <div class="spin" aria-hidden="true"></div>
+    <h1>Opening the IT Assistant…</h1>
+    <p lang="zh-Hant">正在打開 IT 小幫手……</p>
+  </div>
+  <div id="done" hidden>
+    <h1>The IT Assistant opened in your other tab</h1>
+    <p>You can close this one. <span lang="zh-Hant">小幫手已經在原本的分頁打開了，這個分頁可以關掉。</span></p>
+  </div>
+</main>
+</body>
+</html>

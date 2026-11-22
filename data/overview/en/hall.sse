@@ -1,0 +1,306 @@
+event: start
+data: {"session": "offline", "lang": "en"}
+
+event: route
+data: {"tool": "room_overview", "target": "", "how": "button"}
+
+event: card
+data: {"type": "sections", "label": "Room", "title": {"en": "Restaurant POS", "zh": "餐廳收銀系統"}, "subtitle": {"en": "Restaurant", "zh": "餐廳"}, "text": {"en": "Orders go from the POS to the kitchen display and cards are paid on encrypted terminals; card data is the most tightly regulated data here.", "zh": "點餐從 POS 送到廚房螢幕，用加密的刷卡機付款；信用卡資料是這裡管得最嚴的資料。"}, "note": {"en": "Never store the CVV or PIN, mask card numbers, and treat unexpected emails on the POS PC with suspicion.", "zh": "不能存安全碼和 PIN，卡號要遮罩；收銀電腦上收到奇怪的信先別點。"}, "badges": [], "sections": [{"h_en": "Systems", "h_zh": "系統", "kind": "entities", "items": [{"key": "pos", "en": "Point of Sale (POS)", "zh": "餐飲收銀系統（POS）"}, {"key": "pin_pad", "en": "Card Payment Terminal", "zh": "刷卡機"}, {"key": "email", "en": "Email & Collaboration", "zh": "電子郵件與協作平台"}, {"key": "endpoints", "en": "Staff Laptops, PCs & Phones", "zh": "員工筆電、電腦與手機"}, {"key": "kds", "en": "Kitchen Display System", "zh": "廚房出單系統"}]}, {"h_en": "Threats", "h_zh": "威脅", "kind": "entities", "items": [{"key": "phishing", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "pos_malware", "en": "POS Memory-Scraping Malware", "zh": "POS 記憶體側錄惡意程式"}, {"key": "skimming", "en": "Card Skimming & Terminal Tampering", "zh": "刷卡機側錄與竄改"}]}, {"h_en": "Controls", "h_zh": "防護措施", "kind": "entities", "items": [{"key": "p2pe_tokenization", "en": "P2PE & Tokenization", "zh": "點對點加密與代碼化"}, {"key": "no_sad_storage", "en": "Never Store CVV or PIN", "zh": "不儲存安全碼與 PIN"}]}, {"h_en": "Concepts", "h_zh": "概念", "kind": "entities", "items": [{"key": "c_encryption_hashing", "en": "Encryption vs Hashing", "zh": "加密與雜湊"}, {"key": "c_pci_scope", "en": "Cardholder Data Environment (PCI scope)", "zh": "持卡人資料環境（PCI 範圍）"}, {"key": "c_tokenization", "en": "Tokenization", "zh": "代碼化"}]}, {"h_en": "Procedures", "h_zh": "處理流程", "kind": "entities", "items": [{"key": "proc_phish_report", "en": "Received a suspicious email", "zh": "收到可疑郵件"}, {"key": "proc_phish_clicked", "en": "Clicked a phishing link or entered a password", "zh": "點了釣魚連結或輸入了密碼"}, {"key": "proc_card_terminal", "en": "A card terminal looks tampered with", "zh": "刷卡機疑似被動過"}, {"key": "proc_pos_outage", "en": "The POS is down", "zh": "收銀系統當機"}]}, {"h_en": "Exits", "h_zh": "出口", "kind": "rooms", "items": [{"key": "hall_fire", "en": "Fireplace Close-up · Ordering Tablet", "zh": "壁爐近看・點餐平板", "base_en": "Fireplace · Up Close", "base_zh": "壁爐近看", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=23", "tour": "A"}, {"key": "bar", "en": "Bar Inventory & ERP", "zh": "酒吧庫存與 ERP", "base_en": "Bar", "base_zh": "酒吧", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=4", "tour": "A"}, {"key": "hall_near", "en": "Restaurant Close-up · POS Terminal", "zh": "餐廳近看・收銀機", "base_en": "Restaurant · Up Close", "base_zh": "餐廳近看", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=22", "tour": "A"}, {"key": "hallnight", "en": "Restaurant at Night · POS Down", "zh": "夜晚的餐廳・收銀系統停擺", "base_en": "Restaurant at Night", "base_zh": "夜晚的餐廳", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=18", "tour": "A"}, {"key": "patio", "en": "Guest Arrival & Wi-Fi", "zh": "客人報到與無線網路", "base_en": "Lakeside Patio", "base_zh": "湖畔露台", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=2", "tour": "A"}]}]}
+
+event: token
+data: {"text": "This"}
+
+event: token
+data: {"text": " is"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " **"}
+
+event: token
+data: {"text": "Restaurant"}
+
+event: token
+data: {"text": " POS"}
+
+event: token
+data: {"text": "**"}
+
+event: token
+data: {"text": " room"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " where"}
+
+event: token
+data: {"text": " orders"}
+
+event: token
+data: {"text": " flow"}
+
+event: token
+data: {"text": " to"}
+
+event: token
+data: {"text": " the"}
+
+event: token
+data: {"text": " kitchen"}
+
+event: token
+data: {"text": " display"}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " cards"}
+
+event: token
+data: {"text": " are"}
+
+event: token
+data: {"text": " paid"}
+
+event: token
+data: {"text": " on"}
+
+event: token
+data: {"text": " encrypted"}
+
+event: token
+data: {"text": " terminals"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " The"}
+
+event: token
+data: {"text": " Food"}
+
+event: token
+data: {"text": " &"}
+
+event: token
+data: {"text": " Beverage"}
+
+event: token
+data: {"text": " department"}
+
+event: token
+data: {"text": " ("}
+
+event: token
+data: {"text": "ext"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " 3"}
+
+event: token
+data: {"text": "1"}
+
+event: token
+data: {"text": "0"}
+
+event: token
+data: {"text": "0"}
+
+event: token
+data: {"text": ")"}
+
+event: token
+data: {"text": " operates"}
+
+event: token
+data: {"text": " here"}
+
+event: token
+data: {"text": " using"}
+
+event: token
+data: {"text": " systems"}
+
+event: token
+data: {"text": " like"}
+
+event: token
+data: {"text": " Point"}
+
+event: token
+data: {"text": " of"}
+
+event: token
+data: {"text": " Sale"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " Card"}
+
+event: token
+data: {"text": " Payment"}
+
+event: token
+data: {"text": " Term"}
+
+event: token
+data: {"text": "inals"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " Kitchen"}
+
+event: token
+data: {"text": " Display"}
+
+event: token
+data: {"text": " Systems"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " You"}
+
+event: token
+data: {"text": " can"}
+
+event: token
+data: {"text": " see"}
+
+event: token
+data: {"text": " controls"}
+
+event: token
+data: {"text": " such"}
+
+event: token
+data: {"text": " as"}
+
+event: token
+data: {"text": " P"}
+
+event: token
+data: {"text": "2"}
+
+event: token
+data: {"text": "PE"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " Token"}
+
+event: token
+data: {"text": "ization"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " rules"}
+
+event: token
+data: {"text": " against"}
+
+event: token
+data: {"text": " storing"}
+
+event: token
+data: {"text": " CV"}
+
+event: token
+data: {"text": "V"}
+
+event: token
+data: {"text": " or"}
+
+event: token
+data: {"text": " PIN"}
+
+event: token
+data: {"text": "s"}
+
+event: token
+data: {"text": "."}
+
+event: token
+data: {"text": " Threat"}
+
+event: token
+data: {"text": "s"}
+
+event: token
+data: {"text": " displayed"}
+
+event: token
+data: {"text": " include"}
+
+event: token
+data: {"text": " phishing"}
+
+event: token
+data: {"text": " emails"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " POS"}
+
+event: token
+data: {"text": " memory"}
+
+event: token
+data: {"text": "-sc"}
+
+event: token
+data: {"text": "rap"}
+
+event: token
+data: {"text": "ing"}
+
+event: token
+data: {"text": " malware"}
+
+event: token
+data: {"text": ","}
+
+event: token
+data: {"text": " and"}
+
+event: token
+data: {"text": " card"}
+
+event: token
+data: {"text": " sk"}
+
+event: token
+data: {"text": "imming"}
+
+event: token
+data: {"text": "."}
+
+event: done
+data: {"answer": "This is the **Restaurant POS** room, where orders flow to the kitchen display and cards are paid on encrypted terminals. The Food & Beverage department (ext. 3100) operates here using systems like Point of Sale, Card Payment Terminals, and Kitchen Display Systems. You can see controls such as P2PE, Tokenization, and rules against storing CVV or PINs. Threats displayed include phishing emails, POS memory-scraping malware, and card skimming.", "go": [{"key": "bar", "en": "Bar Inventory & ERP", "zh": "酒吧庫存與 ERP", "base_en": "Bar", "base_zh": "酒吧", "url": "https://livetour.istaging.com/6a1e0bab-b805-4788-935b-97a06a024613?index=4", "tour": "A", "why_en": "Next in the story", "why_zh": "故事的下一站"}], "followups": [{"text": "What does the Point of Sale (POS) do?", "en": "What does the Point of Sale (POS) do?", "zh": "餐飲收銀系統（POS）是做什麼的？"}, {"text": "How do we prevent phishing email?", "en": "How do we prevent phishing email?", "zh": "釣魚郵件要怎麼防？"}, {"text": "What should I do next?", "en": "What should I do next?", "zh": "接下來要去哪？"}], "trace": {"session": "offline", "lang": "en", "model": "qwen3.5:9b", "timings": {"route_s": 0.0, "tool_s": 0.01, "answer_s": 8.78, "total_s": 8.79}, "route": {"tool": "room_overview", "target": "", "how": "button"}, "link": {"query": "(current room)", "chosen": "hall", "how": "current room"}, "redirect": "", "queries": [{"purpose": "everything placed in this room", "cypher": "MATCH (r:Room {key:$k}) RETURN r {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh} AS r, [(r)-[:IN_AREA]->(a) | a {.key, .name_en, .name_zh}][0] AS area, [(r)-[:CLOSEUP_OF]->(p) | p {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh}][0] AS parent, [(s:System)-[:LOCATED_IN]->(r) | s {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS systems, [(t:Threat)-[:SHOWN_IN]->(r) | t {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS threats, [(c:Control)-[:SEEN_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh, .type}] AS controls, [(c:Concept)-[:TAUGHT_IN]->(r) | c {.key, .name_en, .name_zh, .desc_en, .desc_zh}] AS concepts, [(p:Procedure)-[:PRACTISED_IN]->(r) | p {.key, .name_en, .name_zh, .kind}] AS procedures, [(d:Department)-[:BASED_IN]->(r) | d {.key, .name_en, .name_zh, .desc_en, .desc_zh, .ext}] AS departments, [(cs:CaseStudy)-[:SHOWN_IN]->(r) | cs {.key, .name_en, .name_zh, .year}] AS cases, [(r)-[l:LINKS_TO]->(x) | x {.key, .name_en, .name_zh, .it_en, .it_zh, .tour, .url, .url_index, .area, .kind, .story, .theme_en, .theme_zh, .lesson_en, .lesson_zh, teleport: l.teleport}] AS exits, size([(f:Finding)-[:IN_ROOM]->(r) | f]) AS findings_here", "params": {"k": "hall"}, "rows": 1, "ms": 6.7}], "graph": {"nodes": [{"key": "hall", "label": "Room", "en": "Restaurant", "zh": "餐廳"}, {"key": "pos", "label": "System", "en": "Point of Sale (POS)", "zh": "餐飲收銀系統（POS）"}, {"key": "pin_pad", "label": "System", "en": "Card Payment Terminal", "zh": "刷卡機"}, {"key": "email", "label": "System", "en": "Email & Collaboration", "zh": "電子郵件與協作平台"}, {"key": "endpoints", "label": "System", "en": "Staff Laptops, PCs & Phones", "zh": "員工筆電、電腦與手機"}, {"key": "kds", "label": "System", "en": "Kitchen Display System", "zh": "廚房出單系統"}, {"key": "phishing", "label": "Threat", "en": "Phishing Email", "zh": "釣魚郵件"}, {"key": "pos_malware", "label": "Threat", "en": "POS Memory-Scraping Malware", "zh": "POS 記憶體側錄惡意程式"}, {"key": "skimming", "label": "Threat", "en": "Card Skimming & Terminal Tampering", "zh": "刷卡機側錄與竄改"}, {"key": "p2pe_tokenization", "label": "Control", "en": "P2PE & Tokenization", "zh": "點對點加密與代碼化"}, {"key": "no_sad_storage", "label": "Control", "en": "Never Store CVV or PIN", "zh": "不儲存安全碼與 PIN"}, {"key": "c_encryption_hashing", "label": "Concept", "en": "Encryption vs Hashing", "zh": "加密與雜湊"}, {"key": "c_pci_scope", "label": "Concept", "en": "Cardholder Data Environment (PCI scope)", "zh": "持卡人資料環境（PCI 範圍）"}, {"key": "c_tokenization", "label": "Concept", "en": "Tokenization", "zh": "代碼化"}], "edges": [{"a": "pos", "t": "SENDS_TO", "b": "kds"}, {"a": "pos", "t": "LOCATED_IN", "b": "hall"}, {"a": "pin_pad", "t": "LOCATED_IN", "b": "hall"}, {"a": "kds", "t": "LOCATED_IN", "b": "hall"}, {"a": "email", "t": "LOCATED_IN", "b": "hall"}, {"a": "endpoints", "t": "LOCATED_IN", "b": "hall"}, {"a": "phishing", "t": "TARGETS", "b": "endpoints"}, {"a": "phishing", "t": "TARGETS", "b": "email"}, {"a": "phishing", "t": "SHOWN_IN", "b": "hall"}, {"a": "pos_malware", "t": "TARGETS", "b": "pos"}, {"a": "pos_malware", "t": "SHOWN_IN", "b": "hall"}, {"a": "skimming", "t": "TARGETS", "b": "pin_pad"}, {"a": "skimming", "t": "SHOWN_IN", "b": "hall"}, {"a": "c_encryption_hashing", "t": "TAUGHT_IN", "b": "hall"}, {"a": "c_encryption_hashing", "t": "RELATED_TO", "b": "p2pe_tokenization"}, {"a": "c_tokenization", "t": "TAUGHT_IN", "b": "hall"}, {"a": "c_tokenization", "t": "RELATED_TO", "b": "p2pe_tokenization"}, {"a": "c_pci_scope", "t": "TAUGHT_IN", "b": "hall"}, {"a": "c_pci_scope", "t": "RELATED_TO", "b": "p2pe_tokenization"}, {"a": "p2pe_tokenization", "t": "SEEN_IN", "b": "hall"}, {"a": "p2pe_tokenization", "t": "PROTECTS", "b": "pin_pad"}, {"a": "p2pe_tokenization", "t": "PROTECTS", "b": "pos"}, {"a": "p2pe_tokenization", "t": "MITIGATES", "b": "pos_malware"}, {"a": "no_sad_storage", "t": "SEEN_IN", "b": "hall"}, {"a": "no_sad_storage", "t": "MITIGATES", "b": "pos_malware"}]}, "tool_used": "room_overview", "facts": "Room: Restaurant POS\nWhat it shows: Orders go from the POS to the kitchen display and cards are paid on encrypted terminals; card data is the most tightly regulated data here.\nKey lesson: Never store the CVV or PIN, mask card numbers, and treat unexpected emails on the POS PC with suspicion.\nDepartment based here: Food & Beverage (ext. 3100)\nSystems here: Point of Sale (POS), Card Payment Terminal, Email & Collaboration, Staff Laptops, PCs & Phones, Kitchen Display System\nThreats shown here: Phishing Email, POS Memory-Scraping Malware, Card Skimming & Terminal Tampering\nControls you can see: P2PE & Tokenization, Never Store CVV or PIN\nConcepts: Encryption vs Hashing, Cardholder Data Environment (PCI scope), Tokenization\nProcedures to know: Received a suspicious email, Clicked a phishing link or entered a password, A card terminal looks tampered with, The POS is down\nExits: Fireplace Close-up · Ordering Tablet (called 'Fireplace · Up Close' in the tour), Bar Inventory & ERP, Restaurant Close-up · POS Terminal (called 'Restaurant · Up Close' in the tour), Restaurant at Night · POS Down, Guest Arrival & Wi-Fi (called 'Lakeside Patio' in the tour)", "answer_stats": {"model": "qwen3.5:9b", "wall_s": 8.77, "load_s": 0.0, "prompt_tokens": 720, "prompt_s": 2.75, "gen_tokens": 100, "gen_s": 6.0, "tok_per_s": 16.7, "first_token_s": 2.77}}, "state": {}}
+
