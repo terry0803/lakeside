@@ -147,7 +147,12 @@ async function init() {
   // it) or it was open last time. Inside iStaging's window the page IS the assistant and opens as before; back from a game
   // it opens on the new score.
   if (fromGame) openDesk("progress");                      // show the new score instead of asking about the room again
-  else if (EMBED) openDesk("chat");
+  else if (EMBED) {
+    // a tour sign's "Ask the IT Assistant" button: the window opens on that place's overview, as before (11/23: the first
+    // version of the folded start dropped this too; only the full page should wait for a click)
+    openDesk("chat");
+    if (fromTour && S.byKey[fromTour]) runAction("room_overview", "", t("What is in this place?", "這裡有什麼？"));
+  }
   else if (!store.get("seenDock", false)) hintDock();
 }
 
