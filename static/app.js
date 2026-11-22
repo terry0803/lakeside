@@ -327,6 +327,7 @@ function splitDesk(opening, end, mainBtn) {
   const main = Math.max(0, btns.indexOf(mainBtn)), btn = btns[main];
   const B = rectOf(btn), D = rectOf(d);
   if (!D.width || !D.height || !B.width || !B.height) return false;
+  if (!opening) return foldIntoButtons(d, btns, D, end);
   // 11/22 evening (the user: the window turned all grey before its contents showed, opening and closing): the window
   // itself grows out of the button and shrinks back into it, contents showing all the way, the way the big map grows out
   // of the small one (minimap.js morphMap): scaled to the button's width, moved onto it, cut to its height with the
@@ -337,36 +338,81 @@ function splitDesk(opening, end, mainBtn) {
     clipPath: `inset(0px 0px ${cut.toFixed(1)}px 0px round ${(r / s).toFixed(1)}px)` };
   // the open end leaves room for the window's shadow, so nothing changes when the animation lets go
   const big = { transform: "translate(0px, 0px) scale(1)", clipPath: "inset(-60px -60px -60px -60px round 80px)" };
-  const T = opening ? 560 : 500, ease = opening ? "cubic-bezier(.2, .9, .25, 1)" : "cubic-bezier(.45, 0, .2, 1)";
+  const T = 560;
   d.style.transformOrigin = "0 0";
-  const anims = [d.animate(opening ? [small, big] : [big, small], { duration: T, easing: ease, fill: "both" })];
-  let restore = null;
-  if (opening) {
-    // the window is already there, small, where the button was; the buttons fade under it
-    anims.push(d.animate([{ opacity: 0.4 }, { opacity: 1, offset: 0.3 }, { opacity: 1 }], { duration: T, fill: "both" }));
-    btns.forEach((b, i) => anims.push(b.animate([{ opacity: 1 }, { opacity: 0 }], { duration: i === main ? 120 : 200, easing: "ease-out", fill: "forwards" })));
-  } else {
-    // closing, fourth try (the user: it vanished and the buttons popped up; then the buttons still seemed to appear
-    // from nowhere; then a second, separate slide still did not feel right): the way a phone closes an app. The two
-    // buttons come back in their places as soon as the window starts to leave (fading and growing a little, the other
-    // one a moment later), so the window shrinks onto a button that is already there and melts into it at the end.
-    // One motion, nothing turns up at the end.
-    const other = btns[1 - main];
-    anims.push(d.animate([{ opacity: 1 }, { opacity: 0 }], { duration: T * 0.3, delay: T * 0.7, easing: "ease-in", fill: "both" }));
-    anims.push(btn.animate([{ opacity: 0, transform: "scale(.94)" }, { opacity: 1, transform: "none" }], { duration: T * 0.55, delay: T * 0.1, easing: "cubic-bezier(.2, .9, .25, 1)", fill: "both" }));
-    anims.push(other.animate([{ opacity: 0, transform: "scale(.94)" }, { opacity: 1, transform: "none" }], { duration: T * 0.55, delay: T * 0.2, easing: "cubic-bezier(.2, .9, .25, 1)", fill: "both" }));
-    btn.style.zIndex = ""; other.style.zIndex = "";
-    restore = () => { btn.style.zIndex = ""; other.style.zIndex = ""; };
+  const anims = [d.animate([small, big], { duration: T, easing: "cubic-bezier(.2, .9, .25, 1)", fill: "both" })];
+  // the window is already there, small, where the button was; the buttons fade under it
+  anims.push(d.animate([{ opacity: 0.4 }, { opacity: 1, offset: 0.3 }, { opacity: 1 }], { duration: T, fill: "both" }));
+  btns.forEach((b, i) => anims.push(b.animate([{ opacity: 1 }, { opacity: 0 }], { duration: i === main ? 120 : 200, easing: "ease-out", fill: "forwards" })));
+  const mo = { anims, ghosts: [], end };
+  deskMorph = mo;
+  Promise.all(anims.map((x) => x.finished)).then(() => {
+    if (deskMorph !== mo) return;
+    deskMorph = null;
+    end();                                              // the column goes
+    for (const x of anims) x.cancel();
+    d.style.transformOrigin = "";
+  }).catch(() => { /* stopped by the next open or close */ });
+  return true;
+}
+// a cubic-bezier timing curve as a function (for keyframes worked out here: things on one path need the same timing)
+function bezier(x1, y1, x2, y2) {
+  const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+  const X = (t) => ((ax * t + bx) * t + cx) * t, Y = (t) => ((ay * t + by) * t + cy) * t;
+  return (x) => {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    let lo = 0, hi = 1, t = x;
+    for (let i = 0; i < 24; i++) { if (X(t) < x) lo = t; else hi = t; t = (lo + hi) / 2; }
+    return Y(t);
+  };
+}
+/* Closing (11/22 night, seventh try). The user, in turn: the shrinking window and the two buttons sat on top of each
+   other (ugly), let the window turn into the buttons and split into the two of them; "a hitch at the end" (the lower
+   button trailed and then caught up); "not linear enough, and the two landing together is odd"; then "I still like the
+   split, but it must be fluid and must not stutter". Now:
+   1. the same speed as the small map: the map shrinks back in 0.44 s on cubic-bezier(.4, 0, .2, 1), and so does the
+      upper button here (the user: "a bit slow and odd, the speed does not match the small map"; the 0.56 s even curve
+      tried before felt sluggish);
+   2. the window shrinks towards the buttons and dissolves; the two buttons, as wide as the window, come out of its top
+      part (its header becomes the IT Assistant button, the Casebook button appears just under it) and come into focus as
+      its glass goes;
+   3. they fly apart into their places, the lower one on a slightly longer clock, so it lands 0.06 s after the upper one;
+      neither ever waits for or catches up with the other, and they never overlap.
+   Only transform and opacity move (the compositor does those by itself): the clip-path cut of the earlier tries made
+   the browser paint the window again in every frame, which stutters when the chat is long. */
+function foldIntoButtons(d, btns, D, end) {
+  const P = btns.map((b) => ({ b, r: rectOf(b) })).sort((p, q) => p.r.top - q.r.top);
+  const [A, Z] = P.map((p) => p.r);
+  if (!A.width || !A.height || !Z.width || !Z.height) return false;
+  const TA = 440, TZ = 500, N = 50;                      // the upper button lands at 0.44 s (as the map does), the lower one at 0.5 s
+  const move = bezier(.4, 0, .2, 1);                     // minimap.js morphMap's closing curve
+  const lin = (a, b, k) => a + (b - a) * k, cl = (v) => (v < 0 ? 0 : v > 1 ? 1 : v), f = (v) => v.toFixed(2);
+  const g0 = D.width / A.width, z0 = D.top + A.height * g0 + 20;   // where the lower one starts: just under the upper one
+  const kd = [], k0 = [], k1 = [];
+  for (let i = 0; i <= N; i++) {
+    const u = i / N, t = u * TZ, ea = move(cl(t / TA)), ez = move(cl(t / TZ));
+    const xa = lin(D.left, A.left, ea), ya = lin(D.top, A.top, ea), wa = lin(D.width, A.width, ea);
+    const xz = lin(D.left, Z.left, ez), yz = lin(z0, Z.top, ez), wz = lin(D.width, Z.width, ez);
+    // the window: its top left corner and width go with the upper button, so its header turns into it; gone by 38%
+    kd.push({ offset: u, opacity: 1 - cl((t / TZ - 0.06) / 0.32), transform: `translate(${f(xa - D.left)}px, ${f(ya - D.top)}px) scale(${(wa / D.width).toFixed(4)})` });
+    k0.push({ offset: u, opacity: cl((t / TZ - 0.08) / 0.26), transform: `translate(${f(xa - A.left)}px, ${f(ya - A.top)}px) scale(${(wa / A.width).toFixed(4)})` });
+    k1.push({ offset: u, opacity: cl((t / TZ - 0.12) / 0.26), transform: `translate(${f(xz - Z.left)}px, ${f(yz - Z.top)}px) scale(${(wz / Z.width).toFixed(4)})` });
   }
+  d.style.transformOrigin = "0 0";
+  for (const p of P) p.b.style.transformOrigin = "0 0";
+  P[0].b.style.zIndex = "2"; P[1].b.style.zIndex = "1";
+  const anims = [d.animate(kd, { duration: TZ, fill: "both" }), P[0].b.animate(k0, { duration: TZ, fill: "both" }), P[1].b.animate(k1, { duration: TZ, fill: "both" })];
+  const restore = () => { for (const p of P) { p.b.style.transformOrigin = ""; p.b.style.zIndex = ""; } };
   const mo = { anims, ghosts: [], end, restore };
   deskMorph = mo;
   Promise.all(anims.map((x) => x.finished)).then(() => {
     if (deskMorph !== mo) return;
     deskMorph = null;
-    end();                                              // opening: the column goes; closing: the window hides, the buttons land
+    end();                                              // the window hides, the buttons stay
     for (const x of anims) x.cancel();
     d.style.transformOrigin = "";
-    if (restore) restore();
+    restore();
   }).catch(() => { /* stopped by the next open or close */ });
   return true;
 }
@@ -419,13 +465,9 @@ function closeDesk() {
   d.classList.add("is-closing", "is-morph");
   const landed = () => {
     d.classList.remove("is-closing", "is-morph"); d.hidden = true;
-    // the buttons have already faded in under the shrinking window; only the one it went into gives a small settle
-    const into = deskFrom && deskFrom.isConnected ? deskFrom : $("#dockChat");
-    for (const x of btns) {
-      x.classList.remove("is-receiving");
-      if (x === into && !RM.matches && x.animate) x.animate([{ transform: "scale(.97)" }, { transform: "scale(1.012)", offset: .55 }, { transform: "scale(1)" }],
-        { duration: 320, easing: "ease-out", composite: "add" });
-    }
+    // the window has become the two buttons on the way and they land at rest: nothing more to do (11/22 night, the small
+    // settle bounce at the end went with the fifth closing)
+    for (const x of btns) x.classList.remove("is-receiving");
   };
   if (!splitDesk(false, landed, deskFrom && deskFrom.isConnected ? deskFrom : $("#dockChat"))) {                        // no buttons to land in (the big map hides them): slide out as before
     for (const x of btns) x.classList.remove("is-receiving");
@@ -435,7 +477,9 @@ function closeDesk() {
   for (const b of document.querySelectorAll(".dock-btn")) b.setAttribute("aria-expanded", "false");
   store.set("deskOpen", false);
   $("#dockChat").focus({ preventScroll: true });
-  window.dispatchEvent(new Event("resize"));
+  // 11/22 night (the user: the closing hitched): no resize event for the whole page (the small map drew itself again in
+  // the first frame of the closing); only the big map, if it is open, depends on the window's width
+  if (typeof Minimap !== "undefined" && Minimap.state() === "open") window.dispatchEvent(new Event("resize"));
 }
 /* ---------------------------------------------------------------- the game window (11/22 afternoon)
    A mini-game started here (Quick tasks, Progress) opens in a window over the tour, not in a new tab (the user: "why does
@@ -569,6 +613,16 @@ function bindUi() {
   // 11/22 evening: the settings panel grows open and folds away in CSS (.desk-settings transitions, display allow-discrete)
   $("#deskSet").addEventListener("click", () => { const s = $("#deskSettings"); s.hidden = !s.hidden; $("#deskSet").setAttribute("aria-expanded", String(!s.hidden)); });
   $("#desk").addEventListener("keydown", (ev) => { if (ev.key === "Escape" && !ev.defaultPrevented) closeDesk(); });
+  // 11/22 night (the user: a click outside the assistant should shrink it back, the way the map does): a clear layer over
+  // the tour while the window is open (the tour is in iStaging's frame, so its clicks never reach this page). It sits
+  // under the map's layer, so with both open the first click shrinks the map and the next one the window. The small map
+  // and the window itself stay clickable. On only once the window has landed (.layout.is-desk), off as soon as it closes.
+  if (!EMBED) {
+    const ds = document.createElement("div");
+    ds.className = "desk-scrim"; ds.id = "deskScrim"; ds.setAttribute("aria-hidden", "true");
+    $("#layout").insertBefore(ds, $("#side"));
+    ds.addEventListener("pointerdown", (ev) => { ev.preventDefault(); closeDesk(); });
+  }
   for (const b of document.querySelectorAll(".tabs [role=tab]")) b.addEventListener("click", () => showTab(b.id.replace("tab-", "")));
   $("#tabs").addEventListener("scroll", fitTabs, { passive: true });
   window.addEventListener("resize", () => { moveInk(true); fitTabs(); });
@@ -802,7 +856,7 @@ async function stream(url, body, shown) {
     const resp = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (resp.status === 429 || resp.status === 503) {        // visitors through the tunnel: the limits in server.py
       const j = await resp.json().catch(() => ({}));
-      ansEl.innerHTML = `<p class="err">${esc(j.error || "Busy. 忙碌中。")}</p>`; finished = true; workEl.innerHTML = L("Not now", "稍後再問");
+      ansEl.innerHTML = `<p class="err">${esc(j.error || "Busy. 現在忙不過來。")}</p>`; finished = true; workEl.innerHTML = L("Not now", "稍後再問");
       return;
     }
     if (!resp.ok || !resp.body) throw new Error("HTTP " + resp.status);
@@ -1019,7 +1073,7 @@ function stepsCard(card, c) {
 
 function routeCard(card, c) {
   head(card, c);
-  card.appendChild(el("p", "note", L(`${c.clicks} clicks through the hotspots`, `經過熱點要點 ${c.clicks} 次`)));
+  card.appendChild(el("p", "note", L(`${c.clicks} clicks through the hotspots`, `一共要點 ${c.clicks} 次`)));
   const r = el("div", "route");
   c.steps.forEach((s, i) => {
     if (i) { r.appendChild(el("span", "arrow", "›")); if (s.teleport) r.appendChild(el("span", "tele", L("teleport", "傳送點"))); }
@@ -1062,7 +1116,7 @@ function findingCard(card, c) {
     const h = el("div", "card-head"); h.innerHTML = `<h3>${L(f.en, f.zh)}</h3><span class="badge sev-${esc(f.severity)}">${L(f.severity, SEV_ZH[f.severity])}</span><span class="sub">${L(`risk ${f.risk}`, `風險 ${f.risk}`)}</span>`;
     card.appendChild(h);
     card.appendChild(el("p", "text", `<b>${L("Why it matters:", "為什麼危險：")}</b> ${LB(f.why_en, f.why_zh)}`));
-    card.appendChild(el("p", "text", `<b>${L("Fix:", "改善：")}</b> ${LB(f.fix_en, f.fix_zh)}`));
+    card.appendChild(el("p", "text", `<b>${L("Fix:", "怎麼改：")}</b> ${LB(f.fix_en, f.fix_zh)}`));
     if (f.breaks.length) card.appendChild(el("div", "refs", `${L("Breaks:", "違反：")} ${f.breaks.map((x) => pL(x)).join("; ")}`));
     if (f.fixed_by.length) { const w = el("div", "items"); w.style.marginTop = "8px"; for (const x of f.fixed_by) w.appendChild(entityChip(x)); card.appendChild(w); }
   }
@@ -1183,9 +1237,9 @@ function drawGraph(g) {
 const TASKS = [
   { h: ["Something happened", "出事了"], p: ["Step-by-step procedures with who to call.", "照步驟處理，也告訴你該找誰。"], items: [
     ["procedure", "Clicked a phishing link or entered a password", "I clicked a link and typed my password", "我點了連結還輸入了密碼"],
-    ["procedure", "Ransomware or encrypted files", "A screen asks for a ransom / files are encrypted", "螢幕要贖金、檔案被加密"],
+    ["procedure", "Ransomware or encrypted files", "A screen asks for a ransom / files are encrypted", "螢幕跳出勒索訊息、檔案被加密"],
     ["procedure", "Received a suspicious email", "I received a suspicious email", "收到可疑的信"],
-    ["procedure", "MFA prompts I did not start", "I keep getting MFA prompts I didn't start", "一直收到不是我發起的驗證通知"],
+    ["procedure", "MFA prompts I did not start", "I keep getting MFA prompts I didn't start", "一直收到不是我自己按的登入驗證"],
     ["procedure", "Lost staff badge", "I lost my staff badge", "員工證不見了"],
     ["procedure", "Lost or stolen laptop or phone", "My laptop or phone is lost or stolen", "筆電或手機不見了"],
     ["procedure", "A card terminal looks tampered with", "A card terminal looks tampered with", "刷卡機好像被動過"],
@@ -1218,7 +1272,7 @@ const caseParts = (en, z) => [en.split(" · ")[0], en.split(" · ").slice(1).joi
 function renderTasks() {
   const box = $("#tasks"); box.innerHTML = "";
   const gs = el("section", "task-group");
-  gs.innerHTML = `<h2>Mini-games <span lang="zh-Hant">小遊戲</span></h2><p>The Awards Night casebook: four case files, each a shift and then a case board, about five minutes each. ${EMBED ? "They open in this window." : "They open in a window over the tour."} <span lang="zh-Hant">頒獎晚會事件簿：四章，每章先值班再上案情板，大約五分鐘，${EMBED ? "會在這個視窗裡打開" : "會在導覽上方的視窗裡打開"}。</span></p>`;
+  gs.innerHTML = `<h2>Mini-games <span lang="zh-Hant">小遊戲</span></h2><p>The Awards Night casebook: four case files, each a shift and then a case board, about five minutes each. ${EMBED ? "They open in this window." : "They open in a window over the tour."} <span lang="zh-Hant">頒獎晚會事件簿共四章，每章先值班、再整理案情板，一章大約五分鐘，${EMBED ? "會在這個視窗裡打開" : "會在導覽上面開一個視窗"}。</span></p>`;
   const gl = el("div", "task-list");
   for (const [k, en, z] of GAMES) {
     const [no, name, zname, zno] = caseParts(en, z);

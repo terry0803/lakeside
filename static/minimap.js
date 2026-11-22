@@ -93,6 +93,7 @@ const Minimap = (() => {
     M.built = true;
     update((typeof S !== "undefined" && S.room) || null);
     setState(store.get("state", "mini"));
+    M.ready = true;                   // from now on a change of state may animate (not the one that restores the saved state)
   }
 
   // "mini": the small map in the corner; "open": the big map; "hidden": only a small Map button
@@ -176,7 +177,56 @@ const Minimap = (() => {
       const anims = morphMap(panel, mini.getBoundingClientRect(), false, []);
       if (anims) { runMorph(anims, () => apply(true)); return; }
     }
+    if (motion && M.ready && ((prev === "mini" && M.state === "hidden") || (prev === "hidden" && M.state === "mini")) && foldMini(M.state === "hidden", apply)) return;
     apply();
+  }
+  /* 11/22 night (the user: the small map shrinking into the Map button still had the old animation; it was a cut, and the
+     two buttons below jumped up): the same motion as the assistant window folding into its buttons and the big map going
+     small. Shrinking takes 0.44 s on cubic-bezier(.4, 0, .2, 1), growing back 0.54 s on cubic-bezier(.2, .9, .25, 1). The
+     one going away floats where it was and fades over the first 40%; the one coming starts at the same corner and width
+     (the pill as wide as the map, the map as narrow as the pill) under it and settles into place on the same curve, so the
+     two stay together; the two buttons below slide to their new places. Transform and opacity only. */
+  function foldMini(toPill, apply) {
+    const mini = q("#mmMini"), pill = q("#mmPill"), hide = q("#mmHide"), box = q("#mm");
+    const from = toPill ? mini : pill, to = toPill ? pill : mini;
+    if (!shown([from]).length) return false;
+    const F = from.getBoundingClientRect(), H0 = toPill && shown([hide]).length ? hide.getBoundingClientRect() : null;
+    const docks = shown(document.querySelectorAll(".dock-btn")), before = docks.map((b) => b.getBoundingClientRect().top);
+    from.classList.add("is-quiet"); to.classList.add("is-quiet");   // before it shows: the pill's slide-in would move where it is measured
+    apply();                                               // the new state; the column takes its new shape at once
+    const B = box.getBoundingClientRect(), Tg = to.getBoundingClientRect();
+    if (!F.width || !Tg.width || to.offsetParent === null) { from.classList.remove("is-quiet"); to.classList.remove("is-quiet"); return true; }
+    const s = Tg.width / F.width, dx = Tg.left - F.left, dy = Tg.top - F.top;
+    const KEYS = ["position", "left", "top", "width", "height", "margin", "zIndex", "pointerEvents", "transformOrigin", "opacity"];
+    const float = (el, r) => Object.assign(el.style, { position: "absolute", left: `${(r.left - B.left).toFixed(1)}px`, top: `${(r.top - B.top).toFixed(1)}px`,
+      width: `${r.width.toFixed(1)}px`, height: `${r.height.toFixed(1)}px`, margin: "0", zIndex: "3", pointerEvents: "none", transformOrigin: "0 0" });
+    const clean = (el) => { for (const k of KEYS) el.style[k] = ""; el.classList.remove("is-quiet"); };
+    from.hidden = false; float(from, F);
+    to.style.zIndex = "2"; to.style.transformOrigin = "0 0";
+    const T = toPill ? 440 : 540, o = { duration: T, easing: toPill ? "cubic-bezier(.4, 0, .2, 1)" : "cubic-bezier(.2, .9, .25, 1)", fill: "both" };
+    const anims = [
+      from.animate([{ transform: "none" }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})` }], o),
+      from.animate([{ opacity: 1 }, { opacity: 0, offset: 0.4 }, { opacity: 0 }], { duration: T, fill: "both" }),
+      to.animate([{ transform: `translate(${(-dx).toFixed(1)}px, ${(-dy).toFixed(1)}px) scale(${(1 / s).toFixed(4)})` }, { transform: "none" }], o),
+      to.animate([{ opacity: 0 }, { opacity: 0, offset: 0.1 }, { opacity: 1, offset: 0.45 }, { opacity: 1 }], { duration: T, fill: "both" }),
+    ];
+    if (H0 && H0.width) {                                  // the "−" button rides along with the small map and goes first
+      hide.hidden = false; float(hide, H0);
+      const px = H0.left - F.left, py = H0.top - F.top;
+      anims.push(hide.animate([{ transform: "none" }, { transform: `translate(${(dx + (s - 1) * px).toFixed(1)}px, ${(dy + (s - 1) * py).toFixed(1)}px) scale(${s.toFixed(4)})` }], o));
+      anims.push(hide.animate([{ opacity: 1 }, { opacity: 0, offset: 0.25 }, { opacity: 0 }], { duration: T, fill: "both" }));
+    }
+    if (!toPill) hide.style.opacity = "0";                // it comes in once the map has grown
+    docks.forEach((b, i) => {
+      const d0 = before[i] - b.getBoundingClientRect().top;
+      if (Math.abs(d0) > 0.5) anims.push(b.animate([{ transform: `translateY(${d0.toFixed(1)}px)` }, { transform: "translateY(0px)" }], o));
+    });
+    runMorph(anims, () => {
+      from.hidden = true; clean(from); clean(to);
+      if (toPill) { hide.hidden = true; clean(hide); }
+      else { hide.style.opacity = ""; if (typeof hide.animate === "function") hide.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 160, easing: "ease-out" }); }
+    });
+    return true;
   }
   const toggle = (on) => setState(on === undefined ? (M.state === "open" ? "mini" : "open") : on ? "open" : "mini");
 

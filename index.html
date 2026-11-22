@@ -63,7 +63,7 @@
       </div>
       <label class="room-pick">
         <span class="room-l"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0a4 4 0 0 0-4 4c0 3 4 8 4 8s4-5 4-8a4 4 0 0 0-4-4zm0 5.6A1.6 1.6 0 1 1 6 2.4a1.6 1.6 0 0 1 0 3.2z"/></svg>You are here <span lang="zh-Hant">你在這裡</span></span>
-        <select id="roomSelect" aria-label="Current room" title="Walked somewhere else in the tour? Pick the place here. 在導覽裡走到別處時，請在這裡選。"></select>
+        <select id="roomSelect" aria-label="Current room" title="Walked somewhere else in the tour? Pick the place here. 在導覽裡走到別的地方，可以在這裡改。"></select>
       </label>
       <nav class="tabs" role="tablist" id="tabs">
         <button role="tab" id="tab-chat" aria-controls="pane-chat" aria-selected="true"><b>Chat</b><span lang="zh-Hant">對話</span></button>
@@ -78,7 +78,7 @@
     <div class="pane" id="pane-chat" role="tabpanel" aria-labelledby="tab-chat">
       <div class="thread" id="thread" aria-live="polite"></div>
       <form class="ask" id="askForm">
-        <textarea id="askInput" rows="2" maxlength="6000" placeholder="Ask about systems, data, risks or what to do. 問系統、資料、風險，或出事了怎麼辦。" aria-label="Your question"></textarea>
+        <textarea id="askInput" rows="2" maxlength="6000" placeholder="Ask about systems, data, risks or what to do. 可以問系統、資料、風險，或出事要怎麼辦。" aria-label="Your question"></textarea>
         <button type="submit" id="askBtn"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 10h11M10.5 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ask <span lang="zh-Hant">送出</span></span></button>
       </form>
     </div>
