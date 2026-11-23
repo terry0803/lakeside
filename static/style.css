@@ -318,6 +318,8 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .brand h1 { margin: 0; font: 650 19px/1.2 var(--font-head); color: #fff; letter-spacing: .1px; }
 .brand h1 span { white-space: nowrap; margin-left: 6px; font: 600 14.5px var(--font-zh); color: #e6f1ff; }
 .status { margin: 4px 0 0; overflow: hidden; font-size: 11.5px; color: var(--tx-2); white-space: nowrap; text-overflow: ellipsis; }
+/* 11/23 (checklist A3): where the line is still too long it takes a second line instead of being cut */
+.status { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; text-overflow: clip; }
 .status.ok::before, .status.bad::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; vertical-align: 1px; }
 .status.ok::before { background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, .9); }
 .status.bad::before { background: #f87171; box-shadow: 0 0 8px rgba(248, 113, 113, .9); }
@@ -500,6 +502,12 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .chip:active { transform: scale(.96); transition-duration: .1s; }
 .sec[data-t] .chip::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--c); box-shadow: 0 0 6px var(--c); }
 .chip .tag { color: var(--tx-3); font-size: 12px; }
+/* 11/23 (checklist A4): in the answer's card a long chip or place wrapped its English and its Chinese into two narrow
+   columns side by side; the words now run on as one text, the dot or pin in front */
+.sec .chip, .sec .roomlink, .follow .chip { display: inline-block; vertical-align: top; text-align: left; }
+.sec[data-t] .chip::before { display: inline-block; margin-right: 6px; vertical-align: 1px; }
+.sec .roomlink svg { display: inline-block; margin-right: 5px; vertical-align: -1px; }
+.sec .chip > .tag + .tag { margin-left: 4px; }
 .roomlink {
   position: relative; display: inline-flex; align-items: center; gap: 5px; padding: 3px 11px 3px 9px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .22); border-radius: 12px;
   background: rgba(255, 255, 255, .1); color: #fff; font-size: 13px; line-height: 1.4; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16);

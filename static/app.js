@@ -844,7 +844,10 @@ async function checkHealth() {
     el.className = "status " + (ok ? "ok" : "bad");
     const n = h.counts ? Object.values(h.counts.nodes || {}).reduce((a, b) => a + b, 0) : 0;
     const loaded = (h.loaded || []).join(", ") || LT("loading models…", "模型載入中…");
-    el.innerHTML = ok ? `${L(`Knowledge graph: ${n} nodes`, `知識圖 ${n} 個節點`)} · ${esc(loaded)}`
+    // 11/23 (checklist A3): the line ended "… · qwe…" in the normal window; now two lines, the graph, then the chat model
+    // (every loaded model stays in the tooltip)
+    const chat = (h.loaded || []).find((m) => !/embed|bge|nomic|minilm/i.test(m)) || (h.loaded || [])[0] || LT("loading models…", "模型載入中…");
+    el.innerHTML = ok ? `${L(`Knowledge graph: ${n} nodes`, `知識圖 ${n} 個節點`)}<br>${L("Local model", "本機模型")}: ${esc(chat)}`
       : L(`Not ready: ${!h.neo4j ? "Neo4j" : "Ollama"} is not running. Start it with 啟動_AI助理.bat`, `還沒準備好：${!h.neo4j ? "Neo4j" : "Ollama"} 沒有啟動，請執行 啟動_AI助理.bat`);
     el.title = ok ? LT(`Neo4j and the local models are running (${loaded})`, "Neo4j 和本機模型都在運作") : el.textContent;
     // 11/23 (review): not ready yet: look again every 8 s, so the line turns green by itself once Neo4j and Ollama are up

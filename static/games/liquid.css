@@ -106,3 +106,150 @@ body { background: var(--g-bg); transition: none; }
 .g-error { color: #ff7b72; text-align: center; }
 @keyframes g-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .g-top, .g-main.is-stage, .g-loading { animation: none; } }
+
+/* ---------------------------------------------------------------- 11/23 evening: one look for every game
+   (the user: every part should move and be liquid glass, "很精美", with the same corners and the same details).
+   One set of corners: windows 20, cards and panels 16, rows and tiles 12, buttons are pills, round buttons circles.
+   The things in the scene keep their own shapes (phones, laptops, the forms, stamps, key pads, the network map).
+   Two glass materials: frosted glass with dark text for the people and the notes (like the briefing), smoked glass
+   with white text for the night-time equipment panels. Everything you can press lifts a little under the mouse and
+   presses in when clicked. */
+:root {
+  --r-window: 20px; --r-card: 16px; --r-row: 12px;
+  --frost: rgba(255, 255, 255, .82); --frost-rim: rgba(255, 255, 255, .62); --frost-filter: blur(18px) saturate(160%);
+  --frost-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 14px 34px rgba(0, 0, 0, .28);
+  --smoke: rgba(14, 19, 24, .66); --smoke-rim: rgba(255, 255, 255, .18); --smoke-filter: blur(16px) saturate(170%);
+  --smoke-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 14px 34px rgba(0, 0, 0, .4);
+}
+
+/* the title card: no black film bars inside the rounded window (the bottom one covered only the middle of it) */
+.rs.is-title::before, .rs.is-title .rs-body::after { content: none; }
+
+/* frosted glass: what people say, the notes, the help buttons, the status board, pop-ups */
+.rx-say, .rs-gm, .ah-bubble, .rs-alert, .rx-tray, .ah-queue, .rs-hint-btn, .ah-wall-btn, .rs-phone-btn, .ir-status, .ir-close-in, .g-foot-panel {
+  border: 1px solid var(--frost-rim) !important; background: var(--frost) !important;
+  -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter); box-shadow: var(--frost-shadow) !important;
+}
+.rs-brief .rx-say { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none !important; }      /* inside the briefing: as it was */
+.rs-alert { box-shadow: inset 5px 0 0 var(--alert), var(--frost-shadow) !important; }                        /* the red edge, now inside the curve */
+/* "Call to check" was the only dark card in that column: the same glass as "Ask Mei-Ling" under it */
+.rs-phone-btn { color: var(--ink) !important; }
+.rs-phone-btn span[lang] { color: var(--ink-2) !important; }
+.rs-phone-btn em { color: #b45309 !important; }
+.rs-phone-btn svg { color: #1f8a4c !important; }
+
+/* smoked glass: the night-time equipment (on-call card, the SOC's tools, your cards, the narrator at night) */
+.mn-card, .mn-wake, .ir-tools, .ir-hand-box {
+  border: 1px solid var(--smoke-rim) !important; background: var(--smoke) !important;
+  -webkit-backdrop-filter: var(--smoke-filter); backdrop-filter: var(--smoke-filter); box-shadow: var(--smoke-shadow) !important;
+}
+
+/* corners */
+.rs-gm, .ah-bubble, .rs-alert, .rs-sent, .rx-tray, .ah-queue, .rs-hint-btn, .ah-wall-btn, .rs-phone-btn, .rs-notebook, .ir-status, .ir-close-in,
+.mn-card, .mn-wake, .ir-tools, .ir-hand-box, .ir-desk { border-radius: var(--r-card) !important; }
+.rx-say { border-radius: 6px var(--r-card) var(--r-card) var(--r-card) !important; }                          /* a speech bubble keeps its pointed corner */
+.ah-phone, .ir-phone { border-radius: var(--r-window) !important; }                                          /* the two desk phones match */
+.ah-q-item, .ir-counts > div, .ir-rows li, .ir-gb, .ir-tool, .ir-card, .ir-usb, .ah-book, .rx-tray li { border-radius: var(--r-row) !important; }
+.rs-actions .btn, .ah-call, .ir-dial { border-radius: 999px !important; }                                    /* every button a pill, like the rest */
+
+/* pressing: cards that are buttons lift, then press in */
+.rs-hint-btn, .ah-wall-btn, .rs-phone-btn, .ah-q-item, .ir-card, .ir-tool, .ir-usb {
+  transition: transform .45s var(--e-spring), box-shadow .3s var(--e-out), background-color .2s, filter .2s;
+}
+.rs-hint-btn:hover:not(:disabled), .ah-wall-btn:hover, .rs-phone-btn:hover:not(:disabled) { transform: translateY(-2px); background: rgba(255, 255, 255, .93) !important; }
+.ah-q-item:hover { transform: translateY(-1px); filter: brightness(1.03); }
+.rs-hint-btn:active:not(:disabled), .ah-wall-btn:active, .rs-phone-btn:active:not(:disabled), .ah-q-item:active { transform: scale(.97); transition-duration: .1s; }
+.ir-tool:not(.is-locked):hover, .ir-usb:hover { transform: translateY(-2px); filter: brightness(1.1); }
+/* the key pads, call and delete keys: light up under the mouse, press in (the keys' own :active already push them down) */
+.ah-keys button, .ir-keys button, .ah-call, .ir-dial, .ah-del, .ir-del { transition: transform .16s var(--e-out), filter .16s, box-shadow .16s, background-color .2s; }
+.ah-keys button:hover, .ir-keys button:hover, .ah-del:hover, .ir-del:hover { filter: brightness(1.22); }
+.ah-call:hover:not(:disabled), .ir-dial:hover:not(:disabled) { filter: brightness(1.1); }
+.ah-call:active:not(:disabled), .ir-dial:active:not(:disabled), .ah-del:active, .ir-del:active { transform: scale(.95); }
+/* the phone's app icon, the slide knob, the power button, the cable, the close button, the map's switches and tunnel */
+.mn-app-icon svg { transition: transform .45s var(--e-spring), filter .2s; }
+.mn-app-icon:hover svg { transform: scale(1.06); }
+.mn-app-icon:active svg { transform: scale(.92); transition-duration: .1s; }
+.mn-slide-knob { transition: box-shadow .25s var(--e-out); }                                                 /* not transform: the knob follows the finger */
+.mn-slide:not(.is-off) .mn-slide-knob:hover { box-shadow: 0 0 0 4px rgba(255, 255, 255, .35), 0 2px 6px rgba(0, 0, 0, .3); }
+.ir-power { transition: transform .45s var(--e-spring), filter .2s, box-shadow .2s; }
+.ir-power:hover { filter: brightness(1.15); }
+.ir-plug { transition: filter .2s; }
+.ir-plug:hover:not(.is-out) { filter: brightness(1.2) drop-shadow(0 0 6px rgba(127, 209, 168, .5)); }
+.ir-close-x { display: grid; place-items: center; width: 28px; height: 28px; padding: 0 !important; border-radius: 50%; transition: background-color .2s, color .2s; }
+.ir-close-x:hover { background: rgba(15, 23, 42, .08); color: var(--ink); }
+.ir-sw rect, .ir-sw-l, .ir-sw-x { transition: stroke .3s, fill .3s, opacity .3s; }
+.ir-tunnel-hit { transition: stroke .25s; }
+.ir-tunnel-hit:hover { stroke: rgba(255, 242, 194, .2); }
+.ah-book-h { transition: color .2s; }
+.ah-book-h:hover { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-hint-btn, .ah-wall-btn, .rs-phone-btn, .ah-q-item, .ir-card, .ir-tool, .ir-usb, .ah-keys button, .ir-keys button, .ah-call, .ir-dial,
+  .ah-del, .ir-del, .mn-app-icon svg, .ir-power { transition-duration: 0s !important; }
+  .rs-hint-btn:hover, .ah-wall-btn:hover, .rs-phone-btn:hover, .ah-q-item:hover, .ir-tool:hover, .ir-usb:hover, .mn-app-icon:hover svg { transform: none !important; }
+}
+
+/* ---------------------------------------------------------------- 11/23 evening, the checklist (待改清單_UI統一_20261123.md)
+   A0 (the user: the Sources panel opened behind the game): the bar on top and the game window each fade in, which
+   makes each its own layer, and the window came later, so it covered the bar's panel. The bar is now the higher layer.
+   The panel unfolds and folds back, the pills do not select their words on a double click, and the focus ring on the
+   bar is the same light blue as on the main page. */
+.g-top { z-index: 10; }
+.g-back, .g-foot summary, .g-sound, .g-top .rx-pause { -webkit-user-select: none; user-select: none; }
+.g-top :focus-visible { outline: 2px solid #9fd0ff; outline-offset: 2px; }
+/* opening: the panel drops in from the button; closing: it fades (only opacity on the wrapper, so the panel keeps its place) */
+.g-foot details[open] .g-foot-panel { transform-origin: 100% 0; animation: g-drop .34s var(--e-spring) both; }
+@keyframes g-drop { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
+.g-foot details::details-content { opacity: 0; transition: opacity .2s var(--e-out), content-visibility .2s allow-discrete; }
+.g-foot details[open]::details-content { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .g-foot details[open] .g-foot-panel { animation: none; } .g-foot details::details-content { transition: none; } }
+
+/* A1 (the user: nothing may stick out): in the incident game the status board under the map only got what the map
+   left over, and its last row hung out of it (19 px at 1366 x 768). The board is now as tall as its rows and the map
+   gives way: it keeps its shape, shrinks a little and stays centred in its frame (ir.js places the pop-ups from the
+   map's own box, so they still land on their devices). */
+body.is-fit .ir-status { flex: none; }
+body.is-fit .ir-map-wrap { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+body.is-fit .ir-map { flex: 1 1 auto; min-height: 0; width: auto; height: auto; max-width: 100%; aspect-ratio: 1000 / 676; align-self: center; }
+
+/* A2: the HR directory in the desk phone (Who May Use What?) grew past the phone on small screens (121 px at
+   1280 x 720) when opened. Its list now scrolls inside the phone, like a phone's own contact list. */
+.ah-book ul { max-height: 168px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(120, 100, 60, .45) transparent; }
+
+/* B, C: the screens after a case. The summary, the email reader and the case-closed file are the same glass windows as
+   the briefing; the question cards, the options and the small buttons on the cards follow the corners of the rest
+   (cards 16, rows 12, buttons pills). The cork board, the paper pinned on it and the stamps stay paper. */
+.rs-dinner, .cb-reader-paper, .cb-closed-card {
+  border: 1px solid var(--frost-rim) !important; border-radius: var(--r-window) !important;
+  -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter);
+}
+.rs-dinner, .cb-reader-paper { background: var(--frost) !important; box-shadow: var(--frost-shadow), 0 30px 70px rgba(0, 0, 0, .35) !important; }
+.cb-closed-card { background: rgba(255, 253, 247, .88) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 30px 70px rgba(0, 0, 0, .4) !important; }
+.cb-q, .cb-case { border-radius: var(--r-card) !important; }
+.rx-stats > div, .cb-accounts li, .cb-crew-facts li, .cb-opt { border-radius: var(--r-row) !important; }
+.cb-btns button, .cb-flip { border-radius: 999px !important; }
+.cb-opt, .cb-btns button, .cb-flip { transition: background-color .2s, border-color .2s, transform .45s var(--e-spring); }
+.cb-opt:hover:not(:disabled) { transform: translateY(-1px); }
+.cb-opt:active:not(:disabled), .cb-btns button:active, .cb-flip:active { transform: scale(.97); transition-duration: .1s; }
+/* a speech bubble with a long text scrolls with a thin bar */
+.rx-say { scrollbar-width: thin; scrollbar-color: rgba(15, 23, 42, .25) transparent; }
+/* the close buttons of the reader and of a device on the map: a drawn X in a circle (the text "×" sat low) */
+.cb-reader-x, .ir-close-x {
+  display: grid; place-items: center; width: 32px; height: 32px; padding: 0 !important; border: 0; border-radius: 50%; font-size: 0 !important; color: transparent;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 5l10 10M15 5 5 15' stroke='%23334155' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 15px no-repeat;
+  cursor: pointer; transition: background-color .2s, transform .45s var(--e-spring);
+}
+.cb-reader-x:hover, .ir-close-x:hover { background-color: rgba(15, 23, 42, .08); }
+.cb-reader-x:active, .ir-close-x:active { transform: scale(.9); transition-duration: .1s; }
+@media (prefers-reduced-motion: reduce) { .cb-opt, .cb-btns button, .cb-flip, .cb-reader-x, .ir-close-x { transition-duration: 0s !important; } .cb-opt:hover { transform: none !important; } }
+/* the casebook's log rows and the door keypad on the board: light up under the mouse, press in (like the desk phones) */
+.cb-log-row { transition: background-color .2s, box-shadow .2s, transform .16s var(--e-out); }
+.cb-log-row:active { transform: scale(.99); }
+.mn-kp-keys button { transition: transform .16s var(--e-out), filter .16s, box-shadow .16s; }
+.mn-kp-keys button:hover { filter: brightness(1.08); }
+@media (prefers-reduced-motion: reduce) { .cb-log-row, .mn-kp-keys button { transition-duration: 0s !important; } }
+/* the incident game's procedure list follows the rows; its empty slots light up smoothly; the clock on the bar never
+   breaks into two lines ("Sun / 16:00" made the bar taller on the review morning) */
+.ir-steps li { border-radius: var(--r-row) !important; }
+button.ir-slot-empty { transition: background-color .2s; }
+.g-top .rx-hud b, .g-top .g-meter b { white-space: nowrap; }
