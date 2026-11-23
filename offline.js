@@ -26,7 +26,7 @@
 
   // while it checks: a dark page with one line, instead of a half-built page
   const css = document.createElement("style");
-  css.textContent = `html.lk-probing { background: #0d1520; }
+  css.textContent = `html.lk-probing { background: #101318; }
 html.lk-probing body { visibility: hidden; }
 html.lk-probing::after { content: "Connecting\\2026\\A 連線中\\2026"; white-space: pre-wrap; position: fixed; inset: 0; display: grid; place-items: center; padding: 0 24px;
   text-align: center; font: 15px/1.7 system-ui, "Microsoft JhengHei", sans-serif; color: rgba(226, 232, 240, .85); }
