@@ -152,6 +152,7 @@ async function init() {
   else if (EMBED) {
     // a tour sign's "Ask the IT Assistant" button: the window opens on that place's overview, as before (11/23: the first
     // version of the folded start dropped this too; only the full page should wait for a click)
+    $("#desk").classList.add("is-big");      // 11/23: the floating window in iStaging's window is the wide one (style.css .is-embed)
     openDesk("chat");
     if (fromTour && S.byKey[fromTour]) runAction("room_overview", "", t("What is in this place?", "這裡有什麼？"));
   }
@@ -321,9 +322,20 @@ window.addEventListener("message", (e) => {          // the other end: our full-
   try { e.source.postMessage({ type: "lakeside:ack" }, e.origin); } catch { /* the window went away */ }
 });
 // the visitor is at this place (told by the tour, not chosen here): update everything except the tour itself
+// 11/23 (the user: the assistant opened from a pink button looked plain next to the floating window of the full page):
+// inside iStaging's window the page shows a soft picture of the room you are in behind the window (web/roombg/<room>.jpg,
+// made by pages/make_room_backgrounds.py). The night aurora stays until the picture has loaded, or if it cannot load.
+function roomBg(key) {
+  if (!EMBED || !key) return;
+  const url = `/lakeside/static/roombg/${key}.jpg`, im = new Image();
+  im.onload = () => { document.documentElement.style.setProperty("--room-bg", `url("${im.src}")`); document.documentElement.classList.add("has-room-bg"); };
+  im.src = url;
+}
+
 async function setHere(key) {
   const moved = S.room !== key;
   S.room = key; store.set("room", key);
+  roomBg(key);
   $("#roomSelect").value = key;
   if (moved) flashRoom();
   if (typeof Minimap !== "undefined") Minimap.update(key);
@@ -870,6 +882,7 @@ async function goTo(key, opt = {}) {
   }
   const moved = S.room !== null && S.room !== key;
   S.room = key; store.set("room", key);
+  roomBg(key);
   $("#roomSelect").value = key;
   if (moved) flashRoom();
   if (typeof Minimap !== "undefined") Minimap.update(key);      // the mini map at the top left of the tour

@@ -76,12 +76,29 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
       img.onload = img.onerror = null;
       if (!up) img.removeAttribute("src");           // stop waiting on the laptop, or the page keeps loading for ~20 s
       if (up) { location.replace(liveUrl); return; }
-      ss(KEY, String(Date.now() + 3 * 60 * 1000));     // the next pages of this tab do not wait again for 3 minutes
+      ss(KEY, String(Date.now() + 60 * 1000));     // the next pages of this tab do not wait again for a minute (was 3; 11/23)
       offline(null);
+      recheck();
     }
     img.onload = () => finish(true);
     img.onerror = () => finish(false);
     img.src = `${LIVE}/probe.png?t=${Date.now()}`;
+  }
+
+  // 11/23 (the user saw "the AI is off" while the laptop was on): one slow answer (the laptop's address can take a few
+  // seconds to wake up) left the saved copy on. Ask twice more in the background; if the laptop answers before the visitor
+  // has done anything on this page, go on to the live page.
+  function recheck() {
+    let touched = false;
+    for (const t of ["pointerdown", "keydown"]) addEventListener(t, () => { touched = true; }, { capture: true, once: true });
+    for (const ms of [8000, 20000]) setTimeout(() => {
+      if (touched) return;
+      const im = new Image();
+      const give = setTimeout(() => { im.onload = im.onerror = null; im.removeAttribute("src"); }, 5000);
+      im.onload = () => { clearTimeout(give); if (!touched) { ss(KEY, "0"); location.replace(liveUrl); } };
+      im.onerror = () => clearTimeout(give);
+      im.src = `${LIVE}/probe.png?t=${Date.now()}`;
+    }, ms);
   }
 
   function offline(hostWin) {

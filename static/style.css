@@ -788,6 +788,19 @@ details.trace.is-in[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s b
 .is-embed .desk > .orbs { display: none; }
 .is-embed #deskClose, .is-embed #deskBig { display: none; }
 .is-embed #tab-map { display: grid; }
+/* 11/23 (the user: the assistant opened from a pink button was plain next to the floating window of the full page; "make it
+   this liquid glass, or open this floating window"): the same floating glass window, centred, over a soft picture of the
+   room you are in (app.js roomBg). The aurora stays underneath until the picture has loaded. Phones keep the full pane. */
+.is-embed .layout::before { content: ""; position: absolute; inset: 0; z-index: 0; background: var(--room-bg, none) center / cover no-repeat;
+  filter: brightness(.86) saturate(1.05); opacity: 0; transition: opacity .6s var(--e-out); pointer-events: none; }
+.is-embed.has-room-bg .layout::before { opacity: 1; }
+.is-embed.has-room-bg .bg-orbs { display: none; }
+@media (min-width: 701px) {
+  .is-embed .desk, .is-embed .desk.is-big { top: 16px; right: 0; bottom: 16px; left: 0; margin: 0 auto; width: min(780px, calc(100vw - 32px));
+    border: 1px solid var(--g-rim); border-radius: 20px; box-shadow: var(--g-inner), var(--g-shadow);
+    -webkit-backdrop-filter: var(--g-filter); backdrop-filter: var(--g-filter); animation: embed-in .5s var(--e-out) both; }
+}
+@keyframes embed-in { from { opacity: 0; transform: translateY(10px) scale(.985); } }
 /* the Map tab inside iStaging's window: the photo map fills the pane */
 .map-host { flex: 1; min-height: 0; display: flex; }
 .mm.is-pane { display: flex; flex: 1; min-height: 0; animation: none; }
