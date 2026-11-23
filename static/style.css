@@ -265,6 +265,11 @@ button, select, textarea, input { font: inherit; color: inherit; }
 /* 11/22 evening (frame drops): the ring pings three times after each move instead of forever. A ring inside the SVG
    cannot move on its own layer, so every frame of it drew the whole small map again, all the time. */
 .mm-here-flag { fill: var(--beacon); pointer-events: none; }
+/* 11/23: the map's place is only the last one it knows (minimap.js setStale): a grey ring that does not ping */
+.mm.is-stale .mm-here-ring { stroke: #b4bdc8; animation: none; }
+.mm.is-stale .mm-spot.is-here .mm-dot, .mm.is-stale .mm-dot.is-here-dot { fill: rgba(255, 255, 255, .18); stroke: #dfe4ea; }
+.mm.is-stale .mm-here-flag { fill: #5b6573; }
+.mm-key.is-last { background: rgba(255, 255, 255, .18); box-shadow: 0 0 0 1.5px #dfe4ea; }
 .mm-here-flag-t { fill: #fff; font-family: var(--font-head); font-weight: 600; pointer-events: none; }
 .mm-here-flag-zh { font-family: var(--font-zh); font-weight: 400; }
 .mm-room-tab { fill: rgba(6, 10, 20, .72); pointer-events: none; }

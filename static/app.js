@@ -241,6 +241,9 @@ function gameOpen(on) {
   stepAside(on);
   // back from a game or the assistant in iStaging's window: read the scores and findings again
   if (!on) fetch(`/api/state?session=${encodeURIComponent(S.session)}`).then((r) => r.json()).then(updateState).catch(() => {});
+  // 11/23: that window was opened inside the tour, so the tour still has the focus; take it back, or the next walk in the
+  // tour gives this page no "left the page" moment and the map would keep calling the old place current (bindUi blur)
+  if (!on && document.activeElement === $("#tour")) $("#tour").blur();
 }
 // 11/22 evening (the user: closing a game should feel smoother too): the window said "close". If it said just before that it
 // is moving to its next page (the next case, a game opened from the assistant), the column stays out of the way until that
@@ -645,6 +648,11 @@ function hintDock() {        // the first visit: a word next to the button, gone
 }
 
 function bindUi() {
+  // 11/23: going back into the tour can take the visitor somewhere this page never hears of (iStaging tells no other site),
+  // so the map then marks its place as the last one it knows (minimap.js setStale) until a place is set here again
+  if (!EMBED) window.addEventListener("blur", () => setTimeout(() => {
+    if (document.activeElement === $("#tour") && typeof Minimap !== "undefined" && Minimap.setStale) Minimap.setStale(true);
+  }, 0));
   const shut = () => $("#desk").hidden || $("#desk").classList.contains("is-closing");
   $("#dockChat").addEventListener("click", (e) => (shut() ? openDesk("chat", e.currentTarget) : $("#pane-chat").hidden ? showTab("chat") : closeDesk()));
   $("#dockGames").addEventListener("click", (e) => (shut() ? openDesk("progress", e.currentTarget) : $("#pane-progress").hidden ? showTab("progress") : closeDesk()));

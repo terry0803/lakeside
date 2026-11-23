@@ -258,12 +258,32 @@ const Minimap = (() => {
 
   /* The place changed (this map, the place list, a "Go there" button): move "you are here". */
   function update(key) {
-    M.room = key;
+    M.room = key; M.stale = false;
     if (!M.built) return;
-    const [en, zh] = key ? nameOf(key) : ["Lakeside Resort", "湖畔渡假村"];
-    q("#mmHereEn").textContent = en; q("#mmHereZh").textContent = zh;
-    q("#mmMini").setAttribute("aria-label", `Mini map: you are at ${en}. Open the big map.`);
+    q("#mm").classList.remove("is-stale");
+    hereLabel();
     if (M.state === "open") { focusRoom(key, false); render(); } else renderMini();
+  }
+  function hereLabel() {
+    const [en, zh] = M.room ? nameOf(M.room) : ["Lakeside Resort", "湖畔渡假村"];
+    q("#mmHereEn").textContent = M.stale ? `Last · ${en}` : en;
+    q("#mmHereZh").textContent = M.stale ? `上次・${zh}` : zh;
+    q("#mmMini").setAttribute("aria-label", M.stale ? `Mini map: the last place this page knows is ${en}. Open the big map.` : `Mini map: you are at ${en}. Open the big map.`);
+  }
+  /* 11/23 (the user: the map stopped following where I walked): iStaging tells no other site when you walk inside the
+     tour (tested again 11/23: walking or the scene strip sends no message and reloads nothing here). So once you go back
+     into the tour, the map shows its place as the LAST one it knows (grey ring, "Last 上次"), until this map, a Go to
+     button or a sign's button tells it again (update). */
+  // the map's key for "you": the last place it knows when the place is not current (setStale)
+  const hereKey = () => M.stale ? '<span><i class="mm-key is-last"></i>last place <span lang="zh-Hant">上次的位置</span></span>'
+    : '<span><i class="mm-key is-here"></i>you <span lang="zh-Hant">你</span></span>';
+  function setStale(on) {
+    if (!M.room || M.stale === on) return;
+    M.stale = on;
+    if (!M.built) return;
+    q("#mm").classList.toggle("is-stale", on);
+    hereLabel();
+    if (M.state === "open") render(); else renderMini();
   }
 
   /* Show the building you are in, or the outdoor map around where you are. */
@@ -437,7 +457,7 @@ const Minimap = (() => {
       if (isHere && !mini) {
         const w = px(96), h = px(17), lx = x - w / 2, ly = y - px(14) - h;
         grp.appendChild(el("rect", { class: "mm-here-flag", x: lx, y: ly, width: w, height: h, rx: px(4) }));
-        grp.appendChild(el("text", { class: "mm-here-flag-t", x, y: ly + h - px(5), "font-size": px(10), "text-anchor": "middle" }, "You are here <tspan class=\"mm-here-flag-zh\">你在這裡</tspan>"));
+        grp.appendChild(el("text", { class: "mm-here-flag-t", x, y: ly + h - px(5), "font-size": px(10), "text-anchor": "middle" }, M.stale ? "Last here <tspan class=\"mm-here-flag-zh\">上次在這裡</tspan>" : "You are here <tspan class=\"mm-here-flag-zh\">你在這裡</tspan>"));
       }
       g.appendChild(grp);
     }
@@ -473,8 +493,8 @@ const Minimap = (() => {
     const f = q("#mmFoot");
     if (M.mode === "plan") {
       const b = M.data.buildings[M.building];
-      f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-close"></i>close-up <span lang="zh-Hant">近看</span></span><span><i class="mm-key is-here"></i>you <span lang="zh-Hant">你</span></span><span class="mm-foot-hint">${b.rooms.length} scenes inside · zoom out for outdoors <span lang="zh-Hant">室內 ${b.rooms.length} 個場景，縮小看室外</span></span>`;
-    } else f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-bld"></i>building, click to go in <span lang="zh-Hant">建築，點一下就進去</span></span><span><i class="mm-key is-here"></i>you <span lang="zh-Hant">你</span></span>`;
+      f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-close"></i>close-up <span lang="zh-Hant">近看</span></span>${hereKey()}<span class="mm-foot-hint">${b.rooms.length} scenes inside · zoom out for outdoors <span lang="zh-Hant">室內 ${b.rooms.length} 個場景，縮小看室外</span></span>`;
+    } else f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-bld"></i>building, click to go in <span lang="zh-Hant">建築，點一下就進去</span></span>${hereKey()}`;
   }
 
   /* ------------------------------------------------------------------ zoom, pan, click */
@@ -593,5 +613,5 @@ const Minimap = (() => {
   document.addEventListener("DOMContentLoaded", init);
   // the Map tab was hidden while the page loaded: measure again and show where you are
   const refresh = () => { if (!M.built) return; M.layer = ""; M.sig = ""; focusRoom(M.room, true); render(); };
-  return { update, setState, refresh, state: () => M.state };
+  return { update, setState, setStale, refresh, state: () => M.state };
 })();
