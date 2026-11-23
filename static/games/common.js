@@ -135,9 +135,11 @@ const Games = {};
    (iStaging opened directly) ignores the messages. */
 /* 11/22: in iStaging's window inside our page the browser keeps this page's storage apart from our page's, so a score
    would go to a new session that our Progress tab never shows. Our page answers "game-open" with its own session. */
+// 11/23: our own pages (app.js OURS); the page around the tour may be on another of them (http://localhost:3000)
+const OURS_G = [location.origin, "https://lakeside.taila701b6.ts.net", "https://terry0803.github.io", "http://127.0.0.1:8780", "http://localhost:8780", "http://localhost:3000", "http://127.0.0.1:3000"];
 window.addEventListener("message", (e) => {
   const d = e.data;
-  if (e.origin !== location.origin || !d || d.type !== "lakeside:session" || !d.session || d.session === G.session) return;
+  if (!OURS_G.includes(e.origin) || !d || d.type !== "lakeside:session" || !d.session || d.session === G.session) return;
   G.session = d.session;
   try { localStorage.setItem("lia.session", JSON.stringify(d.session)); } catch { /* private mode */ }
 });

@@ -19,7 +19,7 @@
   let settled = false;
   // 11/23 (review): only our own full page may answer (this address, the fixed one, the laptop itself; the GitHub copy is
   // this address when this tab is the GitHub copy too)
-  const OURS = [location.origin, "https://lakeside.taila701b6.ts.net", "http://127.0.0.1:8780", "http://localhost:8780"];
+  const OURS = [location.origin, "https://lakeside.taila701b6.ts.net", "http://127.0.0.1:8780", "http://localhost:8780", "http://localhost:3000", "http://127.0.0.1:3000"];
   const onAck = (e) => {
     if (settled || !e.data || e.data.type !== "lakeside:ack" || !OURS.includes(e.origin)) return;
     settled = true;

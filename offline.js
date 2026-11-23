@@ -55,7 +55,7 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
   // a page around this one that the laptop does not allow to hold its pages (server.py frame-ancestors: itself, its local
   // address and *.istaging.com): going there would leave a blank window, so the saved copy instead. "null" is a sandboxed
   // frame, which frame-ancestors refuses too.
-  const OK_AROUND = [liveOrigin, "http://127.0.0.1:8780", "http://localhost:8780"];
+  const OK_AROUND = [liveOrigin, "http://127.0.0.1:8780", "http://localhost:8780", "http://localhost:3000", "http://127.0.0.1:3000"];
   const blockedAbove = () => ancestors().some((o) => !OK_AROUND.includes(o) && !/^https:\/\/([a-z0-9-]+\.)+istaging\.com$/.test(o));
 
   if (params.has("offline")) ss(FORCE, "1");        // asked for the saved copy: this tab stays in it (a new tab goes back)

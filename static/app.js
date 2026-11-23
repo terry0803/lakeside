@@ -25,7 +25,10 @@ if (EMBED) document.documentElement.classList.add("is-embed");
 // 11/23 (review): the addresses of our own pages (this one, the fixed address, the GitHub copy, the laptop itself). Only
 // they may steer this page by message (open the window, move the tour, keep the column aside); a video or a web page in
 // an iStaging pop-up can reach this window too.
-const OURS = new Set([location.origin, "https://lakeside.taila701b6.ts.net", "https://terry0803.github.io", "http://127.0.0.1:8780", "http://localhost:8780"]);
+const OURS = new Set([location.origin, "https://lakeside.taila701b6.ts.net", "https://terry0803.github.io", "http://127.0.0.1:8780", "http://localhost:8780", "http://localhost:3000", "http://127.0.0.1:3000"]);
+// 11/23: the page on this laptop's http://localhost:3000 asks the fixed address to remember this browser; from then on that
+// address sends it here (server.py index), because only here does iStaging say which scene the visitor is in
+{ const m = document.querySelector('meta[name="lk-local"]'); if (m && !EMBED) new Image().src = `https://lakeside.taila701b6.ts.net/api/local-mark?t=${encodeURIComponent(m.content)}`; }
 // 11/23 (the user: the first frame of iStaging's window flashed dark blue): in iStaging's window the picture of the room
 // behind the window starts loading at once (the room is in the address), over a plain dark grey
 if (EMBED && PARAMS.get("room")) roomBg(PARAMS.get("room"));
@@ -133,7 +136,7 @@ async function init() {
   const roomsRes = await fetch("/api/rooms").then((r) => r.json()).catch(() => null);
   if (roomsRes) {
     S.rooms = roomsRes.rooms; S.totalFindings = roomsRes.total_findings || 17;
-    for (const r of S.rooms) S.byKey[r.key] = r;
+    for (const r of S.rooms) { S.byKey[r.key] = r; if (r.pano) PANO.set(r.pano, r.key); }
     fillRoomSelect();
   }
   const params = new URLSearchParams(location.search);
@@ -184,8 +187,9 @@ function probeOurPage(room) {
     const onAck = (e) => {
       if (done || !e.data || e.data.type !== "lakeside:ack" || !OURS.has(e.origin)) return;
       // 11/22: in a frame inside iStaging the browser keeps this page's storage apart from our page around it, so this
-      // window would start its own progress; take the session of that page instead (same address only)
-      if (e.data.session && e.origin === location.origin) { S.session = e.data.session; store.set("session", S.session); }
+      // window would start its own progress; take the session of that page instead (our own addresses only, checked above;
+      // 11/23: our page on http://localhost:3000 has another address than this window)
+      if (e.data.session) { S.session = e.data.session; store.set("session", S.session); }
       done = true; window.removeEventListener("message", onAck); resolve(true);
     };
     window.addEventListener("message", onAck);
@@ -285,8 +289,8 @@ window.addEventListener("message", (e) => {          // the other end: our full-
     if (e.source) talkers.set(e.source, Date.now());
     gameOpen(true);
     // 11/22: a game in iStaging's window keeps its storage apart from this page; give it this page's session so its score
-    // lands in this Progress tab (our own address only)
-    if (d.type !== "lakeside:popup-alive" && e.origin === location.origin) { try { e.source.postMessage({ type: "lakeside:session", session: S.session }, location.origin); } catch { /* gone */ } }
+    // lands in this Progress tab (our own addresses only, OURS above; 11/23: also when this page is on http://localhost:3000)
+    if (d.type !== "lakeside:popup-alive") { try { e.source.postMessage({ type: "lakeside:session", session: S.session }, e.origin); } catch { /* gone */ } }
     return;
   }
   if (d && (d.type === "lakeside:game-nav" || d.type === "lakeside:popup-nav")) { navUntil = Date.now() + 4000; navFrom = e.source; return; }
@@ -312,8 +316,8 @@ window.addEventListener("message", (e) => {          // the other end: our full-
     navUntil = 0;
     if (e.source) talkers.set(e.source, Date.now());
     gameOpen(true);
-    // the answer goes to the address that asked (with the session only to our own address), not to whoever is there now
-    try { e.source.postMessage(e.origin === location.origin ? { type: "lakeside:ack", session: S.session } : { type: "lakeside:ack" }, e.origin); } catch { /* the window went away */ }
+    // the answer goes to the address that asked (one of ours, OURS above, with the session), not to whoever is there now
+    try { e.source.postMessage({ type: "lakeside:ack", session: S.session }, e.origin); } catch { /* the window went away */ }
     return;
   }
   // the map inside iStaging's window, inside this page: a jump, so the tour moves even to the scene it was opened at
@@ -651,6 +655,7 @@ function bindUi() {
   // 11/23: going back into the tour can take the visitor somewhere this page never hears of (iStaging tells no other site),
   // so the map then marks its place as the last one it knows (minimap.js setStale) until a place is set here again
   if (!EMBED) window.addEventListener("blur", () => setTimeout(() => {
+    if (tourTalks) return;                                // the tour reports every scene here (http://localhost:3000)
     if (document.activeElement === $("#tour") && typeof Minimap !== "undefined" && Minimap.setStale) Minimap.setStale(true);
   }, 0));
   const shut = () => $("#desk").hidden || $("#desk").classList.contains("is-closing");
@@ -878,6 +883,35 @@ function fillRoomSelect() {
 let toastTimer = null, tourUrl = "";
 // 11/23 (review): the tour's address is replaced, not added to the browser's history, so Back does not walk the hidden tour
 // through earlier scenes that "you are here" no longer matches. The first scene is the frame's own src.
+// 11/23 (the user: can the map follow me?): iStaging posts {"event":"changePano","panoramaId":…} to the page around the
+// tour, and takes {"event":"goToPano"} from it, only for a few addresses (www/dev.gobizevent.com, *.istaging.com and
+// http://localhost:3000; it reads the address from the frame's referrer, index.html referrerpolicy). On the presenter's
+// laptop the page opened at http://localhost:3000 therefore knows every scene the visitor walks to.
+const PANO = new Map();                                   // panorama objectId -> place key (rooms list: pano)
+let tourTalks = false, tourNow = null;                    // the tour has spoken; the tour (A/B) it shows now
+const TOUR_ORIGIN = "https://livetour.istaging.com";
+window.addEventListener("message", (e) => {
+  if (EMBED || e.origin !== TOUR_ORIGIN) return;
+  const fr = document.getElementById("tour");
+  if (!fr || e.source !== fr.contentWindow) return;
+  let d = e.data;
+  if (typeof d === "string") { try { d = JSON.parse(d); } catch { return; } }
+  if (!d || d.event !== "changePano" || !d.panoramaId) return;
+  tourTalks = true;
+  const key = PANO.get(d.panoramaId);
+  if (!key) return;
+  tourNow = S.byKey[key].tour;
+  if (key !== S.room) setHere(key);
+  else if (typeof Minimap !== "undefined") Minimap.update(key);           // the same place again: no longer "Last"
+});
+// a place in the tour shown now: iStaging's own goToPano (its usual scene change, no reload); otherwise load that tour
+function moveTour(r) {
+  const fr = $("#tour");
+  if (tourTalks && r.pano && tourNow === r.tour && fr && fr.contentWindow) {
+    try { fr.contentWindow.postMessage(JSON.stringify({ event: "goToPano", panoramaId: r.pano }), TOUR_ORIGIN); tourUrl = r.url; return; } catch { /* load it instead */ }
+  }
+  showTour(r.url);
+}
 function showTour(url) {
   const fr = $("#tour");
   tourUrl = url;
@@ -899,7 +933,7 @@ async function goTo(key, opt = {}) {
   if (typeof Minimap !== "undefined") Minimap.update(key);      // the mini map at the top left of the tour
   // 11/23 (review): a jump the visitor asked for (the map, a Go to button, the map in iStaging's window) always moves the
   // tour, also to the scene it was last sent to: the visitor may have walked on inside it since, which this page never hears
-  if (!EMBED && (opt.jump || tourUrl !== r.url)) showTour(r.url);
+  if (!EMBED && (opt.jump || tourUrl !== r.url)) moveTour(r);
   if (!opt.quiet && !EMBED) {
     const toast = $("#tourToast");
     toast.innerHTML = `${PIN}<span>Opening <b>${esc(r.it_en)}</b> in the tour <span lang="zh-Hant">前往${esc(r.it_zh)}</span></span>`;
