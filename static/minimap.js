@@ -303,12 +303,24 @@ const Minimap = (() => {
     const [W, H] = size || svgSize(), bw = b[2] - b[0], bh = b[3] - b[1], k = Math.max(bw / W, bh / H);
     return { x: (b[0] + b[2]) / 2, y: (b[1] + b[3]) / 2, w: W * k, h: H * k };
   }
+  /* 11/23 (the user: the bottom of the map could not be clicked): the view stopped at the edge of the map, so a place by
+     the edge stayed under the zoom buttons or had its name cut off (Lavender Farm, bottom right). The view may now go
+     this far past each edge, in pixels (more on the right, where the names run, and at the bottom, where the zoom
+     buttons are), and zoomed right out the map keeps the same room around it. */
+  const edgeRoom = () => { const [W, H] = svgSize(); return { l: Math.min(60, W * 0.1), t: Math.min(60, H * 0.1), r: Math.min(110, W * 0.2), b: Math.min(100, H * 0.18) }; };
+  const withRoom = (B, e, m) => [B[0] - e.l * m, B[1] - e.b * m, B[2] + e.r * m, B[3] + e.t * m];     // m: metres per pixel
+  function fullView() {
+    const [W, H] = svgSize(), e = edgeRoom(), B = M.data.outdoor.box;
+    const m = Math.max((B[2] - B[0]) / Math.max(1, W - e.l - e.r), (B[3] - B[1]) / Math.max(1, H - e.t - e.b));
+    const R = withRoom(B, e, m);
+    return { x: (R[0] + R[2]) / 2, y: (R[1] + R[3]) / 2, w: W * m, h: H * m };
+  }
   function clampView() {
-    const B = M.data.outdoor.box, full = fitBox(B);
+    const B = M.data.outdoor.box, full = fullView();
     if (M.view.w > full.w) M.view = full;
-    const minW = full.w / 14;
+    const minW = fitBox(B).w / 14;
     if (M.view.w < minW) { const k = minW / M.view.w; M.view.w *= k; M.view.h *= k; }
-    M.view = keepOn(M.view, B);
+    M.view = keepOn(M.view, withRoom(B, edgeRoom(), M.view.w / svgSize()[0]));
   }
   // an axis on which the view is bigger than the map keeps the map in the middle; otherwise the view stays on the map
   // (11/21 night, the user: zoomed right out, the map sat at the left with an empty band on the right)
@@ -348,7 +360,7 @@ const Minimap = (() => {
     foot();
     const zin = q('[data-z="in"]'), zout = q('[data-z="out"]');
     zin.disabled = M.mode === "plan";
-    zout.disabled = M.mode === "outdoor" && M.view && M.view.w >= fitBox(M.data.outdoor.box).w - 0.5;
+    zout.disabled = M.mode === "outdoor" && M.view && M.view.w >= fullView().w - 0.5;
   }
 
   /* the small map in the corner: the building you are in, or 150 m of the outdoor map around you */
