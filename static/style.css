@@ -776,8 +776,8 @@ details.trace.is-in[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s b
    Only the assistant fills the frame: no tour behind it, so the page itself is a night-sky aurora of drifting light and the
    window is a sheet of clear glass over it. Nothing to close (iStaging has its own ×). */
 .is-embed .tour, .is-embed .side { display: none !important; }
-.is-embed .layout { background: radial-gradient(130% 90% at 0% 0%, #12345a, #08121f 62%), #08121f; }
-.is-embed .bg-orbs { display: block; position: absolute; inset: 0; z-index: 0; border-radius: 0; }
+.is-embed .layout { background: #101318; }      /* 11/23: a plain dark grey until the room picture is in (the user: the first frame flashed dark blue) */
+.is-embed .bg-orbs { display: none; }
 .is-embed .bg-orbs i { width: 95%; }
 .is-embed .bg-orbs i:nth-child(1) { background: radial-gradient(circle, rgba(59, 130, 246, .5), rgba(59, 130, 246, 0) 64%); }
 .is-embed .bg-orbs i:nth-child(2) { background: radial-gradient(circle, rgba(20, 184, 166, .36), rgba(20, 184, 166, 0) 64%); }

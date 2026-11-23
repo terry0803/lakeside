@@ -26,6 +26,9 @@ if (EMBED) document.documentElement.classList.add("is-embed");
 // they may steer this page by message (open the window, move the tour, keep the column aside); a video or a web page in
 // an iStaging pop-up can reach this window too.
 const OURS = new Set([location.origin, "https://lakeside.taila701b6.ts.net", "https://terry0803.github.io", "http://127.0.0.1:8780", "http://localhost:8780"]);
+// 11/23 (the user: the first frame of iStaging's window flashed dark blue): in iStaging's window the picture of the room
+// behind the window starts loading at once (the room is in the address), over a plain dark grey
+if (EMBED && PARAMS.get("room")) roomBg(PARAMS.get("room"));
 
 const PIN = '<svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0a4 4 0 0 0-4 4c0 3 4 8 4 8s4-5 4-8a4 4 0 0 0-4-4zm0 5.6A1.6 1.6 0 1 1 6 2.4a1.6 1.6 0 0 1 0 3.2z"/></svg>';
 const LABEL = {
