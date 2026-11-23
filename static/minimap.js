@@ -19,6 +19,8 @@ const Minimap = (() => {
   const ICON_MAP = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 4v13.5M15 6.5V20" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
   const ICON_OPEN = `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 3h5v5M17 3l-6 6M8 17H3v-5M3 17l6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   const ICON_HIDE = `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+  // 11/23 (the user: the X moves when it turns): the same drawn X as the assistant window, so it turns around its centre
+  const ICON_X = `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
   const ICON_HOUSE = "M-5 1.5 0-3.5 5 1.5V5.5H-5z";       // drawn at the building's centre, scaled per zoom
 
   const room = (k) => (typeof S !== "undefined" && S.byKey ? S.byKey[k] : null);
@@ -49,7 +51,7 @@ const Minimap = (() => {
       <button type="button" class="mm-pill lg-hi" id="mmPill" title="Show the mini map 顯示小地圖" aria-label="Show the mini map" hidden><span class="mm-pill-ico">${ICON_MAP}</span><span class="dock-t"><b>Map</b><small lang="zh-Hant">地圖</small></span></button>
       <section class="mm-panel lg-hi" id="mmPanel" hidden aria-label="Map">
         <header class="mm-head"><nav class="mm-crumbs" id="mmCrumbs" aria-label="Where on the map"></nav>
-          <button type="button" class="mm-x" id="mmClose" aria-label="Close the map">×</button></header>
+          <button type="button" class="mm-x" id="mmClose" aria-label="Close the map">${ICON_X}</button></header>
         <div class="mm-view" id="mmView">
           <svg class="mm-svg" id="mmSvg" role="group" aria-label="Map of the tour. Each place is a button."><g id="mmImgs"></g><g id="mmMarks"></g></svg>
           <div class="mm-tip" id="mmTip" hidden></div>
