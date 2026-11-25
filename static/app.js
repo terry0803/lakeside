@@ -757,9 +757,10 @@ function bindUi() {
     const n = all[(i + step + all.length) % all.length];
     n.focus(); n.click();
   });
-  // 11/23 (review): the list is for saying where you are after walking in the tour (its title says so); it moves "you are
-  // here" and leaves the tour as it is. Before, it loaded that scene again in the tour.
-  $("#roomSelect").addEventListener("change", (e) => setHere(e.target.value));
+  // 11/25 (the user: choosing a place in the list did not change the scene, only the map moved): picking a place takes the
+  // tour there, like the map and the Go to buttons (on http://localhost:3000 without reloading the tour). The 11/23 review
+  // had made it only move "you are here".
+  $("#roomSelect").addEventListener("change", (e) => goTo(e.target.value, { jump: true }));
   // 11/22 afternoon: a game link here opens the game window over the tour (Ctrl, Shift or the middle button still open a tab)
   if (!EMBED) document.addEventListener("click", (e) => {
     const a = e.target instanceof Element ? e.target.closest('a[href^="/lakeside/games/"]') : null;

@@ -258,6 +258,12 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .mm-bld-t, .mm-spot-t { fill: #fff; font-family: var(--font-head); font-weight: 600; paint-order: stroke; stroke: rgba(6, 10, 20, .84); stroke-linejoin: round; pointer-events: none; }
 .mm-spot { cursor: pointer; }
 .mm-hit { fill: transparent; }
+/* 11/25 (the user: clicking a place on the big map drew a huge black frame around it): the page's focus ring (2px, 2px
+   off) on a shape inside the map's SVG is measured in the map's own units, metres, so it came out two metres wide (black,
+   yellow or blue, depending on the browser). Inside the map there is no outline; a place reached with the keyboard shows
+   a 2px ring drawn in the map (the dot also grows and turns blue, below). */
+.mm-svg :focus, .mm-svg :focus-visible { outline: none; }
+.mm-spot:focus-visible .mm-hit, .mm-bld:focus-visible .mm-bld-hit { stroke: #9fd0ff; stroke-width: 2px; vector-effect: non-scaling-stroke; }
 .mm-halo { fill: rgba(6, 10, 20, .4); }
 .mm-dot, .mm-balloon { fill: #ffd977; stroke: #fff; transform-box: fill-box; transform-origin: center; transition: transform .35s var(--e-spring), fill .15s; }
 .mm-spot.is-close .mm-dot { fill: #fff; stroke: #c08f3c; }
