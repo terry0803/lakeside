@@ -1735,7 +1735,7 @@ function renderProgress(anim = true) {
       return;
     }
     disarm();
-    try { updateState(await post("/api/settings", { session: S.session, reset: true, model: S.model })); renderProgress(true); }
+    try { updateState(await post("/api/settings", { session: S.session, reset: true, ...(store.get("model", null) === S.model ? { model: S.model } : {}) })); renderProgress(true); }
     catch (err) { sayNear(reset, err && err.said ? esc(err.said) : LB("Could not clear the progress. Check that 啟動_AI助理.bat is running.", "清不掉進度，請確認 啟動_AI助理.bat 有在執行。"), { err: true }); }
   });
   v.appendChild(reset);
