@@ -714,7 +714,9 @@ Games.mfa = function (d, main, replay) {
     if (S && S.dark && !ev.ctrlKey && !ev.metaKey && !ev.altKey) wake();
     // 11/26 (regression R10): a key a card, slide or button already used is theirs. Enter on the sign-in card opens the
     // app and then bubbles here; without this it also answered at once with the digits typed before Later
-    if (ev.defaultPrevented) return;
+    // 11/26 (second regression pass): not Escape: a slide knob marks every Escape as used, and Escape here puts the phone
+    // app away (as before R10)
+    if (ev.defaultPrevented && ev.key !== "Escape") return;
     if (!S || S.over || S.paused || !S.app || ev.ctrlKey || ev.metaKey || ev.altKey) return;
     const k = ev.key;
     if (S.app === "dial") {

@@ -346,8 +346,6 @@ window.addEventListener("message", (e) => {          // the other end: our full-
     try { e.source.postMessage({ type: "lakeside:ack", session: S.session }, e.origin); } catch { /* the window went away */ }
     return;
   }
-  // 11/26 (regression R05): iStaging's window switched the model of this page's session (see the model buttons)
-  if (d && d.type === "lakeside:model") { if (d.session === S.session) followModel(d.model); return; }
   // the map inside iStaging's window, inside this page: a jump, so the tour moves even to the scene it was opened at
   if (d && d.type === "lakeside:goto") { if (S.byKey[d.room]) goTo(d.room, { jump: true }); return; }
   if (!d || d.type !== "lakeside:open") return;
@@ -776,13 +774,9 @@ function bindUi() {
       const was = S.model;
       S.model = b.dataset.model; store.set("model", S.model);
       check("[data-model]", b);
-      // 11/26 (regression R05): in iStaging's window this is our page's session: tell that page first, so it does not take
-      // the new model for a forgotten one and send its old one back (updateState)
-      if (S.inOurPage) askAncestors({ type: "lakeside:model", session: S.session, model: S.model });
       try { await post("/api/settings", { session: S.session, model: S.model }); }
       catch (err) {          // 11/23 (review): the server did not take it: back to the model it still uses, and say so
         S.model = was; store.set("model", was);
-        if (S.inOurPage) askAncestors({ type: "lakeside:model", session: S.session, model: was });
         check("[data-model]", modelBtns.find((x) => x.dataset.model === was));
         // 11/26 (review): a refusal says why in the server's words (already in both languages); no answer at all: the .bat
         sayNear(b.closest(".seg"), err && err.said ? esc(err.said) : LB("Could not switch the model. Check that 啟動_AI助理.bat is running.", "換不了模型，請確認 啟動_AI助理.bat 有在執行。"), { err: true });
@@ -810,11 +804,6 @@ function bindUi() {
   });
   window.addEventListener("storage", (e) => {        // a mini-game in another tab saved a result
     if (e.key === "lia.gamesUpdated") fetch(`/api/state?session=${encodeURIComponent(S.session)}`).then((r) => r.json()).then(updateState).catch(() => {});
-    // 11/26 (regression R05): another tab of this page (same session) switched the model: follow it, or this tab would
-    // take the new model for a forgotten one and send its old one back (updateState)
-    // 11/26 (regression R05, check): only when that tab saved this same session; a window that took another page's session
-    // (probeOurPage) saves the model of that session, which must not be shown here or sent for this one
-    if (e.key === "lia.model" && e.newValue && store.get("session", null) === S.session) { try { followModel(JSON.parse(e.newValue)); } catch { /* not ours */ } }
   });
   $("#askForm").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
   $("#askInput").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(); } });
@@ -881,10 +870,7 @@ async function post(url, body) {
     const j = await r.json().catch(() => ({}));
     const err = new Error(j.error || `HTTP ${r.status}`); err.said = j.error || ""; throw err;
   }
-  const j = await r.json();
-  // 11/26 (regression R05): the model the server has taken for this session (see updateState)
-  if (url === "/api/settings" && j && j.session && j.state && j.state.model) S.modelSaid = { session: j.session, model: j.state.model };
-  return j;
+  return r.json();
 }
 // 11/26 (review): the model buttons show the model the server answers this session with (it keeps one per session). In
 // iStaging's window the page takes our full page's session, and with it that page's model; not sent back to the server.
@@ -893,25 +879,6 @@ function showModel(m) {
   if (!on || (m === S.model && on.getAttribute("aria-checked") === "true")) return;
   S.model = m; store.set("model", m);
   for (const x of all) { x.setAttribute("aria-checked", String(x === on)); x.tabIndex = x === on ? 0 : -1; }
-}
-// 11/26 (regression R05): the server had taken this page's model for this session and now answers with another one. A
-// restart forgets a session with nothing but its model (agent.py keeps only sessions with places, weaknesses or games),
-// and the new one has the default model. Send the visitor's choice again instead of letting it overwrite the buttons and
-// the stored choice. Only if the server does not take it (refused, or the model is gone) do the buttons follow it.
-// 11/26 (regression R05): another window of this session switched the model (it tells the server itself): show it, and
-// count it as taken
-function followModel(m) {
-  showModel(m);
-  if (S.model === m) S.modelSaid = { session: S.session, model: m };
-}
-let modelResend = null;
-function resendModel(m) {
-  if (modelResend) return;
-  const sid = S.session;
-  modelResend = post("/api/settings", { session: sid, model: S.model })
-    .then((res) => { if (S.session === sid) updateState(res); })
-    .catch((err) => { if (err && err.said && S.session === sid) showModel(m); })
-    .finally(() => { modelResend = null; });
 }
 
 let healthTimer = null;
@@ -993,7 +960,11 @@ window.addEventListener("message", (e) => {
   // 11/26 (review): a scene walked to with the tour's own arrows moves "you are here" but is not a place asked about (the
   // Progress tab counts only those asked about here or opened from this page: the map, the place list, a Go to button;
   // 11/26 front-end review D01); the server learns the place with the next question, which carries it
-  if (key !== S.room) setHere(key, { record: false });
+  if (key !== S.room) {
+    setHere(key, { record: false });
+    // 11/26 (second regression pass): the server still learns it was walked, only to know which locks the player got past
+    post("/api/visit", { session: S.session, room: key, walk: true }).catch(() => { /* not needed to go on */ });
+  }
   else if (typeof Minimap !== "undefined") Minimap.update(key);           // the same place again: no longer "Last"
 });
 // a place in the tour shown now: iStaging's own goToPano (its usual scene change, no reload); otherwise load that tour
@@ -1053,14 +1024,7 @@ function updateState(res) {
   const before = S.state;
   S.state = res.state; if (res.session) S.session = res.session;
   if (res.state.total_findings) S.totalFindings = res.state.total_findings;
-  if (res.state.model) {
-    // 11/26 (regression R05): a session whose model the server had already taken from this page: a different one now means
-    // the server forgot it (restart), so it is sent again. Otherwise (iStaging's window taking our page's session, a refused
-    // switch) the buttons follow the server, as before.
-    const said = S.modelSaid;
-    if (res.state.model !== S.model && said && said.session === S.session && said.model === S.model) resendModel(res.state.model);
-    else showModel(res.state.model);
-  }
+  if (res.state.model) showModel(res.state.model);
   $("#progBadge").textContent = `${res.state.found_n || 0}/${S.totalFindings}`;
   const games = res.state.games || {}, played = GAMES.filter((g) => games[g[0]]).length;
   $("#dockGamesN").textContent = `${played}/${GAMES.length}`;
@@ -1771,7 +1735,7 @@ function renderProgress(anim = true) {
       return;
     }
     disarm();
-    try { updateState(await post("/api/settings", { session: S.session, reset: true })); renderProgress(true); }
+    try { updateState(await post("/api/settings", { session: S.session, reset: true, model: S.model })); renderProgress(true); }
     catch (err) { sayNear(reset, err && err.said ? esc(err.said) : LB("Could not clear the progress. Check that 啟動_AI助理.bat is running.", "清不掉進度，請確認 啟動_AI助理.bat 有在執行。"), { err: true }); }
   });
   v.appendChild(reset);

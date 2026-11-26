@@ -233,7 +233,7 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
       if (p === "settings" && (body.model === "qwen3.5:9b" || body.model === "qwen3.5:4b")) { const s = read(); s.model = body.model; write(s); }
       if (p === "settings" && body.reset) write({ session: sessionId(), model: read().model });   // Start over: places and scores cleared, not the model
       if (p === "state" || p === "settings") return json({ session: sessionId(), state: state() });
-      if (p === "visit") { visit(body.room); return json({ session: sessionId(), state: state() }); }
+      if (p === "visit") { if (!body.walk) visit(body.room); return json({ session: sessionId(), state: state() }); }   // walk: 11/26, not a place asked about
       if (p === "games/result") {                    // the same checks as server.py
         // 11/26 (front-end review K02, relay): only whole JSON numbers, as server.py now (no more Python int() rules)
         const score = body.score, tot = body.total;
