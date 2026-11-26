@@ -44,6 +44,22 @@ Games.ir = function (d, main, replay) {
   const loop = CB.loop(tick);
   window.onresize = () => { if (B) CB.drawStrings(B.strings); if (S && S.open) placeClose(); };
   function digitsOf(s) { return String(s || "").replace(/\D/g, ""); }
+  /* 11/26 (front-end review K66): img/ransom.png is the restaurant POS note (phish.js); the night audit PC, the door access
+     server and the backup NAS get their own note, drawn here in the same layout (900 x 600) as an image */
+  function noteImg(o, alt, cls) {
+    const x = (s) => esc(String(s));
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="900" height="600" font-family="Segoe UI, Microsoft JhengHei, PingFang TC, sans-serif" font-weight="700">
+      <rect width="900" height="600" fill="#8b1111"/><rect width="900" height="80" fill="#5a0b0b"/><rect y="504" width="900" height="96" fill="#2a0505"/>
+      <text x="30" y="56" font-size="38" fill="#fff">${x(o.head)}</text>
+      <text x="38" y="168" font-size="52" fill="#fff" textLength="824" lengthAdjust="spacingAndGlyphs">YOUR FILES ARE ENCRYPTED</text>
+      <text x="38" y="238" font-size="36" fill="#ffd0c8">${x(o.l1)}</text><text x="38" y="298" font-size="36" fill="#ffd0c8">${x(o.l2)}</text>
+      <text x="38" y="356" font-size="32" fill="#ffd0c8">${x(o.zh)}</text>
+      <text x="450" y="566" font-size="38" fill="#fff" text-anchor="middle">Do not turn off this computer · 不要關機</text></svg>`;
+    return `<img${cls ? ` class="${cls}"` : ""} src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}" alt="${x(alt)}">`;
+  }
+  // the note on Yi-Chen's PC, as in its close-up: the price doubles after 60 minutes (59:00 left in her 03:48 photo)
+  const nightNote = (left, alt, cls) => noteImg({ head: "Front office · Night audit PC", l1: "Pay 5 BTC for the key.", l2: `The price doubles in ${left}.`, zh: "櫃台電腦的檔案都被加密了" }, alt, cls);
+  const serverNote = (n) => noteImg({ head: n.en, l1: "Every file on this server is locked.", l2: "Pay 5 BTC for the key.", zh: `${n.zh}的檔案都被加密了` }, `Ransom note on the ${n.en} ${n.zh}上的勒索畫面`, "rs-ransom");
 
   const SVG = {
     shield: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 40 10v12c0 11-7 18-16 22C15 40 8 33 8 22V10z" fill="#2f6f8f" stroke="#cfe9ff" stroke-width="2.4" stroke-linejoin="round"/><path d="M16 24l6 6 11-12" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -61,7 +77,7 @@ Games.ir = function (d, main, replay) {
     G.meter("");
     CB.brief(st, { file: 4, start: story.start, top_en: "Sunday, before dawn", top_zh: "週日凌晨", until_en: `until ${story.end}`, until_zh: `應變到 ${story.end}`, person: ANALYST,
       intro_en: story.intro_en, intro_zh: story.intro_zh, rules: story.rules, after_en: story.after_en, after_zh: story.after_zh,
-      extra: `<div class="ir-brief-pic"><img src="/lakeside/static/games/img/ransom.png" alt="The ransom note on the night audit PC 夜間稽核電腦上的勒索畫面"></div>`,
+      extra: `<div class="ir-brief-pic">${nightNote("60:00", "The ransom note on the night audit PC 夜間稽核電腦上的勒索畫面")}</div>`,      // 11/26 (front-end review K66)
       button: bi("Take the call", "接電話"), onStart: startShift });
   }
 
@@ -345,7 +361,8 @@ Games.ir = function (d, main, replay) {
     await wait(500);
     await st.cut({ scene: x.kind === "system" && x.node.k === "pos_bo" ? "rush_pos" : "ir_night", beats: x.beats, hit_en: x.hit_en, hit_zh: x.hit_zh,
       inset: x.rule ? `<div class="ir-rule"><p class="ir-rule-k">${bi("The procedure says", "流程寫著")}</p><p>${bi(x.rule.en, x.rule.zh)}</p><small>${bi(`“${PROC.name_en}”, knowledge graph`, `知識圖「${PROC.name_zh}」`)}</small></div>`
-        : x.kind === "system" ? `<img class="rs-ransom" src="/lakeside/static/games/img/ransom.png" alt="Ransom note 勒索畫面">` : "",
+        // 11/26 (front-end review K66): the POS note only for the POS back office, each server its own note
+        : x.kind === "system" ? (x.node.k === "pos_bo" ? `<img class="rs-ransom" src="/lakeside/static/games/img/ransom.png" alt="Ransom note on the restaurant POS 收銀機上的勒索畫面">` : serverNote(x.node)) : "",
       shields: left, go: left > 0 ? bi("Back to the map", "回到網路圖") : bi("Continue", "繼續") });
     S.hold -= 1;
     if (S.shields <= 0 && !S.hold) gameOver();   // only after the last queued cut
@@ -354,8 +371,16 @@ Games.ir = function (d, main, replay) {
   function togglePause(force) {
     if (!S || S.over) return;
     S.paused = typeof force === "boolean" ? force : !S.paused;
+    // 11/26 (front-end review K61): the pause layer only stopped the mouse; the play area is inert too, so Tab and Enter
+    // can't reach the phone, the cards or the tools behind it. Resume puts the keyboard back where it was.
+    const play = $(".ir-play", st.body);
+    if (play) {
+      if (S.paused) S.pauseFocus = play.contains(document.activeElement) ? document.activeElement : null;
+      play.inert = S.paused;
+    }
     S.pause.set(S.paused);
     H.paused(S.paused);
+    if (!S.paused && S.pauseFocus) { if (S.pauseFocus.isConnected) S.pauseFocus.focus({ preventScroll: true }); S.pauseFocus = null; }
   }
 
   /* ------------------------------------------------------------------ dragging things onto the map */
@@ -394,7 +419,9 @@ Games.ir = function (d, main, replay) {
         const g = o && o.ghost ? o.ghost() : elm.cloneNode(true);
         g.classList.add("ir-ghost");
         g.removeAttribute("id");
-        if (!(o && o.ghost)) g.style.width = `${elm.getBoundingClientRect().width}px`;
+        // 11/26 (front-end review K69): the copy lives outside the scaled canvas: canvas width, then drawn at the canvas's scale
+        if (!(o && o.ghost)) g.style.width = `${elm.getBoundingClientRect().width / (G.k() || 1)}px`;
+        g.style.transformOrigin = "0 0";
         document.body.appendChild(g);
         p.ghost = g;
         elm.classList.add("is-lifted");
@@ -403,7 +430,7 @@ Games.ir = function (d, main, replay) {
         drawMap();
       }
       if (!p || !p.ghost) return;
-      p.ghost.style.transform = `translate(${ev.clientX - p.dx}px, ${ev.clientY - p.dy}px) rotate(-3deg)`;
+      p.ghost.style.transform = `translate(${ev.clientX - p.dx}px, ${ev.clientY - p.dy}px) rotate(-3deg) scale(${G.k() || 1})`;      // 11/26 (front-end review K69)
       const h = hitAt(ev.clientX, ev.clientY);
       S.hover = h;
       p.ghost.classList.toggle("is-over", valid(kind, h));
@@ -470,7 +497,7 @@ Games.ir = function (d, main, replay) {
 
   /* Click instead of drag (and the keyboard): pick a tool, then click where it goes. */
   function pick(kind) {
-    if (!S || S.over || S.hold) return;
+    if (!S || S.over || S.hold || S.paused) return;      // 11/26 (front-end review K61): not while paused
     if ((kind === "isolate" || kind === "cut") && toolOff(kind)) return;      // 11/22: a locked or used-up tool is not picked up
     if (kind === "tape" && !S.analyzed) return tipNote(bi("Not yet: the SOC has to find out how they got in first.", "還不行：資安監控中心要先查出他們怎麼進來的。"));
     if (kind === "usb" && S.usb) return;
@@ -538,12 +565,14 @@ Games.ir = function (d, main, replay) {
     t.hidden = false;
     t.innerHTML = html;
     clearTimeout(t._h);
-    t._h = setTimeout(() => { if (!S.sel) t.hidden = true; }, 4500);
+    // 11/26 (front-end review K65): a tool still in hand gets its own tip and Cancel back, instead of keeping the miss note
+    t._h = setTimeout(() => { if (!S || S.over) return; if (S.sel) tip(); else t.hidden = true; }, 4500);
   }
 
   function tip() {
     const t = $("#irTip");
     if (!t) return;
+    clearTimeout(t._h);      // 11/26 (front-end review K65 check): a note's pending timer would redraw this tip and take the focus off Cancel
     const k = S.sel;
     if (!k) { t.hidden = true; return; }
     const what = { isolate: bi("EDR shield: now click a device on the map.", "端點防護：在網路圖上點一台裝置。"), cut: bi("Cutter: now click a switch, or the crew's line from the internet.", "剪刀：點一台交換器，或歹徒從網路進來的線。"),
@@ -630,10 +659,11 @@ Games.ir = function (d, main, replay) {
 
   function plugCtl(btn, k) {   // pull the cable out of the back: drag it out to the right
     let p = null;
-    btn.addEventListener("pointerdown", (ev) => { if (ev.button !== 0 || S.hold || S.over) return; ev.preventDefault(); p = { x0: ev.clientX }; CB.cap(btn, ev.pointerId); btn.classList.add("is-pull"); });
+    btn.addEventListener("pointerdown", (ev) => { if (ev.button !== 0 || S.hold || S.over || S.paused) return; ev.preventDefault(); p = { x0: ev.clientX }; CB.cap(btn, ev.pointerId); btn.classList.add("is-pull"); });
     btn.addEventListener("pointermove", (ev) => {
       if (!p) return;
-      const d = Math.max(0, ev.clientX - p.x0);
+      // 11/26 (front-end review K68): screen pixels into the scaled canvas's pixels, so the cable follows the pointer
+      const d = Math.max(0, (ev.clientX - p.x0) / (G.k() || 1));
       btn.style.transform = `translateX(${Math.min(64, d)}px)`;
       if (d > 56) { p = null; btn.classList.remove("is-pull"); use("unplug", k); }
     });
@@ -654,16 +684,20 @@ Games.ir = function (d, main, replay) {
     let t = null;
     const down = (ev) => {
       if (ev && ev.button !== undefined && ev.button !== 0) return;
-      if (t || S.hold || S.over) return;
+      if (t || S.hold || S.over || S.paused) return;      // 11/26 (front-end review K61): not while paused
       if (ev && ev.pointerId !== undefined) { ev.preventDefault(); CB.cap(b, ev.pointerId); }
       b.classList.add("is-holding");
       b.style.setProperty("--hold", `${ms}ms`);
-      t = setTimeout(() => { t = null; b.classList.remove("is-holding"); done(); }, ms);
+      // 11/26 (front-end review K62): the close-up closed (Escape) or was redrawn during the hold: the button is gone, so its
+      // let-go never came and the PC still switched off. Only a button that is still there finishes the hold.
+      t = setTimeout(() => { t = null; b.classList.remove("is-holding"); if (b.isConnected) done(); }, ms);
     };
     const up = () => { if (!t) return; clearTimeout(t); t = null; b.classList.remove("is-holding"); };
     b.addEventListener("pointerdown", down);
     b.addEventListener("pointerup", up);
     b.addEventListener("pointercancel", up);
+    b.addEventListener("lostpointercapture", up);      // 11/26 (front-end review K62): the pointer was taken away = let go
+    b.addEventListener("blur", up);                    // 11/26 (front-end review K62): Tab away during a Space hold = let go
     b.addEventListener("keydown", (ev) => { if ((ev.key === " " || ev.key === "Enter") && !ev.repeat) { ev.preventDefault(); down(); } });
     b.addEventListener("keyup", (ev) => { if (ev.key === " " || ev.key === "Enter") up(); });
   }
@@ -681,26 +715,31 @@ Games.ir = function (d, main, replay) {
     l.innerHTML = msg || (S.dial ? `<b>${esc(S.dial)}</b>` : `<span>${S.soc ? bi("SOC on the line", "資安監控中心在線上") : bi("Yi-Chen is holding on line 1", "易真在一線等")}</span>`);
   }
   function dialKey(k) {
-    if (!S || S.over || S.hold || S.dial.length >= 12) return;
+    if (!S || S.over || S.hold || S.paused || S.dial.length >= 12) return;      // 11/26 (front-end review K61): not while paused
     S.dial += k;
     CB.SFX.play("dtmf");
     lcd();
   }
   function dialOut() {
-    if (!S || S.over || S.hold) return;
+    if (!S || S.over || S.hold || S.paused) return;      // 11/26 (front-end review K61): not while paused
     const num = digitsOf(S.dial);
     if (!num) return;
     S.dial = "";
     CB.SFX.play("ring");
     lcd(`<span>${bi(`Calling ${num}…`, `撥號中 ${num}…`)}</span>`);
     $("#irPhone").classList.add("is-ringing");
-    setTimeout(() => {
-      if (!S || S.over) return;
+    const s0 = S;
+    // 11/26 (front-end review K63): a cut scene or the pause during the ring used to drop the call (use() ignores it while
+    // S.hold is set) and the LCD stayed on "Calling…": the phone keeps ringing until the cut or the pause is over
+    const ring = () => {
+      if (!S || S !== s0 || S.over) return;
+      if (S.hold || S.paused) { setTimeout(ring, 300); return; }
       $("#irPhone").classList.remove("is-ringing");
       if (num !== SOC_NUM) { lcd(`<span>${bi("Not in service. The SOC is on ext. 2199.", "空號。資安監控中心是分機 2199。")}</span>`); return; }
       if (S.soc) { say(bi(story.lines.soc_again.en, story.lines.soc_again.zh), "is-good"); lcd(); return; }
       use("soc");
-    }, reduceMotion ? 150 : 1400);
+    };
+    setTimeout(ring, reduceMotion ? 150 : 1400);
   }
 
   function sweep() {      // the SOC's view arrives: a radar sweep over the map
@@ -734,7 +773,13 @@ Games.ir = function (d, main, replay) {
     box.innerHTML = `<h3>${bi("The SOC's tools", "資安監控中心的工具")}${off ? `<small>${CB.ICON.lock}${bi("after the SOC call", "打給資安監控中心之後")}</small>` : ""}</h3>
       <div class="ir-tool-row">${tool("isolate", SVG.shield, "EDR shield", "端點防護", S.uses.isolate, bi("onto a device", "放到裝置上"))}
         ${tool("cut", SVG.cutter, "Cutter", "剪刀", S.uses.cut, bi("a switch, or the crew's line", "交換器，或歹徒的線"))}</div>`;
-    for (const t of $$(".ir-tool", box)) draggable(t, t.dataset.k, { tap: () => pick(t.dataset.k), key: () => { pick(t.dataset.k); toTarget(); } });
+    // 11/26 (front-end review K70): Enter on a picked tool puts it back; the redraw took the focused tool away, so the keyboard
+    // stays on the new copy of that tool instead of falling to the page
+    for (const t of $$(".ir-tool", box)) draggable(t, t.dataset.k, { tap: () => pick(t.dataset.k), key: () => {
+      pick(t.dataset.k);
+      if (S.sel) toTarget();
+      else { const b = $(`.ir-tool[data-k="${t.dataset.k}"]`, $("#irTools")); if (b && b.tabIndex >= 0) b.focus({ preventScroll: true }); }
+    } });
   }
 
   function hand() {
@@ -769,7 +814,7 @@ Games.ir = function (d, main, replay) {
 
   /* The traps: the procedure's don'ts. */
   function trap(c, target) {
-    if (!S || S.over || S.hold) return;
+    if (!S || S.over || S.hold || S.paused) return;      // 11/26 (front-end review K61): not while paused
     S.sel = null;
     S.played[c.k] = (S.played[c.k] || 0) + 1;
     if (c.k === "power_off" && target) S.nodes[target].state = "off";
@@ -785,7 +830,7 @@ Games.ir = function (d, main, replay) {
   /* The good moves: the procedure's steps. */
   function use(k, target) {
     const c = CARD[k];
-    if (!c || !S || S.over || S.hold) return;
+    if (!c || !S || S.over || S.hold || S.paused) return;      // 11/26 (front-end review K61): not while paused
     if (locked(c)) return tipNote(`${CB.ICON.lock} ${needsText(c)}`);
     if (usedUp(c)) return;
     S.sel = null;
@@ -860,8 +905,10 @@ Games.ir = function (d, main, replay) {
     }
     if (k === "isolate" || k === "cut" || k === "disable") markStep({ step: 3 });
     else markStep(c);
+    hand(); tools(); tip();
+    // 11/26 (front-end review, ir check): after tip(), which hid the note at once when no tool is in hand
     if (step && k !== "isolate" && k !== "cut") cardNote(c, step);
-    hand(); tools(); tip(); drawMap(); status();
+    drawMap(); status();
     if (S.open) drawClose();
     if (k === "review") endShift();
   }
@@ -872,7 +919,7 @@ Games.ir = function (d, main, replay) {
     t.hidden = false;
     t.innerHTML = `<b>${bi(`Step ${step.order}`, `第 ${step.order} 步`)}</b> ${bi(step.why_en, step.why_zh)}`;
     clearTimeout(t._h);
-    t._h = setTimeout(() => { if (!S.sel) { t.hidden = true; } }, 6000);
+    t._h = setTimeout(() => { if (!S || S.over) return; if (S.sel) tip(); else t.hidden = true; }, 6000);      // 11/26 (front-end review K65): as in tipNote
   }
 
   /* ------------------------------------------------------------------ the status column */
@@ -946,7 +993,9 @@ Games.ir = function (d, main, replay) {
       <div class="rs-sum-r"><h3 class="ir-sum-h">${bi(`The procedure: “${PROC.name_en}”`, `流程：「${PROC.name_zh}」`)}<small>${bi("From the knowledge graph. Green: played in order (no later step before it).", "出自知識圖。綠色是照順序出的（前面沒有出過更後面的步驟）。")}</small></h3>
       <ol class="ir-steps">${order}</ol></div></section>`;
     G.meter(`<div class="rx-hud"><div class="rx-hud-clock"><b>${esc(clockAt(S.clock))}</b><span>${bi("night", "夜裡")}</span></div><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
-    $(".rs-start", st.body).addEventListener("click", async () => {
+    $(".rs-start", st.body).addEventListener("click", async (ev) => {
+      // 11/26 (front-end review C01): Enter again during the time skip doesn't start a second skip and a second board
+      const b = ev.currentTarget; if (b.disabled) return; b.disabled = true;
       await CB.timeskip(st, { from: clockAt(S.clock), to: "16:00", place_en: "The review at the lighthouse", place_zh: "燈塔的檢討會", day_en: "Sunday afternoon", day_zh: "週日下午" });
       startBoard();
     });
@@ -963,7 +1012,10 @@ Games.ir = function (d, main, replay) {
       items: S.losses.map((x) => `<li>${bi(x.hit_en, x.hit_zh)}</li>`).join(""),
       text_en: "Try the night again: unplug, don't switch off; call 2199 first so you can see; stop the account, then contain, then restore.",
       text_zh: "再試一次：拔網路線不要關機；先打 2199 才看得到全貌；先停帳號、再圍堵、最後才還原。",
-      pic: `<img class="rs-ransom" src="/lakeside/static/games/img/ransom.png" alt="Ransom note 勒索畫面">`, again: () => Games.ir(d, main, true) });
+      // 11/26 (front-end review K66): the POS note only when the POS back office went; otherwise the note from Yi-Chen's PC
+      pic: S.nodes.pos_bo && S.nodes.pos_bo.lost ? `<img class="rs-ransom" src="/lakeside/static/games/img/ransom.png" alt="Ransom note on the restaurant POS 收銀機上的勒索畫面">`
+        : nightNote(ransomLeft(), "The ransom note on the night audit PC 夜間稽核電腦上的勒索畫面", "rs-ransom"),
+      again: () => Games.ir(d, main, true) });
     G.meter(`<div class="rx-hud"><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
   }
 
@@ -1014,7 +1066,7 @@ Games.ir = function (d, main, replay) {
         <div class="ir-row2">
           <div class="cb-doc cb-log ir-backups" id="irBackupsDoc"><i class="cb-pin" aria-hidden="true"></i><p class="cb-doc-title">${bi(L.title_en, L.title_zh)}</p>
             <ol class="cb-log-rows" id="irBackups">${rows.map((r) => `<li><button type="button" class="cb-log-row ir-brow is-${esc(r.kind)}" data-k="${esc(r.k)}"><time>${esc(r.t)}</time><span class="cb-log-what">${bi(r.en, r.zh)}</span></button></li>`).join("")}</ol></div>
-          <div class="ir-photo" style="--r:1.6deg"><i class="cb-pin" aria-hidden="true"></i><img src="/lakeside/static/games/img/ransom.png" alt="The ransom note, photographed by Yi-Chen at 03:48 易真 03:48 拍下的勒索畫面"><p>${bi("Photo: Yi-Chen, 03:48", "照片：易真，03:48")}</p></div>
+          <div class="ir-photo" style="--r:1.6deg"><i class="cb-pin" aria-hidden="true"></i>${nightNote("59:00", "The ransom note, photographed by Yi-Chen at 03:48 易真 03:48 拍下的勒索畫面")}<!-- 11/26 (front-end review K66) --><p>${bi("Photo: Yi-Chen, 03:48", "照片：易真，03:48")}</p></div>
         </div></div>
       <div class="cb-side">
         <div class="cb-crew is-known" id="cbCrew"><i class="cb-pin" aria-hidden="true"></i>
@@ -1099,14 +1151,15 @@ Games.ir = function (d, main, replay) {
         p.moved = true;
         const g = p.card.cloneNode(true);
         g.classList.add("ir-cc-ghost");
-        g.style.width = `${p.w}px`;
+        g.style.width = `${p.w / (G.k() || 1)}px`;      // 11/26 (front-end review K69): canvas width, drawn at the canvas's scale
+        g.style.transformOrigin = "0 0";
         document.body.appendChild(g);
         p.ghost = g;
         p.card.classList.add("is-lifted");
         CB.SFX.play("paper");
       }
       if (!p.ghost) return;
-      p.ghost.style.transform = `translate(${ev.clientX - p.dx}px, ${ev.clientY - p.dy}px) rotate(-2deg)`;
+      p.ghost.style.transform = `translate(${ev.clientX - p.dx}px, ${ev.clientY - p.dy}px) rotate(-2deg) scale(${G.k() || 1})`;      // 11/26 (front-end review K69)
       const e = document.elementFromPoint(ev.clientX, ev.clientY), slot = e && e.closest(".ir-slot");
       for (const s of $$(".ir-slot.is-over", box)) if (s !== slot) s.classList.remove("is-over");
       if (slot) slot.classList.add("is-over");
@@ -1221,9 +1274,9 @@ Games.ir = function (d, main, replay) {
     }
     const o = q.options.find((x) => x.k === k);
     B.tried[k] = true;
+    renderQs();          // 11/26 (front-end review K46): re-render first, or the new card replaces the shaking one
     CB.nope(B);
     CB.cbSay(bi(o.why_en || "", o.why_zh || ""), "is-no");
-    renderQs();
   }
 
   function backupRow(k, btn) {
@@ -1262,6 +1315,19 @@ Games.ir = function (d, main, replay) {
     if (B.solved.every(Boolean)) CB.addClose(wrapUp);
     // 11/22: solved with a button the redraw took away (the chain's "That's the order"): on to the next question's control
     CB.refocus("#cbQ #cbSpool, #cbQ .cb-opt:not([disabled]), #cbQ #irFlag, #cbQs .cb-close");
+    showNext();
+  }
+
+  // 11/26 (front-end review K64): the next question (Q3's timeline and its pin button) opened below the bottom of the
+  // questions column, with the keyboard on a flag nobody could see: scroll the column (only the column, not the stage) so
+  // the open question, or the close button at the end, is in view, its top first if it is taller than the column
+  function showNext() {
+    const cur = $("#cbQ") || $("#cbQs .cb-close"), col = cur && cur.closest(".cb-right");
+    if (!col || col.scrollHeight <= col.clientHeight) return;
+    const k = G.k() || 1, r = cur.getBoundingClientRect(), c = col.getBoundingClientRect();
+    const above = (r.top - c.top) / k - 8, below = (r.bottom - c.bottom) / k + 8;
+    const by = above < 0 ? above : below > 0 ? Math.min(above, below) : 0;
+    if (by) col.scrollBy({ top: by, behavior: reduceMotion ? "auto" : "smooth" });
   }
 
   function fact(html) { $("#cbCrewFacts").insertAdjacentHTML("beforeend", `<li class="is-new">${html}</li>`); }

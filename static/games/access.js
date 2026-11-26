@@ -128,9 +128,19 @@ Games.access = function (d, main, replay) {
   function togglePause(force) {
     if (!S || S.over) return;
     S.paused = typeof force === "boolean" ? force : !S.paused;
+    // 11/26 (front-end review K40): the desk behind the pause layer is inert, so Tab can't reach the stamps, keypad or hint;
+    // a stamp still in your hand goes back on the rack. The pause layer is a sibling of .ah-play, so Resume stays reachable.
+    if (S.paused) putBack(false);
     S.pause.set(S.paused);
+    // 11/26 (front-end review check K40): after pauseLayer.set, so the layer still sees the focused control (Resume gives it back)
+    const play = $(".ah-play"); if (play) play.inert = S.paused;
     H.paused(S.paused);
   }
+
+  // 11/26 (front-end review K41): a redraw, a removed row or a disabled button took the keyboard: carry on at sel.
+  // Nothing moves while the focus is still on a live control.
+  const focusLost = () => { const a = document.activeElement; return !a || a === document.body || !a.isConnected || !!a.disabled; };
+  const refocus = (sel) => { if (!focusLost()) return; const n = $(sel); if (n) n.focus({ preventScroll: true }); };
 
   const say = (html, mood) => CB.say($("#ahSay"), html, mood);
 
@@ -163,7 +173,7 @@ Games.access = function (d, main, replay) {
           bar.classList.toggle("is-hot", hot);
           $("i", bar).style.width = `${pct}%`;
           const s = Math.max(0, Math.ceil(f.left)), mmss = `${Math.floor(s / 60)}:${CB.pad2(s % 60)}`;
-          $("span", bar).innerHTML = S.calling === r.id ? bi(`${claimed(r)} is on hold while you call`, "回撥中，對方在等") : bi(`${claimed(r)} is waiting · ${mmss}`, `${claimed(r)}在等・${mmss}`);
+          $("span", bar).innerHTML = S.calling === r.id ? bi(`${claimed(r)} is on hold while you call`, "回撥中，對方在等") : bi(`${claimed(r)} is waiting · ${mmss}`, `${who(r).name_zh || claimed(r)}在等・${mmss}`);   // 11/26 (front-end review K44): Chinese name in the Chinese half
         }
       }
     }
@@ -236,7 +246,8 @@ Games.access = function (d, main, replay) {
     const r = byId[id];
     const fresh = S.open !== id;
     S.open = id;
-    if (fresh && S.heard && S.heard.id !== id) S.heard = {};
+    // 11/26 (front-end review K45): the call-back answer is no longer cleared here; it carries the id of the form it was
+    // about (dial) and phone() shows it only on that form, so it comes back when you come back to that form
     for (const q of $$(".ah-q-item, .ah-done-item")) q.classList.toggle("is-current", q.dataset.id === id);
     const done = !!S.answers[id];
     $("#ahPaper").innerHTML = `<div class="ah-paper${done ? " is-done" : " is-arriving"}">${formHTML(r)}
@@ -255,11 +266,12 @@ Games.access = function (d, main, replay) {
   function stampHands() {
     for (const b of $$(".ah-stamp")) {
       b.addEventListener("pointerdown", (ev) => { if (ev.button !== 0 || b.disabled) return; ev.preventDefault(); pickUp(b.dataset.lv, ev.clientX, ev.clientY); });
-      b.addEventListener("keydown", (ev) => { if ((ev.key === "Enter" || ev.key === " ") && !b.disabled && S.open && !S.answers[S.open]) { ev.preventDefault(); decide(byId[S.open], b.dataset.lv, "stamp"); } });
+      // 11/26 (front-end review K40): no stamping while paused
+      b.addEventListener("keydown", (ev) => { if ((ev.key === "Enter" || ev.key === " ") && !b.disabled && !S.paused && S.open && !S.answers[S.open]) { ev.preventDefault(); decide(byId[S.open], b.dataset.lv, "stamp"); } });
     }
   }
   function pickUp(lv, x, y) {
-    if (!S.open || S.answers[S.open] || S.over || S.hold) return;
+    if (!S.open || S.answers[S.open] || S.over || S.hold || S.paused) return;   // 11/26 (front-end review K40): || S.paused
     putBack(false);
     const g = el("div", `ah-held is-${lv}`, `<span class="ah-held-knob"></span><span class="ah-held-face">${STAMP[lv][0]}<small>${STAMP[lv][1]}</small></span>`);
     g.setAttribute("aria-hidden", "true");
@@ -361,7 +373,8 @@ Games.access = function (d, main, replay) {
     $("#ahDone").prepend(li);
     countQueue();
     const wasOpen = S.open === r.id;
-    if (S.calling === r.id) S.calling = false;
+    // 11/26 (front-end review K39): S.calling is not cleared here any more. Only dial() ends a call; clearing it while the
+    // call still rang put the keypad back over "Calling" and let a second call start.
     if (wasOpen) {
       inkMark(r, true);
       outcome(r, true);
@@ -369,8 +382,10 @@ Games.access = function (d, main, replay) {
       const pat = $("#ahPat"); if (pat) pat.remove();
       phone();
       hintBtn();
+      refocus(`.ah-done-item[data-id="${r.id}"]`);   // 11/26 (front-end review K41): the stamp you pressed is disabled now
     } else {   // it timed out while you were on another form: a label floats up from the done list
       st.float($(`.ah-done-item[data-id="${r.id}"]`), `${bi(`${claimed(r)}: approved by someone else`, "別人照申請批了")}`, "is-miss");
+      refocus("#ahQueue .ah-q-item, #ahStamps .ah-stamp:not(:disabled)");   // 11/26 (front-end review K41): its queue row is gone
     }
     // the mentor's line. 11/23 review: a timeout gets the timeout line even when it let the crew in; the blame lines are
     // only for stamps you made (someone else approved it as asked)
@@ -402,7 +417,12 @@ Games.access = function (d, main, replay) {
     await wait(1900);
     if (S.over || S.open !== r.id) return;
     const next = pending().sort((a, b) => S.fuse[a.id].left - S.fuse[b.id].left)[0];
-    if (next) openReq(next.id);
+    if (next) {
+      openReq(next.id);
+      // 11/26 (front-end review K41): the keyboard waited on the done row of the form you stamped; hand it to the stamps
+      const a = document.activeElement;
+      if (focusLost() || (a && a.matches && a.matches(`.ah-done-item[data-id="${r.id}"]`))) { const s = $("#ahStamps .ah-stamp:not(:disabled)"); if (s) s.focus({ preventScroll: true }); }
+    }
   }
 
   function outcome(r, animate) {
@@ -470,28 +490,45 @@ Games.access = function (d, main, replay) {
     if (!box || !S) return;
     if (S.calling) return;
     const recent = S.arrived.map((id) => byId[id]).filter((q) => q.via === "phone");
+    // 11/26 (front-end review K41): the phone is rebuilt on every key, arrival and form switch. Remember which control had
+    // the keyboard (or the Call button, if a call just took it) and how far the HR directory was scrolled, and put them back.
+    const a = document.activeElement, mine = !!a && a !== box && box.contains(a);
+    const fk = mine ? (a.dataset.k ? `[data-k="${a.dataset.k}"]` : a.dataset.num ? `.ah-recent [data-num="${a.dataset.num}"]` : a.id ? `#${a.id}` : a.matches("summary") ? ".ah-dir summary" : null)
+      : S.phoneFocus && focusLost() ? S.phoneFocus : null;
+    S.phoneFocus = null;
+    keepDirTop();
+    // 11/26 (front-end review K45): a call-back answer shows only on the form it was about
+    const heard = S.heard.text && (S.heard.id || null) === (S.open || null);
     box.innerHTML = `<p class="ah-phone-top"><b>${bi("Desk phone", "桌上電話")}</b><em>${bi(`${S.calls} call${S.calls === 1 ? "" : "s"} left`, `還能打 ${S.calls} 通`)}</em></p>
       <div class="ah-lcd"><span id="ahNum">${S.dial ? numHTML(shown(S.dial)) : `<i>${bi("dial a number", "撥號碼")}</i>`}</span><button type="button" class="ah-del" data-k="del" aria-label="Delete">⌫</button></div>
       <div class="ah-keys" id="ahKeys">${["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"].map((k) => `<button type="button" data-k="${k}">${k}</button>`).join("")}</div>
       <button type="button" class="ah-call" id="ahCall"${S.calls <= 0 || !S.dial ? " disabled" : ""}>${CB.ICON.phone}${bi("Call", "撥出")}</button>
-      ${S.heard.text ? `<div class="ah-heard ${S.heard.cls || ""}">${S.heard.face || ""}<p>${S.heard.text}</p></div>` : ""}
+      ${heard ? `<div class="ah-heard ${S.heard.cls || ""}">${S.heard.face || ""}<p>${S.heard.text}</p></div>` : ""}
       <div class="ah-book"><details class="ah-dir"${S.dirOpen ? " open" : ""}><summary class="ah-book-h">${bi("HR directory · look up a number", "人資電話簿・查號碼")}</summary>
         <ul>${BOOK.map(([k, q]) => `<li><b>${esc(q.name)}</b><span>${bi(nm(q.role).name_en, nm(q.role).name_zh)}</span><i>${numHTML(q.number)}</i></li>`).join("")}</ul></details>
         ${recent.length ? `<p class="ah-book-h">${bi("Recent calls · tap to call back", "最近來電・點一下回撥")}</p><ul class="ah-recent">${recent.map((q) => `<li><button type="button" data-num="${esc(digits(q.from))}">${CB.ICON.phone}<b>${numHTML(q.from)}</b><span>${esc(q.time)}</span></button></li>`).join("")}</ul>` : ""}</div>`;
     $("#ahKeys").addEventListener("click", (ev) => { const b = ev.target.closest("[data-k]"); if (b) key(b.dataset.k); });
-    $(".ah-dir", box).addEventListener("toggle", (ev) => { S.dirOpen = ev.target.open; if (S.dirOpen) CB.SFX.play("paper"); });
+    // 11/26 (front-end review K41): a rebuilt <details open> fires toggle by itself; only a real open or close counts (no paper sound each time)
+    $(".ah-dir", box).addEventListener("toggle", (ev) => { if (ev.target.open === !!S.dirOpen) return; S.dirOpen = ev.target.open; if (S.dirOpen) CB.SFX.play("paper"); });
     $(".ah-del", box).addEventListener("click", () => key("del"));
     $("#ahCall").addEventListener("click", () => dial(S.dial));
     for (const b of $$(".ah-recent [data-num]", box)) b.addEventListener("click", () => { S.dial = b.dataset.num; CB.SFX.play("tap"); phone(); });
+    const ul = $(".ah-dir ul", box); if (ul && S.dirTop) ul.scrollTop = S.dirTop;
+    if (fk) { const n = $(fk, box), k1 = $('#ahKeys [data-k="1"]', box), to = n && !n.disabled ? n : k1; if (to) to.focus({ preventScroll: true }); }
   }
+  // 11/26 (front-end review K41): how far the HR directory list is scrolled, kept across rebuilds of the phone
+  function keepDirTop() { const dd = $(".ah-dir", $("#ahPhone")), ul = dd && $("ul", dd); if (ul && dd.open) S.dirTop = ul.scrollTop; }
 
   function key(k) {
-    if (S.calling) return;
+    if (S.calling || S.paused) return;   // 11/26 (front-end review K40): || S.paused
     if (k === "del") S.dial = S.dial.slice(0, -1);
     else if (/^\d$/.test(k) && S.dial.length < 14) S.dial += k;
     CB.SFX.play("tick");
     phone();
   }
+
+  // 11/26 (front-end review K47): calling the same person again about the same form adds no second note
+  const addNote = (n) => { if (!S.notes.some((o) => o.id === n.id && o.who === n.who && o.fake === n.fake)) S.notes.push(n); };
 
   /* who answers the number you dialled */
   function answerer(d, r) {
@@ -505,13 +542,16 @@ Games.access = function (d, main, replay) {
   // 11/22 review: the number is "num"; it was "d", which hid the game data d (d.requests in the "other" branch threw,
   // and the phone stayed on "Calling")
   async function dial(num) {
-    if (!num || S.calls <= 0 || S.calling) return;
+    if (!num || S.calls <= 0 || S.calling || S.paused) return;   // 11/26 (front-end review K40): || S.paused
     const r = S.open && byId[S.open];
     S.calls -= 1;
     S.calling = r ? r.id : "x";
     S.heard = {};
     CB.SFX.play("ring");
     const box = $("#ahPhone");
+    // 11/26 (front-end review K41): the "Calling" screen takes the Call button away; phone() gives the keyboard back after the call
+    S.phoneFocus = box.contains(document.activeElement) ? "#ahCall" : null;
+    keepDirTop();
     box.innerHTML = `<p class="ah-phone-top"><b>${bi("Calling", "撥號中")}</b><em>${numHTML(shown(num))}</em></p><div class="rs-ring" aria-hidden="true"><i></i><i></i><i></i></div>`;
     await wait(1500);
     if (!S || S.over) return;
@@ -523,7 +563,7 @@ Games.access = function (d, main, replay) {
       const q = a.req, p = who(q);
       S.verified[q.id] = S.verified[q.id] || "fake";
       S.heard = { cls: "is-ok", face: `<span class="ah-av ah-av-phone ah-callee-av" aria-hidden="true">${CB.ICON.phone}</span>`, text: bi(q.fake_confirm_en || "Yes, it's me.", q.fake_confirm_zh || "對，是我。") };
-      S.notes.push({ id: q.id, who: `${p.name}?`, who_zh: p.name_zh, en: q.fake_confirm_en || "Yes, it's me.", zh: q.fake_confirm_zh || "對，是我。", fake: false, via: shown(num) });
+      addNote({ id: q.id, who: `${p.name}?`, who_zh: p.name_zh, en: q.fake_confirm_en || "Yes, it's me.", zh: q.fake_confirm_zh || "對，是我。", fake: false, via: shown(num) });   // 11/26 (front-end review K47): one note per call-back, however often it is called
     } else if (a.kind === "real") {
       const p = people[a.key];
       if (r.via === "walk") {
@@ -533,7 +573,7 @@ Games.access = function (d, main, replay) {
         if (fresh) S.verified[r.id] = r.impostor ? "exposed" : "ok";
         const en = r.callback_en || "Yes, that was me. Thanks for checking.", zh = r.callback_zh || "對，是我，謝謝你確認。";
         S.heard = { cls: r.impostor ? "is-fake" : "is-ok", face: face(a.key, r.impostor ? "shocked" : "smile"), text: `<b>${esc(p.name)}</b> “${esc(en)}”<span lang="zh-Hant">${esc(zh)}</span>` };
-        S.notes.push({ id: r.id, who: p.name, who_zh: p.name_zh, en, zh, fake: !!r.impostor });
+        addNote({ id: r.id, who: p.name, who_zh: p.name_zh, en, zh, fake: !!r.impostor });   // 11/26 (front-end review K47)
         if (!fresh) say(r.impostor ? bi(`That wasn't ${p.name}. I'll tell the SOC.`, `那不是${p.name_zh}本人，我來通知資安監控中心。`) : bi(`${p.name} confirms it.`, `${p.name_zh}確認是本人。`), r.impostor ? "is-no" : "");
         else if (r.impostor) { CB.SFX.play("alarm"); say(bi(`That wasn't ${p.name}. Stamp it, and I'll tell the SOC.`, `那不是${p.name_zh}本人。蓋章吧，我來通知資安監控中心。`), "is-no"); st.toast(null, bi(`Call-back: not ${p.name}`, `回撥結果：不是${p.name_zh}本人`)); }
         else say(bi(`${p.name} confirms it. Now: what does the job need?`, `${p.name_zh}確認是本人。接著看工作需要什麼。`));
@@ -546,6 +586,7 @@ Games.access = function (d, main, replay) {
     } else {
       S.heard = { cls: "is-none", text: bi("“The number you dialled is not in service.”", "「您撥的號碼是空號。」") };
     }
+    S.heard.id = r ? r.id : null;   // 11/26 (front-end review K45): the form this call was about (phone() shows the answer there)
     if (S.open && S.answers[S.open] === undefined && r && S.open === r.id && S.verified[r.id]) openReq(r.id); else phone();
   }
 
@@ -567,7 +608,7 @@ Games.access = function (d, main, replay) {
 
   function useHint() {
     const r = S.open && byId[S.open];
-    if (!r || S.hints <= 0 || S.answers[r.id]) return;
+    if (!r || S.hints <= 0 || S.answers[r.id] || S.paused) return;   // 11/26 (front-end review K40): || S.paused
     S.hints -= 1; S.hinted[r.id] = true;
     const p = who(r);
     if (r.impostor) say(bi(`Hmm, that ${r.via === "email" ? "address belongs to an account the crew stole tonight" : `number isn't ${p.name}'s. HR has ${p.number}`}. Don't give it anything you can't verify.`,
@@ -575,6 +616,7 @@ Games.access = function (d, main, replay) {
     else say(bi(`The policy for ${nm(p.role).name_en} on ${nm(r.data).name_en}: ${CB.LV[r.level].en}.${r.note_en ? ` ${r.note_en}` : ""}`,
       `規定裡${nm(p.role).name_zh}對${nm(r.data).name_zh}是「${CB.LV[r.level].zh}」。${r.note_zh || ""}`), "is-good");
     hintBtn();
+    refocus("#ahStamps .ah-stamp:not(:disabled)");   // 11/26 (front-end review K41): the hint button you pressed is disabled now
   }
 
   /* ------------------------------------------------------------------ the chart on the wall (part of the policy) */
@@ -582,9 +624,21 @@ Games.access = function (d, main, replay) {
     return d.wall_roles.map((rk) => `<span>${d.wall_data.map((dk) => { const c = d.wall.find((x) => x.role === rk && x.data === dk); return `<i class="is-${c ? c.level : "none"}"></i>`; }).join("")}</span>`).join("");
   }
   function wallZoom() {
+    if (!S || S.over || S.paused || S.wall) return;   // 11/26 (front-end review K40, K43): not while paused, and one chart at a time
     CB.SFX.play("paper");
-    const { box } = st.overlay("ah-wallzoom", `<div class="ah-wallzoom-in"><button type="button" class="rs-x ah-wallzoom-x" data-close aria-label="Close">×</button>${wallHTML()}
+    const { box, close } = st.overlay("ah-wallzoom", `<div class="ah-wallzoom-in"><button type="button" class="rs-x ah-wallzoom-x" data-close aria-label="Close">×</button>${wallHTML()}
       <p class="ah-wallzoom-note">${bi("Only part of the policy is on the wall. For the rest, think about what the job needs.", "牆上只有一部分的規定，其他的要想這份工作需要什麼。")}</p></div>`, "The access chart on the wall");
+    // 11/26 (front-end review K43): keep the close handle, so the end of the shift can close the chart (its Escape listener
+    // went with it); however the chart closes, the keyboard goes back to the wall chart button if it lost its place
+    const s = S;
+    s.wall = close;
+    const mo = new MutationObserver(() => {
+      if (box.isConnected) return;
+      mo.disconnect();
+      if (s.wall === close) s.wall = null;
+      if (s === S && !s.over) refocus("#ahWallBtn");
+    });
+    mo.observe(box.parentNode, { childList: true });
     $("[data-close]", box).focus({ preventScroll: true });
   }
   function wallHTML() {
@@ -606,6 +660,7 @@ Games.access = function (d, main, replay) {
     S.over = true;
     loop.stop();
     putBack(false);      // 11/23: nothing left in your hand when the desk closes
+    if (S.wall) S.wall();   // 11/26 (front-end review K43): close the wall chart properly, so its Escape listener goes too
     const from = S.clock;
     for (let k = 1; k <= 10; k++) { S.clock = from + ((TEND - from) * k) / 10; H.clock(clockAt(S.clock)); await wait(70); }
     await wait(400);
@@ -629,7 +684,9 @@ Games.access = function (d, main, replay) {
         `謝謝你幫忙顧櫃台。俊豪 ${BOARD.time} 會把今晚的存取紀錄帶到牆上那張權限表前。${S.notes.length ? `回撥的紀錄記得帶著，有 ${S.notes.length} 筆。` : ""}`))}
       <button type="button" class="btn rs-start">${bi("Go to the wall chart", "到權限表前")}</button></section>`;
     G.meter(`<div class="rx-hud"><div class="rx-hud-clock"><b>${esc(story.end)}</b><span>${bi("Help Desk", "服務台")}</span></div><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
-    $(".rs-start", st.body).addEventListener("click", async () => {
+    $(".rs-start", st.body).addEventListener("click", async (ev) => {
+      // 11/26 (front-end review C01): Enter again during the time skip doesn't start a second skip and a second board
+      const b = ev.currentTarget; if (b.disabled) return; b.disabled = true;
       await CB.timeskip(st, { from: story.end, to: BOARD.time, place_en: "The access chart on the Help Desk wall", place_zh: "服務台牆上的權限表", day_en: "Awards Night", day_zh: "頒獎晚會" });
       startBoard();
     });
@@ -649,6 +706,7 @@ Games.access = function (d, main, replay) {
     S.over = true;
     loop.stop();
     putBack(false);
+    if (S.wall) S.wall();   // 11/26 (front-end review K43): as in endShift
     st.$rs.classList.remove("is-paused");
     st.scene("ah_night", 0.2);
     const items = S.losses.map((r) => `<li>${bi((r.damage || {}).hit_en || "", (r.damage || {}).hit_zh || "")}</li>`).join("");
@@ -855,13 +913,19 @@ Games.access = function (d, main, replay) {
         <p class="ah-pol-k">${bi("Policy", "政策")}</p><p class="ah-pol-t">Who May Use What<span lang="zh-Hant">誰能用什麼</span></p>
         <p class="ah-pol-d">${bi("The access the knowledge graph gives each role (CAN_ACCESS).", "知識圖裡每個職務能存取什麼（CAN_ACCESS）。")}</p>
         <div class="cb-btns"><button type="button" data-act="flip">${bi("Look at the policy", "看政策")}</button></div></div>
-      <div class="cb-face cb-back"><i class="cb-pin" aria-hidden="true"></i><div class="ah-pol-grid">${tableHTML("policy")}</div>
+      <div class="cb-face cb-back" inert><i class="cb-pin" aria-hidden="true"></i><div class="ah-pol-grid">${tableHTML("policy")}</div>
         <button type="button" class="cb-flip" data-act="flip">${bi("Fold it up", "收起來")}</button></div></div></div>`;
   }
 
   function flipPolicy() {
-    B.flipped = !$("#ahPolicy").classList.contains("is-flipped");
-    $("#ahPolicy").classList.toggle("is-flipped", B.flipped);
+    // 11/26 (front-end review K42): as phish.js flip(): the face turned away is inert (Tab skips its button), and a button
+    // that had the keyboard hands it to the other face. "had" is read before inert blurs it.
+    const card = $("#ahPolicy"), a = document.activeElement, had = a !== card && card.contains(a);
+    B.flipped = !card.classList.contains("is-flipped");
+    card.classList.toggle("is-flipped", B.flipped);
+    $(".cb-front", card).toggleAttribute("inert", B.flipped);
+    $(".cb-back", card).toggleAttribute("inert", !B.flipped);
+    if (had) $(`${B.flipped ? ".cb-back" : ".cb-front"} [data-act="flip"]`, card).focus({ preventScroll: true });
     setTimeout(() => CB.drawStrings(B.strings), reduceMotion ? 0 : 650);
   }
 
@@ -970,9 +1034,10 @@ Games.access = function (d, main, replay) {
     B.running = false;
     $("#cbCork").classList.remove("is-replay");
     if (!tooOpen && !tooTight) return solve(q);
+    // 11/26 (front-end review K46): re-render first, then shake the new card (the shaken one was replaced at once before)
+    renderQs();
     CB.nope(B);
     CB.cbSay(tooTight ? bi(q.little_en, q.little_zh) : bi(q.open_en, q.open_zh), "is-no");
-    renderQs();
   }
 
   function solve(q) {

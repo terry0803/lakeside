@@ -67,7 +67,9 @@ const RM = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduc
 function enter(node, ms = 1100) {
   if (!node) return node;
   node.classList.add("is-in");
-  setTimeout(() => node.classList.remove("is-in"), RM.matches ? 0 : ms);
+  // 11/26 (front-end review K09): one timer per node, so an entrance played again soon is not cut short by the last one
+  clearTimeout(node._enterT);
+  node._enterT = setTimeout(() => node.classList.remove("is-in"), RM.matches ? 0 : ms);
   return node;
 }
 function bump(node) {
@@ -116,6 +118,10 @@ const PURPOSE_ZH = {
   "top hits and their neighbours": "最接近的結果和相鄰節點", "BM25 full-text search": "BM25 全文檢索", "bge-m3 vector search": "bge-m3 向量搜尋",
   "BM25 search over findings": "用 BM25 搜尋漏洞", "vector search over findings": "用向量搜尋漏洞", "phishing warning signs": "釣魚警訊", "what to do next": "接下來怎麼做",
   "candidate findings": "候選漏洞", "number of weaknesses": "漏洞數量", "where the clue for this lock is": "這道鎖的線索在哪裡",
+  // 11/26 (front-end review K04): purposes the server sends that had no Chinese (tools.py inventory/next_step, feedback.py)
+  "systems: critical": "關鍵系統", "systems: cloud": "雲端與外部服務", "systems: iot": "物聯網與 OT 設備",
+  "all Confidential and Restricted data": "所有機密和限閱資料", "rooms of the cases not played yet": "還沒玩的案件在哪些房間",
+  "weaknesses hidden in the current room": "這個房間裡藏的漏洞", "words for the places of the weaknesses": "漏洞所在地點的名稱",
 };
 const HOW_ZH = {
   "button": "按鈕", "looks like a pasted email (rule)": "看起來是貼上的信（規則判斷）", "model": "模型", "model output was not JSON, fell back to search": "模型輸出不是 JSON，改用搜尋",
@@ -124,9 +130,22 @@ const HOW_ZH = {
   "same name, concept preferred for 'explain'": "同名時說明優先用概念", "(the pasted message)": "（貼上的信）",
   "rules + model, evidence checked against the text": "規則加模型，引文已和原文核對", "hybrid search over findings + model judgement": "混合搜尋漏洞再由模型判斷",
   "the report does not say what was seen (rule)": "回報沒有說看到什麼（規則判斷）",
+  // 11/26 (front-end review K04): agent.py code-gate rule, feedback.py with the model down
+  "asked how to get past a code gate (rule)": "問怎麼通過密碼門（規則判斷）", "rules only (the model is not answering)": "只用規則（模型沒有回應）",
 };
 const zhOf = (map, s) => { if (!s) return ""; if (map[s]) return map[s]; const m = /^redirect:(\w+)$/.exec(s); return m && LABEL[m[1]] ? `轉到${LABEL[m[1]][1]}` : ""; };
 const LTm = (map, s) => LT(s || "", zhOf(map, s));
+// 11/26 (front-end review K04): the "redirected" line of the trace (tools.py dispatch_entity and data_access, feedback.py)
+const REDIRECT_ZH = {
+  "data_access → system users (the target is a system)": "資料權限 → 系統使用者（目標是系統）",
+  "report_finding -> procedure (no audit finding matched; this sounds like an incident)": "回報漏洞 → 處理流程（清單上沒有這個漏洞，聽起來像資安事件）",
+};
+const redirectZh = (s) => {
+  if (!s) return "";
+  if (REDIRECT_ZH[s]) return REDIRECT_ZH[s];
+  const m = /^→ (\w+) \(the best match is a (\w+)\)$/.exec(s);
+  return m ? `轉給 ${m[1]}（最接近的是${LABEL[m[2]] ? LABEL[m[2]][1] : m[2]}）` : "";
+};
 
 /* ---------------------------------------------------------------- startup */
 document.addEventListener("DOMContentLoaded", init);
@@ -657,7 +676,12 @@ function closeGame() {
 function hintDock() {        // the first visit: a word next to the button, gone after a while or on any click
   const tip = el("div", "dock-tip", `Ask me about anything you see in the tour. <span lang="zh-Hant">導覽裡看到什麼都可以問我。</span>`);
   $("#dock").appendChild(tip);
-  setTimeout(() => tip.remove(), 9000);
+  // 11/26 (front-end review K03): also gone on the first press anywhere; a click into the tour (another site's frame) only
+  // takes the focus away from this page, so a blur counts as a click too
+  const off = () => { tip.remove(); document.removeEventListener("pointerdown", off, true); window.removeEventListener("blur", off); };
+  document.addEventListener("pointerdown", off, true);
+  window.addEventListener("blur", off);
+  setTimeout(off, 9000);
 }
 
 function bindUi() {
@@ -934,7 +958,8 @@ window.addEventListener("message", (e) => {
   if (!key) return;
   tourNow = S.byKey[key].tour;
   // 11/26 (review): a scene walked to with the tour's own arrows moves "you are here" but is not a place asked about (the
-  // Progress tab counts only those); the server learns the place with the next question, which carries it
+  // Progress tab counts only those asked about here or opened from this page: the map, the place list, a Go to button;
+  // 11/26 front-end review D01); the server learns the place with the next question, which carries it
   if (key !== S.room) setHere(key, { record: false });
   else if (typeof Minimap !== "undefined") Minimap.update(key);           // the same place again: no longer "Last"
 });
@@ -949,13 +974,25 @@ function moveTour(r) {
 function showTour(url) {
   const fr = $("#tour");
   tourUrl = url;
+  // 11/26 (front-end review K01): which tour the frame shows is unknown until the new one reports a scene, so moveTour
+  // loads by address until then (a goToPano for the old tour went into the other one and was lost)
+  tourNow = null;
   if (!fr.getAttribute("src")) { fr.setAttribute("src", url); return; }
-  try { fr.contentWindow.location.replace(url); } catch { fr.setAttribute("src", url); }
+  // 11/26 (front-end review C00): a new frame with the same attributes instead of location.replace. A load started by this
+  // page's script takes this page's no-referrer, so iStaging saw no address and stopped talking (changePano, goToPano);
+  // a new frame loads through its own src and referrerpolicy="origin". Its first load adds no history entry either.
+  try {
+    const nf = fr.cloneNode(false);
+    nf.setAttribute("src", url);
+    fr.replaceWith(nf);
+  } catch { try { fr.contentWindow.location.replace(url); } catch { fr.setAttribute("src", url); } }
 }
 async function goTo(key, opt = {}) {
   const r = S.byKey[key]; if (!r) return;
   if (EMBED && opt.jump) {         // inside iStaging: take the whole tour to that scene (a new tab if iStaging does not allow it)
-    if (S.inOurPage) { askAncestors({ type: "lakeside:goto", room: key }); return; }      // our own page around the tour moves its tour instead
+    // our own page around the tour moves its tour instead. 11/26 (front-end review K00): this window moves to that place too
+    // (questions carry it, the room picture); not sent as a visit here, the page around does that with the same session
+    if (S.inOurPage) { setHere(key, { record: false }); askAncestors({ type: "lakeside:goto", room: key }); return; }
     try { window.top.location.href = r.url; } catch { window.open(r.url, "_blank", "noopener"); }
     return;
   }
@@ -1031,8 +1068,10 @@ function ask(text, near) {
   const q = (text ?? inp.value).trim();
   if (!q) return false;
   if (S.busy) { if (near) busyNote(near); else busyNote($("#askForm"), true); return false; }
-  inp.value = ""; growAsk();
-  stream("/api/chat", { session: S.session, message: q, room: S.room, lang: S.langPref }, q);
+  // 11/26 (front-end review K10): the box is cleared only once the server has taken the question (a refusal, 429/503/413,
+  // kept nothing to send again), and only if it still holds that question (a chip does not wipe a draft)
+  stream("/api/chat", { session: S.session, message: q, room: S.room, lang: S.langPref }, q,
+    () => { if (inp.value.trim() === q) { inp.value = ""; growAsk(); } });
   return true;
 }
 
@@ -1070,7 +1109,9 @@ async function stream(url, body, shown, onSent) {
   const u = document.createElement("div"); u.className = "msg user"; u.innerHTML = `<div class="bubble">${esc(shown)}</div>`; th.appendChild(enter(u));
   const m = document.createElement("div"); m.className = "msg bot";
   m.innerHTML = `<div class="work"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="w">${L("Thinking about which tool to use", "判斷要用哪個工具")}</span></div><div class="answer"><span class="caret"></span></div>`;
-  th.appendChild(m); setTimeout(() => enter(m), 90); th.scrollTop = th.scrollHeight;
+  // 11/26 (front-end review K05): the entrance class at once with a delay (it stays hidden until then); added 90 ms later,
+  // the row showed in full, vanished and faded in again
+  m.style.animationDelay = "90ms"; th.appendChild(enter(m)); th.scrollTop = th.scrollHeight;
   const ansEl = $(".answer", m), workEl = $(".work", m);
   let text = "", card = null, finished = false, resp = null, stalled = false, idle = null;
   // 11/23 (review): the card comes before the words, so scrolling to the bottom showed the card's lower half while the
@@ -1099,7 +1140,13 @@ async function stream(url, body, shown, onSent) {
       finished = true; workEl.innerHTML = busy ? L("Not now", "稍後再問") : L("Not answered", "沒有回答");
       return;
     }
-    if (onSent) onSent();
+    // 11/26 (front-end review K22): onSent waits for the first event after "start". The saved copy answers with a 200
+    // "the AI is off" note (done with trace.offline): nothing was checked or saved, so a pasted email or question stays.
+    let sent = false;
+    const taken = () => { if (!sent && onSent) { sent = true; onSent(); } };
+    // 11/26 (front-end check of K22): the laptop's server has taken it once it answers 200; its route event comes only after
+    // the model picked a tool (seconds), and the typed question sat in the box that long. Only the saved copy waits.
+    if (!window.LAKESIDE_OFFLINE) taken();
     if (!resp.body) throw new Error("HTTP " + resp.status);
     const reader = resp.body.getReader(); const dec = new TextDecoder(); let buf = "";
     for (;;) {
@@ -1114,10 +1161,16 @@ async function stream(url, body, shown, onSent) {
           if (line.startsWith("event: ")) ev = line.slice(7); else if (line.startsWith("data: ")) data += line.slice(6);
         }
         const d = data ? JSON.parse(data) : {};
+        if (ev !== "start" && !(ev === "done" && d.trace && d.trace.offline)) taken();
         if (ev === "start") { S.session = d.session; S.lastLang = d.lang; store.set("session", S.session); }
         else if (ev === "route") {
           const w = $(".w", workEl);
-          if (w) { w.innerHTML = TOOL[d.tool] ? L(TOOL[d.tool][0] + "…", TOOL[d.tool][1] + "…") : esc(d.tool) + "…"; w.classList.remove("swap"); void w.offsetWidth; w.classList.add("swap"); }
+          // 11/26 (front-end review K06): the new label fades up with the Web Animations API; the CSS .swap class never played
+          // because the shimmer rule (style.css .work:not(.is-done) .w) has the same weight, comes later and wins
+          if (w) {
+            w.innerHTML = TOOL[d.tool] ? L(TOOL[d.tool][0] + "…", TOOL[d.tool][1] + "…") : esc(d.tool) + "…";
+            if (!RM.matches && typeof w.animate === "function") w.animate([{ opacity: 0, transform: "translateY(5px)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: "cubic-bezier(.22, .9, .24, 1)" });
+          }
         }
         else if (ev === "card") { card = renderCard(d); m.insertBefore(enter(card, 1400), null); showStart(); }
         else if (ev === "token") { text += d.text; ansEl.innerHTML = md(text) + '<span class="caret"></span>'; }
@@ -1158,7 +1211,7 @@ function finish(m, d, workEl) {
   // the saved copy's "AI is off" note took no time at all: its label alone (a "· 0 s" looked like a fault)
   // 11/26 (review): no tool at all (the model could not be reached to choose one): "Not answered", not " · ? s"
   const total = (tr.timings || {}).total_s;
-  workEl.innerHTML = `<span>${!used && !tr.offline ? L("Not answered", "沒有回答") : TOOL[used] ? L(...TOOL[used]) : esc(used || "")}${tr.offline || total == null ? "" : ` · ${total} s`}</span>`;
+  workEl.innerHTML = `<span>${!used && !tr.offline ? L("Not answered", "沒有回答") : TOOL[used] ? L(...TOOL[used]) : esc(used || "")}${tr.offline || total == null ? "" : tr.saved ? ` · ${L("saved answer", "存好的回答")}` : ` · ${total} s`}</span>`;   // 11/26 (front-end review D00): the saved copy replays at once; the recorded time stays in How it works
   workEl.classList.add("is-done");
   let k = 0;                       // the plates, then the follow-up questions, come in one after another
   if (d.go && d.go.length) {
@@ -1242,6 +1295,7 @@ function lockedStop(r) {
 function roomLink(r) {
   const b = el("button", "roomlink", PIN + roomNameL(r));
   b.type = "button"; b.title = LT("Show it in the tour", "在導覽裡打開");
+  b.dataset.fk = "room:" + r.key;           // 11/26 (front-end review K08): the Progress tab puts the focus back on it after a redraw
   b.addEventListener("click", () => goTo(r.key, { jump: true }));
   return b;
 }
@@ -1313,8 +1367,10 @@ function stepsCard(card, c) {
   head(card, c);
   const b = el("div", "badges");
   if (c.severity) b.appendChild(el("span", "badge sev-" + c.severity, L(`Severity: ${c.severity}`, `嚴重度：${SEV_ZH[c.severity] || c.severity}`)));
-  if (pick(c.time)) b.appendChild(el("span", "badge", pL(c.time)));
   card.appendChild(b);
+  // 11/26 (front-end review K72): the time limit is a few sentences, so it is a note under the severity pill (inside the
+  // pill's round ends the first and last lines ran into the curve)
+  if (pick(c.time)) card.appendChild(el("p", "note", pLB(c.time)));
   const ol = el("ol", "steps");
   for (const [n, s] of c.steps.entries()) {
     const li = el("li");
@@ -1341,7 +1397,8 @@ function stepsCard(card, c) {
 
 function routeCard(card, c) {
   head(card, c);
-  card.appendChild(el("p", "note", L(`${c.clicks} clicks through the hotspots`, `一共要點 ${c.clicks} 次`)));
+  // 11/26 (front-end review K11): "1 click" for the room next door
+  card.appendChild(el("p", "note", L(`${c.clicks} click${c.clicks === 1 ? "" : "s"} through the hotspots`, `一共要點 ${c.clicks} 次`)));
   const r = el("div", "route");
   c.steps.forEach((s, i) => {
     if (i) { r.appendChild(el("span", "arrow", "›")); if (s.teleport) r.appendChild(el("span", "tele", L("teleport", "傳送點"))); }
@@ -1443,7 +1500,7 @@ function renderTrace(tr) {
     b.appendChild(el("h5", "", L("2. What it refers to", "指的是什麼")));
     b.appendChild(el("p", "refs", esc(`${lk.query || ""} → ${lk.chosen || "–"} (${LTm(HOW_ZH, lk.how)})`)));
   }
-  if (tr.redirect) b.appendChild(el("p", "refs", esc("redirected 轉給: " + tr.redirect)));
+  if (tr.redirect) b.appendChild(el("p", "refs", esc("redirected 轉給: " + LT(tr.redirect, redirectZh(tr.redirect)))));   // 11/26 (front-end review K04): with its Chinese
   const qs = tr.queries || [];
   if (qs.length) {
     b.appendChild(el("h5", "", L(`3. Read-only Cypher queries on Neo4j (${qs.length})`, `在 Neo4j 執行的唯讀 Cypher（${qs.length} 個）`)));
@@ -1603,6 +1660,12 @@ function renderProgress(anim = true) {
   const found = st.found_items || [], n = st.found_n || 0, total = Math.max(1, S.totalFindings || 17), GOAL = 10;
   const R = 40, C = 2 * Math.PI * R, off = (x) => (C * (1 - Math.min(1, x / total))).toFixed(1);
   const a = (2 * Math.PI * GOAL) / total, tick = (r) => `${(50 + r * Math.cos(a)).toFixed(1)} ${(50 + r * Math.sin(a)).toFixed(1)}`;
+  // 11/26 (front-end review K08): the view is drawn anew (a place link adds a visit, Start over), which threw away the
+  // focused button; remember which one it was (data-fk, and which of the same) to focus its new copy at the end
+  const act = document.activeElement, had = act && v.contains && v.contains(act) && act.dataset ? act : null;
+  const fk = had ? had.dataset.fk : "";
+  const fkAll = () => [...v.querySelectorAll("[data-fk]")].filter((x) => x.dataset.fk === fk);
+  const fkNth = fk ? fkAll().indexOf(had) : -1;
   v.innerHTML = `<section class="prog-top">
       <div class="ring" role="img" aria-label="${n} / ${total}">
         <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="${R}"/>
@@ -1628,12 +1691,14 @@ function renderProgress(anim = true) {
   v.appendChild(el("h2", "", `Casebook <span lang="zh-Hant">事件簿</span> · ${played} / ${GAMES.length}`));
   const cs = el("div", "cases");
   const tgt = "_self";                               // here: the game window (bindUi); inside iStaging's window: this window
+  // 11/26 (front-end review K76): each Play link is described by its case's title (aria-describedby case-t-<game>), so a
+  // screen reader's list of links no longer has four plain "Play"
   for (const [k, en, z, room] of GAMES) {           // one card per case, numbered like the red CASE boards in the tour
     const r = games[k], [no, name, zname, zno] = caseParts(en, z), c = el("div", "case lg-hi" + (r ? " is-played" : ""));
     c.innerHTML = `<i class="case-no">${esc(no.toUpperCase())} <span lang="zh-Hant">${esc(zno)}</span></i>
-      <span class="case-t">${esc(name)}<span lang="zh-Hant">${esc(zname)}</span></span>
+      <span class="case-t" id="case-t-${k}">${esc(name)}<span lang="zh-Hant">${esc(zname)}</span></span>
       <span class="case-res">${r ? `${L("Best", "最佳")} <b>${r.best}</b> / ${r.best_total ?? r.total}${r.plays > 1 ? ` · ${L(`${r.plays} plays`, `玩了 ${r.plays} 次`)}` : ""}` : L("Not played yet", "還沒玩")}</span>
-      <div class="case-go"><a class="case-play" href="/lakeside/games/${k}" target="${tgt}" rel="noopener"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10 6z" fill="currentColor"/></svg>${r ? L("Play again", "再玩一次") : L("Play", "開始")}</a></div>`;
+      <div class="case-go"><a class="case-play" data-fk="case:${k}" aria-describedby="case-t-${k}" href="/lakeside/games/${k}" target="${tgt}" rel="noopener"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10 6z" fill="currentColor"/></svg>${r ? L("Play again", "再玩一次") : L("Play", "開始")}</a></div>`;
     if (S.byKey[room]) $(".case-go", c).appendChild(roomLink(S.byKey[room]));
     cs.appendChild(c);
   }
@@ -1655,6 +1720,7 @@ function renderProgress(anim = true) {
   // 11/23 (review): the progress is kept on the server and cannot come back, so the first click only asks to click again
   // within 3 s
   const reset = el("button", "btn-plain", "Start over 重新開始"); reset.type = "button";
+  reset.dataset.fk = "reset";                // 11/26 (front-end review K08)
   let armed = null;
   const say = (s) => { reset.firstChild.nodeValue = s; };          // the text only: the press's ripple is a child too
   const disarm = () => { clearTimeout(armed); armed = null; say("Start over 重新開始"); reset.classList.remove("is-armed"); };
@@ -1670,6 +1736,8 @@ function renderProgress(anim = true) {
   });
   v.appendChild(reset);
   [...v.children].forEach((c, i) => c.style.setProperty("--i", Math.min(i, 10)));
+  // 11/26 (front-end review K08): the focus back on the new copy of what had it
+  if (fk) { const same = fkAll(), to = same[fkNth] || same[0]; if (to) to.focus({ preventScroll: true }); }
 }
 
 /* ---------------------------------------------------------------- how it works */
@@ -1767,6 +1835,12 @@ async function renderHow() {
   if (FINE && !RM.matches) {
     document.addEventListener("pointermove", (e) => { last = e; if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
     document.documentElement.addEventListener("pointerleave", untilt);
+    // 11/26 (front-end review K07): straight from a tilted button into the tour or a game (another page's frame) this page
+    // hears no more moves and html no pointerleave, so the tilt stayed; going into a frame or out of the window ends it
+    document.addEventListener("pointerout", (e) => {
+      const to = e.relatedTarget;
+      if (!to || to.tagName === "IFRAME") { last = null; untilt(); }
+    }, { passive: true });
   }
   // the release wobbles the glass back like jelly (added on top of its own transform, so a tilt or a CSS entrance keeps going)
   const JELLY = ".dock-btn, .mm-pill, .win-btn, .chip, .roomlink, .plate, .ask button, .case-play, .paste button, .btn-plain, .seg button, " +

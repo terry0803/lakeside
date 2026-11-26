@@ -57,19 +57,31 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
   // frame, which frame-ancestors refuses too.
   const OK_AROUND = [liveOrigin, "http://127.0.0.1:8780", "http://localhost:8780", "http://localhost:3000", "http://127.0.0.1:3000"];
   const blockedAbove = () => ancestors().some((o) => !OK_AROUND.includes(o) && !/^https:\/\/([a-z0-9-]+\.)+istaging\.com$/.test(o));
+  // 11/26 (front-end review K21): the laptop's own page on its local address (http://localhost:3000 while presenting) is
+  // around this one: the laptop runs, and scores kept in a saved copy in here would never reach that page's Progress tab.
+  // So go on to the laptop whenever its server answers through the fixed address (the AI need not be ready, and the
+  // one-minute "saved copy" mark of this tab does not count); the saved copy only if the address does not answer at all.
+  const localAbove = () => ancestors().some((o) => OK_AROUND.includes(o) && o !== liveOrigin);
 
   if (params.has("offline")) ss(FORCE, "1");        // asked for the saved copy: this tab stays in it (a new tab goes back)
   const host = offlineHost();
   if (params.has("offline") || ss(FORCE) === "1" || host || openerOffline()) offline(host);
   else if (liveAbove()) location.replace(liveUrl);
-  else if (blockedAbove() || Number(ss(KEY)) > Date.now()) offline(null);
-  else probe();
+  else if (blockedAbove()) offline(null);
+  else if (localAbove()) probe(true);                // 11/26 (front-end review K21): before the one-minute mark below
+  else if (Number(ss(KEY)) > Date.now()) offline(null);
+  else probe(false);
 
-  function probe() {
+  // 11/26 (front-end review K21): local = the laptop's own page is around: ask for a plain picture of the laptop's site
+  // (its static copy of probe.png answers whenever the server runs, the probe.png at its root only when the AI is ready
+  // too) and wait longer. 11/26 check: the address is put together in probeSrc() so that build_pages.py's path checks
+  // (LEFT, ROOTISH) do not take it for a page path of the copy and stop the build.
+  const probeSrc = (local) => `${LIVE}/${local ? "static/" : ""}probe.png?t=${Date.now()}`;
+  function probe(local) {
     let done = false;
     const img = new Image();
     const slow = setTimeout(() => root.classList.add("lk-slow"), 1500);
-    const give = setTimeout(() => finish(false), 5000);
+    const give = setTimeout(() => finish(false), local ? 10000 : 5000);
     function finish(up) {
       if (done) return;
       done = true; clearTimeout(slow); clearTimeout(give);
@@ -78,26 +90,34 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
       if (up) { location.replace(liveUrl); return; }
       ss(KEY, String(Date.now() + 60 * 1000));     // the next pages of this tab do not wait again for a minute (was 3; 11/23)
       offline(null);
-      recheck();
+      recheck(local);
     }
     img.onload = () => finish(true);
     img.onerror = () => finish(false);
-    img.src = `${LIVE}/probe.png?t=${Date.now()}`;
+    img.src = probeSrc(local);
   }
 
   // 11/23 (the user saw "the AI is off" while the laptop was on): one slow answer (the laptop's address can take a few
   // seconds to wake up) left the saved copy on. Ask twice more in the background; if the laptop answers before the visitor
   // has done anything on this page, go on to the live page.
-  function recheck() {
+  function recheck(local) {
     let touched = false;
-    for (const t of ["pointerdown", "keydown"]) addEventListener(t, () => { touched = true; }, { capture: true, once: true });
+    // 11/26 (front-end review K20): dragging or walking in the tour happens inside iStaging's frame and never reaches this
+    // window; the window only loses focus (blur) when the visitor clicks into it. A wheel or a touch counts too.
+    const mark = () => { touched = true; };
+    for (const t of ["pointerdown", "keydown", "wheel", "touchstart"]) addEventListener(t, mark, { capture: true, once: true, passive: true });
+    // 11/26 check: only after a real press (a press inside a frame counts for this window too), so a tour that takes the
+    // focus by itself while it loads does not keep the saved copy on for good
+    const acted = () => !navigator.userActivation || navigator.userActivation.hasBeenActive;
+    addEventListener("blur", () => { if (acted()) mark(); });
+    const busy = () => touched || (acted() && document.activeElement && document.activeElement.tagName === "IFRAME");
     for (const ms of [8000, 20000]) setTimeout(() => {
-      if (touched) return;
+      if (busy()) return;
       const im = new Image();
       const give = setTimeout(() => { im.onload = im.onerror = null; im.removeAttribute("src"); }, 5000);
-      im.onload = () => { clearTimeout(give); if (!touched) { ss(KEY, "0"); location.replace(liveUrl); } };
+      im.onload = () => { clearTimeout(give); if (!busy()) { ss(KEY, "0"); location.replace(liveUrl); } };
       im.onerror = () => clearTimeout(give);
-      im.src = `${LIVE}/probe.png?t=${Date.now()}`;
+      im.src = probeSrc(local);                      // 11/26 (front-end review K21)
     }, ms);
   }
 
@@ -169,6 +189,8 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
         const d = JSON.parse(data);
         if (ev === "start") d.session = sessionId();
         if (ev === "done") d.state = state();
+        // 11/26 (front-end review D00): the recorded timings stay (How it works shows them); this marks them as recorded
+        if (ev === "done" && d.trace) d.trace.saved = true;
         evs.push([ev, d]);
       }
       return sse(evs);
@@ -198,15 +220,16 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
         const r = await realFetch(`${DATA}/health.json`);
         return json({ ...(r.ok ? await r.json() : {}), offline: true, saved: SAVED });
       }
-      if (p === "settings" && body.reset) write({ session: sessionId() });   // Start over: places and scores cleared
+      // 11/26 (front-end review K02): the 9B/4B choice is kept, as server.py settings does (it used to jump back to 9B)
+      if (p === "settings" && (body.model === "qwen3.5:9b" || body.model === "qwen3.5:4b")) { const s = read(); s.model = body.model; write(s); }
+      if (p === "settings" && body.reset) write({ session: sessionId(), model: read().model });   // Start over: places and scores cleared, not the model
       if (p === "state" || p === "settings") return json({ session: sessionId(), state: state() });
       if (p === "visit") { visit(body.room); return json({ session: sessionId(), state: state() }); }
-      if (p === "games/result") {                    // the same checks as server.py, including Python's int()
-        const pyInt = (v) => (typeof v === "number" && Number.isFinite(v) ? Math.trunc(v)
-          : typeof v === "string" && /^\s*[+-]?\d+\s*$/.test(v) ? parseInt(v, 10) : NaN);
-        const score = pyInt(body.score), tot = pyInt(body.total);
+      if (p === "games/result") {                    // the same checks as server.py
+        // 11/26 (front-end review K02, relay): only whole JSON numbers, as server.py now (no more Python int() rules)
+        const score = body.score, tot = body.total;
         if (!GAMES.includes(body.game)) return json({ error: "unknown game" }, 400);
-        if (Number.isNaN(score) || Number.isNaN(tot)) return json({ error: "score and total must be numbers" }, 400);
+        if (!Number.isInteger(score) || !Number.isInteger(tot)) return json({ error: "score and total must be whole numbers" }, 400);
         if (!(tot > 0 && tot <= 100 && score >= 0 && score <= tot)) return json({ error: "score out of range" }, 400);
         const s = read(); s.games = s.games || {};
         const old = s.games[body.game] || {}, same = (old.best_total ?? old.total) === tot;   // as games.py record (11/26)

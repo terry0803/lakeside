@@ -104,6 +104,8 @@ body { background: var(--g-bg); transition: none; }
 .g-loading { padding: 34px 0; color: var(--g-text-2); text-align: center; animation: g-in .4s var(--e-out) .3s both; }
 .g-loading span { color: var(--g-text-2); }
 .g-error { color: #ff7b72; text-align: center; }
+/* 11/26 (front-end review K23): the "score not saved" note now sits in the white results card, so a darker red and no big padding */
+.g-end .g-save-err { margin: 0; padding: 10px 0 0; color: #b42318; font-weight: 600; }
 @keyframes g-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .g-top, .g-main.is-stage, .g-loading { animation: none; } }
 
@@ -203,6 +205,8 @@ body { background: var(--g-bg); transition: none; }
 .g-foot details::details-content { opacity: 0; transition: opacity .2s var(--e-out), content-visibility .2s allow-discrete; }
 .g-foot details[open]::details-content { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .g-foot details[open] .g-foot-panel { animation: none; } .g-foot details::details-content { transition: none; } }
+/* 11/26 (front-end review K26, check): at 860 px and below the panel opens from the button's left edge (game.css), so it drops in from there */
+@media (max-width: 860px) { .g-foot details[open] .g-foot-panel { transform-origin: 0 0; } }
 
 /* A1 (the user: nothing may stick out): in the incident game the status board under the map only got what the map
    left over, and its last row hung out of it (19 px at 1366 x 768). The board is now as tall as its rows and the map

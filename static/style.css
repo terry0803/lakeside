@@ -178,11 +178,16 @@ button, select, textarea, input { font: inherit; color: inherit; }
 }
 .mm-mini-t { display: grid; min-width: 0; line-height: 1.18; }
 .mm-mini-t b { overflow: hidden; font: 600 13px var(--font-head); white-space: nowrap; text-overflow: ellipsis; }
+/* 11/26 (front-end review K19): the name has the caption to itself (the Map chip went to the top left corner) and takes a
+   second line before it is cut */
+.mm-mini-t b { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
 .mm-mini-t small { overflow: hidden; font-size: 11.5px; color: var(--tx-2); white-space: nowrap; text-overflow: ellipsis; }
 .mm-mini-open { display: flex; align-items: center; gap: 4px; flex: none; padding: 3px 9px; border: 1px solid rgba(255, 255, 255, .4); border-radius: 12px; background: rgba(255, 255, 255, .16); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); font: 600 11.5px var(--font-head); transition: background-color .2s, color .2s; }
 .mm-mini:hover .mm-mini-open { background: #fff; border-color: #fff; color: #0f172a; text-shadow: none; }
 .mm-mini-open svg { width: 12px; height: 12px; }
 .mm-mini-open span[lang] { font: 11px var(--font-zh); }
+/* 11/26 (front-end review K19): the chip in the top left corner, across from the "−" button and dark like it, over the map */
+.mm-mini-open { position: absolute; top: 10px; left: 10px; z-index: 1; height: 26px; border-color: rgba(255, 255, 255, .45); background: rgba(6, 10, 20, .4); color: #fff; }
 .mm-hide { position: absolute; top: 10px; right: 10px; z-index: 2; display: grid; place-items: center; width: 26px; height: 26px; padding: 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, .45); border-radius: 50%; background: rgba(6, 10, 20, .4); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #fff; cursor: pointer; transition: background-color .2s, transform .4s var(--e-spring); }
 .mm-hide svg { width: 14px; height: 14px; }
 .mm-hide:hover { background: rgba(6, 10, 20, .7); transform: scale(1.1); }
@@ -237,6 +242,11 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .mm-x svg { width: 16px; height: 16px; transition: transform .45s var(--e-spring); }
 .mm-x:hover svg { transform: rotate(90deg); }
 .mm-view { position: relative; height: min(560px, calc(100dvh - 200px)); overflow: hidden; background: #24484f; }
+/* 11/26 (front-end review K15): the height above takes a one-line header and key; where they wrap (the narrow map beside
+   the bigger window) the map gives way, so the panel's bottom stays on the screen. minimap.js measures #mmView. */
+.mm:not(.is-pane) .mm-panel:not([hidden]) { display: flex; flex-direction: column; max-height: calc(100dvh - 32px); }
+.mm:not(.is-pane) .mm-head, .mm:not(.is-pane) .mm-foot { flex: none; }
+.mm:not(.is-pane) .mm-view { flex: 0 1 auto; min-height: 140px; }
 /* entering a building or zooming out of it; minimap.js takes the class off once it has played (11/23 review). mm-settle stays
    in the list, so taking it off does not start the map's settle once more */
 .mm-view.is-in .mm-svg { animation: mm-settle .6s var(--e-liquid) backwards, mm-in .45s var(--e-liquid); }
@@ -326,6 +336,10 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .status { margin: 4px 0 0; overflow: hidden; font-size: 11.5px; color: var(--tx-2); white-space: nowrap; text-overflow: ellipsis; }
 /* 11/23 (checklist A3): where the line is still too long it takes a second line instead of being cut */
 .status { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; text-overflow: clip; }
+/* 11/26 (front-end review K74): on a phone the graph's Chinese broke in the middle of a word (知識圖 737 個節|點) and pushed
+   the model line out of the two lines. Its short Chinese stays whole and the ok line may take a third line. */
+.status.ok .zl { white-space: nowrap; }
+.status.ok { -webkit-line-clamp: 3; line-clamp: 3; }
 .status.ok::before, .status.bad::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; vertical-align: 1px; }
 .status.ok::before { background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, .9); }
 .status.bad::before { background: #f87171; box-shadow: 0 0 8px rgba(248, 113, 113, .9); }
@@ -350,6 +364,10 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .desk-settings > :nth-child(2) { --i: 1; } .desk-settings > :nth-child(3) { --i: 2; } .desk-settings > :nth-child(4) { --i: 3; }
 @media (prefers-reduced-motion: reduce) { .desk-settings { transition: none; } .desk-settings > * { animation: none !important; } }
 .set-l span[lang] { margin-left: 3px; color: var(--tx-3); }
+/* 11/26 (front-end review K71): each label next to its own buttons. In one wrapping row the "Model 模型" label stayed at the
+   end of the first line and its 9B / 4B went to the start of the next. Now two rows: label, buttons. */
+.desk-settings:not([hidden]) { display: grid; grid-template-columns: auto minmax(0, 1fr); justify-items: start; }
+.desk-settings .near-note { grid-column: 1 / -1; }
 .seg { display: inline-flex; padding: 3px; border-radius: 12px; background: rgba(0, 0, 0, .22); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .08); }
 .seg button { position: relative; padding: 4px 12px; overflow: hidden; border: 0; border-radius: 9px; background: none; font: 600 12.5px var(--font-head); color: var(--tx-2); cursor: pointer; transition: background-color .25s, color .25s, box-shadow .25s; }
 .seg button:hover { color: #fff; }
@@ -458,7 +476,6 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .msg.bot { max-width: 100%; }
 .work { display: flex; align-items: center; gap: 8px; min-height: 20px; margin-bottom: 6px; font-size: 12.5px; color: var(--tx-2); }
 .work .w { display: inline-block; }
-.work .w.swap { animation: fade-up .3s var(--e-out); }
 .work.is-done::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, .8); }
 .dots { display: inline-flex; gap: 4px; }
 .dots i { width: 6px; height: 6px; border-radius: 50%; background: #93c5fd; box-shadow: 0 0 8px rgba(147, 197, 253, .9); animation: wave 1.2s ease-in-out infinite; }

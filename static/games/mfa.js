@@ -150,6 +150,13 @@ Games.mfa = function (d, main, replay) {
 
   function say(html) { addLog(null, html); }
 
+  // 11/26 (front-end review K56): the score never goes below 0, and the pop shows what really changed (no "-30" at 0 points)
+  function addPts(x) {
+    const before = S.points;
+    S.points = Math.max(0, S.points + x);
+    H.points(S.points, S.streak, S.points - before || null);
+  }
+
   function addLog(t, html, cls) {
     const ol = $("#mnLog");
     if (!ol) return;
@@ -166,6 +173,7 @@ Games.mfa = function (d, main, replay) {
     if (!S || S.over || S.paused || S.hold || document.hidden) return;
     if (S.dark && S.wakeAt && performance.now() >= S.wakeAt) wake();
     const quiet = !S.reported && EV.every((e) => S.fired[e.id] && S.res[e.id]);     // everything has happened; only the call to 2199 is left
+    const sending = !!(S.call && S.call.state === "sending");     // 11/26 (front-end review K53): the code is going down the line
     S.clock = Math.min(TEND, S.clock + dt * (busy() ? sh.rate : quiet ? sh.idle * 2 : sh.idle));
     for (const e of EV) if (!S.fired[e.id] && S.clock >= e.at && canFire(e)) fire(e);
     for (const n of S.notifs.slice()) { if (n.kind === "door" || n.kind === "own") continue; n.left -= dt; if (n.left <= 0) expire(n); }
@@ -190,7 +198,7 @@ Games.mfa = function (d, main, replay) {
     $("#mnCamTs").textContent = `${t}:${CB.pad2(Math.floor((S.clock * 60) % 60))}`;
     st.dusk(S.dark ? 0.86 : 0.18 + 0.1 * Math.sin(S.clock));
     const allDone = EV.every((e) => S.fired[e.id] && S.res[e.id]) && !busy() && !S.app && !!S.reported;
-    if ((allDone || S.clock >= TEND) && !S.hold) {
+    if ((allDone || S.clock >= TEND) && !S.hold && !sending) {     // K53: 03:25 waits for those 900 ms; the breach that follows holds it
       if (!S.endAt) S.endAt = performance.now() + (S.clock >= TEND ? 600 : 2600);
       else if (performance.now() >= S.endAt) endShift();
     } else if (!S.hold) S.endAt = 0;
@@ -204,8 +212,14 @@ Games.mfa = function (d, main, replay) {
   function togglePause(force) {
     if (!S || S.over) return;
     S.paused = typeof force === "boolean" ? force : !S.paused;
+    // 11/26 (front-end review K48): the phone and the laptop are inert while paused, so the keyboard cannot slide, swipe
+    // or press anything behind the Paused layer; on Resume the keyboard goes back where it was
+    const play = $(".mn-play"), a = document.activeElement;
+    if (S.paused) S.pauseFocus = play && a && play.contains(a) ? a : null;
+    if (play) play.inert = S.paused;
     S.pause.set(S.paused);
     H.paused(S.paused);
+    if (!S.paused && S.pauseFocus) { const f = S.pauseFocus; S.pauseFocus = null; if (f.isConnected && !f.closest("[inert]")) f.focus({ preventScroll: true }); }
   }
 
   function buzz(quiet) {
@@ -229,7 +243,7 @@ Games.mfa = function (d, main, replay) {
       if (e.msg_en) addNotif({ id: "msg-" + e.id, e: {}, kind: "msg", left: 10, total: 10, from_en: e.msg_from_en, from_zh: e.msg_from_zh, en: e.msg_en, zh: e.msg_zh });   // the trick comes by text, the prompt looks like any other
     } else if (e.kind === "door") doorFire(e);
     else if (e.kind === "call") {
-      S.call = { e, state: "ringing", left: e.secs, ringT: 0, talk: 0, typed: "", said: 0, pad: false };
+      S.call = { e, state: "ringing", left: e.secs, ringT: 0, talk: 0, typed: "", said: 0, pad: false, lines: [] };     // 11/26 (front-end review K57): lines = what the caller said
       S.recents.unshift({ num: e.number, en: e.name_en, zh: e.name_zh, t: clockAt(S.clock), dir: "in" });
       take("call");
       callScreen();
@@ -375,7 +389,7 @@ Games.mfa = function (d, main, replay) {
 
   function expire(n) {
     removeNotif(n.id);
-    if (n.kind === "push") { S.res[n.id] = "expired"; S.streak = 0; addLog(clockAt(S.clock), bi(story.lines.expired.en, story.lines.expired.zh), "is-quiet"); }
+    if (n.kind === "push") { S.res[n.id] = "expired"; S.streak = 0; H.points(S.points, 0); /* 11/26 (front-end review K55): the ×N badge goes */ addLog(clockAt(S.clock), bi(story.lines.expired.en, story.lines.expired.zh), "is-quiet"); }
   }
 
   /* ------------------------------------------------------------------ deny (swipe) or approve (slide) */
@@ -393,6 +407,7 @@ Games.mfa = function (d, main, replay) {
     }
     S.res[n.id] = "approved";
     S.streak = 0;
+    H.points(S.points, 0);     // 11/26 (front-end review K55): the streak badge goes with the streak
     S.approved += 1;
     CB.SFX.play("bad");
     addLog(clockAt(S.clock), bi("Approved a sign-in you didn't start.", "同意了一則不是你發起的登入。"), "is-bad");
@@ -539,7 +554,7 @@ Games.mfa = function (d, main, replay) {
       setTimeout(() => {
         if (!S || S.over || S.badge !== "active") return;
         S.badge = "blocked";
-        S.points = Math.max(0, S.points - P.reblock); H.points(S.points, S.streak, -P.reblock);
+        addPts(-P.reblock);     // 11/26 (front-end review K56)
         radioShow(`<p class="mn-radio-them">${bi(CON.reblock_en, CON.reblock_zh)}</p>`);
         CB.SFX.play("static");
         conDraw();
@@ -643,12 +658,40 @@ Games.mfa = function (d, main, replay) {
     $("#mnScene").setAttribute("class", "mn-scene");
     $("#mnCon").classList.remove("is-open");
     $("#mnLed").className = "mn-led";
-    if (!S.alerts.length) { $("#mnCamBox").hidden = true; $("#mnCamSay").hidden = true; $("#mnCamBar").hidden = true; $("#mnCam").classList.remove("is-alert"); }
+    // 11/26 (front-end review K54): an alert that came in while the door stood open is still live: draw its crew and LED again
+    const a = S.alerts[S.alerts.length - 1];
+    if (a) camEvent(a.doomed ? Object.assign({}, a.e, ACCEPTED, { led: "" }) : a.e);
+    else { $("#mnCamBox").hidden = true; $("#mnCamSay").hidden = true; $("#mnCamBar").hidden = true; $("#mnCam").classList.remove("is-alert"); }
   }
 
   /* ------------------------------------------------------------------ the phone's own screens */
-  function take(kind) { S.app = kind; const t = $("#mnTake"); t.hidden = false; t.className = `mn-takeover is-${kind}`; return t; }
-  function untake() { if (!S) return; S.app = null; const t = $("#mnTake"); if (!t) return; t.hidden = true; t.innerHTML = ""; t.className = "mn-takeover"; }
+  // 11/26 (front-end review K49): while an app covers the phone, the lock screen and the dock under it are inert (Tab
+  // and Enter no longer reach them), and the keyboard moves into the app (phoneFocus). Closing the app clears that and,
+  // if the keyboard was in the app, puts it back on the Phone button (or on `back`).
+  function take(kind) {
+    S.app = kind; const t = $("#mnTake"); t.hidden = false; t.className = `mn-takeover is-${kind}`;
+    for (const n of $$("#mnScreen > :not(#mnTake)")) n.inert = true;
+    return t;
+  }
+  function untake(back) {
+    if (!S) return; S.app = null; const t = $("#mnTake"); if (!t) return;
+    const had = t.contains(document.activeElement);
+    t.hidden = true; t.innerHTML = ""; t.className = "mn-takeover";
+    for (const n of $$("#mnScreen > :not(#mnTake)")) n.inert = false;
+    if (had && !S.over) CB.refocus(typeof back === "string" ? back : "#mnPhoneApp");     // `back` is an Event when untake is a click handler
+  }
+  /* the keyboard goes to the app's first control, unless it is busy somewhere else (the laptop): an incoming call does not
+     take the keyboard away from the door console */
+  function phoneFocus(sel) {
+    const a = document.activeElement, t = $("#mnTake");
+    if (!t || t.hidden) return;
+    const lost = !a || a === document.body || !a.isConnected || (!!a.closest("#mnScreen") && !t.contains(a));
+    if (!lost) return;
+    const n = $(sel, t);
+    if (n) n.focus({ preventScroll: true });
+  }
+  // Enter is a button's own when the keyboard is on one that can be used (not one under the app)
+  const onButton = () => { const a = document.activeElement; return !!(a && a.closest("button") && !a.closest("[inert]")); };
 
   const KEYS = [["1", ""], ["2", "ABC"], ["3", "DEF"], ["4", "GHI"], ["5", "JKL"], ["6", "MNO"], ["7", "PQRS"], ["8", "TUV"], ["9", "WXYZ"], ["*", ""], ["0", "+"], ["#", ""]];
   const keysHTML = (id, keys) => `<div class="mn-keys" id="${id}">${(keys || KEYS).map(([k, s]) => (k ? `<button type="button" data-k="${k}" aria-label="${k === "del" ? "Delete" : k}">${k === "del" ? "⌫" : `<b>${k}</b><small>${s}</small>`}</button>` : "<span></span>")).join("")}</div>`;
@@ -664,10 +707,11 @@ Games.mfa = function (d, main, replay) {
     if (S.app === "dial") {
       if (/^[0-9*#]$/.test(k)) { ev.preventDefault(); dialKey(k); }
       else if (k === "Backspace") { ev.preventDefault(); dialKey("del"); }
-      else if (k === "Enter" && !(document.activeElement && document.activeElement.closest("button"))) { ev.preventDefault(); dialOut(); }
+      else if (k === "Enter" && !onButton()) { ev.preventDefault(); dialOut(); }     // 11/26 (front-end review K49): not the covered Phone button
       else if (k === "Escape") { ev.preventDefault(); untake(); }      // 11/23: handled here, the game window stays open (common.js)
     } else if (S.app === "auth") {
       if (/^[0-9]$/.test(k)) { ev.preventDefault(); authKey(k); } else if (k === "Backspace") { ev.preventDefault(); authKey("del"); }
+      else if (k === "Enter" && !onButton() && S.own.typed.length >= 2) { ev.preventDefault(); ownAnswer(S.own.typed); }     // 11/26 (front-end review K49): Enter = Yes
       else if (k === "Escape") { ev.preventDefault(); authLater(); }
     } else if (S.app === "call" && S.call && S.call.state === "talking" && S.call.pad && /^[0-9*#]$/.test(k)) { ev.preventDefault(); callKey(k); }
   }
@@ -695,6 +739,7 @@ Games.mfa = function (d, main, replay) {
     $("#mnDialCall").addEventListener("click", dialOut);
     for (const b of $$("[data-num]", t)) b.addEventListener("click", () => { S.dial = b.dataset.num; CB.SFX.play("tap"); dialNum(); });
     dialNum();
+    phoneFocus("#mnDialCall");     // 11/26 (front-end review K49): type the number, Enter calls
   }
   function dialKey(k) {
     if (k === "del") S.dial = S.dial.slice(0, -1);
@@ -722,20 +767,24 @@ Games.mfa = function (d, main, replay) {
       <button type="button" class="mn-end" data-end aria-label="End call">${ICON.hang}</button></div>`;
     $("[data-end]", t).addEventListener("click", () => { if (onEnd) onEnd(); untake(); });
     CB.SFX.play("ring");
+    phoneFocus("[data-end]");     // 11/26 (front-end review K49)
+    // 11/26 (front-end review K58): each outgoing call gets its own number; a timer from a call you already ended checks it
+    return (S.outTok = (S.outTok || 0) + 1);
   }
 
   function lineCall(num) {   // Security, the Help Desk, or nobody
     const t = take("line");
     const who = num === NUM.security ? "security" : num === NUM.helpdesk ? "helpdesk" : null;
     const c = who ? story.contacts.find((x) => x.key === who) : null;
-    outgoing(t, c ? bi(c.en, c.zh) : esc(shownNum(num)), c ? c.number : shownNum(num), who === "security" ? "SEC" : who === "helpdesk" ? "IT" : "?", "");
+    const tok = outgoing(t, c ? bi(c.en, c.zh) : esc(shownNum(num)), c ? c.number : shownNum(num), who === "security" ? "SEC" : who === "helpdesk" ? "IT" : "?", "");
     setTimeout(() => {
-      if (!S || S.over || S.app !== "line") return;
+      if (!S || S.over || S.app !== "line" || S.outTok !== tok) return;     // K58: not a later call's screen
       const line = (CON.lines || {})[who || "none"] || { en: "", zh: "" };
       t.innerHTML = `<div class="mn-call is-talking"><p class="mn-call-label">${numHTML(c ? c.number : shownNum(num))}${c ? ` · ${bi(c.en, c.zh)}` : ""}</p>
         <div class="mn-talk"><p class="mn-bubble">“${esc(line.en)}”<span lang="zh-Hant">${esc(line.zh)}</span></p></div>
         <button type="button" class="mn-end" data-end aria-label="End call">${ICON.hang}<span>${bi("End call", "掛斷")}</span></button></div>`;
       $("[data-end]", t).addEventListener("click", untake);
+      phoneFocus("[data-end]");     // 11/26 (front-end review K49)
     }, reduceMotion ? 150 : 1500);
   }
 
@@ -750,6 +799,7 @@ Games.mfa = function (d, main, replay) {
           ${slideHTML("answer", bi("Slide to answer", "滑動接聽"), "Answer the call: drag the knob to the right")}</div></div>`;
       $("[data-c]", t).addEventListener("click", () => callEnd("declined"));
       slideCtl($(".mn-slide", t), callAnswer);
+      phoneFocus(".mn-slide-knob");     // 11/26 (front-end review K49): ArrowRight answers
       return;
     }
     const open = c.fake ? [e.again_en, e.again_zh] : [e.open_en, e.open_zh];
@@ -770,9 +820,10 @@ Games.mfa = function (d, main, replay) {
     });
     const keys = $("#mnCallKeys");
     if (keys) keys.addEventListener("click", (ev) => { const b = ev.target.closest("[data-k]"); if (b) callKey(b.dataset.k); });
-    for (let k = 0; k < c.said; k++) talkLine((CALL.push || [])[k]);
+    for (const l of c.lines || []) talkLine(l);     // 11/26 (front-end review K57): every line he said, "That didn't work" included
     const box = $("#mnTalk");
     if (box) box.scrollTop = box.scrollHeight;
+    phoneFocus(c.pad ? "[data-ctl=hide]" : "[data-ctl=pad]");     // 11/26 (front-end review K49)
   }
 
   function callAnswer() {
@@ -781,6 +832,13 @@ Games.mfa = function (d, main, replay) {
     S.call.talk = 0;
     CB.SFX.play("open");
     callScreen();
+  }
+
+  // 11/26 (front-end review K57): a line the caller says is kept on the call, so a redraw (Keypad / Hide keypad) shows it again
+  function callSay(l) {
+    if (!l) return;
+    S.call.lines = (S.call.lines || []).concat([l]);
+    talkLine(l);
   }
 
   function talkLine(l, cls) {
@@ -793,7 +851,7 @@ Games.mfa = function (d, main, replay) {
   function callPressure() {
     const c = S.call, lines = CALL.push || [];
     const due = c.talk >= 14 ? 2 : c.talk >= 7 ? 1 : 0;
-    while (c.said < due && c.said < lines.length) { talkLine(lines[c.said]); c.said += 1; }
+    while (c.said < due && c.said < lines.length) { callSay(lines[c.said]); c.said += 1; }     // K57
     const tt = $("#mnCallT");
     if (tt) tt.textContent = `00:${CB.pad2(Math.floor(c.talk))}`;
   }
@@ -809,12 +867,12 @@ Games.mfa = function (d, main, replay) {
     const ds = digitsOf(c.typed);
     if (ds.length < CODE.length) return;
     if (ds.endsWith(CODE)) {
-      talkLine({ en: CALL.got_en, zh: CALL.got_zh });
+      callSay({ en: CALL.got_en, zh: CALL.got_zh });     // K57
       c.state = "sending";
       await wait(900);
       return callEnd("read");
     }
-    if (ds.length >= CODE.length) { talkLine({ en: CALL.wrong_en, zh: CALL.wrong_zh }); c.typed = ""; if (typed) typed.innerHTML = "&nbsp;"; }
+    if (ds.length >= CODE.length) { callSay({ en: CALL.wrong_en, zh: CALL.wrong_zh }); c.typed = ""; if (typed) typed.innerHTML = "&nbsp;"; }     // K57: callSay
   }
 
   async function callEnd(k) {
@@ -854,10 +912,10 @@ Games.mfa = function (d, main, replay) {
   function callFake() {   // you rang back the number that called you
     const t = take("call");
     S.calledFake = true;
-    outgoing(t, bi(CALL.name_en, CALL.name_zh), CALL.number, "JL", "");
+    const tok = outgoing(t, bi(CALL.name_en, CALL.name_zh), CALL.number, "JL", "");
     setTimeout(() => {
-      if (!S || S.over || S.app !== "call") return;
-      S.call = Object.assign(S.call || { e: CALL, ringT: 0, left: 0 }, { state: "talking", fake: true, talk: 0, typed: "", said: 0, pad: false });
+      if (!S || S.over || S.app !== "call" || S.outTok !== tok) return;     // 11/26 (front-end review K58)
+      S.call = Object.assign(S.call || { e: CALL, ringT: 0, left: 0 }, { state: "talking", fake: true, talk: 0, typed: "", said: 0, pad: false, lines: [] });     // K57: a new conversation
       callScreen();
     }, reduceMotion ? 150 : 1500);
   }
@@ -866,8 +924,8 @@ Games.mfa = function (d, main, replay) {
   function callSoc() {
     const t = take("soc");
     S.soc = { state: "dialing", said: new Set() };
-    outgoing(t, bi("SOC", "資安監控中心"), "ext. 2199", "SOC", "is-soc", () => { S.soc = null; });
-    setTimeout(() => { if (S && !S.over && S.soc && S.soc.state === "dialing" && S.app === "soc") socTalk(); }, reduceMotion ? 200 : 1500);
+    const tok = outgoing(t, bi("SOC", "資安監控中心"), "ext. 2199", "SOC", "is-soc", () => { S.soc = null; });
+    setTimeout(() => { if (S && !S.over && S.soc && S.soc.state === "dialing" && S.app === "soc" && S.outTok === tok) socTalk(); }, reduceMotion ? 200 : 1500);     // 11/26 (front-end review K58)
   }
 
   function happened(k) {   // only what has happened by now can be reported
@@ -898,6 +956,7 @@ Games.mfa = function (d, main, replay) {
       t.innerHTML = `<div class="mn-call is-talking is-soc">${head}<div class="mn-talk">${opening}</div>
         <button type="button" class="mn-end" data-end aria-label="Hang up">${ICON.hang}<span>${bi("Hang up", "掛斷")}</span></button></div>`;
       $("[data-end]", t).addEventListener("click", untake);
+      phoneFocus("[data-end]");     // 11/26 (front-end review K49)
       return;
     }
     S.soc.state = "talking";
@@ -910,6 +969,7 @@ Games.mfa = function (d, main, replay) {
     for (const b of $$(".mn-line", t)) dragSay(b, $("#mnTalk"), () => sayLine(b));
     $("#mnTell").addEventListener("click", reportDone);
     $("[data-end]", t).addEventListener("click", () => { if (S.soc.said.size) reportDone(); else { S.soc = null; untake(); } });
+    phoneFocus(".mn-line");     // 11/26 (front-end review K49): Enter says the line
   }
 
   /* Drag a line into the call to say it (Enter says it from the keyboard). A tap only nudges it up. */
@@ -929,13 +989,16 @@ Games.mfa = function (d, main, replay) {
         p.moved = true;
         const g = card.cloneNode(true);
         g.className = "mn-line mn-line-ghost";
-        g.style.width = `${card.getBoundingClientRect().width}px`;
+        // 11/26 (front-end review K51): the copy lives outside the scaled canvas: canvas-pixel size and padding, scaled by G.k()
+        g.style.width = `${card.offsetWidth}px`;
+        g.style.padding = getComputedStyle(card).padding;
+        g.style.transformOrigin = "0 0";
         document.body.appendChild(g);
         p.ghost = g;
         card.classList.add("is-lifted");
         CB.SFX.play("paper");
       }
-      if (p.ghost) { p.ghost.style.transform = `translate(${ev.clientX - p.dx}px, ${ev.clientY - p.dy}px) rotate(-2deg)`; zone.classList.toggle("is-target", inside(ev)); }
+      if (p.ghost) { p.ghost.style.transform = `translate(${ev.clientX - p.dx}px, ${ev.clientY - p.dy}px) scale(${G.k() || 1}) rotate(-2deg)`; zone.classList.toggle("is-target", inside(ev)); }
     });
     const end = (ev) => {
       if (!p) return;
@@ -966,7 +1029,7 @@ Games.mfa = function (d, main, replay) {
     const r = S.soc.items.find((x) => x.k === b.dataset.k);
     b.disabled = true;
     b.classList.add("is-said");
-    setTimeout(() => b.remove(), reduceMotion ? 0 : 240);
+    setTimeout(() => { b.remove(); CB.refocus("#mnDeck .mn-line:not([disabled]), #mnTell"); }, reduceMotion ? 0 : 240);     // 11/26 (front-end review K49): on to the next line
     S.soc.said.add(r.k);
     const box = $("#mnTalk"), hint = $("#mnDropHint");
     if (hint) hint.remove();
@@ -974,7 +1037,7 @@ Games.mfa = function (d, main, replay) {
     box.scrollTop = box.scrollHeight;
     CB.SFX.play("tap");
     const pts = r.good ? P.good : r.bad ? -P.bad : 0;
-    S.points = Math.max(0, S.points + pts); H.points(S.points, S.streak, pts || null);
+    addPts(pts);     // 11/26 (front-end review K56)
     $("#mnTell").disabled = false;
     setTimeout(() => {
       if (!S || S.over || !S.soc || S.soc.state !== "talking") return;
@@ -1004,6 +1067,7 @@ Games.mfa = function (d, main, replay) {
       ${S.reported.missed.length ? `<p class="mn-miss">${bi("You could also have told him:", "其實還可以告訴他：")}</p><ul class="mn-miss-l">${S.reported.missed.map((k) => { const r = story.report.find((x) => x.k === k); return `<li>${bi(r.en, r.zh)}</li>`; }).join("")}</ul>` : ""}
       <button type="button" class="mn-end" data-end aria-label="Hang up">${ICON.hang}<span>${bi("Hang up", "掛斷")}</span></button></div>`;
     $("[data-end]", t).addEventListener("click", untake);
+    phoneFocus("[data-end]");     // 11/26 (front-end review K49)
     addLog(clockAt(S.clock), bi("Called the SOC on 2199 and reported it. Password reset, all sessions signed out.", "撥 2199 回報資安監控中心。密碼已重設，所有工作階段都登出了。"), S.reported.allGood ? "is-ok" : "is-miss");
   }
 
@@ -1050,7 +1114,7 @@ Games.mfa = function (d, main, replay) {
       <p class="mn-auth-q">${bi("Are you trying to sign in?", "你正在登入嗎？")}</p>
       <p class="mn-auth-where">${bi(o.e.where_en, o.e.where_zh)}</p>
       <p class="mn-auth-ask">${bi("Enter the number shown on your screen.", "輸入螢幕上顯示的號碼。")}</p>
-      <div class="mn-auth-boxes" id="mnAuthBoxes"><b></b><b></b></div>
+      <div class="mn-auth-boxes" id="mnAuthBoxes" tabindex="-1" role="group" aria-label="The number on your screen: type two digits, then Enter"><b></b><b></b></div>
       ${keysHTML("mnAuthKeys", [["1", ""], ["2", ""], ["3", ""], ["4", ""], ["5", ""], ["6", ""], ["7", ""], ["8", ""], ["9", ""], ["", ""], ["0", ""], ["del", ""]])}
       <div class="mn-auth-btns"><button type="button" class="mn-auth-no" id="mnAuthNo">${bi("No, it's not me", "不是我")}</button><button type="button" class="mn-auth-yes" id="mnAuthYes" disabled>${bi("Yes", "是我")}</button></div>
       <button type="button" class="mn-auth-later" id="mnAuthLater">${bi("Later", "稍後")}</button></div>`;
@@ -1059,12 +1123,13 @@ Games.mfa = function (d, main, replay) {
     $("#mnAuthYes").addEventListener("click", () => ownAnswer(o.typed));
     $("#mnAuthLater").addEventListener("click", authLater);
     authDraw();
+    phoneFocus("#mnAuthBoxes");     // 11/26 (front-end review K49): type the two digits, Enter = Yes
   }
   /* 11/23 review: put the app away without answering (Later, or Escape). The sign-in keeps waiting: its card on the lock
      screen opens the app again, and the phone's dialler works in the meantime. */
   function authLater() {
     if (!S || S.app !== "auth") return;
-    untake();
+    untake(".mn-nw.is-own .mn-n");     // 11/26 (front-end review K49): untake refocuses, so it is told where
     CB.SFX.play("tap");
     CB.refocus(".mn-nw.is-own .mn-n");      // the keyboard waits on that card: Enter opens the app again
   }
@@ -1090,7 +1155,7 @@ Games.mfa = function (d, main, replay) {
     if (S.app === "auth") untake();
     if (x === o.e.match) return ownResolve("ok");
     o.tries += 1;
-    S.points = Math.max(0, S.points - P.ownWrong); H.points(S.points, S.streak, -P.ownWrong);
+    addPts(-P.ownWrong);     // 11/26 (front-end review K56)
     CB.SFX.play("bad");
     addLog(clockAt(S.clock), x === "deny" ? bi("You denied your own sign-in. Try again.", "你拒絕了自己的登入，再試一次。")
       : bi(`Wrong number (${x || "none"}): the sign-in was blocked. Try again.`, `號碼輸入錯誤（${x || "沒有輸入"}），登入被擋下了，再試一次。`), "is-miss");
@@ -1157,7 +1222,8 @@ Games.mfa = function (d, main, replay) {
     st.body.innerHTML = `<section class="rs-dinner mn-sum">
       <p class="rs-kicker">${bi(`${story.end} · quiet again`, `${story.end}・安靜下來了`)}</p>
       <h2 class="rs-dinner-title">${S.shields < sh.shields ? bi(`You made it to morning with ${S.shields} shield${S.shields > 1 ? "s" : ""}.`, `撐到天亮了，還剩 ${S.shields} 面盾牌。`)
-        : !denied && !r.doors && !S.reported ? bi("Nothing got through, but nobody was answering the phone.", "歹徒什麼都沒得逞，不過整晚都沒人接手機。")
+        // 11/26 (front-end review K60): not when you answered the call, called anyone back, or signed in on the phone
+        : !denied && !r.doors && !S.reported && !["hang", "back", "gaveup"].includes(S.res[CALL.id]) && !S.calledFake && !["ok", "ok_late"].includes(S.res[OWN.id]) ? bi("Nothing got through, but nobody was answering the phone.", "歹徒什麼都沒得逞，不過整晚都沒人接手機。")
         : bi("Nothing you didn't start got a yes from you.", "不是你發起的，你一個都沒同意。")}</h2>
       <div class="rx-stats rs-dinner-stats">
         <div><b>${denied}${stopped ? `<small>+${stopped}</small>` : ""}</b><span>${bi(stopped ? "prompts denied, + stopped by your report" : "prompts denied", stopped ? "拒絕的通知，加上回報後停掉的" : "拒絕的通知")}</span></div>
@@ -1166,13 +1232,16 @@ Games.mfa = function (d, main, replay) {
         <div><b>${r.report ? "✓" : S.reported ? "△" : "✗"}</b><span>${bi("reported to 2199", "打 2199 回報")}</span></div>
         <div><b class="rs-shields-row">${Array.from({ length: sh.shields }, (_, k) => CB.ICON.shield(k < S.shields)).join("")}</b><span>${bi("shields left", "剩下的盾牌")}</span></div></div>
       ${callWhyHTML()}
-      ${S.reported ? "" : `<p class="mn-late-call">${bi("03:24: the SOC called you. They had seen the prompts on their side and reset your password. Next time, call 2199 the moment it starts.", "03:24 資安監控中心打給你：他們那邊看到了這些通知，已經幫你重設密碼。下次一開始就打 2199。")}</p>`}
+      ${S.reported ? "" : S.res[CALL.id] === "back" ? `<p class="mn-late-call">${bi("You called 2199, but hung up before you told Jun-Hao what happened. Next time, tell him before you hang up.", "你有打 2199，可是還沒跟俊豪說發生什麼事就掛了。下次先講完再掛。")}</p>`     /* 11/26 (front-end review K59): you did call 2199 */
+        : `<p class="mn-late-call">${bi("03:24: the SOC called you. They had seen the prompts on their side and reset your password. Next time, call 2199 the moment it starts.", "03:24 資安監控中心打給你：他們那邊看到了這些通知，已經幫你重設密碼。下次一開始就打 2199。")}</p>`}
       ${CB.personHTML({ svg: CB.analyst(), name: ANALYST.name, name_zh: ANALYST.name_zh, role_en: ANALYST.role_en, role_zh: ANALYST.role_zh },
         bi(`Get some sleep. Security pulled the door log; I'll bring the sign-in logs. 07:30 at the policy board in the corridor.${S.log.length ? " Bring your night log." : ""}`,
           `去睡一下吧。安全室調出了門禁紀錄，我會帶登入紀錄。七點半走廊的政策公告欄見。${S.log.length ? "值班紀錄記得帶著。" : ""}`))}
       <button type="button" class="btn rs-start">${bi("07:30, the corridor", "早上七點半，走廊")}</button></section>`;
     G.meter(`<div class="rx-hud"><div class="rx-hud-clock"><b>${esc(story.end)}</b><span>${bi("on call", "值班")}</span></div><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
-    $(".rs-start", st.body).addEventListener("click", async () => {
+    $(".rs-start", st.body).addEventListener("click", async (ev) => {
+      // 11/26 (front-end review C01): Enter again during the time skip doesn't start a second skip and a second board
+      const b = ev.currentTarget; if (b.disabled) return; b.disabled = true;
       await CB.timeskip(st, { from: story.end, to: BOARD.time, place_en: "The Security Policy Board in the corridor", place_zh: "走廊的資安政策公告欄", day_en: "The morning after", day_zh: "隔天早上" });
       startBoard();
     });
@@ -1353,14 +1422,19 @@ Games.mfa = function (d, main, replay) {
   async function key(k) {
     const q = QV()[B.q];
     if (!q || B.solved[B.q] || q.kind !== "code") { lcd("CASE SOLVED", "已破案"); return; }
+    if (B.kpBusy) return;     // 11/26 (front-end review K50): WRONG CODE is still up; a second OK is not a second try
     if (k === "C") { B.typed = ""; digits(); lcd("ENTER CODE", "請輸入密碼"); return; }
     if (k !== "OK") { if (B.typed.length < 4) { B.typed += k; digits(); } return; }
     if (B.typed.length < 4) return;
     if (B.typed === d.code) { lcd("CODE OK · TAP BADGE", "密碼正確・請感應員工證", "is-ok"); return solve(q); }
     CB.nope(B);
+    B.kpBusy = true;
     lcd("WRONG CODE", "密碼錯誤", "is-bad");
     CB.cbSay(B.wrong[B.q] >= 2 ? bi(q.hint2_en, q.hint2_zh) : bi(q.hint1_en, q.hint1_zh), "is-no");
+    const b0 = B;
     await wait(900);
+    b0.kpBusy = false;
+    if (B !== b0) return;     // K50: the board was left (or played again) in the meantime
     B.typed = ""; digits(); lcd("ENTER CODE", "請輸入密碼");
   }
 
@@ -1369,9 +1443,9 @@ Games.mfa = function (d, main, replay) {
     if (k === q.answer) { B.step = 1; CB.cbSay(bi(q.evidence_en, q.evidence_zh), "is-good"); return renderQs(); }
     const o = q.options.find((x) => x.k === k);
     B.tried[k] = true;
+    renderQs();          // 11/26 (front-end review K46): re-render first, or the new card replaces the shaking one
     CB.nope(B);
     CB.cbSay(bi(o.why_en || "", o.why_zh || ""), "is-no");
-    renderQs();
   }
 
   function doorRow(kind, btn) {

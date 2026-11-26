@@ -315,8 +315,18 @@ const CB = (() => {
         box.innerHTML = html;
         st.body.appendChild(box);
         const stay = !!(opt && opt.stay);
-        const close = () => { box.remove(); document.removeEventListener("keydown", onKey); };
-        const onKey = (ev) => { if (ev.key === "Escape") { ev.preventDefault(); close(); } };
+        // 11/26 (front-end review K30): closing hands the keyboard back to the control that opened it, and a box that a
+        // redraw already took away drops its Escape listener instead of swallowing the next Escape
+        const back = document.activeElement;
+        const close = () => {
+          box.remove(); document.removeEventListener("keydown", onKey);
+          const a = document.activeElement;
+          if ((!a || a === document.body) && back && back !== document.body && back.isConnected) back.focus({ preventScroll: true });
+        };
+        const onKey = (ev) => {
+          if (!box.isConnected) { document.removeEventListener("keydown", onKey); return; }
+          if (ev.key === "Escape") { ev.preventDefault(); close(); }
+        };
         if (!stay) {
           document.addEventListener("keydown", onKey);
           box.addEventListener("click", (ev) => { if (ev.target === box) close(); });
@@ -342,6 +352,7 @@ const CB = (() => {
         <button type="button" class="btn rs-start">${o.button || bi("Start", "開始")}</button></div>
       <div class="rs-brief-rules"><p class="rs-brief-rules-h">${bi("How to play", "怎麼玩")}</p><ol class="${tiles ? "cb-rules" : "rx-rules"}">${rules}</ol></div></section>`;
     $(".rs-start", st.body).addEventListener("click", () => { SFX.play("open"); o.onStart(); });
+    refocus(".rs-start");   // 11/26 (front-end review K29): the title card's focused button went away with the redraw
   }
 
   /* The title card: the chapter's scene pushing in slowly between black bars, the case file, the title, when and where.
@@ -448,8 +459,35 @@ const CB = (() => {
     p.innerHTML = `<div><p>${bi("Paused", "暫停中")}</p><button type="button" class="btn">${ICON.play}${bi("Resume", "繼續")}</button></div>`;
     st.body.appendChild(p);
     $("button", p).addEventListener("click", onResume);
+    // 11/26 (front-end review K28): while paused the desk behind the card is inert (Tab used to reach the queue and the
+    // stamps), and Resume hands the keyboard back to where it was (it fell to the page before)
+    let prev = null, made = [];
     return {
-      set(on) { p.hidden = !on; st.$rs.classList.toggle("is-paused", on); if (on) $("button", p).focus({ preventScroll: true }); },
+      set(on) {
+        p.hidden = !on; st.$rs.classList.toggle("is-paused", on);
+        // 11/26 (front-end review, mfa check): a cut scene makes #rsBody inert, and Resume sits inside it. Pausing during a
+        // cut lifts that (the desk is made inert one by one below), Resume puts it back while the cut is still up
+        const cut = $("#rsCut");
+        if (cut && !cut.hidden) st.body.inert = !on;
+        if (on) {
+          made = made.filter((c) => c.isConnected);
+          if (!made.length) {
+            prev = document.activeElement;
+            made = Array.from(st.body.children).filter((c) => c !== p && !c.inert);
+            for (const c of made) c.inert = true;
+          }
+          $("button", p).focus({ preventScroll: true });
+        } else {
+          for (const c of made) c.inert = false;
+          made = [];
+          const a = document.activeElement;
+          if (!a || a === document.body || p.contains(a)) {
+            if (prev && prev !== document.body && prev.isConnected) prev.focus({ preventScroll: true });
+            else { const b = $("[data-pause]"); if (b) b.focus({ preventScroll: true }); }
+          }
+          prev = null;
+        }
+      },
     };
   }
 

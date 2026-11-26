@@ -43,10 +43,12 @@ const Minimap = (() => {
     if (!M.data || !M.data.spots) return;
     const box = document.createElement("div");
     box.className = "mm"; box.id = "mm";
+    // 11/26 (front-end review K19): the "Map 地圖" chip sits in the top left corner, so the place's name gets the whole width
+    // of the caption (next to the chip only about 73 px were left and almost every name was cut)
     box.innerHTML = `<button type="button" class="mm-mini lg-hi" id="mmMini" aria-controls="mmPanel" aria-expanded="false">
         <svg class="mm-mini-svg" id="mmMiniSvg" aria-hidden="true"></svg>
-        <span class="mm-mini-cap"><span class="mm-mini-t"><b id="mmHereEn"></b><small lang="zh-Hant" id="mmHereZh"></small></span>
-          <span class="mm-mini-open">${ICON_OPEN}<span>Map <span lang="zh-Hant">地圖</span></span></span></span></button>
+        <span class="mm-mini-open">${ICON_OPEN}<span>Map <span lang="zh-Hant">地圖</span></span></span>
+        <span class="mm-mini-cap"><span class="mm-mini-t"><b id="mmHereEn"></b><small lang="zh-Hant" id="mmHereZh"></small></span></span></button>
       <button type="button" class="mm-hide" id="mmHide" title="Hide the mini map 收起小地圖" aria-label="Hide the mini map">${ICON_HIDE}</button>
       <button type="button" class="mm-pill lg-hi" id="mmPill" title="Show the mini map 顯示小地圖" aria-label="Show the mini map" hidden><span class="mm-pill-ico">${ICON_MAP}</span><span class="dock-t"><b>Map</b><small lang="zh-Hant">地圖</small></span></button>
       <section class="mm-panel lg-hi" id="mmPanel" hidden aria-label="Map">
@@ -279,6 +281,7 @@ const Minimap = (() => {
   // the map's key for "you": the last place it knows when the place is not current (setStale)
   const hereKey = () => M.stale ? '<span><i class="mm-key is-last"></i>last place <span lang="zh-Hant">上次的位置</span></span>'
     : '<span><i class="mm-key is-here"></i>you <span lang="zh-Hant">你</span></span>';
+  const hereAria = () => (M.stale ? ", the last place this map knows" : ", you are here");      // 11/26 (front-end review K12)
   function setStale(on) {
     if (!M.room || M.stale === on) return;
     M.stale = on;
@@ -339,8 +342,9 @@ const Minimap = (() => {
   const pts = (list) => list.map(([x, y]) => P(x, y).join(",")).join(" ");
   const imgs = (g, list) => { for (const im of list || []) { const b = im.box, [x, y] = P(b[0], b[3]); g.appendChild(el("image", { href: IMG + im.src, x, y, width: b[2] - b[0], height: b[3] - b[1], preserveAspectRatio: "none", class: "mm-img" })); } };
 
-  function render() {
+  function render(again) {
     if (M.state !== "open" || !M.data) return;
+    const keep = again ? null : focusNow();      // 11/26 (front-end review K14): what had the keyboard focus before the redraw
     const svg = q("#mmSvg"), layer = M.mode === "plan" ? "plan:" + M.building : "outdoor";
     if (M.layer !== layer) {          // the pictures only change when you go in or out; panning just moves the view
       M.layer = layer;
@@ -352,7 +356,12 @@ const Minimap = (() => {
     // 11/23 (review): the marks, the names at the top and the key at the bottom depend on the layer, the place, the map's
     // size and the zoom, not on where the view is; panning only moves the view. Before, every pointer move of a drag drew
     // all of them again (and the "you are here" ring started over each time).
-    const size = svgSize(), sig = [layer, M.room, size[0], size[1], M.mode === "plan" ? "" : M.view.w.toFixed(4)].join("|");
+    const size = svgSize();
+    // 11/26 (front-end review K13): the view takes the map's current shape (after a resize, or once the key at the bottom
+    // changed height); zooming only scaled w and h together, so the dots, the drag speed and the edges used a stale scale
+    if (M.mode !== "plan" && M.view) { M.view.h = (M.view.w * size[1]) / size[0]; clampView(); }
+    // 11/26 (front-end review K12): "last place" is part of the drawing too (the flag, the key, the labels)
+    const sig = [layer, M.room, M.stale ? 1 : 0, size[0], size[1], M.mode === "plan" ? "" : M.view.w.toFixed(4)].join("|");
     if (sig === M.sig) { if (M.mode !== "plan") setView(svg, M.view); return; }
     M.sig = sig;
     const marks = q("#mmMarks");
@@ -363,6 +372,33 @@ const Minimap = (() => {
     const zin = q('[data-z="in"]'), zout = q('[data-z="out"]');
     zin.disabled = M.mode === "plan";
     zout.disabled = M.mode === "outdoor" && M.view && M.view.w >= fullView().w - 0.5;
+    // 11/26 (front-end review K13): the names at the top or the key at the bottom changed the map's height (the Map tab):
+    // draw once more at the new size
+    const now = svgSize();
+    if (!again && (now[0] !== size[0] || now[1] !== size[1])) render(true);
+    if (keep) refocus(keep);
+  }
+  /* 11/26 (front-end review K14): every redraw replaces the places, the buildings and the names at the top, and the "−"
+     button turns off when zoomed right out, so the keyboard focus fell to the page and Tab started from the top again.
+     The focus goes back to the same place, or to what took the place of the one used. */
+  function focusNow() {
+    const a = document.activeElement, panel = q("#mmPanel");
+    if (!a || !panel || a === panel || !panel.contains(a)) return null;
+    return { el: a, go: a.getAttribute("data-go"), b: a.getAttribute("data-b"), crumb: a.getAttribute("data-crumb"), from: M.building };
+  }
+  function refocus(k) {
+    const a = document.activeElement;
+    if (M.state !== "open" || (k.el.isConnected && !k.el.disabled) || (a && a !== document.body && a !== k.el)) return;
+    const marks = q("#mmMarks"), by = (attr, v) => (v ? marks.querySelector(`[${attr}="${CSS.escape(v)}"]`) : null);
+    const ok = (n) => n && !n.disabled && n.getClientRects().length > 0;
+    const next = [
+      by("data-go", k.go),                                                      // the same place, drawn again
+      k.b && M.mode === "plan" ? marks.querySelector(".mm-spot.is-here[data-go]") || marks.querySelector("[data-go]") : null,   // went into a building
+      by("data-b", k.b),
+      k.crumb ? by("data-b", k.from) : null,                                    // came out of a building: that building
+      q('#mmPanel [data-z="in"]'), q('#mmPanel [data-z="out"]'), q("#mmCrumbs button"), q("#mmClose"),
+    ].find(ok);
+    if (next) next.focus({ preventScroll: true });
   }
 
   /* the small map in the corner: the building you are in, or 150 m of the outdoor map around you */
@@ -424,7 +460,7 @@ const Minimap = (() => {
       const s = M.data.spots[key], r = room(key), [x, y] = P(s[0], s[1]), isHere = key === here, close = r.kind === "closeup";
       if (mini && !isHere && (Math.abs(s[0] - v.x) > v.w / 2 || Math.abs(s[1] - v.y) > v.h / 2)) continue;
       const air = key === "sky" || key === "flight_home";
-      const grp = el("g", { class: `mm-spot${close ? " is-close" : ""}${air ? " is-air" : ""}${isHere ? " is-here" : ""}`, "data-go": mini ? null : key, tabindex: mini ? null : 0, role: mini ? null : "button", "aria-label": mini ? null : `${nameOf(key).join(" ")}${isHere ? ", you are here" : ""}: go there` });
+      const grp = el("g", { class: `mm-spot${close ? " is-close" : ""}${air ? " is-air" : ""}${isHere ? " is-here" : ""}`, "data-go": mini ? null : key, tabindex: mini ? null : 0, role: mini ? null : "button", "aria-label": mini ? null : `${nameOf(key).join(" ")}${isHere ? hereAria() : ""}: go there` });
       if (isHere) grp.appendChild(el("circle", { class: "mm-here-ring", cx: x, cy: y, r: px(12) }));
       if (!mini) grp.appendChild(el("circle", { class: "mm-hit", cx: x, cy: y, r: px(11) }));
       if (air) grp.appendChild(el("path", { class: "mm-balloon", d: balloon(x, y, px(7)), "stroke-width": px(1.4) }));
@@ -450,30 +486,51 @@ const Minimap = (() => {
       k = Math.min(W / (box[2] - box[0]), H / (box[3] - box[1]));
     }
     const px = (n) => n / k;
+    const tags = [];
     if (!mini) {
+      // 11/26 (front-end review K17, K73): the tabs are a fixed size on the screen, the rooms shrink with the map (a phone, or
+      // the narrow map beside the bigger window), so a tab must fit its room and stay off its places: the Chinese goes first,
+      // then the letters get smaller, then the tab goes (the places and their tips still name the room)
+      const dots = b.rooms.map((key) => { const s = spotOf(key, bk), r = room(key); return s && r ? [...P(s[0], s[1]), px(r.kind === "closeup" ? 5.2 : 7.6)] : null; }).filter(Boolean);
       if ((plan.rooms || []).length > 1) for (const r of plan.rooms) {     // the rooms' names in their top left corners, clear of the places in them
         const [lx, ly] = P(r.box[0], r.box[3]);
-        tag(g, lx + px(5), ly + px(5), r.en, r.zh, px, r.restricted ? " is-restricted" : "");
+        // 11/26 (front-end review check): the other rooms' boxes, so a tab that still runs past its own room goes only when it
+        // would run into another room (the red Server room tab is wider than its narrow room even at 1280 px)
+        const others = plan.rooms.filter((o) => o !== r).map((o) => { const [ox, oy] = P(o.box[0], o.box[3]); return [ox, oy, o.box[2] - o.box[0], o.box[3] - o.box[1]]; });
+        const t = tag(g, lx + px(5), ly + px(5), r.en, r.zh, px, r.restricted ? " is-restricted" : "", { maxW: r.box[2] - r.box[0] - px(5), dots, others });
+        if (t) tags.push(t);
       }
       for (const c of plan.circles || []) { const [cx, cy] = P(c.x, c.y); tag(g, cx - px(52), cy - c.r - px(2), c.en, c.zh, px, ""); }
     }
+    let hereGrp = null, hereAt = null;
     for (const key of b.rooms) {
       const s = spotOf(key, bk), r = room(key);
       if (!s || !r) continue;
       const [x, y] = P(s[0], s[1]), isHere = key === M.room, close = r.kind === "closeup";
       if (mini && !isHere && close) continue;
-      const grp = el("g", { class: `mm-spot${close ? " is-close" : ""}${isHere ? " is-here" : ""}${r.kind === "bad" ? " is-bad" : ""}`, "data-go": mini ? null : key, tabindex: mini ? null : 0, role: mini ? null : "button", "aria-label": mini ? null : `${nameOf(key).join(" ")}${isHere ? ", you are here" : ""}: go there` });
+      const grp = el("g", { class: `mm-spot${close ? " is-close" : ""}${isHere ? " is-here" : ""}${r.kind === "bad" ? " is-bad" : ""}`, "data-go": mini ? null : key, tabindex: mini ? null : 0, role: mini ? null : "button", "aria-label": mini ? null : `${nameOf(key).join(" ")}${isHere ? hereAria() : ""}: go there` });
       if (isHere) grp.appendChild(el("circle", { class: "mm-here-ring", cx: x, cy: y, r: px(12) }));
       if (!mini) grp.appendChild(el("circle", { class: "mm-hit", cx: x, cy: y, r: px(10) }));
       grp.appendChild(el("circle", { class: "mm-halo", cx: x, cy: y, r: px(close ? 5.2 : 7.6) }));
       grp.appendChild(el("circle", { class: "mm-dot", cx: x, cy: y, r: px(close ? 3.6 : 5.6), "stroke-width": px(1.8) }));
       if (!mini && b.rooms.length <= 6 && !isHere) label(grp, x + px(9), y + px(4), nameOf(key)[0].includes(" · ") ? nameOf(key)[0].split(" · ").pop() : nameOf(key)[0], px, "mm-spot-t", "start", tailZh(key));
-      if (isHere && !mini) {
-        const w = px(96), h = px(17), lx = x - w / 2, ly = y - px(14) - h;
-        grp.appendChild(el("rect", { class: "mm-here-flag", x: lx, y: ly, width: w, height: h, rx: px(4) }));
-        grp.appendChild(el("text", { class: "mm-here-flag-t", x, y: ly + h - px(5), "font-size": px(10), "text-anchor": "middle" }, M.stale ? "Last here <tspan class=\"mm-here-flag-zh\">上次在這裡</tspan>" : "You are here <tspan class=\"mm-here-flag-zh\">你在這裡</tspan>"));
+      // 11/26 (front-end review K16): where you are is drawn last, so the places after it in the list no longer cover its flag
+      if (isHere) { hereGrp = grp; hereAt = [x, y]; } else g.appendChild(grp);
+    }
+    if (hereGrp) {
+      g.appendChild(hereGrp);
+      if (!mini) {
+        // 11/26 (front-end review K16): the flag is as wide as its words (the text was wider than the fixed 96 px pill), and
+        // a room's tab under it goes
+        const [x, y] = hereAt, h = px(17), ly = y - px(14) - h;
+        const flag = el("rect", { class: "mm-here-flag", x: x - px(48), y: ly, width: px(96), height: h, rx: px(4) });
+        const ft = el("text", { class: "mm-here-flag-t", x, y: ly + h - px(5), "font-size": px(10), "text-anchor": "middle" }, M.stale ? "Last here <tspan class=\"mm-here-flag-zh\">上次在這裡</tspan>" : "You are here <tspan class=\"mm-here-flag-zh\">你在這裡</tspan>");
+        hereGrp.appendChild(flag); hereGrp.appendChild(ft);
+        let w = px(96);
+        try { const tw = ft.getComputedTextLength(); if (tw > 0) w = tw + px(14); } catch { /* not measurable: keep 96 px */ }
+        flag.setAttribute("x", x - w / 2); flag.setAttribute("width", w);
+        for (const tg of tags) if (tg.x < x + w / 2 && tg.x + tg.w > x - w / 2 && tg.y < ly + h && tg.y + tg.h > ly) { tg.back.remove(); tg.t.remove(); }
       }
-      g.appendChild(grp);
     }
   }
 
@@ -483,11 +540,27 @@ const Minimap = (() => {
       e(text) + (zh && zh !== text ? ` <tspan class="mm-room-zh">${e(zh)}</tspan>` : "")));
   }
   // a room's name: a dark tab with the English and the Chinese
-  function tag(g, x, y, en, zh, px, cls) {
+  // fit (11/26, front-end review K17/K73): { maxW: the room's width left for the tab, dots: the places [x, y, r] to keep clear
+  // of, others: the other rooms [x, y, w, h] }; returns the tab's box, or null when it is too wide and would run into another room
+  function tag(g, x, y, en, zh, px, cls, fit) {
+    const h = px(17);
     const t = el("text", { class: "mm-room-t", x: x + px(5), y: y + px(12), "font-size": px(10) }, `${e(en)} <tspan class="mm-room-zh">${e(zh)}</tspan>`);
-    const back = el("rect", { class: `mm-room-tab${cls}`, x, y, height: px(17), rx: px(4), width: px(10) });
+    const back = el("rect", { class: `mm-room-tab${cls}`, x, y, height: h, rx: px(4), width: px(10) });
     g.appendChild(back); g.appendChild(t);
-    try { back.setAttribute("width", t.getComputedTextLength() + px(10)); } catch { back.setAttribute("width", px(8 * (en.length + zh.length))); }
+    const measure = () => { try { return t.getComputedTextLength() + px(10); } catch { return px(8 * t.textContent.length); } };
+    let w = measure();
+    if (fit) {
+      const clear = () => !fit.dots.some(([cx, cy, r]) => cx + r > x && cx - r < x + w && cy + r > y && cy - r < y + h);
+      for (const smaller of [() => { t.textContent = en; }, () => { t.setAttribute("font-size", px(8.5)); }]) {
+        if (w <= fit.maxW && clear()) break;
+        smaller(); w = measure();
+      }
+      // 11/26 (front-end review check): past its room into free space is fine (as before); into another room, the tab goes
+      const intoOther = () => (fit.others || []).some(([ox, oy, ow, oh]) => ox < x + w && ox + ow > x && oy < y + h && oy + oh > y);
+      if (w > fit.maxW && intoOther()) { back.remove(); t.remove(); return null; }
+    }
+    back.setAttribute("width", w);
+    return { back, t, x, y, w, h };
   }
 
   const centreOf = (b) => (b.foot ? [(b.foot[0] + b.foot[2]) / 2, (b.foot[1] + b.foot[3]) / 2] : b.circle ? [b.circle[0], b.circle[1]] : [b.hull.x, b.hull.y]);
@@ -506,8 +579,8 @@ const Minimap = (() => {
   function foot() {
     const f = q("#mmFoot");
     if (M.mode === "plan") {
-      const b = M.data.buildings[M.building];
-      f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-close"></i>close-up <span lang="zh-Hant">近看</span></span>${hereKey()}<span class="mm-foot-hint">${b.rooms.length} scenes inside · zoom out for outdoors <span lang="zh-Hant">室內 ${b.rooms.length} 個場景，縮小看室外</span></span>`;
+      const b = M.data.buildings[M.building], n = b.rooms.length;      // 11/26 (front-end review K18): "1 scene", not "1 scenes"
+      f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-close"></i>close-up <span lang="zh-Hant">近看</span></span>${hereKey()}<span class="mm-foot-hint">${n} scene${n > 1 ? "s" : ""} inside · zoom out for outdoors <span lang="zh-Hant">室內 ${b.rooms.length} 個場景，縮小看室外</span></span>`;
     } else f.innerHTML = `<span><i class="mm-key"></i>place <span lang="zh-Hant">地點</span></span><span><i class="mm-key is-bld"></i>building, click to go in <span lang="zh-Hant">建築，點一下就進去</span></span>${hereKey()}`;
   }
 
@@ -611,7 +684,9 @@ const Minimap = (() => {
       M.hover = id;
       if (t.dataset.go) {
         const [en, zh] = nameOf(id), r = room(id);
-        box.innerHTML = `<b>${e(en)}</b><span lang="zh-Hant">${e(zh)}</span>${id === M.room ? `<em>You are here <span lang="zh-Hant">你在這裡</span></em>` : r && r.kind === "closeup" ? `<em>Close-up · click to go <span lang="zh-Hant">近看，點一下就過去</span></em>` : `<em>Click to go <span lang="zh-Hant">點一下就過去</span></em>`}`;
+        // 11/26 (front-end review K12): the last place the map knows says so, as the flag does
+        const here = id !== M.room ? "" : M.stale ? `<em>Last here · click to go <span lang="zh-Hant">上次在這裡，點一下就過去</span></em>` : `<em>You are here <span lang="zh-Hant">你在這裡</span></em>`;
+        box.innerHTML = `<b>${e(en)}</b><span lang="zh-Hant">${e(zh)}</span>${here ? here : r && r.kind === "closeup" ? `<em>Close-up · click to go <span lang="zh-Hant">近看，點一下就過去</span></em>` : `<em>Click to go <span lang="zh-Hant">點一下就過去</span></em>`}`;
       } else {
         const b = M.data.buildings[id];
         box.innerHTML = `<b>${e(b.en)}</b><span lang="zh-Hant">${e(b.zh)}</span><em>${b.rooms.length} scene${b.rooms.length > 1 ? "s" : ""} inside · click to go in <span lang="zh-Hant">裡面 ${b.rooms.length} 個場景，點一下就進去</span></em>`;

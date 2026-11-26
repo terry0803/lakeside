@@ -37,13 +37,20 @@ const G = {
         body: JSON.stringify({ session: G.session, game: G.name, score, total }) });
       if (!r.ok) throw new Error(String(r.status));
       G.unsaved = null;
-      localStorage.setItem("lia.gamesUpdated", String(Date.now()));   // the assistant page listens for this
+      const old = document.getElementById("gSaveErr"); if (old) old.remove();   // 11/26 (front-end review K23): an earlier failure's note goes
+      // 11/26 (front-end review K24): blocked storage (a third-party frame, incognito) must not turn a stored score into "not saved"
+      try { localStorage.setItem("lia.gamesUpdated", String(Date.now())); } catch { /* storage blocked; the parent refreshes on game-close */ }   // the assistant page listens for this
       return true;
     } catch {
       G.unsaved = { game: G.name, score, total };
-      const n = document.createElement("p"); n.className = "g-error";
+      // 11/26 (front-end review K23): #game is the stage (overflow hidden, filled by .rs), so a note added after it was clipped
+      // away. It now goes into the results card itself, and one note is reused when "Play again" fails again.
+      let n = document.getElementById("gSaveErr");
+      if (!n) { n = el("p", "g-error g-save-err"); n.id = "gSaveErr"; n.setAttribute("role", "alert"); }
       n.innerHTML = bi("Score not saved: the server is busy or off. Try again in a few minutes.", "分數沒有存到：伺服器忙或沒開，過幾分鐘再試一次。");
-      ($("#game") || document.body).appendChild(n);
+      const card = $(".rs-finale .g-end"), row = card && $(".g-end-actions", card);
+      if (row) card.insertBefore(n, row);
+      else ($("#rsBody") || $("#game") || document.body).appendChild(n);
       return false;
     }
   },
@@ -115,7 +122,9 @@ G.fit = function () {
   const sw = rs.clientWidth, sh = rs.clientHeight;
   if (!sw || !sh) return;
   const ch = Math.max(FIT.H, body.offsetHeight);
-  const k = Math.max(0.3, Math.min(1.3, sw / FIT.W, sh / ch));
+  // 11/26 (front-end review K25): the floor was 0.3, so a frame narrower than 432 px (a phone) cut the canvas off on both
+  // sides; the floor is now only a guard against a zero scale
+  const k = Math.max(0.05, Math.min(1.3, sw / FIT.W, sh / ch));
   FIT.k = k;
   const x = Math.round((sw - FIT.W * k) / 2), y = Math.max(0, Math.round((sh - ch * k) / 2));
   body.style.transform = `translate(${x}px, ${y}px) scale(${k})`;

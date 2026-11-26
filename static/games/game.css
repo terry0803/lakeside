@@ -210,6 +210,7 @@ mark.ev::after, .ev-link::after { content: attr(data-n); position: absolute; top
 .rs-brief-clock b { font: 600 84px/1 var(--font-sign); color: #fff; letter-spacing: 1px; font-variant-numeric: tabular-nums; }
 .rs-brief-clock span { font: 600 15px var(--font-sign); letter-spacing: .4px; color: var(--brass-hi); }
 .rs-brief-clock i { font-style: normal; font-family: var(--font-body); margin-left: 4px; color: #cfe3e6; }
+.rs-brief-clock i[lang] { word-break: keep-all; }   /* 11/26 (front-end review K75): 週日凌晨 moves down whole, no 週|日凌晨 */
 .rs-brief-main { padding: 26px 30px 28px; }
 .rs-brief-main .rx-mentor-name { color: var(--ink-3); text-shadow: none; }
 .rs-brief-main .rx-say { box-shadow: none; background: var(--shallows); }
@@ -529,6 +530,9 @@ svg.tell.is-found { box-shadow: none; outline: 3px solid var(--pencil); outline-
 .rs.is-paused .rs-screen { filter: blur(8px) saturate(.5); }
 .rs-paused { position: absolute; inset: 0; z-index: 9; display: grid; place-items: center; background: rgba(10, 14, 22, .32); }
 .rs-paused[hidden] { display: none; }
+/* 11/26 (front-end review): paused during a 'What happened next' cut: the cut stepped in front of the pause card on a scaled
+   stage (Resume could not be clicked); it waits out of sight until Resume */
+.rs.is-paused .rs-cut { visibility: hidden; }
 .rs-paused > div { background: rgba(255, 255, 255, .97); border-radius: 14px; padding: 22px 34px; text-align: center; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); }
 .rs-paused p { margin: 0 0 14px; font: 600 26px var(--font-sign); color: var(--lake); }
 .rs-paused p span[lang] { font: 600 18px var(--font-body); color: var(--ink-2); margin-left: 8px; }
@@ -2278,7 +2282,7 @@ svg.tell.is-found { box-shadow: none; outline: 3px solid var(--pencil); outline-
 .ir-rule .ir-rule-k span[lang] { display: inline; margin-left: 4px; font-size: 12px; color: var(--alert); }
 .ir-rule small { display: block; color: var(--ink-3); font-size: 11.5px; }
 .ir-rule small span[lang] { margin-left: 4px; }
-.rs.is-paused .ir-map-wrap, .rs.is-paused .ir-hand, .rs.is-paused .ir-status { filter: blur(8px) saturate(.5); }
+.rs.is-paused .ir-left, .rs.is-paused .ir-map-wrap, .rs.is-paused .ir-hand, .rs.is-paused .ir-status { filter: blur(8px) saturate(.5); }  /* 11/26 (front-end review K61): the caller, phone and log blur too */
 
 /* the end of the night */
 .ir-sum-h { margin: 16px 0 8px; font-size: 15px; }
@@ -2641,6 +2645,24 @@ body.is-fit .rx-hud > div > span { font-size: 11px; white-space: nowrap; }
 body.is-fit .rx-hud > div > span span[lang] { margin-left: 2px; }
 body.is-fit .rx-hud-shields #hudShields svg { width: 20px; height: 22px; }
 body.is-fit .g-meter { line-height: 1.2; }
+/* 11/26 (front-end review K26, K33, K52, K27, K36): narrow screens in fit mode (every game page). The header's right group
+   (Sources, Sound, the score bar) could not wrap, so it ran over "Back to the tour" and made the page 676-714 px wide on a
+   phone; it now gets its own row and wraps, and the Sources panel opens from its left edge inside the screen. The cut scene
+   and the clock banners sit outside the scaled canvas, and their narrow rules were for non-fit pages only. */
+@media (max-width: 860px) {
+  .g-right { grid-column: 1 / -1; grid-row: 3; justify-self: stretch; justify-content: flex-start; flex-wrap: wrap; row-gap: 6px; min-width: 0; }
+  .g-right .g-meter { min-width: 0; }
+  body.is-fit .rx-hud { flex-wrap: wrap; justify-content: flex-start; gap: 6px 12px; }
+  body.is-fit .g-title { white-space: normal; flex-wrap: wrap; }
+  .g-foot-panel { right: auto; left: 0; width: min(560px, calc(100vw - 48px)); }
+  /* one column: the close-up on top (scrolls on its own if tall), the text box below in the rest of the height and scrolling
+     inside it as in a short window (the rule further down); .rs added so this beats that rule's one-row grid */
+  body.is-fit .rs .rs-cut { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 12px; padding: 14px; }
+  body.is-fit .rs-cut-inset { max-width: 100%; max-height: 30vh; overflow: auto; }
+  body.is-fit .rs-cut-inset > * { max-width: 100%; }
+  body.is-fit .rs-wave { width: max-content; max-width: calc(100% - 24px); white-space: normal; text-align: center; border-radius: 16px; }
+  body.is-fit .rs-wave span[lang] { display: block; margin-left: 0; }
+}
 /* chapter 4 on one screen: left = Jun-Hao, the desk phone, the log; centre = the map with the status strip under it;
    right = the SOC's tools, your cards, the USB drive */
 body.is-fit .ir-play { grid-template-columns: 250px minmax(0, 1fr) 262px; gap: 14px; height: 768px; margin: 0 auto; align-items: stretch; }

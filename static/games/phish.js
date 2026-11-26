@@ -329,7 +329,27 @@ Games.phish = function (d, main, replay) {
     $rs.classList.toggle("is-paused", S.paused);
     const b = $("[data-pause]", meter);
     if (b) { b.setAttribute("aria-pressed", String(S.paused)); b.innerHTML = S.paused ? `${ICON.play}<span>${bi("Resume", "繼續")}</span>` : `${ICON.pause}<span>${bi("Pause", "暫停")}</span>`; }
+    // 11/26 (front-end review K32): the overlay only stops the mouse; the inbox behind it is inert so Tab can't reach it either
+    // (.rs-paused is its sibling, so Resume stays reachable; a cut scene makes #rsBody inert, a different element)
+    const play = $(".rs-play", $("#rsBody"));
+    if (play) play.inert = S.paused;
+    // 11/26 (front-end review, mfa check): a cut scene makes #rsBody inert, and Resume sits inside it; pausing during a cut
+    // lifts that (the inbox stays inert above), Resume puts it back while the cut is still up
+    const cut = $("#rsCut");
+    if (cut && !cut.hidden && $("#rsBody")) $("#rsBody").inert = !S.paused;
     if (S.paused) $("#rsResume").focus({ preventScroll: true });
+    else {
+      // 11/26 (front-end review K37): Resume on the overlay hides the button that had the keyboard: hand it back to the inbox
+      const a = document.activeElement;
+      if (!a || a === document.body || !a.isConnected || a === $("#rsResume")) inboxFocus();
+    }
+  }
+
+  // 11/26 (front-end review K37): the keyboard goes back to the open email's row (Enter there only opens the email, so a
+  // held Enter can't decide anything), else the first row
+  function inboxFocus() {
+    const a = (S.open && rowOf(S.open)) || $("#rxList .rx-item");
+    if (a) a.focus({ preventScroll: true });
   }
 
   /* ------------------------------------------------------------------ the score bar in the page header */
@@ -526,9 +546,12 @@ Games.phish = function (d, main, replay) {
     wrapTells(art, e);
     links(read);
     for (const k of S.found[id] || []) for (const x of $$(`.tell[data-k="${k}"]`, read)) x.classList.add("is-found");
-    if (S.hinted[id]) for (const x of $$(`.tell[data-k="${S.hinted[id]}"]`, read)) x.classList.add("is-hinted");
+    // 11/26 (front-end review K35): a hinted tell you already found stays red when the email is opened again
+    const h = S.hinted[id];
+    if (h && !(S.found[id] && S.found[id].has(h))) for (const x of $$(`.tell[data-k="${h}"]`, read)) x.classList.add("is-hinted");
     if (live) {
       art.addEventListener("click", (ev) => inspect(ev, e));
+      keyHunt(art, e);
       art.classList.add("is-arriving");
     } else {
       showResult(e, false);
@@ -559,6 +582,7 @@ Games.phish = function (d, main, replay) {
       const key = t.dataset.k, found = (S.found[e.id] ||= new Set());
       if (found.has(key)) return;
       found.add(key);
+      if (S.hinted[e.id] === key) delete S.hinted[e.id];      // 11/26 (front-end review K35): found, so no longer a hint
       for (const x of $$(`.tell[data-k="${key}"]`, $("#rxRead"))) { x.classList.add("is-found"); x.classList.remove("is-hinted"); }
       S.points += P.tell;
       float(ev.pageX, ev.pageY, `<b>+${P.tell}</b> ${bi(signs[key].en, signs[key].zh)}`, "is-good");
@@ -573,6 +597,70 @@ Games.phish = function (d, main, replay) {
     S.points -= cost;
     float(ev.pageX, ev.pageY, `${cost ? `<b>−${cost}</b> ` : ""}${bi("Not one of the signs this game counts", "這裡不是這次要找的警訊")}`, "is-miss");
     if (cost) hudPoints(-cost);
+  }
+
+  /* 11/26 (front-end review K38): the keyboard way to point at a tell. Making only the tells focusable would let Tab jump
+     from answer to answer, so the email is one Tab stop and the arrow keys walk it word by word (every word alike, tell or
+     not; the selection shows where you are). Enter or Space on a word is the same as a click there: a tell scores, plain
+     text costs the usual miss. */
+  function keyHunt(art, e) {
+    let units = null, at = -1;
+    art.tabIndex = 0;
+    art.setAttribute("aria-label", "Email: arrow keys move word by word, Enter points out a sign. 信件：用方向鍵一格一格移，按 Enter 點出可疑的地方。");
+    const build = () => {
+      const list = [];
+      for (const root of $$(".mail-subj, .mail-from, .mail-to, .mail-body", art)) {
+        const parts = [];
+        let s = "";
+        const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+          { acceptNode: (n) => (n.nodeType === 1 && n.matches(".mail-qr, .mail-file") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT) });
+        for (let n; (n = w.nextNode());) {
+          if (n.nodeType === 1) { if (/^(BR|P|DIV)$/.test(n.tagName)) s += " "; continue; }
+          parts.push([n, s.length]); s += n.nodeValue;
+        }
+        // a word can run across text nodes (a tell inside an address), so the range starts and ends wherever its letters are
+        const pos = (i, end) => { for (const [n, o] of parts) { const L = n.nodeValue.length; if (end ? i > o && i <= o + L : i >= o && i < o + L) return [n, i - o]; } return null; };
+        for (const m of s.matchAll(/\S+/g)) {
+          const a = pos(m.index, false), b = pos(m.index + m[0].length, true);
+          if (!a || !b) continue;
+          const r = document.createRange(); r.setStart(a[0], a[1]); r.setEnd(b[0], b[1]);
+          list.push(r);
+        }
+      }
+      for (const x of $$(".mail-qr, .mail-file", art)) { const r = document.createRange(); r.selectNode(x); list.push(r); }
+      return list.sort((x, y) => x.compareBoundaryPoints(Range.START_TO_START, y));
+    };
+    const nodeOf = (r) => (r.startContainer.nodeType === 1 ? r.startContainer.childNodes[r.startOffset] || r.startContainer : r.startContainer.parentElement);
+    const show = () => {
+      const r = units[at], sel = getSelection();
+      sel.removeAllRanges(); sel.addRange(r.cloneRange());      // 11/26 (front-end review K38, check): a copy, so a mouse selection can't move the stored word
+      nodeOf(r).scrollIntoView({ block: "nearest" });
+    };
+    art.addEventListener("focus", () => {
+      if (S.keyTip || !art.matches(":focus-visible")) return;
+      S.keyTip = true;
+      say(bi("Use the arrow keys to move through the email word by word, and press Enter on anything that looks wrong.", "用方向鍵在信裡一格一格移，看到怪怪的地方就按 Enter。"));
+    });
+    art.addEventListener("blur", () => { const sel = getSelection(); if (at >= 0 && sel.rangeCount && art.contains(sel.anchorNode)) sel.removeAllRanges(); });
+    art.addEventListener("keydown", (ev) => {
+      if (ev.target !== art || ev.ctrlKey || ev.altKey || ev.metaKey || ev.shiftKey) return;
+      const k = ev.key, step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[k];
+      if (!step && k !== "Home" && k !== "End" && k !== "Enter" && k !== " ") return;
+      if (!units) units = build();
+      if (!units.length) return;
+      ev.preventDefault();
+      if (ev.repeat && !step) return;      // 11/26 (front-end review K38, check): a held Enter points once, not a miss per key repeat
+      if (step) at = Math.max(0, Math.min(units.length - 1, at + step));
+      else if (k === "Home") at = 0;
+      else if (k === "End") at = units.length - 1;
+      else if (at < 0) at = 0;      // Enter before moving: put the cursor on the first word first
+      else {
+        const r = units[at], t = $$(".tell", art).find((x) => r.intersectsNode(x)), b = r.getBoundingClientRect();
+        inspect({ target: t || nodeOf(r), preventDefault() {}, pageX: b.left + b.width / 2 + window.scrollX, pageY: b.top + window.scrollY }, e);
+        return;
+      }
+      show();
+    });
   }
 
   function float(x, y, html, cls) {
@@ -736,7 +824,8 @@ Games.phish = function (d, main, replay) {
 
   /* The 18:52 call ends one of four ways: you hung up and called back (right), declined it, let it ring out, or read the code. */
   async function resolveCall(result) {
-    if (S.call.state === "done" || S.over) return;
+    // 11/26 (front-end review K34): reading out the code after the last shield is gone can't take the shields below zero
+    if (S.call.state === "done" || S.over || (result === "read" && S.shields <= 0)) return;
     S.call.state = "done"; S.call.result = result;
     $rs.classList.remove("is-ringing");
     const proc = d.procedures[CALL.proc] || {};
@@ -785,17 +874,20 @@ Games.phish = function (d, main, replay) {
 
   function useHint() {
     const e = S.open ? byId[S.open] : null;
-    if (!e || S.answers[e.id] || S.hints <= 0 || S.over) return;
-    S.hints -= 1;
+    if (!e || S.answers[e.id] || S.hints <= 0 || S.over || S.paused) return;      // 11/26 (front-end review K32): not while paused
     if (e.phish && e.signs.length) {
       const found = S.found[e.id] || new Set();
-      const s = e.signs.filter((x) => !found.has(x.key)).sort((a, b) => b.w - a.w)[0] || e.signs[0];
+      // 11/26 (front-end review K35): every sign already found: say so and keep the hint, don't ring a found tell in amber
+      const s = e.signs.filter((x) => !found.has(x.key)).sort((a, b) => b.w - a.w)[0];
+      if (!s) return say(bi("You've already found every sign in this one.", "這封的警訊你都找到了，提示先留著。"));
+      S.hints -= 1;
       S.hinted[e.id] = s.key;
       const tells = $$(`.tell[data-k="${s.key}"]`, $("#rxRead"));
       for (const x of tells) x.classList.add("is-hinted");
       if (tells[0]) tells[0].scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
       say(bi(`Look at the circled part: ${signs[s.key].en}.`, `看我圈起來的地方：${signs[s.key].zh}。`));
     } else {
+      S.hints -= 1;
       say(bi((story.hint_real || {}).en || "", (story.hint_real || {}).zh || ""));
     }
     hintBtn();
@@ -805,7 +897,9 @@ Games.phish = function (d, main, replay) {
   function colleagueOpens(e) { decide(e, "keep", "opened"); }
 
   async function decide(e, a, how) {
-    if (S.answers[e.id] || S.over) return;
+    // 11/26 (front-end review K32, K34): nothing is decided while paused (the fuse is frozen, so the speed bonus would be free),
+    // and nothing after the last shield is gone (game over is on its way; a second slip took the shields below zero)
+    if (S.answers[e.id] || S.over || S.shields <= 0 || (S.paused && how !== "opened")) return;
     S.answers[e.id] = a; S.how[e.id] = how;
     const f = S.fuse[e.id], right = isRight(e), opened = how === "opened";
     let gain = 0;
@@ -913,7 +1007,13 @@ Games.phish = function (d, main, replay) {
       if (dm.ntd) setTimeout(() => countUp($("#rsNtd"), dm.ntd), reduceMotion ? 0 : 1300);
       if (dm.inset === "sent") flood($(".rs-sent ol", cut), dm.sent || 200, subj, subjZh2, dm.owner);
       $(".rs-cut-go", cut).focus({ preventScroll: true });
-      $(".rs-cut-go", cut).addEventListener("click", () => { cut.hidden = true; cut.innerHTML = ""; if (body) body.inert = false; done(); });
+      $(".rs-cut-go", cut).addEventListener("click", () => {
+        cut.hidden = true; cut.innerHTML = ""; if (body) body.inert = false;
+        // 11/26 (front-end review K37): the focused button just went away; a queued next cut focuses its own button after this
+        const a = document.activeElement;
+        if (!a || a === document.body || !a.isConnected) inboxFocus();
+        done();
+      });
     });
   }
 
@@ -1061,7 +1161,9 @@ Games.phish = function (d, main, replay) {
         : bi(`Good work tonight. Jun-Hao from the SOC wants you at the lighthouse at ${BOARD.time || "21:00"}. Your notebook is empty, but the SOC has pinned up everything they have.`, `今晚辛苦了。資安監控中心的俊豪請你 ${BOARD.time || "21:00"} 到燈塔一趟。你的線索簿是空的，不過他們已經把手上的資料都釘在板子上了。`))}
       <button type="button" class="btn rs-start rs-to-board">${bi("Go to the lighthouse", "去燈塔")}</button></section>`;
     G.meter(`<div class="rx-hud"><div class="rx-hud-clock"><b>${esc(story.dinner || "19:00")}</b><span>${bi("dinner", "開飯")}</span></div><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
-    $(".rs-to-board").addEventListener("click", async () => {
+    $(".rs-to-board").addEventListener("click", async (ev) => {
+      // 11/26 (front-end review C01): Enter again during the time skip doesn't start a second skip and a second board
+      const b = ev.currentTarget; if (b.disabled) return; b.disabled = true;
       await CB.timeskip(stage, { from: story.dinner || "19:00", to: BOARD.time || "21:00", place_en: "The SOC at the lighthouse", place_zh: "燈塔的資安監控中心", day_en: "Awards Night", day_zh: "頒獎晚會" });
       startBoard();
     });
@@ -1076,10 +1178,13 @@ Games.phish = function (d, main, replay) {
     setScene("rush_pos", 0);
     const lost = S.losses.map((x) => `<li>${bi(x.damage.en, x.damage.zh)}${x.damage.ntd ? ` <b>${money(x.damage.ntd)}</b>` : ""}</li>`).join("");
     const pos = S.losses.some((x) => x.damage && x.damage.inset === "ransom");      // only the voucher email leads to the POS
+    // 11/26 (front-end review K34): the count comes from the list below it, not a fixed "three"
+    const n = S.losses.length, nEn = ["No", "One", "Two", "Three", "Four", "Five"][n] || String(n), nZh = ["零", "一", "兩", "三", "四", "五"][n] || ` ${n} `;
+    const gotEn = `${nEn} attack${n === 1 ? "" : "s"} got through.`, gotZh = `被得逞了${nZh}次。`;
     $("#rsBody").innerHTML = `<section class="rs-over">
       ${pos ? `<img class="rs-ransom" src="/lakeside/static/games/img/ransom.png" alt="Ransom note on the restaurant POS 收銀機上的勒索畫面">` : ""}
       <div class="rs-over-text"><p class="rs-over-time">${pos ? "21:58" : esc(hhmm(S.clock))}</p>
-        <h2>${pos ? bi("Three attacks got through. The restaurant POS shows a ransom note.", "被得逞了三次。餐廳收銀機跳出勒索畫面。") : bi("Three attacks got through.", "被得逞了三次。")}</h2>
+        <h2>${pos ? bi(`${gotEn} The restaurant POS shows a ransom note.`, `${gotZh}餐廳收銀機跳出勒索畫面。`) : bi(gotEn, gotZh)}</h2>
         <ul class="rx-loss-list">${lost}</ul>
         <p>${bi("Your shift is over before dinner. Try again: open the risky ones, call when you are unsure, and watch the fuses.", "還沒開飯這班就結束了。再試一次：可疑的先打開看，不確定就打電話，注意導火線。")}</p>
         <div class="g-end-actions"><button type="button" class="btn rs-again">${bi("Try the shift again", "重新值班")}</button>
@@ -1264,6 +1369,7 @@ Games.phish = function (d, main, replay) {
       return `<section class="cb-q is-active" id="cbQ"><p class="cb-q-n">${bi(`Question ${i + 1}`, `第 ${i + 1} 題`)}</p>
         <p class="cb-q-text">${bi(q.en, q.zh)}</p>${q.how_en ? `<p class="cb-q-how">${bi(q.how_en, q.how_zh)}</p>` : ""}${controls(q)}</section>`;
     }).join("");
+    if (QS.length && B.solved.every(Boolean)) CB.addClose(wrapUp);      // 11/26 (front-end review K31): a redraw after the last solve keeps "Close the case"
     const q = QS[B.q];
     if (!q || B.solved[B.q]) return;
     $("#cbCork").classList.toggle("is-picking", q.kind === "cards");
@@ -1327,9 +1433,9 @@ Games.phish = function (d, main, replay) {
     }
     const o = q.options.find((x) => x.k === k);
     B.tried[k] = true;
+    renderQs();          // 11/26 (front-end review K46): re-render first, or the new card replaces the shaking one
     nope();
     cbSay(bi(o.why_en || "", o.why_zh || ""), "is-no");
-    renderQs();
     CB.refocus("#cbQ .cb-opt:not([disabled])");    // the one just tried is disabled now: the next reason
   }
 
@@ -1396,7 +1502,9 @@ Games.phish = function (d, main, replay) {
       $("#cbLogSlot").innerHTML = logHTML();
       for (const r of $$(".cb-log-row")) r.addEventListener("click", () => {
         const k = +r.dataset.k;
-        if (B.solved[B.q]) return;
+        // 11/26 (front-end review K31): once the log question is solved B.q moves past it, so check the question itself
+        const cq = QS[B.q];
+        if (!cq || cq.kind !== "log" || B.solved[B.q]) return;
         if (B.logSel.has(k)) B.logSel.delete(k); else B.logSel.add(k);
         r.classList.toggle("is-marked", B.logSel.has(k)); r.setAttribute("aria-pressed", String(B.logSel.has(k)));
         renderQs();
@@ -1404,11 +1512,7 @@ Games.phish = function (d, main, replay) {
     }
     renderQs();
     requestAnimationFrame(() => drawStrings());
-    if (B.solved.every(Boolean)) {
-      const last = $$(".cb-q.is-solved").pop();
-      last.insertAdjacentHTML("beforeend", `<button type="button" class="btn cb-go cb-close">${bi("Close the case", "結案")}</button>`);
-      $(".cb-close", last).addEventListener("click", wrapUp);
-    }
+    if (B.solved.every(Boolean)) CB.addClose(wrapUp);      // 11/26 (front-end review K31): renderQs() adds it too, addClose never adds a second one
     CB.refocus("#cbQ .cb-opt:not([disabled]), #cbQs .cb-close");      // 11/22: solved with a button the redraw took away
   }
 
