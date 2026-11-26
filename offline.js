@@ -173,9 +173,17 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
     const sse = (evs) => new Response(evs.map(([e, d]) => `event: ${e}\ndata: ${JSON.stringify(d)}\n\n`).join(""),
       { headers: { "Content-Type": "text/event-stream" } });
     // 11/26 (review): the server's rule (agent.detect_lang): Chinese characters against English words not in capitals
-    const hasZh = (s) => { const cjk = (String(s || "").match(/[㐀-鿿]/g) || []).length;
-      const words = (String(s || "").match(/[A-Za-z][A-Za-z'-]*/g) || []).filter((w) => w.replace(/['-]/g, "") !== w.replace(/['-]/g, "").toUpperCase()).length;
-      return cjk > 0 && cjk > 2 * words; };
+    // 11/26 (regression R00): same as the server: with no English sentence word (what, is, the, I...) the English words are only terms
+    const EN_GLUE = new Set(("a an the is are am was were be do does did can could should would will what how why where when who whom which whose i me my " +
+      "you your we our us it its this that these those to of in on at for with from about and or not there have has if please tell " +
+      "explain mean means need want find show get any").split(" "));
+    const hasZh = (s) => { const t = String(s || ""); const cjk = (t.match(/[㐀-鿿]/g) || []).length;
+      const raw = t.match(/[A-Za-z][A-Za-z'-]*/g) || [];
+      const words = raw.filter((w) => w.replace(/['-]/g, "") !== w.replace(/['-]/g, "").toUpperCase());
+      if (!cjk) return false;
+      if (cjk > 2 * words.length) return true;
+      const glue = raw.some((w) => (w === "I" || words.includes(w)) && EN_GLUE.has(w.toLowerCase()));
+      return !glue && cjk >= 2 && cjk >= words.length; };
 
     async function replay(room, lang) {         // the answer recorded for this place
       const r = await realFetch(`${DATA}/overview/${lang}/${encodeURIComponent(room)}.sse`);

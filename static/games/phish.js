@@ -341,7 +341,11 @@ Games.phish = function (d, main, replay) {
     else {
       // 11/26 (front-end review K37): Resume on the overlay hides the button that had the keyboard: hand it back to the inbox
       const a = document.activeElement;
-      if (!a || a === document.body || !a.isConnected || a === $("#rsResume")) inboxFocus();
+      // 11/26 (regression R08): with a cut up #rsBody is inert again, so the inbox can't take it; the cut's button does
+      if (!a || a === document.body || !a.isConnected || a === $("#rsResume")) {
+        const go = $("#rsCut:not([hidden]) .rs-cut-go");
+        if (go) go.focus({ preventScroll: true }); else inboxFocus();
+      }
     }
   }
 
@@ -993,7 +997,10 @@ Games.phish = function (d, main, replay) {
   function cutOne(keep, dm, subj, left, subjZh2) {
     return new Promise((done) => {
       const cut = $("#rsCut"), body = $("#rsBody");
-      if (body) body.inert = true;
+      // 11/26 (regression R07): a cut that starts while paused (Pause pressed in the wait before it) leaves #rsBody alone,
+      // or the pause card's Resume inside it goes dead behind the hidden cut; togglePause(false) makes it inert
+      const paused = !!(S && S.paused);
+      if (body && !paused) body.inert = true;
       const beats = (keep || []).map((k) => `<li><time>${esc(k.time)}${k.time_zh ? ` <span lang="zh-Hant">${esc(k.time_zh)}</span>` : ""}</time><p>${bi(k.en, k.zh)}</p></li>`).join("");
       cut.hidden = false;
       cut.innerHTML = `<div class="rs-cut-bg" style="background-image:url(${IMG}${esc(dm.scene || "rush_day")}.jpg)"></div><div class="rs-cut-shade"></div>
@@ -1006,7 +1013,7 @@ Games.phish = function (d, main, replay) {
       cut.classList.remove("is-in"); void cut.offsetWidth; cut.classList.add("is-in");
       if (dm.ntd) setTimeout(() => countUp($("#rsNtd"), dm.ntd), reduceMotion ? 0 : 1300);
       if (dm.inset === "sent") flood($(".rs-sent ol", cut), dm.sent || 200, subj, subjZh2, dm.owner);
-      $(".rs-cut-go", cut).focus({ preventScroll: true });
+      if (!paused) $(".rs-cut-go", cut).focus({ preventScroll: true });   // 11/26 (regression R07): while paused Resume keeps the keyboard
       $(".rs-cut-go", cut).addEventListener("click", () => {
         cut.hidden = true; cut.innerHTML = ""; if (body) body.inert = false;
         // 11/26 (front-end review K37): the focused button just went away; a queued next cut focuses its own button after this

@@ -384,7 +384,10 @@ const Minimap = (() => {
   function focusNow() {
     const a = document.activeElement, panel = q("#mmPanel");
     if (!a || !panel || a === panel || !panel.contains(a)) return null;
-    return { el: a, go: a.getAttribute("data-go"), b: a.getAttribute("data-b"), crumb: a.getAttribute("data-crumb"), from: M.building };
+    return { el: a, go: a.getAttribute("data-go"), b: a.getAttribute("data-b"), crumb: a.getAttribute("data-crumb"), from: M.building,
+             // 11/26 (regression R06): M.building stays set after you leave a building, so remember whether the last drawing
+             // was a floor plan (M.mode has already changed by now when zoomOut() calls render(); M.layer has not)
+             wasPlan: String(M.layer || "").startsWith("plan:") };
   }
   function refocus(k) {
     const a = document.activeElement;
@@ -395,7 +398,10 @@ const Minimap = (() => {
       by("data-go", k.go),                                                      // the same place, drawn again
       k.b && M.mode === "plan" ? marks.querySelector(".mm-spot.is-here[data-go]") || marks.querySelector("[data-go]") : null,   // went into a building
       by("data-b", k.b),
-      k.crumb ? by("data-b", k.from) : null,                                    // came out of a building: that building
+      // 11/26 (regression R06): only when the redraw took you out of a plan; outdoors a zoom or a resize jumped to the last
+      // building opened (or "+") instead of the name at the top that was drawn again in the same spot
+      k.crumb && k.wasPlan && M.mode === "outdoor" ? by("data-b", k.from) : null,   // came out of a building: that building
+      k.crumb ? q("#mmCrumbs [data-crumb]") : null,                             // the name at the top, drawn again
       q('#mmPanel [data-z="in"]'), q('#mmPanel [data-z="out"]'), q("#mmCrumbs button"), q("#mmClose"),
     ].find(ok);
     if (next) next.focus({ preventScroll: true });

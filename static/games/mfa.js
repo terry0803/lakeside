@@ -590,9 +590,19 @@ Games.mfa = function (d, main, replay) {
       if (held < HOLD) { radioShow(`<p class="mn-radio-sys">${bi("Hold the button down while you talk, then let go.", "說話時要按住按鈕，說完再放開。")}</p>`); return; }
       radioSend();
     };
+    // 11/26 (regression R11): the hold ends without sending when the button loses the keyboard or the pointer before the
+    // key or finger comes up (Pause moves the keyboard to Resume, the play area goes inert), so nothing stays held
+    const cancel = () => {
+      if (!t0) return;
+      t0 = 0;
+      clearTimeout(timer);
+      b.classList.remove("is-holding", "is-ready");
+    };
     b.addEventListener("pointerdown", down);
     b.addEventListener("pointerup", up);
     b.addEventListener("pointercancel", up);
+    b.addEventListener("blur", cancel);
+    b.addEventListener("lostpointercapture", cancel);
     b.addEventListener("keydown", (ev) => { if ((ev.key === " " || ev.key === "Enter") && !ev.repeat) { ev.preventDefault(); down(); } });
     b.addEventListener("keyup", (ev) => { if (ev.key === " " || ev.key === "Enter") { ev.preventDefault(); up(); } });
   }
@@ -702,6 +712,9 @@ Games.mfa = function (d, main, replay) {
 
   function onKey(ev) {
     if (S && S.dark && !ev.ctrlKey && !ev.metaKey && !ev.altKey) wake();
+    // 11/26 (regression R10): a key a card, slide or button already used is theirs. Enter on the sign-in card opens the
+    // app and then bubbles here; without this it also answered at once with the digits typed before Later
+    if (ev.defaultPrevented) return;
     if (!S || S.over || S.paused || !S.app || ev.ctrlKey || ev.metaKey || ev.altKey) return;
     const k = ev.key;
     if (S.app === "dial") {

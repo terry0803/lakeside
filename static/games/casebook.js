@@ -288,7 +288,10 @@ const CB = (() => {
       cutOne(o) {
         return new Promise((done) => {
           const cut = $("#rsCut");
-          st.body.inert = true;
+          // 11/26 (regression R07): a cut that starts while paused (Pause pressed in the wait before it) must not make
+          // #rsBody inert, or the pause card's Resume inside it goes dead behind the hidden cut; Resume makes it inert
+          const paused = st.$rs.classList.contains("is-paused");
+          if (!paused) st.body.inert = true;
           const beats = (o.beats || []).map((k) => `<li><time>${esc(k.time)}${k.time_zh ? ` <span lang="zh-Hant">${esc(k.time_zh)}</span>` : ""}</time><p>${bi(k.en, k.zh)}</p></li>`).join("");
           const left = o.shields;
           cut.hidden = false;
@@ -302,7 +305,7 @@ const CB = (() => {
           cut.classList.remove("is-in"); void cut.offsetWidth; cut.classList.add("is-in");
           SFX.play("bad");
           const go = $(".rs-cut-go", cut);
-          go.focus({ preventScroll: true });
+          if (!paused) go.focus({ preventScroll: true });   // 11/26 (regression R07): while paused Resume keeps the keyboard; Resume hands it to this button
           go.addEventListener("click", () => { cut.hidden = true; cut.innerHTML = ""; st.body.inert = false; done(); });
         });
       },
@@ -482,7 +485,10 @@ const CB = (() => {
           made = [];
           const a = document.activeElement;
           if (!a || a === document.body || p.contains(a)) {
-            if (prev && prev !== document.body && prev.isConnected) prev.focus({ preventScroll: true });
+            // 11/26 (regression R07): with a cut up the desk is inert again, so the keyboard goes to the cut's button
+            const go = cut && !cut.hidden && $(".rs-cut-go", cut);
+            if (go) go.focus({ preventScroll: true });
+            else if (prev && prev !== document.body && prev.isConnected) prev.focus({ preventScroll: true });
             else { const b = $("[data-pause]"); if (b) b.focus({ preventScroll: true }); }
           }
           prev = null;

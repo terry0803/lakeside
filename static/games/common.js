@@ -32,25 +32,32 @@ const G = {
 
   async save(score, total) {
     // 11/26 (review): a refused save (busy, too many visitors) looked saved; now it says so and is kept for this page
+    // 11/26 (regression R09): an answer that comes back after a newer save started (Play again, finished again) is stale
+    const ticket = (G.saveN = (G.saveN || 0) + 1);
     try {
       const r = await fetch("/api/games/result", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session: G.session, game: G.name, score, total }) });
       if (!r.ok) throw new Error(String(r.status));
-      G.unsaved = null;
-      const old = document.getElementById("gSaveErr"); if (old) old.remove();   // 11/26 (front-end review K23): an earlier failure's note goes
+      if (ticket === G.saveN) {   // 11/26 (regression R09): a newer round's note and G.unsaved are not this save's to clear
+        G.unsaved = null;
+        const old = document.getElementById("gSaveErr"); if (old) old.remove();   // 11/26 (front-end review K23): an earlier failure's note goes
+      }
       // 11/26 (front-end review K24): blocked storage (a third-party frame, incognito) must not turn a stored score into "not saved"
       try { localStorage.setItem("lia.gamesUpdated", String(Date.now())); } catch { /* storage blocked; the parent refreshes on game-close */ }   // the assistant page listens for this
       return true;
     } catch {
+      if (ticket !== G.saveN) return false;   // 11/26 (regression R09): stale, see above
       G.unsaved = { game: G.name, score, total };
       // 11/26 (front-end review K23): #game is the stage (overflow hidden, filled by .rs), so a note added after it was clipped
       // away. It now goes into the results card itself, and one note is reused when "Play again" fails again.
       let n = document.getElementById("gSaveErr");
       if (!n) { n = el("p", "g-error g-save-err"); n.id = "gSaveErr"; n.setAttribute("role", "alert"); }
       n.innerHTML = bi("Score not saved: the server is busy or off. Try again in a few minutes.", "分數沒有存到：伺服器忙或沒開，過幾分鐘再試一次。");
+      // 11/26 (regression R09): only into this round's results card. The #rsBody fallback put a slow failure inside the
+      // next shift's canvas after "Play again"; with the card gone the note is skipped (G.unsaved still keeps the score)
       const card = $(".rs-finale .g-end"), row = card && $(".g-end-actions", card);
       if (row) card.insertBefore(n, row);
-      else ($("#rsBody") || $("#game") || document.body).appendChild(n);
+      else if (n.isConnected) n.remove();
       return false;
     }
   },
