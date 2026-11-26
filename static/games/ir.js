@@ -13,7 +13,9 @@
    each step is written in content/games.yaml); the traps are that procedure's don'ts. Three shields: the door access server, the POS back office and the online backup, and every trap
    (11/21 night: the booking system is a cloud service in the knowledge graph, so it is no longer on this map).
    The case board, Sunday 16:00 at the lighthouse: put the whole week in order, pick the backup to restore from, and work
-   out who must be told by when. Then the whole casebook closes. Shared helpers: casebook.js. */
+   out who must be told by when. Then the whole casebook closes. Shared helpers: casebook.js.
+   11/27: the Help panel (what to do on each screen, why a move went wrong), the reasons on the spot and the first-time
+   guide: see "Help, the first-time guide, why" below. */
 "use strict";
 
 Games.ir = function (d, main, replay) {
@@ -40,6 +42,15 @@ Games.ir = function (d, main, replay) {
   const STEP_SHORT = { 1: ["Unplug, leave it on", "拔網路線，不關機"], 2: ["Call the SOC, 2199", "打 2199 給資安監控中心"], 3: ["Contain the spread", "圍堵擴散"],
     4: ["Activate the plan", "啟動應變計畫"], 5: ["Find how it got in", "查出怎麼進來的"], 6: ["Restore from offline", "從離線副本還原"],
     7: ["Notify those affected", "通知受影響的人"], 8: ["Hold the review", "開檢討會"] };
+  // 11/27: the card that stands for each step in the Help panel (step 3: the EDR shield), and the panel itself (common.js)
+  const STEP_KEY = {};
+  for (const c of CARDS) if (c.step && !(c.step in STEP_KEY)) STEP_KEY[c.step] = c.k;
+  const STEP3 = CARDS.filter((c) => c.step === 3).map((c) => c.k);
+  const stepBy = (o) => STEPS.find((s) => s.order === o);
+  const setNow = (fn) => { if (G.help) G.help.setNow(fn); };
+  const mistake = (m) => { if (G.help) G.help.mistake(m); };
+  // 11/27: the first-time guide, on the first play of this page only (not on "Play again" or "Try the shift again")
+  const GD = replay ? null : { stage: "", at: 0, t0: 0, c: null, key: null, x: null };
   let S = null, B = null, H = null;
   const loop = CB.loop(tick);
   window.onresize = () => { if (B) CB.drawStrings(B.strings); if (S && S.open) placeClose(); };
@@ -79,17 +90,29 @@ Games.ir = function (d, main, replay) {
       intro_en: story.intro_en, intro_zh: story.intro_zh, rules: story.rules, after_en: story.after_en, after_zh: story.after_zh,
       extra: `<div class="ir-brief-pic">${nightNote("60:00", "The ransom note on the night audit PC 夜間稽核電腦上的勒索畫面")}</div>`,      // 11/26 (front-end review K66)
       button: bi("Take the call", "接電話"), onStart: startShift });
+    // 11/27: the Help panel on the briefing
+    const order = STEPS.map((s) => [s.order, ...(STEP_SHORT[s.order] || [s.text_en, s.text_zh])]);
+    setNow(() => ({ title_en: "Before the night", title_zh: "開始之前", ctx: { screen: "brief" }, steps: [
+      { en: "Read Your goal at the top and How to play on the right.", zh: "先看上面的「你的任務」和右邊的「怎麼玩」。" },
+      { en: `On the night shift, red spreads along the network lines and encrypts every device it reaches. Stop it in the procedure's order: ${order.map((x) => `${x[0]} ${x[1]}`).join(" · ")}.`,
+        zh: `值班時，紅色會沿著網路線擴散，碰到的裝置都會被加密。照流程的順序擋住它：${order.map((x) => `${x[0]} ${x[2]}`).join("・")}。` },
+      { en: "★ marks the critical systems. If one is encrypted, or you fall for a trap, you lose a shield. Three, and the night is lost.",
+        zh: "★ 是關鍵系統。它被加密，或是你踩到陷阱，就少一面盾牌。三面都沒了，今晚就輸了。" },
+      { en: "Press Take the call to start.", zh: "按「接電話」開始。" }] }));
   }
 
   /* ------------------------------------------------------------------ the night: state */
   function startShift() {
     loop.stop();
+    if (G.help) G.help.clear();      // 11/27 review: last night's mistakes (and their chips) go with "Try again" / "Play again"
     const nodes = {};
     for (const n of NODES) nodes[n.k] = { state: n.start ? "infected" : "clean", pct: n.start || 0, since: 0, lost: false };
     S = { clock: 0, over: false, paused: false, hold: 0, nodes, lostAt: {}, cut: new Set(), acct: true, reseedIdx: 0, reseedT: 0, played: {}, stepAt: {}, seq: 0,
       uses: { isolate: sh.isolate, cut: sh.cut }, sel: null, drag: null, hover: null, analyzing: 0, analyzed: false, restored: false, notified: false, plan: false, soc: false,
-      shields: sh.shields, losses: [], traps: [], points: 0, log: [], contained: false, endAt: 0, open: null, dial: "", alarmed: {}, paid: false, usb: false, dragEnd: 0, dirty: false };
+      shields: sh.shields, losses: [], traps: [], points: 0, log: [], contained: false, endAt: 0, open: null, dial: "", alarmed: {}, paid: false, usb: false, dragEnd: 0, dirty: false,
+      order: [], lastMistake: null, encTip: false };      // 11/27: the good moves in the order played, and the last slip (for the Help panel)
     B = null;
+    if (GD) Object.assign(GD, { stage: "plug", at: 0, t0: performance.now(), c: null, key: null, x: null });     // 11/27: the night waits for the first move
     st.scene("ir_night", 0.55);
     H = CB.hud({ pause: true, clock: story.start, clockLabel: bi("ransomware", "勒索軟體"), shields: sh.shields });
     G.onPause = () => togglePause();
@@ -124,8 +147,15 @@ Games.ir = function (d, main, replay) {
     log(bi(story.lines.fog.en, story.lines.fog.zh), "is-quiet");
     hand(); tools(); drawMap(); status(); lcd();
     H.points(0, 0);
+    setNow(shiftNow);      // 11/27
     loop.start();
     setTimeout(() => { if (S && !S.over && !S.open) openClose("night_pc"); }, reduceMotion ? 0 : 900);   // Yi-Chen's PC, up close
+    // 11/27: Yi-Chen asks "What do I do?" and nobody answered. You do, and the first thing you say is the cable.
+    const s0 = S;
+    setTimeout(() => {
+      if (S !== s0 || S.over || S.soc || S.played.unplug || S.traps.length) return;
+      say(bi("You: \"Pull the network cable out of your PC, and don't switch it off.\"", "你：「把電腦的網路線拔掉，不要關機。」"));      // short: the bubble holds 150 px
+    }, reduceMotion ? 1200 : 2200);
   }
 
   const say = (html, mood) => CB.say($("#irSay"), html, mood);
@@ -161,7 +191,7 @@ Games.ir = function (d, main, replay) {
       <circle r="${R + 6}" class="ir-halo"/><circle r="${R + 13}" class="ir-bubble"/><circle r="${R}" class="ir-disc"/><circle r="${R}" class="ir-ring" stroke-dasharray="${CIRC.toFixed(1)}" stroke-dashoffset="${CIRC.toFixed(1)}" transform="rotate(-90)"/>
       <g class="ir-icon">${ICONS[n.type]}</g><text class="ir-q" y="7">?</text>
       <g class="ir-badge" transform="translate(${R - 4} ${-R + 4})"><circle r="11"/><text y="4"></text></g>
-      <text class="ir-label" y="${R + 18}">${esc(n.en)}</text><text class="ir-label-z" y="${R + 32}">${esc(n.zh)}</text>${n.critical ? `<text class="ir-crit" y="${-R - 10}">★</text>` : ""}<title>${esc(n.en)} ${esc(n.zh)}</title></g>`).join("");
+      <text class="ir-label" y="${R + 18}">${esc(n.en)}</text><text class="ir-label-z" y="${R + 32}">${esc(n.zh)}</text>${n.critical ? `<text class="ir-crit" y="${-R - 10}">★</text>` : ""}<title>${esc(n.en)} ${esc(n.zh)}${n.critical ? " · ★ critical system: if it is encrypted, you lose a shield 關鍵系統：被加密就少一面盾牌" : ""}</title></g>`).join("");   // 11/27: what the star means
     const net = `<g class="ir-net" id="irNet"><rect x="${NET.x - 140}" y="${-TOP + 6}" width="280" height="46" rx="10"/>
       <text x="${NET.x}" y="${-TOP + 25}" class="ir-net-t">Internet <tspan class="ir-net-tz">網際網路</tspan> · ${esc(NET.ip)}</text><text x="${NET.x}" y="${-TOP + 42}" class="ir-net-z">VPN · ${esc(NET.user)} · attacker ${esc("歹徒")}</text></g>
       <path class="ir-tunnel" id="irTunnel" d="${tunnelD()}"/><path class="ir-tunnel-hit" id="irTunnelHit" tabindex="-1" role="button" d="${tunnelD()}"><title>The crew's VPN line 歹徒的 VPN 連線</title></path>`;
@@ -264,9 +294,13 @@ Games.ir = function (d, main, replay) {
 
   /* ------------------------------------------------------------------ the clock and the spread */
   function tick(dt) {
+    guideSync();      // 11/27: the first-time guide's notes come and go with the play
     if (!S || S.over || S.paused || S.hold || document.hidden) return;
-    S.clock = Math.min(TEND, S.clock + dt * sh.rate);
-    for (const n of NODES) {
+    // 11/27: while the first-time guide waits for a move, the night stands still (the clock, the encryption, the spread and
+    // the crew's new ones). Not S.hold or S.paused: those stop the moves too. The analysis and the redraw go on.
+    const held = guideHeld();
+    if (!held) S.clock = Math.min(TEND, S.clock + dt * sh.rate);
+    for (const n of held ? [] : NODES) {
       const s = S.nodes[n.k];
       if (!active(n.k)) continue;
       if (s.state === "infected") {
@@ -277,17 +311,17 @@ Games.ir = function (d, main, replay) {
       s.since += dt;
       if (s.since >= sh.spread) {
         const next = neighbours(n.k).filter((k) => S.nodes[k].state === "clean" && !NODE[k].safe).sort((x, y) => PRIORITY.indexOf(x) - PRIORITY.indexOf(y))[0];
-        if (next) { infect(next); pulse(n.k, next); s.since = 0; }
+        if (next) { infect(next, n.k); pulse(n.k, next); s.since = 0; }
       }
     }
-    if (S.acct) {
+    if (S.acct && !held) {
       S.reseedT += dt;
       if (S.reseedT >= sh.reseed) {
         S.reseedT = 0;
         const k = (story.reseed || []).slice(S.reseedIdx).find((x) => S.nodes[x].state === "clean");
         S.reseedIdx += 1;
         if (k) {
-          infect(k);
+          infect(k, "vpn");
           comet(k);
           if (S.soc) { log(bi(`${NODE[k].en}: ${story.lines.reseed.en}`, `${NODE[k].zh}：${story.lines.reseed.zh}`), "is-bad"); say(bi(story.lines.reseed.en, story.lines.reseed.zh), "is-no"); }
         }
@@ -328,20 +362,31 @@ Games.ir = function (d, main, replay) {
     setTimeout(() => { p.classList.add("is-out"); setTimeout(() => p.remove(), 450); }, reduceMotion ? 1800 : 2600);
   }
 
-  function infect(k) {
+  function infect(k, from) {     // 11/27: from = where it came from (a device, or "vpn"), for the "why" when a key system is lost
     const s = S.nodes[k];
     if (s.state !== "clean") return;
-    s.state = "infected"; s.pct = 0; s.since = 0;
+    s.state = "infected"; s.pct = 0; s.since = 0; s.from = from || null;
     if (S.soc) log(bi(`${NODE[k].en} starts encrypting.`, `${NODE[k].zh}開始加密。`), "is-bad");
   }
 
   async function encrypted(n) {
     const s = S.nodes[n.k];
     if (S.soc || n.seen) { log(bi(`${n.en} is encrypted.`, `${n.zh}被加密了。`), "is-bad"); ransomPop(n); }
-    if (!n.critical || s.lost) return;
+    if (!n.critical) {
+      // 11/27: the first device that locks up (Yi-Chen's PC, 5 s in) looked like a lost night: say it costs no shield
+      if ((S.soc || n.seen) && !S.encTip) {
+        S.encTip = true;
+        const pc = n.type === "pc" || n.type === "till";
+        tipNote(bi(`${n.en} is encrypted. It has no ★, so no shield is lost, but it can still spread along its lines until you cut it off. ${pc ? "Pull its network cable." : "Use an EDR shield or the cutter."}`,
+          `${n.zh}被加密了。它沒有 ★，不會少盾牌，可是在你把它切開之前，它還能沿著網路線擴散。${pc ? "把它的網路線拔掉。" : "用端點防護盾牌或剪刀把它切開。"}`), 7000);
+      }
+      return;
+    }
+    if (s.lost) return;
     s.lost = true;
     S.lostAt[n.k] = clockAt(S.clock);
-    await lose({ kind: "system", node: n, hit_en: `${n.en} is encrypted`, hit_zh: `${n.zh}被加密了`, beats: critBeats(n) });
+    S.lastMistake = { chosen: "encrypted", item: n.k };      // 11/27: what would have stopped it, on the cut scene and in the Help panel
+    await lose({ kind: "system", node: n, hit_en: `${n.en} is encrypted`, hit_zh: `${n.zh}被加密了`, beats: critBeats(n), why: critWhy(n), ctx: shiftCtx(), at: clockAt(S.clock) });
   }
 
   function critBeats(n) {
@@ -358,8 +403,10 @@ Games.ir = function (d, main, replay) {
     H.shields(S.shields, sh.shields, true);
     st.hit();
     S.hold += 1;
+    guideSync();      // 11/27: a guide note never sits on top of the cut scene
     await wait(500);
-    await st.cut({ scene: x.kind === "system" && x.node.k === "pos_bo" ? "rush_pos" : "ir_night", beats: x.beats, hit_en: x.hit_en, hit_zh: x.hit_zh,
+    // 11/27: why, said on the cut scene (with Ask the IT Assistant) and kept in the Help panel (st.cut calls G.help.mistake)
+    await st.cut({ why: x.why, ctx: x.ctx, at: x.at, scene: x.kind === "system" && x.node.k === "pos_bo" ? "rush_pos" : "ir_night", beats: x.beats, hit_en: x.hit_en, hit_zh: x.hit_zh,
       inset: x.rule ? `<div class="ir-rule"><p class="ir-rule-k">${bi("The procedure says", "流程寫著")}</p><p>${bi(x.rule.en, x.rule.zh)}</p><small>${bi(`“${PROC.name_en}”, knowledge graph`, `知識圖「${PROC.name_zh}」`)}</small></div>`
         // 11/26 (front-end review K66): the POS note only for the POS back office, each server its own note
         : x.kind === "system" ? (x.node.k === "pos_bo" ? `<img class="rs-ransom" src="/lakeside/static/games/img/ransom.png" alt="Ransom note on the restaurant POS 收銀機上的勒索畫面">` : serverNote(x.node)) : "",
@@ -404,7 +451,9 @@ Games.ir = function (d, main, replay) {
     if (!elm) return;
     let p = null;
     elm.addEventListener("pointerdown", (ev) => {
-      if (ev.button !== 0 || !S || S.over || S.hold || S.paused || elm.classList.contains("is-locked") || elm.classList.contains("is-used")) return;
+      if (ev.button !== 0 || !S || S.over || S.hold || S.paused) return;
+      // 11/27: a locked or used-up card or tool says why, instead of doing nothing
+      if (elm.classList.contains("is-locked") || elm.classList.contains("is-used")) { if (o && o.blocked) o.blocked(); return; }
       ev.preventDefault();
       ev.stopPropagation();
       const r = elm.getBoundingClientRect();
@@ -414,7 +463,8 @@ Games.ir = function (d, main, replay) {
     elm.addEventListener("pointermove", (ev) => {
       if (!p) return;
       if (!p.moved && Math.hypot(ev.clientX - p.x0, ev.clientY - p.y0) > 6) {
-        if (kind === "tape" && !S.analyzed) { p = null; return tipNote(bi("Not yet: the SOC has to find out how they got in first, or the restore brings them back.", "還不行：資安監控中心要先查出他們怎麼進來的，不然一還原歹徒又回來了。")); }
+        // 11/27: and the rest of the condition, which was only in the tape's close-up
+        if (kind === "tape" && !S.analyzed) { p = null; return tipNote(bi(`Not yet: the SOC has to find out how they got in first, or the restore brings them back. ${RESTORE_WHEN[0]}`, `還不行：資安監控中心要先查出他們怎麼進來的，不然一還原歹徒又回來了。${RESTORE_WHEN[1]}`)); }
         p.moved = true;
         const g = o && o.ghost ? o.ghost() : elm.cloneNode(true);
         g.classList.add("ir-ghost");
@@ -428,6 +478,7 @@ Games.ir = function (d, main, replay) {
         S.drag = kind; S.sel = null; tip();
         CB.SFX.play("paper");
         drawMap();
+        guideSync();      // 11/27: a guide note steps aside while something is in hand
       }
       if (!p || !p.ghost) return;
       p.ghost.style.transform = `translate(${ev.clientX - p.dx}px, ${ev.clientY - p.dy}px) rotate(-3deg) scale(${G.k() || 1})`;      // 11/26 (front-end review K69)
@@ -446,7 +497,8 @@ Games.ir = function (d, main, replay) {
       S.dragEnd = performance.now();
       if (!moved) { drawMap(); if (o && o.tap) o.tap(); return; }
       const h = hitAt(ev.clientX, ev.clientY);
-      if (!dropOn(kind, h)) { drawMap(); if (h.map) tipNote(missText(kind)); }
+      // 11/27: let go beside the map too (a card dropped there said nothing, and looked played)
+      if (!dropOn(kind, h)) { drawMap(); const m = missText(kind); if (m) tipNote(m); }
       if (S.dirty) { S.dirty = false; hand(); tools(); }
     };
     elm.addEventListener("pointerup", end);
@@ -492,18 +544,23 @@ Games.ir = function (d, main, replay) {
     if (kind === "cut") return bi("Drop the cutter on a switch, or on the crew's line from the internet.", "把剪刀放在交換器上，或是歹徒從網路進來的那條線上。");
     if (kind === "usb") return bi("Nothing to plug it into there.", "那裡沒有地方可以插。");
     if (kind === "tape") return bi("Restore onto the server room.", "要還原到機房。");
+    if (PLAYS.includes(kind)) return dragCard();      // 11/27
     return "";
   }
+  // 11/27: a card is played by dragging it onto the map; a click only wiggled it
+  const dragCard = () => bi("Drag it onto the map to play it.", "拖到網路圖上才算出牌。");
+  const RESTORE_WHEN = ["Then restore once nothing is encrypting or spreading and the crew's line is cut.", "查清楚之後，等沒有東西在加密或擴散、歹徒的連線也切斷了，再還原。"];
 
   /* Click instead of drag (and the keyboard): pick a tool, then click where it goes. */
   function pick(kind) {
     if (!S || S.over || S.hold || S.paused) return;      // 11/26 (front-end review K61): not while paused
-    if ((kind === "isolate" || kind === "cut") && toolOff(kind)) return;      // 11/22: a locked or used-up tool is not picked up
-    if (kind === "tape" && !S.analyzed) return tipNote(bi("Not yet: the SOC has to find out how they got in first.", "還不行：資安監控中心要先查出他們怎麼進來的。"));
+    if ((kind === "isolate" || kind === "cut") && toolOff(kind)) return tipNote(toolBlock(kind));      // 11/22: a locked or used-up tool is not picked up (11/27: and says why)
+    if (kind === "tape" && !S.analyzed) return tipNote(bi(`Not yet: the SOC has to find out how they got in first. ${RESTORE_WHEN[0]}`, `還不行：資安監控中心要先查出他們怎麼進來的。${RESTORE_WHEN[1]}`));
     if (kind === "usb" && S.usb) return;
     S.sel = S.sel === kind ? null : kind;
     CB.SFX.play("tap");
     tip(); tools(); drawMap();
+    guideSync();      // 11/27: a guide note steps aside while a tool is in hand
   }
 
   function mapClick(ev) {
@@ -559,14 +616,14 @@ Games.ir = function (d, main, replay) {
 
   function nudge(e) { e.classList.remove("is-nudge"); void e.offsetWidth; e.classList.add("is-nudge"); }
 
-  function tipNote(html) {
+  function tipNote(html, ms) {     // 11/27: ms, so a reason stays long enough to read
     const t = $("#irTip");
     if (!t) return;
     t.hidden = false;
     t.innerHTML = html;
     clearTimeout(t._h);
     // 11/26 (front-end review K65): a tool still in hand gets its own tip and Cancel back, instead of keeping the miss note
-    t._h = setTimeout(() => { if (!S || S.over) return; if (S.sel) tip(); else t.hidden = true; }, 4500);
+    t._h = setTimeout(() => { if (!S || S.over) return; if (S.sel) tip(); else t.hidden = true; }, ms || 4500);
   }
 
   function tip() {
@@ -589,8 +646,9 @@ Games.ir = function (d, main, replay) {
     placeClose();
     drawMap();
     CB.SFX.play("tap");
+    guideSync();      // 11/27: the first-time guide moves onto the cable as soon as it is in view
   }
-  function closeClose() { S.open = null; drawClose(); drawMap(); }
+  function closeClose() { S.open = null; drawClose(); drawMap(); guideSync(); }
 
   function stateText(k) {
     const s = S.nodes[k];
@@ -622,7 +680,7 @@ Games.ir = function (d, main, replay) {
           ${S.paid ? `<p class="ir-ransom-paid">${bi("Paid. Waiting for the key…", "已付款，等金鑰中…")}</p>` : CB.slideHTML("pay", bi("Slide to pay 5 BTC", "滑動付 5 個比特幣"), "Pay the ransom: drag the knob to the right")}</div>` : ""}
         ${live ? `<div class="ir-back${endpoint ? "" : " is-server"}">
           ${endpoint ? `<div class="ir-port${s.state === "unplugged" ? " is-out" : ""}"><span class="ir-jack" aria-hidden="true"></span>
-              ${s.state === "unplugged" ? `<span class="ir-plug is-out" aria-hidden="true">${SVG.plug}</span>` : `<button type="button" class="ir-plug" id="irPlug" aria-label="Network cable: pull it out">${SVG.plug}</button>`}
+              ${s.state === "unplugged" ? `<span class="ir-plug is-out" aria-hidden="true">${SVG.plug}</span>` : `<button type="button" class="ir-plug" id="irPlug" aria-label="Network cable: drag it to the right to pull it out">${SVG.plug}</button>`}
               <span class="ir-port-l">${bi("Network", "網路線")}</span></div>`
             : `<p class="ir-close-p">${n.zone === "server" ? bi("In the locked server room: its cable is out of reach. The SOC can isolate it from here.", "在上鎖的機房裡，網路線碰不到。資安監控中心可以從遠端隔離它。")
               : bi("In a locked cabinet on the POS network: its cable is out of reach. The SOC can isolate it from here.", "在收銀網段上鎖的機櫃裡，網路線碰不到。資安監控中心可以從遠端隔離它。")}</p>`}
@@ -659,15 +717,22 @@ Games.ir = function (d, main, replay) {
 
   function plugCtl(btn, k) {   // pull the cable out of the back: drag it out to the right
     let p = null;
-    btn.addEventListener("pointerdown", (ev) => { if (ev.button !== 0 || S.hold || S.over || S.paused) return; ev.preventDefault(); p = { x0: ev.clientX }; CB.cap(btn, ev.pointerId); btn.classList.add("is-pull"); });
+    btn.addEventListener("pointerdown", (ev) => { if (ev.button !== 0 || S.hold || S.over || S.paused) return; ev.preventDefault(); p = { x0: ev.clientX, far: 0 }; CB.cap(btn, ev.pointerId); btn.classList.add("is-pull"); });
     btn.addEventListener("pointermove", (ev) => {
       if (!p) return;
       // 11/26 (front-end review K68): screen pixels into the scaled canvas's pixels, so the cable follows the pointer
       const d = Math.max(0, (ev.clientX - p.x0) / (G.k() || 1));
+      p.far = Math.max(p.far, d);
       btn.style.transform = `translateX(${Math.min(64, d)}px)`;
       if (d > 56) { p = null; btn.classList.remove("is-pull"); use("unplug", k); }
     });
-    const end = () => { if (!p) return; p = null; btn.classList.remove("is-pull"); btn.style.transform = ""; nudge($(".ir-port", $("#irClose")) || btn); };
+    // 11/27: let go too soon (or only clicked): it sprang back with no word, now it says which way
+    const end = () => {
+      if (!p) return;
+      const far = p.far;
+      p = null; btn.classList.remove("is-pull"); btn.style.transform = ""; nudge($(".ir-port", $("#irClose")) || btn);
+      tipNote(far > 6 ? bi("Drag it further to the right.", "再往右拖一點。") : bi("Drag the plug to the right to pull the cable out.", "把插頭往右拖，網路線就拔掉了。"));
+    };
     btn.addEventListener("pointerup", end);
     btn.addEventListener("pointercancel", end);
     btn.addEventListener("keydown", (ev) => {
@@ -753,12 +818,20 @@ Games.ir = function (d, main, replay) {
   const stepDone = (n) => n in S.stepAt;
   const locked = (c) => (c.needs || []).some((n) => !stepDone(n)) || (c.k === "restore" && !S.analyzed) || (c.k === "notify" && !S.analyzed) || (c.k === "review" && (!S.restored || !S.notified));
   const usedUp = (c) => (!c.target && !c.uses && S.played[c.k]) || (c.k === "analyze" && (S.analyzing > 0 || S.analyzed));
-  const needsText = (c) => {
-    if ((c.needs || []).includes(2) && !stepDone(2)) return bi("after the SOC call", "打給資安監控中心之後");
-    if (c.k === "restore" || c.k === "notify") return bi("after the analysis", "查清楚之後");
-    if (c.k === "review") return bi("after the restore and the notifications", "還原和通知之後");
-    return "";
+  const needsPair = (c) => {     // 11/27: in two languages apart, so a sentence can be built around it
+    if ((c.needs || []).includes(2) && !stepDone(2)) return ["after the SOC call", "打給資安監控中心之後"];
+    if (c.k === "restore" || c.k === "notify") return ["after the analysis", "查清楚之後"];
+    if (c.k === "review") return ["after the restore and the notifications", "還原和通知之後"];
+    return null;
   };
+  const needsText = (c) => { const p = needsPair(c); return p ? bi(p[0], p[1]) : ""; };
+  // 11/27: a locked card, a used card or a tool out of reach said nothing when it was clicked or dragged: now it says why
+  const lockText = (c) => { const p = needsPair(c); return p ? `${CB.ICON.lock} ${bi(`"${c.en}" opens ${p[0]}.`, `「${c.zh}」要${p[1]}才能出。`)}` : ""; };
+  const cardBlock = (c) => (locked(c) ? lockText(c) : c.k === "analyze" && S.analyzing > 0 ? bi("The SOC is still analysing.", "資安監控中心還在分析。")
+    : bi("You already played this card.", "這張卡已經出過了。"));
+  const toolBlock = (k) => (!S.soc ? `${CB.ICON.lock} ${bi(`The SOC's tools open after the SOC call: dial ${SOC_NUM} on the desk phone.`, `打給資安監控中心之後才能用他們的工具：在桌上電話按 ${SOC_NUM}。`)}`
+    : k === "isolate" ? bi(`No EDR shields left: the SOC had ${sh.isolate}.`, `端點防護用完了，資安監控中心只有 ${sh.isolate} 個。`)
+    : bi(`The cutter is used up: it had ${sh.cut} cuts.`, `剪刀用完了，只能剪 ${sh.cut} 次。`));
 
   // a tool is out of reach before the SOC call, and once used up (the cutter still reaches the crew's line while it is live)
   const toolOff = (k) => !S.soc || (S.uses[k] <= 0 && !(k === "cut" && S.acct));
@@ -779,7 +852,7 @@ Games.ir = function (d, main, replay) {
       pick(t.dataset.k);
       if (S.sel) toTarget();
       else { const b = $(`.ir-tool[data-k="${t.dataset.k}"]`, $("#irTools")); if (b && b.tabIndex >= 0) b.focus({ preventScroll: true }); }
-    } });
+    }, blocked: () => { nudge(t); tipNote(toolBlock(t.dataset.k)); } });      // 11/27
   }
 
   function hand() {
@@ -796,20 +869,24 @@ Games.ir = function (d, main, replay) {
     }).join("");
     for (const cEl of $$(".ir-card", box)) {
       const c = CARD[cEl.dataset.k];
-      draggable(cEl, c.k, { tap: () => nudge(cEl), key: () => { if (!locked(c) && !usedUp(c)) use(c.k); } });
+      // 11/27: a click only wiggled the card; now it also says how to play it, and a locked or used card says why
+      draggable(cEl, c.k, { tap: () => { nudge(cEl); tipNote(dragCard()); }, key: () => { if (!locked(c) && !usedUp(c)) use(c.k); }, blocked: () => { nudge(cEl); tipNote(cardBlock(c)); } });
     }
     const back = had && $(`.ir-card[data-k="${had}"]`, box);
     if (back) back.focus({ preventScroll: true });
   }
 
   function markStep(c) {
-    if (!c.step) return;
+    if (!c.step) return null;
     if (!(c.step in S.stepAt)) {
       S.stepAt[c.step] = S.seq++;
       const inOrder = STEPS.filter((s) => s.order > c.step).every((s) => !(s.order in S.stepAt) || S.stepAt[s.order] > S.stepAt[c.step]);
       const pts = P.step + (inOrder ? P.order : 0);
       S.points += pts; H.points(S.points, 0, pts);
+      // 11/27: played after a later step (it was accepted without a word): that later step, the lowest one, for the reason
+      if (!inOrder) return STEPS.filter((s) => s.order > c.step && s.order in S.stepAt).sort((a, b) => a.order - b.order)[0] || null;
     }
+    return null;
   }
 
   /* The traps: the procedure's don'ts. */
@@ -817,6 +894,7 @@ Games.ir = function (d, main, replay) {
     if (!S || S.over || S.hold || S.paused) return;      // 11/26 (front-end review K61): not while paused
     S.sel = null;
     S.played[c.k] = (S.played[c.k] || 0) + 1;
+    const was = target && S.nodes[target] ? S.nodes[target].state : "";      // 11/27: for the "why" (its cable may have been out already)
     if (c.k === "power_off" && target) S.nodes[target].state = "off";
     if (c.k === "usb") { S.usb = true; $("#irUsb").classList.add("is-used"); }
     S.traps.push(c.k);
@@ -824,14 +902,19 @@ Games.ir = function (d, main, replay) {
     log(bi(`${c.en}${target ? `: ${NODE[target].en}` : ""}.`, `${c.zh}${target ? `：${NODE[target].zh}` : ""}。`), "is-bad");
     tip(); tools(); drawMap(); if (S.open) drawClose();
     const rule = { en: PROC.dont_en[c.dont], zh: PROC.dont_zh[c.dont] };
-    return lose({ kind: "trap", card: c, rule, hit_en: c.hit_en, hit_zh: c.hit_zh, beats: [{ time: clockAt(S.clock), en: c.hit_en, zh: c.hit_zh }] });
+    // 11/27: why (the procedure's own reason, and the move to make instead), on the cut scene and in the Help panel
+    const item = target || (c.k === "pay" ? "night_pc" : "");
+    S.lastMistake = item ? { chosen: c.k, item } : { chosen: c.k };
+    guideMove(c.k);
+    return lose({ kind: "trap", card: c, rule, hit_en: c.hit_en, hit_zh: c.hit_zh, beats: [{ time: clockAt(S.clock), en: c.hit_en, zh: c.hit_zh }],
+      why: trapWhy(c, target, was), ctx: shiftCtx(), at: clockAt(S.clock) });
   }
 
   /* The good moves: the procedure's steps. */
   function use(k, target) {
     const c = CARD[k];
     if (!c || !S || S.over || S.hold || S.paused) return;      // 11/26 (front-end review K61): not while paused
-    if (locked(c)) return tipNote(`${CB.ICON.lock} ${needsText(c)}`);
+    if (locked(c)) return tipNote(lockText(c));      // 11/27: says which card and what comes first
     if (usedUp(c)) return;
     S.sel = null;
     S.played[k] = (S.played[k] || 0) + 1;
@@ -886,8 +969,9 @@ Games.ir = function (d, main, replay) {
         CB.SFX.play("bad");
         log(bi(story.early_restore_en, story.early_restore_zh), "is-bad");
         hand(); drawMap();
+        S.lastMistake = { chosen: "early_restore" };      // 11/27: what was still going on, and why the procedure restores later
         return lose({ kind: "trap", card: c, rule: { en: PROC.dont_en[3], zh: PROC.dont_zh[3] }, hit_en: story.early_restore_en, hit_zh: story.early_restore_zh,
-          beats: [{ time: clockAt(S.clock), en: story.early_restore_en, zh: story.early_restore_zh }] });
+          beats: [{ time: clockAt(S.clock), en: story.early_restore_en, zh: story.early_restore_zh }], why: restoreWhy(), ctx: shiftCtx(), at: clockAt(S.clock) });
       }
       S.restored = true;
       const tape = NODE.offline || NODES.find((n) => n.safe);
@@ -903,13 +987,16 @@ Games.ir = function (d, main, replay) {
       CB.SFX.play("good");
       log(bi("Review booked for Sunday 16:00 at the lighthouse.", "檢討會訂在週日 16:00，燈塔。"), "is-ok");
     }
-    if (k === "isolate" || k === "cut" || k === "disable") markStep({ step: 3 });
-    else markStep(c);
+    S.lastMistake = null;      // 11/27: a good move; the last slip is no longer "just now" for the Help panel
+    if (!S.order.includes(k)) S.order.push(k);
+    const late = k === "isolate" || k === "cut" || k === "disable" ? markStep({ step: 3 }) : markStep(c);
     hand(); tools(); tip();
     // 11/26 (front-end review, ir check): after tip(), which hid the note at once when no tool is in hand
-    if (step && k !== "isolate" && k !== "cut") cardNote(c, step);
+    if (late && step) lateNote(k, step, late);      // 11/27: right but late, said on the spot
+    else if (step && k !== "isolate" && k !== "cut") cardNote(c, step);
     drawMap(); status();
     if (S.open) drawClose();
+    guideMove(k);
     if (k === "review") endShift();
   }
 
@@ -920,6 +1007,261 @@ Games.ir = function (d, main, replay) {
     t.innerHTML = `<b>${bi(`Step ${step.order}`, `第 ${step.order} 步`)}</b> ${bi(step.why_en, step.why_zh)}`;
     clearTimeout(t._h);
     t._h = setTimeout(() => { if (!S || S.over) return; if (S.sel) tip(); else t.hidden = true; }, 6000);      // 11/26 (front-end review K65): as in tipNote
+  }
+
+  /* ------------------------------------------------------------------ 11/27: Help, the first-time guide, why
+     The user (11/27): 「感覺現在遊戲有點不知道在玩甚麼，都沒說得夠清楚該怎麼玩，並且錯了也不能問小幫手」. The Help panel
+     (common.js G.help) hears what is on the screen (setNow) and why a move went wrong (G.help.mistake, also through
+     st.cut). The cut scene and the tip under the map say the reason on the spot, built from the procedure in the knowledge
+     graph, each step's "why" (games.yaml) and the night as it went. The first time this page plays the night, a guide
+     (CB.coach) points at the first moves and holds the night still (GD, checked in tick) until each move is made. */
+
+  // what the IT Assistant is told about the night: ids only (assistant/games.py builds the facts from its own copy)
+  function shiftCtx() {
+    const o = { screen: "shift", done: S.order.slice() }, n = nextOrder();
+    if (n) o.next = STEP_KEY[n];
+    if (S.open) o.item = S.open;
+    return Object.assign(o, S.lastMistake || {});
+  }
+  // the lowest step of the procedure not played yet
+  function nextOrder() { return STEPS.map((s) => s.order).sort((a, b) => a - b).find((o) => !stepDone(o)); }
+  // a device the red can still reach from one next to it: [from, to]
+  function spreadPair() {
+    for (const n of NODES) {
+      if (!active(n.k)) continue;
+      const k = neighbours(n.k).find((j) => S.nodes[j].state === "clean" && !NODE[j].safe);
+      if (k) return [n.k, k];
+    }
+    return null;
+  }
+
+  // a step played after a later one: right, but late (no order bonus, and the summary marks it late)
+  function lateNote(k, s, m) {
+    const [sn, sz] = STEP_SHORT[s.order] || [s.text_en, s.text_zh], [mn, mz] = STEP_SHORT[m.order] || [m.text_en, m.text_zh];
+    S.lastMistake = { chosen: "late", card: k };
+    const ctx = shiftCtx();
+    mistake({ at: clockAt(S.clock), title_en: `Step ${s.order} came late: ${sn}`, title_zh: `第 ${s.order} 步做太晚了：${sz}`, ctx, why: [
+      { en: `Step ${s.order} comes before step ${m.order} (${mn}), but you played step ${m.order} first. It still counts as done, just not in order: no order bonus, and the summary marks it late.`,
+        zh: `第 ${s.order} 步要在第 ${m.order} 步（${mz}）之前，可是你先做了第 ${m.order} 步。這一步還是算做了，只是不算照順序：沒有順序加分，結算時會標成太晚。` },
+      { en: `Why step ${s.order} is there: ${s.why_en || ""}`, zh: `第 ${s.order} 步為什麼排在這裡：${s.why_zh || ""}` }] });
+    tipNote(`<b>${bi(`Step ${s.order}, late`, `第 ${s.order} 步，太晚了`)}</b> ${bi(`Right move, but it comes before step ${m.order} (${mn}). ${s.why_en || ""}`, `做法對，只是它要在第 ${m.order} 步（${mz}）之前。${s.why_zh || ""}`)}${
+      G.help ? ` <button type="button" id="irTipAsk">${bi("Ask the IT Assistant", "問小幫手")}</button>` : ""}`, 9000);
+    CB.bindAsk($("#irTipAsk"), { ...ctx, mistake: true });
+  }
+
+  // why a trap was one: the procedure's reason for the step it goes against, and the move to make instead
+  function trapWhy(c, target, was) {     // was: the device's state before the trap
+    const s1 = stepBy(1), s6 = stepBy(6), n = target && NODE[target], out = [], [nn, nz] = STEP_SHORT[nextOrder()] || ["", ""];
+    if (c.k === "power_off") {
+      if (s1) out.push({ en: s1.why_en, zh: s1.why_zh });
+      if (was === "unplugged" || was === "isolated") out.push(was === "unplugged"
+        ? { en: "Its cable was already out, and that was enough: leave it switched on.", zh: "它的網路線已經拔掉了，這樣就夠了，電源不要動。" }
+        : { en: "EDR had already isolated it, and that was enough: leave it switched on.", zh: "端點防護已經隔離它了，這樣就夠了，電源不要動。" });
+      else out.push(n && n.type !== "pc" && n.type !== "till"
+        ? { en: `The ${n.en}'s cable is out of reach: ${S.soc ? "drag an EDR shield onto it instead" : `call the SOC on ${SOC_NUM}, then drag an EDR shield onto it`}.`,
+            zh: `${n.zh}的網路線碰不到：${S.soc ? "改把端點防護盾牌拖到它上面" : `先打 ${SOC_NUM} 給資安監控中心，再把端點防護盾牌拖到它上面`}。` }
+        : { en: "Pull the network cable instead: drag the plug to the right and leave the power on.", zh: "要拔網路線：把插頭往右拖，電源不要動。" });
+    } else if (c.k === "pay") {
+      if (s6) out.push({ en: `The way back is the offline copy in the safe, step 6. ${s6.why_en}`, zh: `要救回檔案，靠的是保險箱裡的離線副本（第 6 步）。${s6.why_zh}` });
+      out.push({ en: `Leave the pay slider alone.${nn ? ` Your next step: ${nn}.` : ""}`, zh: `付款滑桿不要碰。${nz ? `你的下一步：${nz}。` : ""}` });
+    } else if (c.k === "usb") {
+      if (s6) out.push({ en: `${s6.why_en} A drive plugged into an infected server is within the crew's reach.`, zh: `${s6.why_zh}接到中毒伺服器的硬碟，歹徒就碰得到了。` });
+      out.push({ en: "Keep the USB drive on the desk. The copy to restore from is the offline tape in the safe.", zh: "USB 硬碟留在桌上。要還原，用的是保險箱裡的離線磁帶。" });
+    }
+    return out;
+  }
+
+  // why restoring then was too early: what was still going on at that moment
+  function restoreWhy() {
+    const s6 = stepBy(6), out = [], en = [], zh = [], enc = NODES.filter((n) => S.nodes[n.k].state === "infected"), sp = spreadPair();
+    if (s6) out.push({ en: `Step 6: ${s6.why_en}`, zh: `第 6 步：${s6.why_zh}` });
+    if (S.acct) { en.push(`the crew's VPN line (${NET.user}) was still live`); zh.push(`歹徒的 VPN 連線（${NET.user}）還連著`); }
+    if (enc.length) { en.push(`still encrypting: ${enc.map((n) => n.en).join(", ")}`); zh.push(`還在加密：${enc.map((n) => n.zh).join("、")}`); }
+    if (sp) { en.push(`the red could still spread from the ${NODE[sp[0]].en} to the ${NODE[sp[1]].en}`); zh.push(`紅色還能從${NODE[sp[0]].zh}擴散到${NODE[sp[1]].zh}`); }
+    if (en.length) out.push({ en: `At that moment ${en.join("; ")}.`, zh: `那時候${zh.join("；")}。` });
+    out.push({ en: "Restore once nothing is encrypting or spreading and the crew's line is cut. The tape in the safe glows when it is safe.",
+      zh: "等沒有東西在加密或擴散、歹徒的線也剪斷了再還原。可以還原時，保險箱裡的磁帶會發亮。" });
+    return out;
+  }
+
+  // what would have stopped a key system: a shield on it, or cutting it off where the red came in (infect's "from")
+  function critWhy(n) {
+    const s = S.nodes[n.k], out = [];
+    out.push(!S.soc
+      ? { en: `An EDR shield on the ${n.en} would have stopped it. The shields come with the SOC call (${SOC_NUM}), and so does the view of the whole network.`,
+          zh: `在${n.zh}放端點防護盾牌就擋得住。打 ${SOC_NUM} 給資安監控中心之後才有盾牌，也才看得到整個網路。` }
+      : S.uses.isolate > 0
+        ? { en: `An EDR shield on the ${n.en} would have stopped it: a shielded device stops encrypting. You still had ${S.uses.isolate} left.`,
+            zh: `在${n.zh}放端點防護盾牌就擋得住：被隔離的裝置不會再加密。你那時還有 ${S.uses.isolate} 個。` }
+        : { en: `An EDR shield on the ${n.en} would have stopped it, but all ${sh.isolate} were already used.`, zh: `在${n.zh}放端點防護盾牌就擋得住，可是 ${sh.isolate} 個都已經用掉了。` });
+    const src = s.from && s.from !== "vpn" ? NODE[s.from] : null;
+    if (s.from === "vpn") out.push({ en: `The crew started it themselves over ${NET.user}'s VPN line. Cutting that line with the cutter stops them starting new ones.`,
+      zh: `這台是歹徒從 ${NET.user} 的 VPN 連線直接放的。用剪刀剪斷那條線，他們就不能再放新的。` });
+    else if (src) {
+      const l = LINKS.find((x) => (x.a === src.k && x.b === n.k) || (x.a === n.k && x.b === src.k)), w = l && l.via && SW.find((x) => x.k === l.via);
+      if (w) {
+        const we = w.en.split(": "), wz = w.zh.split("：");
+        out.push({ en: `Or cut it off: it came from the ${src.en} through the ${we[0].toLowerCase()}${we[1] ? ` (${we[1]})` : ""}. The cutter there would have kept it out.`,
+          zh: `也可以把它切開：它是從${src.zh}經過${wz[0]}${wz[1] ? `（${wz[1]}）` : ""}過來的，在那裡用剪刀剪斷就進不來。` });
+      } else out.push({ en: `It came from the ${src.en} over a direct link with no switch to cut, so only a shield on one of the two would have stopped it.`,
+        zh: `它是從${src.zh}直接傳過來的，中間沒有交換器可以剪，只有在這兩台其中一台放盾牌才擋得住。` });
+    }
+    return out;
+  }
+
+  /* What the Help panel says during the night (read each time it opens): the next step and its control, what is going on,
+     the device up close, what is locked and why, the starred systems and what costs a shield. */
+  function shiftNow() {
+    if (!S || S.over) return null;
+    const steps = [], line = (en, zh) => steps.push({ en, zh }), n = nextOrder(), nc = n && CARD[STEP_KEY[n]];
+    const pc = NODES.find((x) => x.start && x.seen) || NODE.night_pc;
+    if (n === 1 && active(pc.k)) line(`Next, step 1: pull the infected PC's network cable. Click the ${pc.en} on the map, then drag its plug to the right. Leave it switched on.`,
+      `下一步是第 1 步：拔掉中毒電腦的網路線。在網路圖上點${pc.zh}，再把插頭往右拖。電源不要關。`);
+    else if (n === 1) line("Next, step 1: pull the network cable of a PC that is still encrypting. Click it on the map, then drag its plug to the right. Leave it switched on.",
+      "下一步是第 1 步：拔掉還在加密的電腦的網路線。在網路圖上點它，再把插頭往右拖。電源不要關。");
+    else if (n === 2) line(`Next, step 2: call the SOC. Dial ${SOC_NUM} on the desk phone on the left, then press Call.`, `下一步是第 2 步：打給資安監控中心。在左邊的桌上電話按 ${SOC_NUM}，再按撥出。`);
+    else if (n === 3) line("Next, step 3: contain the spread. Drag the EDR shield onto the devices in danger, and the cutter onto the crew's VPN line at the top of the map.",
+      "下一步是第 3 步：把擴散圍起來。把端點防護盾牌拖到有危險的裝置上，剪刀拖到網路圖上方歹徒的 VPN 線。");
+    else if (n === 6) {
+      if (!S.analyzed) line("Next, step 6: restore from the offline tape. It opens when the analysis is done.", "下一步是第 6 步：從離線磁帶還原。分析完才能做。");
+      else if (!S.contained) line("Next, step 6: restore from the offline tape, but only once everything is contained (see below). The tape in the safe glows when it is safe.",
+        "下一步是第 6 步：從離線磁帶還原，不過要等全部圍堵好（看下面）。可以還原時，保險箱裡的磁帶會發亮。");
+      else line("Next, step 6: drag the glowing offline tape from the safe into the server room.", "下一步是第 6 步：把保險箱裡發亮的離線磁帶拖到機房。");
+    } else if (nc) line(`Next, step ${n}: drag the card "${nc.en}" onto the map.${n === 5 ? ` The SOC needs about ${nc.secs || 5} seconds.` : n === 8 ? " That ends the night." : ""}`,
+      `下一步是第 ${n} 步：把「${nc.zh}」這張卡拖到網路圖上。${n === 5 ? `資安監控中心大約要 ${nc.secs || 5} 秒。` : n === 8 ? "出完這張，今晚就結束了。" : ""}`);
+    if (S.analyzing > 0) line("The SOC is analysing (step 5). The restore and the notifications open when it is done.", "資安監控中心正在分析（第 5 步）。分析完，還原和通知才會打開。");
+    if (S.soc && !S.contained && !S.restored) {
+      const en = [], zh = [], enc = NODES.filter((x) => S.nodes[x.k].state === "infected"), sp = spreadPair();
+      if (S.acct) { en.push("the crew's VPN line is still live"); zh.push("歹徒的 VPN 線還連著"); }
+      if (enc.length) { en.push(`still encrypting: ${enc.map((x) => x.en).join(", ")}`); zh.push(`還在加密：${enc.map((x) => x.zh).join("、")}`); }
+      if (sp) { en.push(`the red can still spread from the ${NODE[sp[0]].en} to the ${NODE[sp[1]].en}`); zh.push(`紅色還能從${NODE[sp[0]].zh}擴散到${NODE[sp[1]].zh}`); }
+      if (en.length) line(`Not contained yet: ${en.join("; ")}.`, `還沒圍堵完：${zh.join("；")}。`);
+    }
+    if (S.soc && !S.restored) line(`SOC tools left: ${S.uses.isolate} EDR shield${S.uses.isolate === 1 ? "" : "s"} and ${S.uses.cut} cut${S.uses.cut === 1 ? "" : "s"} with the cutter${S.acct ? " (cutting the crew's VPN line uses none)" : ""}. A cut switch stops the red crossing it, but a device already encrypting keeps going until it is shielded or unplugged.`,
+      `資安監控中心的工具還有：端點防護 ${S.uses.isolate} 個、剪刀 ${S.uses.cut} 次${S.acct ? "（剪歹徒的 VPN 線不算次數）" : ""}。剪斷交換器，紅色就過不去；可是已經在加密的裝置會繼續加密，要放盾牌或拔網路線才會停。`);
+    if (S.open) {
+      const d = NODE[S.open], s = S.nodes[S.open], endpoint = d.type === "pc" || d.type === "till", pay = S.open === "night_pc" && !S.paid;
+      // 11/27 review: after the restore too (it still said to drag the tape)
+      if (d.safe && S.restored) line(`Up close: the ${d.en}. Restored from this copy. Close it with ×.`, `近看：${d.zh}。已經從這份副本還原了。按 × 關掉。`);
+      else if (d.safe) line(S.analyzed ? `Up close: the ${d.en}. Drag the tape into the server room once nothing is encrypting or spreading and the crew's line is cut.` : `Up close: the ${d.en}. It waits in the safe until the SOC knows how they got in.`,
+        S.analyzed ? `近看：${d.zh}。等沒有東西在加密或擴散、歹徒的線也剪斷了，再把磁帶拖到機房。` : `近看：${d.zh}。它在保險箱裡等，資安監控中心查出他們怎麼進來之後才能用。`);
+      else if (s.state === "off" || s.state === "restored") line(`Up close: the ${d.en}. It is ${s.state === "off" ? "switched off" : "restored"}. Close it with ×.`, `近看：${d.zh}。它${s.state === "off" ? "已經關機了" : "已經還原了"}。按 × 關掉。`);
+      else if (s.state === "isolated") line(`Up close: the ${d.en}. EDR has isolated it and it is still on. Close it with ×.`, `近看：${d.zh}。端點防護已經隔離它了，它還開著。按 × 關掉。`);
+      else if (endpoint && s.state === "unplugged") line(`Up close: the ${d.en}. The cable is out and it is still on, as it should be. Close it with ×.`, `近看：${d.zh}。網路線拔掉了，電腦還開著，這樣就對了。按 × 關掉。`);
+      else if (endpoint) line(`Up close: the ${d.en}. Drag the Network plug to the right to pull the cable out. Holding Power is a trap${pay ? ", and so is the pay slider" : ""}.`,
+        `近看：${d.zh}。把「網路線」插頭往右拖，網路線就拔掉了。按住電源是陷阱${pay ? "，付款滑桿也是" : ""}。`);
+      else line(`Up close: the ${d.en}. Its cable is out of reach: ${S.soc ? "drag an EDR shield onto it on the map" : `after the ${SOC_NUM} call, the SOC can isolate it`}. Holding Power is a trap.`,
+        `近看：${d.zh}。它的網路線碰不到：${S.soc ? "在網路圖上把端點防護盾牌拖到它上面" : `打 ${SOC_NUM} 之後，資安監控中心可以隔離它`}。按住電源是陷阱。`);
+    }
+    const groups = [], add = (p, en, zh) => { if (!p) return; let g = groups.find((x) => x.p[0] === p[0]); if (!g) groups.push((g = { p, en: [], zh: [] })); g.en.push(en); g.zh.push(zh); };
+    if (!S.soc) add(["after the SOC call", "打給資安監控中心之後"], "the SOC's tools", "資安監控中心的工具");
+    for (const c of CARDS.filter((x) => PLAYS.includes(x.k) || x.how === "tape")) if (locked(c)) add(needsPair(c), ...(STEP_SHORT[c.step] || [c.en, c.zh]));
+    if (groups.length) line(`Locked for now: ${groups.map((g) => `${g.en.join(", ")} (${g.p[0]})`).join("; ")}. A locked card says what comes first.`,
+      `現在鎖住的：${groups.map((g) => `${g.zh.join("、")}（${g.p[1]}）`).join("；")}。鎖住的卡上會寫要先做什麼。`);
+    const crit = CRIT.map((k) => NODE[k]);
+    line(`★ marks the critical systems: ${crit.map((x) => `the ${x.en}`).join(", ")}. If one is encrypted, you lose a shield. Shields left: ${S.shields} of ${sh.shields}.`,
+      `★ 是關鍵系統：${crit.map((x) => x.zh).join("、")}。它們被加密就少一面盾牌。盾牌還剩 ${S.shields} 面（共 ${sh.shields} 面）。`);
+    if (!S.soc) line('Until you call the SOC, every device you can\'t see from the front office shows as "?": the red can spread there without you seeing it.',
+      "打給資安監控中心之前，從櫃台看不到的裝置都是「?」：紅色擴散過去你也看不到。");
+    line("Traps cost a shield too: holding a Power button down, the pay slider on the ransom note, plugging the USB backup drive into a server, and restoring before the spread is contained.",
+      "踩到陷阱也會少一面盾牌：按住電源鍵、勒索畫面上的付款滑桿、把 USB 備份硬碟接到伺服器，還有還沒圍堵好就還原。");
+    const chips = [];
+    if (S.analyzed && !S.restored) chips.push({ en: "When can I restore?", zh: "什麼時候可以還原？" });
+    if (!S.soc) chips.push({ en: "What do the stars mean?", zh: "星號是什麼意思？" });
+    if (PLAYS.some((k) => locked(CARD[k]))) chips.push({ en: "Why are some cards locked?", zh: "為什麼有些卡鎖住了？" });
+    return { title_en: "Right now", title_zh: "現在要做的事", steps, ctx: shiftCtx(), chips: chips.slice(0, 2) };
+  }
+
+  /* The first-time guide. Stages: "plug" from the start (the night PC's cable; a click on the PC first if its close-up is
+     shut), "phone" after the unplug (dial 2199), "tools" a moment after the SOC call (an EDR shield onto a server in
+     danger), "cards" once step 3 is done (drag a card onto the map). Each of these holds the night until its move is made or Got it
+     is pressed; "idle", "after_phone" and the "*_wait" stages hold nothing. A note steps aside while something is in hand
+     or a cut scene is up (the cut scene sits on the same layer). */
+  const GD_HOLD = ["plug", "phone", "tools", "cards"];
+  const guideHeld = () => !!GD && GD_HOLD.includes(GD.stage);
+
+  function guideSync() {
+    if (!GD) return;
+    if (!S || S.over || !GD.stage) { coachOff(); return; }
+    if (S.paused) return;      // hidden while paused (liquid.css), back as it was on Resume
+    const t = performance.now(), busy = !!(S.hold || S.drag || S.sel);
+    if (GD.stage === "tools_wait" && t >= GD.at) {
+      GD.x = stepDone(3) ? null : dangerServer();
+      if (!GD.x) Object.assign(GD, { stage: "cards_wait", at: t + 700 });
+      else if (!busy) GD.stage = "tools";
+    }
+    if (GD.stage === "cards_wait" && t >= GD.at) {
+      if (PLAYS.some((k) => S.played[k])) GD.stage = "";
+      // 11/27 review: the cards are steps 4 to 8; pointing at them before step 3 (Got it on the tools note) made step 3 late
+      else if (nextOrder() > 3 && !busy) GD.stage = "cards";   // 11/27 regression review: steps 1 to 3 all done
+    }
+    let want = null;
+    if (GD.stage && !busy && t >= GD.at) {
+      if (GD.stage === "plug") want = S.open === "night_pc" ? ($("#irPlug") ? "plug" : null) : t - GD.t0 > 1300 ? "node" : null;
+      else if (GD_HOLD.includes(GD.stage)) want = GD.stage;
+    }
+    if (want !== GD.key) { coachOff(); if (want) coachOn(want); }
+  }
+
+  // a move was made: on to the guide's next note (the one it answered goes away)
+  function guideMove(k) {
+    if (!GD || !GD.stage || !S) return;
+    const t = performance.now(), was = GD.stage;
+    if (was === "plug") {
+      if (S.soc) Object.assign(GD, { stage: "tools_wait", at: t + 900 });
+      // the unplug; or the night PC switched off (a trap), so its cable no longer matters: on to the phone
+      else if (k === "unplug" || (k === "power_off" && S.nodes.night_pc && S.nodes.night_pc.state === "off")) Object.assign(GD, { stage: "phone", at: t + 700 });
+      else GD.stage = "idle";      // another trap first: no note until the cable or the call
+    } else if (k === "soc" && ["idle", "phone", "after_phone"].includes(was)) Object.assign(GD, { stage: "tools_wait", at: t + 900 });
+    else if (k === "unplug" && was === "idle" && !S.soc) Object.assign(GD, { stage: "phone", at: t + 700 });
+    // (also while the cards note waits for step 3: it comes a moment after the move, not on the drop)
+    else if (STEP3.includes(k) && ["tools", "tools_wait", "cards_wait"].includes(was)) Object.assign(GD, { stage: "cards_wait", at: t + 700 });
+    else if (PLAYS.includes(k) && was === "cards") GD.stage = "";
+    if (GD.stage !== was) guideSync();
+  }
+
+  function guideOk(want) {     // Got it: the note goes and the night moves on
+    if (!GD) return;
+    if (want === "phone" && GD.stage === "phone") GD.stage = "after_phone";
+    else if (want === "tools" && GD.stage === "tools") Object.assign(GD, { stage: "cards_wait", at: performance.now() + 700 });
+    else if (want === "cards" && GD.stage === "cards") GD.stage = "";
+  }
+
+  function guideStop() { if (GD) { GD.stage = ""; coachOff(); } }
+
+  function coachOff() {
+    if (!GD) return;
+    if (GD.c) GD.c.close();
+    GD.c = null; GD.key = null;
+  }
+
+  function coachOn(want) {
+    const GOT = { en: "Got it", zh: "知道了" }, ok = () => { GD.c = null; GD.key = null; guideOk(want); };
+    let o = null;
+    if (want === "plug") o = { target: () => $("#irPlug"), gesture: "drag-right", step_en: "Step 1", step_zh: "第 1 步",
+      en: "Stop the spread first: pull its network cable, drag the plug to the right. Don't press Power.", zh: "先擋住擴散：把網路線拔掉，插頭往右拖。不要按電源。" };
+    else if (want === "node") o = { target: () => $('.ir-node[data-k="night_pc"] .ir-disc'), gesture: "click", step_en: "Step 1", step_zh: "第 1 步",
+      en: `Click the ${NODE.night_pc.en} to see it up close.`, zh: `點${NODE.night_pc.zh}，打開來近看。` };
+    // 11/27 review: after Got it the keyboard goes to the control the note is about (focusAfter): the first digit's key,
+    // the EDR shield, the first card that can be played
+    else if (want === "phone") o = { target: () => $("#irPhone"), focusAfter: () => $(`#irKeys [data-k="${SOC_NUM[0]}"]`) || $("#irKeys button"), gesture: "click", step_en: "Step 2", step_zh: "第 2 步", button: GOT, onOk: ok,
+      en: `Now call the SOC: dial ${SOC_NUM} on the desk phone and press Call.`, zh: `接著打給資安監控中心：在桌上電話按 ${SOC_NUM}，再按撥出。` };
+    else if (want === "tools" && NODE[GD.x]) {
+      const x = NODE[GD.x], on = S.nodes[GD.x].state === "infected";
+      o = { target: () => $('.ir-tool[data-k="isolate"]'), focusAfter: () => $('.ir-tool[data-k="isolate"]'), to: () => $(`.ir-node[data-k="${GD.x}"] .ir-disc`), gesture: "drag-to", step_en: "Step 3", step_zh: "第 3 步", button: GOT, onOk: ok,
+        en: `Drag the EDR shield onto the ${x.en} (${on ? "it is encrypting now" : "the red is heading there"}). A shielded device stops encrypting and spreading.`,
+        zh: `把端點防護盾牌拖到${x.zh}上（${on ? "它正在加密" : "紅色正往那裡去"}）。被隔離的裝置就不會再加密，也不會再擴散。` };
+    } else if (want === "cards") o = { target: () => $("#irHand .ir-card:not(.is-locked):not(.is-used)") || $("#irHand .ir-card"), focusAfter: () => $("#irHand .ir-card:not(.is-locked):not(.is-used)"), to: () => $("#irMap"), gesture: "drag-to",
+      step_en: "Steps 4 to 8", step_zh: "第 4 到第 8 步", button: GOT, onOk: ok,
+      en: "The next steps are cards: drag a card onto the map to play it. A locked card says what has to happen first.", zh: "接下來的步驟都是卡片：把卡片拖到網路圖上就是出牌。鎖住的卡會寫要先做什麼。" };
+    if (!o) { if (want === "tools") guideOk("tools"); return; }      // never hold the night with no note up
+    GD.c = CB.coach(st, o); GD.key = want;
+  }
+
+  // the server the red is on, or heading for, that a shield can still reach (in the order the ransomware goes for them)
+  function dangerServer() {
+    const cand = PRIORITY.filter((k) => NODE[k] && (NODE[k].type === "server" || NODE[k].type === "nas") && targetOk("isolate", k));
+    return cand.find((k) => S.nodes[k].state === "infected") || cand.find((k) => S.nodes[k].state === "clean" && neighbours(k).some((j) => active(j))) || null;
   }
 
   /* ------------------------------------------------------------------ the status column */
@@ -970,6 +1312,7 @@ Games.ir = function (d, main, replay) {
     if (S.over) return;
     S.over = true;
     loop.stop();
+    guideStop();      // 11/27
     dropGhosts();
     await wait(600);
     summary();
@@ -1000,11 +1343,20 @@ Games.ir = function (d, main, replay) {
       startBoard();
     });
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    // 11/27: the Help panel after the night
+    setNow(() => ({ title_en: "After the night", title_zh: "值班結束", ctx: { screen: "end", done: S.order.slice() }, steps: [
+      { en: "The night is over. On the right is the procedure from the knowledge graph: a green number was played in order, an amber one late (after a later step), a faded row never.",
+        zh: "值班結束了。右邊是知識圖裡的應變流程：號碼是綠色的照順序做了，橘色的做太晚了（在更後面的步驟之後），整行淡掉的是沒做到。" },
+      { en: `Your night: ${r.steps} of ${STEPS.length} steps in order, ${r.kept} of ${CRIT.length} key systems kept, ${S.traps.length} trap${S.traps.length === 1 ? "" : "s"}.`,
+        zh: `你這一晚：照順序的步驟 ${r.steps}/${STEPS.length}，保住的關鍵系統 ${r.kept}/${CRIT.length}，踩到陷阱 ${S.traps.length} 次。` },
+      { en: "Press Sunday 16:00, the review, to go to the case board: three questions that tie the whole week together.", zh: "按「週日下午四點，檢討會」到案情板：三個問題，把整個禮拜的事串起來。" }],
+      chips: [{ en: "Why does the order of the steps matter?", zh: "步驟的順序為什麼重要？" }] }));
   }
 
   function gameOver() {
     S.over = true;
     loop.stop();
+    guideStop();      // 11/27
     dropGhosts();
     st.$rs.classList.remove("is-paused");
     st.scene("rush_pos", 0.2);
@@ -1017,6 +1369,13 @@ Games.ir = function (d, main, replay) {
         : nightNote(ransomLeft(), "The ransom note on the night audit PC 夜間稽核電腦上的勒索畫面", "rs-ransom"),
       again: () => Games.ir(d, main, true) });
     G.meter(`<div class="rx-hud"><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
+    // 11/27: the Help panel when the night is lost (the reasons for each shield are under "Why that went wrong")
+    setNow(() => ({ title_en: "The night is lost", title_zh: "今晚輸了", ctx: { screen: "end", done: S.order.slice() }, steps: [
+      { en: `All ${sh.shields} shields are gone. The list shows what cost each one.`, zh: `${sh.shields} 面盾牌都沒了。清單上是每一面怎麼丟的。` },
+      { en: "Try the night again: unplug, don't switch off; call 2199 first so you can see; stop the account, then contain, then restore.",
+        zh: "再試一次：拔網路線不要關機；先打 2199 才看得到全貌；先停帳號、再圍堵、最後才還原。" },
+      { en: "Press Try the shift again to start the night over.", zh: "按「重新值班」從頭再來。" }],
+      chips: [{ en: "How do I keep my shields next time?", zh: "下次要怎麼保住盾牌？" }] }));
   }
 
   /* ------------------------------------------------------------------ the case board: the review at the lighthouse */
@@ -1091,6 +1450,7 @@ Games.ir = function (d, main, replay) {
     const q0 = QS[B.q];
     if (q0 && q0.pick === "string" && !B.solved[B.q]) B.step = 1;
     CB.questions(QS, B, controls);
+    setNow(irBoardNow);      // 11/27: after CB.questions, which sets the plain one
     const q = QS[B.q];
     $("#cbCork").classList.toggle("is-picking", !!q && !B.solved[B.q] && q.kind === "choose" && B.step === 1);
     for (const b of $$("#cbQs .cb-opt")) b.addEventListener("click", () => choose(q, b.dataset.k));
@@ -1099,6 +1459,30 @@ Games.ir = function (d, main, replay) {
     if (q && !B.solved[B.q] && q.pick === "string") CB.stringFrom($("#cbSpool"), "#irBackups .cb-log-row", (row) => backupRow(row.dataset.k, row));
     if (q && !B.solved[B.q] && q.pick === "timeline") flagCtl(q);
   }
+
+  /* 11/27: what the Help panel says on the board: CB's lines, plus what this board leaves unsaid (the chain's rule, that the
+     backup log's lines are the choices, that the flag goes on the exact hour and its keys), and one question to ask */
+  function irBoardNow() {
+    const n = CB.boardNow(QS, B), q = QS[B.q];
+    if (!q || B.solved[B.q]) return n;
+    const add = q.kind === "chain"
+      ? { en: "The rule: every card has to sit to the right of everything it needs, because a cause always comes before what it leads to. After a wrong try, Jun-Hao names the first card that can't happen yet.",
+          zh: "規則：每張卡都要排在它需要的事情右邊，因為原因一定在結果前面。排錯時，俊豪會說第幾張這時候還不可能發生。" }
+      : q.pick === "string"
+        ? { en: "There are no answer buttons here: the lines of the backup log on the cork board are the choices. Pull the red string onto the line you would trust, or click that line.",
+            zh: "這一題沒有選項按鈕：軟木板上備份紀錄的每一行就是選項。把紅線拉到你信得過的那一行，或直接點那一行。" }
+        : q.pick === "timeline"
+          ? { en: "The flag has to sit on the exact hour. Drag it, or use the arrow keys (one hour) and Page Up or Page Down (12 hours), then press Pin the deadline here.",
+              zh: "紅旗要放在剛好的那個小時。可以用拖的，也可以用方向鍵（一次一小時）和 Page Up、Page Down（一次 12 小時），再按「期限釘在這裡」。" } : null;
+    if (add) n.steps.splice(q.how_en ? 2 : 1, 0, add);
+    const hrs = q.timeline && q.timeline.answer;
+    const chip = q.kind === "chain" ? { en: "What has to come before what?", zh: "哪一步一定要在哪一步之前？" }
+      : q.pick === "string" ? { en: "Which backup can we trust?", zh: "哪一份備份信得過？" }
+      : q.pick === "timeline" && hrs ? { en: `When do the ${hrs} hours start?`, zh: `${hrs} 小時從什麼時候開始算？` } : null;
+    if (chip) n.chips = [chip, ...(n.chips || [])];
+    return n;
+  }
+  const boardCtx = () => ({ screen: "board", q: B.q, tries: B.wrong[B.q] || 0, solved: !!B.solved[B.q] });
 
   function controls(q) {
     if (q.kind === "chain") { const n = B.slots.filter(Boolean).length; return `<p class="cb-q-sel">${bi(`${n} of ${CHAIN.length} on the string`, `繩子上有 ${n} / ${CHAIN.length} 張`)}</p>
@@ -1251,8 +1635,12 @@ Games.ir = function (d, main, replay) {
     const T = q.timeline, h = B.flag || 0;
     if (h === T.answer) return solve(q);
     CB.nope(B);
-    if (T.review_at != null && Math.abs(h - T.review_at) <= 2) { const o = q.options.find((x) => x.k === "review"); return CB.cbSay(bi(o.why_en, o.why_zh), "is-no"); }
-    CB.cbSay(h < T.answer ? bi(q.early_en, q.early_zh) : bi(q.late_en, q.late_zh), "is-no");
+    const o = T.review_at != null && Math.abs(h - T.review_at) <= 2 ? q.options.find((x) => x.k === "review") : null;
+    const w = o ? [o.why_en, o.why_zh] : h < T.answer ? [q.early_en, q.early_zh] : [q.late_en, q.late_zh];
+    CB.cbSay(bi(w[0], w[1]), "is-no");
+    // 11/27: the same reason in the Help panel, where the IT Assistant can be asked about it
+    const [en, zh] = tlAt(T, h);
+    mistake({ at: "", title_en: `${en} is not the deadline`, title_zh: `${zh} 不是期限`, why: [{ en: w[0], zh: w[1] }], ctx: boardCtx() });
   }
 
   function redrawChain() { $("#irChain").innerHTML = chainHTML(); renderQs(); requestAnimationFrame(() => CB.drawStrings(B.strings)); }
@@ -1264,6 +1652,10 @@ Games.ir = function (d, main, replay) {
     CB.nope(B);
     for (const s of $$(".ir-slot")) s.classList.toggle("is-bad", +s.dataset.slot === bad);
     CB.cbSay(bi(CB.fill(q.wrong_en, { n: bad + 1 }), CB.fill(q.wrong_zh, { n: bad + 1 })), "is-no");
+    const c = CH[B.slots[bad]];      // 11/27: and in the Help panel
+    mistake({ at: "", title_en: "That order doesn't work yet", title_zh: "這個順序還不對", ctx: boardCtx(), why: [
+      { en: CB.fill(q.wrong_en, { n: bad + 1 }), zh: CB.fill(q.wrong_zh, { n: bad + 1 }) },
+      { en: `"${c.en}" needs a card that sits to its right. Every card has to sit to the right of everything it needs.`, zh: `「${c.zh}」需要的卡排在它右邊了。每張卡都要排在它需要的事情右邊。` }] });
   }
 
   /* Q2 and Q3: choose; Q2 then points at the backup log */
@@ -1277,6 +1669,7 @@ Games.ir = function (d, main, replay) {
     renderQs();          // 11/26 (front-end review K46): re-render first, or the new card replaces the shaking one
     CB.nope(B);
     CB.cbSay(bi(o.why_en || "", o.why_zh || ""), "is-no");
+    if (o.why_en) mistake({ at: "", title_en: `Not "${o.en}"`, title_zh: `不是「${o.zh}」`, why: [{ en: o.why_en, zh: o.why_zh || "" }], ctx: boardCtx() });      // 11/27
   }
 
   function backupRow(k, btn) {
@@ -1285,7 +1678,10 @@ Games.ir = function (d, main, replay) {
     if (k === q.evidence) { btn.classList.add("is-ok"); return solve(q); }
     CB.nope(B);
     const o = q.row_hint && q.options.find((x) => x.k === q.row_hint[k]);
-    CB.cbSay(o ? bi(o.why_en, o.why_zh) : bi(q.wrong_evidence_en, q.wrong_evidence_zh), "is-no");
+    const w = o ? [o.why_en, o.why_zh] : [q.wrong_evidence_en, q.wrong_evidence_zh];
+    CB.cbSay(bi(w[0], w[1]), "is-no");
+    const r = backupRows(BOARD.backups.rows).find((x) => x.k === k);      // 11/27: and in the Help panel, with the line as it is on the board
+    mistake({ at: "", title_en: r ? `Not the line "${r.en}"` : "Not that line", title_zh: r ? `不是「${r.zh}」這一行` : "不是這一行", why: [{ en: w[0], zh: w[1] }], ctx: boardCtx() });
   }
 
   function solve(q) {
@@ -1340,6 +1736,10 @@ Games.ir = function (d, main, replay) {
     CB.closed(st, { stamp_zh: "全案結案", wrap_en: BOARD.wrap_en, wrap_zh: BOARD.wrap_zh, cases: d.cases, why: BOARD.case_why,
       body: `<h3 class="cb-cases-title">${bi("Where each link could have been cut", "每一環可以在哪裡被擋下")}<small>${bi("Controls from the knowledge graph", "知識圖裡的防護措施")}</small></h3><ol class="ir-links-list">${links}</ol>`,
       onResults: finale });
+    setNow(() => ({ title_en: "Case closed", title_zh: "結案", ctx: { screen: "closed" }, steps: [      // 11/27
+      { en: "The whole week is solved. On the left, each link of the chain with the control from the knowledge graph that could have cut it.", zh: "整個禮拜的案子都解開了。左邊是這條鏈的每一環，還有知識圖裡能把它擋下來的防護措施。" },
+      { en: "On the right, real cases with the same moves.", zh: "右邊是用了同一招的真實案例。" },
+      { en: "Press See my results for your score.", zh: "按「看結果」看你的分數。" }] }));
   }
 
   async function finale() {
@@ -1351,6 +1751,11 @@ Games.ir = function (d, main, replay) {
         { v: `${S.shields}/${sh.shields}`, en: "shields left", zh: "剩下的盾牌" }, { v: `${firstTry}/${QS.length}`, en: "solved first try", zh: "一次就解開" }],
       body: `<section class="ir-book" id="irBook"><h2>${bi("The Awards Night casebook", "頒獎晚會事件簿")}</h2><p class="g-hint">${bi("Loading your four case files…", "讀取四個案件的成績…")}</p></section>`,
       next: null, again: () => Games.ir(d, main, true) });
+    setNow(() => ({ title_en: "Your results", title_zh: "你的成績", ctx: { screen: "end" }, steps: [      // 11/27
+      { en: `The case score counts the steps played in order, the critical systems kept, a night with no trap and the questions solved on the first try: ${TOTAL} in all. The medal comes from it.`,
+        zh: `本案分數算的是：照順序的步驟、保住的關鍵系統、整晚沒踩陷阱、一次就解開的推理題，滿分 ${TOTAL}。獎牌看這個分數。` },
+      { en: "Below is the whole casebook: click a case file to play it.", zh: "下面是整本事件簿，點一個案件就能去玩。" },
+      { en: "Play again starts the night over. Back to the tour closes the game.", zh: "按「再玩一次」重新值班；按「回到導覽」關掉遊戲。" }] }));
     B = null;
     await (rank.saved || wait(500));   // wait for G.save to write this chapter, then read all four back (review: a fixed 500 ms raced the tunnel)
     let games = {};
@@ -1367,6 +1772,9 @@ Games.ir = function (d, main, replay) {
     if (done === 4 && rank.key !== "gold") st.confetti();
   }
 
+  if (!replay) setNow(() => ({ title_en: "The case file", title_zh: "案件封面", ctx: { screen: "title" }, steps: [      // 11/27
+    { en: "This is case file 4, the last one of the Awards Night casebook: a ransomware night at the resort.", zh: "這是頒獎晚會事件簿的第四案，也是最後一案：渡假村的勒索軟體之夜。" },
+    { en: "Press Open the case file to read the briefing. Nothing starts until you take the call.", zh: "按「打開這個案件」看說明。接電話之前，什麼都不會開始。" }] }));
   if (replay) startShift();
   else CB.title(st, { file: 4, scene: "ir_night", title_en: "Incident Response", title_zh: "事件應變", time: story.start,
     place_en: (story.title || {}).place_en, place_zh: (story.title || {}).place_zh, hook_en: (story.title || {}).hook_en, hook_zh: (story.title || {}).hook_zh, onGo: brief });

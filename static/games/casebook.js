@@ -120,6 +120,9 @@ const CB = (() => {
     b.dataset.bound = "1";
     const draw = () => {
       b.setAttribute("aria-pressed", String(SFX.on));
+      // 11/27: below 1500 px the bar shows only the speaker (liquid.css), so the name is also in the label and the tooltip
+      b.setAttribute("aria-label", "Sound 音效");   // on or off is aria-pressed (11/27 review: "Muted, not pressed" read as sound on)
+      b.title = SFX.on ? "Sound on: click to mute 音效開著，按一下靜音" : "Muted: click for sound 靜音中，按一下開聲音";
       b.innerHTML = SFX.on ? `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8h3l4-3.5v11L6 12H3z" fill="currentColor"/><path d="M13 7a4 4 0 0 1 0 6M15.5 4.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>${bi("Sound", "音效")}</span>`
         : `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8h3l4-3.5v11L6 12H3z" fill="currentColor"/><path d="M13 7.5l5 5M18 7.5l-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>${bi("Muted", "靜音")}</span>`;
     };
@@ -223,6 +226,104 @@ const CB = (() => {
   }
 
   /* ------------------------------------------------------------------ the stage */
+  /* 11/27 (the user: 「錯了也不能問小幫手」): why a move went wrong, said on the spot, and a button that opens the Help panel
+     (common.js G.help) and asks the IT Assistant about it. One look for every chapter (liquid.css .rs-why, .btn-ghost). */
+  const whyHTML = (why) => (why && why.length
+    ? `<div class="rs-why"><p class="rs-why-h">${bi("Why", "為什麼")}</p><ul>${why.filter((w) => w && (w.en || w.zh)).map((w) => `<li>${bi(w.en, w.zh)}</li>`).join("")}</ul></div>` : "");
+  const askHTML = (cls) => (G.help ? `<button type="button" class="btn btn-ghost ${cls || ""}">${bi("Ask the IT Assistant", "問小幫手")}</button>` : "");
+  function bindAsk(b, ctx, q) {
+    if (!b || !G.help) return;
+    b.addEventListener("click", () => G.help.open({ ask: q || { en: "Why was that wrong?", zh: "剛剛為什麼錯？" }, ctx: ctx || {} }));
+  }
+
+  /* ------------------------------------------------------------------ the first-time guide (11/27)
+     A ring around one thing on the stage, the rest dimmed, and a glass note beside it that says what to do, with the move
+     drawn by a moving touch point (drag left or right, drag to a place, click, hold). It sits on the stage (#rs, not the
+     scaled canvas), follows its target while the window changes, and never takes the mouse: the player makes the move on
+     the real thing. The chapter holds its own clock while it shows and calls close() once the move is made; a note with a
+     button (o.button) also closes when that is pressed. While the game is paused the guide is hidden (liquid.css). */
+  function coach(st, o) {
+    const layer = el("div", "cb-coach");
+    layer.dataset.gesture = o.gesture || "click";
+    layer.innerHTML = `<div class="cb-coach-ring"></div><div class="cb-coach-touch" aria-hidden="true"><i></i></div>
+      <div class="cb-coach-note" role="status"><p class="cb-coach-step">${bi(o.step_en || "Try it", o.step_zh || "試試看")}</p><p class="cb-coach-text">${bi(o.en, o.zh)}</p>
+        ${o.button ? `<button type="button" class="btn cb-coach-ok">${bi(o.button.en, o.button.zh)}</button>` : ""}</div>`;
+    st.$rs.appendChild(layer);
+    const ring = $(".cb-coach-ring", layer), note = $(".cb-coach-note", layer), touch = $(".cb-coach-touch", layer);
+    const pick = (x) => (typeof x === "function" ? x() : x);
+    let closed = false;
+    function place() {
+      if (closed) return;
+      if (!layer.isConnected) { close(); return; }   // 11/27 review: a stage redrawn under it took the layer away
+      const t = pick(o.target);
+      if (!t || !t.isConnected || !t.getClientRects().length) { layer.classList.add("is-lost"); return; }
+      layer.classList.remove("is-lost");
+      const R = st.$rs.getBoundingClientRect(), r = t.getBoundingClientRect(), pad = 6;
+      const x = r.left - R.left - pad, y = r.top - R.top - pad, w = r.width + pad * 2, h = r.height + pad * 2;
+      Object.assign(ring.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
+      const cx = x + w / 2, cy = y + h / 2;
+      let dx = 0, dy = 0;
+      if (o.gesture === "drag-left") dx = -Math.min(150, Math.max(80, w * 0.45));
+      else if (o.gesture === "drag-right") dx = Math.min(150, Math.max(80, w * 0.45));
+      else if (o.gesture === "drag-to" && pick(o.to)) {
+        const q = pick(o.to).getBoundingClientRect();
+        dx = q.left + q.width / 2 - R.left - cx; dy = q.top + q.height / 2 - R.top - cy;
+      }
+      touch.style.left = `${cx}px`; touch.style.top = `${cy}px`;
+      touch.style.setProperty("--dx", `${Math.round(dx)}px`); touch.style.setProperty("--dy", `${Math.round(dy)}px`);
+      // the note: under the ring when there is room, else over it, else beside it
+      const nw = note.offsetWidth, nh = note.offsetHeight, W = R.width, H = R.height, gap = 14;
+      let nx = Math.min(Math.max(12, cx - nw / 2), W - nw - 12), ny;
+      if (y + h + gap + nh < H - 8) ny = y + h + gap;
+      else if (y - gap - nh > 8) ny = y - gap - nh;
+      else {
+        ny = Math.min(Math.max(8, cy - nh / 2), H - nh - 8);
+        nx = x + w + gap + nw < W - 8 ? x + w + gap : Math.max(8, x - gap - nw);
+      }
+      note.style.left = `${Math.round(nx)}px`; note.style.top = `${Math.round(ny)}px`;
+    }
+    // 11/27: everything place() and the button use is declared before the first place() (a TDZ error broke every guide)
+    let iv = null;
+    function close() {
+      if (closed) return;
+      closed = true; clearInterval(iv); window.removeEventListener("resize", place);
+      layer.classList.add("is-out");
+      setTimeout(() => layer.remove(), reduceMotion ? 0 : 260);
+    }
+    const ok = $(".cb-coach-ok", layer);
+    place();
+    if (closed) return { close, place, isOpen: () => false };
+    iv = setInterval(place, 250);
+    window.addEventListener("resize", place);
+    // 11/27 regression review: a note that only its button can close (the clock waits for it) takes the keyboard at once,
+    // or a keyboard player had to Tab past the whole desk to find it
+    if (ok && o.focusOk) setTimeout(() => { if (!closed && ok.isConnected) ok.focus({ preventScroll: true }); }, 0);
+    if (ok) ok.addEventListener("click", () => {
+      if (closed) return;   // 11/27 regression review: a second click while it fades must not run onOk again
+      close();
+      if (o.onOk) o.onOk();
+      // 11/27 review: the button goes away 260 ms later and the keyboard fell to the page: hand it to what the guide points at
+      const a = document.activeElement, f = pick(o.focusAfter) || pick(o.target);
+      if ((!a || a === document.body || layer.contains(a)) && f && f.isConnected && f.tabIndex >= 0 && !f.closest("[inert]")) f.focus({ preventScroll: true });
+    });
+    return { close, place, isOpen: () => !closed };
+  }
+
+  /* What the Help panel says on a case board (11/27): the open question, how to answer it, where the evidence is, what a
+     wrong try costs; and what the IT Assistant is told (which question, how many wrong tries, solved or not). */
+  function boardNow(QS, B) {
+    const i = B.q, q = QS[i];
+    if (!q) return { title_en: "On the case board", title_zh: "案情板", steps: [{ en: "Every question is solved. Close the case.", zh: "每一題都解開了，可以結案了。" }], ctx: { screen: "board" } };
+    const steps = [{ en: `Question ${i + 1}: ${q.en}`, zh: `第 ${i + 1} 題：${q.zh}` }];
+    if (q.how_en) steps.push({ en: q.how_en, zh: q.how_zh });
+    steps.push({ en: "Everything you need is pinned on the cork board on the left.", zh: "要用的證據都釘在左邊的軟木板上。" });
+    steps.push({ en: "A wrong try only lowers the points for this question, it never costs a shield. After two wrong tries the IT Assistant may tell you the answer and why.",
+                 zh: "答錯只會少這一題的分數，不會少盾牌。答錯兩次之後，小幫手可以直接告訴你答案和原因。" });
+    return { title_en: "On the case board", title_zh: "案情板上要做的事", steps,
+             ctx: { screen: "board", q: i, tries: B.wrong[i] || 0, solved: !!B.solved[i] },
+             chips: [{ en: "Give me a hint for this question", zh: "給我這一題的提示" }] };
+  }
+
   function stage(main) {
     main.classList.add("is-stage");
     main.innerHTML = `<div class="rs" id="rs"><div class="rs-bg" id="rsBg"></div><div class="rs-dusk" id="rsDusk"></div>
@@ -299,14 +400,18 @@ const CB = (() => {
             <div class="rs-cut-inset">${o.inset || ""}</div>
             <div class="rs-cut-text"><p class="rs-cut-kicker">${bi("What happened next", "接下來發生了什麼")}</p>
               <ol class="rx-beats rs-beats">${beats}</ol>
-              <p class="rx-hit rs-cut-hit"><span>${bi(o.hit_en || "", o.hit_zh || "")}</span></p>
+              ${(o.beats || []).some((k) => k.en === o.hit_en) ? "" : `<p class="rx-hit rs-cut-hit"><span>${bi(o.hit_en || "", o.hit_zh || "")}</span></p>`}
               ${typeof left === "number" ? `<p class="rs-cut-shield">${ICON.shield(false)}${bi(left > 0 ? `Shield lost. ${left} left.` : "That was your last shield.", left > 0 ? `少了一面盾牌，還剩 ${left} 面。` : "最後一面盾牌也沒了。")}</p>` : ""}
-              <button type="button" class="btn rs-cut-go">${o.go || bi("Back to work", "回去繼續")}</button></div>`;
+              ${whyHTML(o.why)}
+              <div class="rs-cut-btns"><button type="button" class="btn rs-cut-go">${o.go || bi("Back to work", "回去繼續")}</button>${askHTML("rs-cut-ask")}</div></div>`;
           cut.classList.remove("is-in"); void cut.offsetWidth; cut.classList.add("is-in");
           SFX.play("bad");
+          // 11/27: the same reasons go into the Help panel, where the IT Assistant can be asked about them
+          if (o.why && o.why.length && G.help) G.help.mistake({ at: o.at || "", title_en: o.hit_en || "", title_zh: o.hit_zh || "", why: o.why, ctx: o.ctx || {} });
           const go = $(".rs-cut-go", cut);
           if (!paused) go.focus({ preventScroll: true });   // 11/26 (regression R07): while paused Resume keeps the keyboard; Resume hands it to this button
           go.addEventListener("click", () => { cut.hidden = true; cut.innerHTML = ""; st.body.inert = false; done(); });
+          bindAsk($(".rs-cut-ask", cut), { ...(o.ctx || {}), mistake: true });
         });
       },
       /* fixed dialog over everything; returns {box, close}. 11/23 review: opt.stay = only its own buttons close it (no
@@ -342,6 +447,14 @@ const CB = (() => {
   }
 
   /* ------------------------------------------------------------------ the briefing card */
+  /* 11/27 (the user: 「不知道在玩甚麼」): the goal of the case in one or two plain sentences, the first thing on the
+     briefing (games.yaml story.goal_en / goal_zh). */
+  function goalHTML(o) {
+    const s = (G.data && G.data.story) || {};
+    const en = (o && o.goal_en) || s.goal_en, zh = (o && o.goal_zh) || s.goal_zh;
+    return en ? `<p class="rs-brief-goal"><b>${bi("Your goal", "你的任務")}</b><span>${bi(en, zh)}</span></p>` : "";
+  }
+
   function brief(st, o) {
     const tiles = (o.rules || []).every((r) => r.icon);
     const rules = (o.rules || []).map((r) => (tiles ? `<li><span class="cb-rule-ic">${RULE[r.icon] || ""}</span><p>${bi(r.en, r.zh)}</p></li>` : `<li>${bi(r.en, r.zh)}</li>`)).join("");
@@ -349,7 +462,7 @@ const CB = (() => {
       <div class="rs-brief-clock" aria-hidden="true"><span>${esc(o.top_en || "Awards Night")} <i lang="zh-Hant">${esc(o.top_zh || "頒獎晚會")}</i></span>
         <b>${esc(o.start)}</b><span>${esc(o.until_en || "")} <i lang="zh-Hant">${esc(o.until_zh || "")}</i></span>
         <span class="rs-brief-file">Case file ${o.file} <i lang="zh-Hant">事件簿${caseZh(o.file)}</i></span></div>
-      <div class="rs-brief-main">${personHTML(o.person, bi(o.intro_en || "", o.intro_zh || ""), { big: true })}
+      <div class="rs-brief-main">${goalHTML(o)}${personHTML(o.person, bi(o.intro_en || "", o.intro_zh || ""), { big: true })}
         ${o.extra || ""}
         ${o.after_en ? `<p class="rs-brief-after">${bi(o.after_en, o.after_zh)}</p>` : ""}
         <button type="button" class="btn rs-start">${o.button || bi("Start", "開始")}</button></div>
@@ -515,6 +628,7 @@ const CB = (() => {
   /* ------------------------------------------------------------------ the case board */
   /* o: scene, dusk, analyst (person), intro_en/zh, cork (html for the cork), right (extra html under the questions) */
   function board(st, o) {
+    if (G.help) G.help.clear();   // 11/27 review: the panel's "Why that went wrong" was still the shift's last mistake
     st.scene(o.scene, o.dusk == null ? 0.12 : o.dusk);
     st.body.innerHTML = `<section class="cb ${o.cls || ""}">
       <div class="cb-main">
@@ -545,8 +659,15 @@ const CB = (() => {
         <p class="cb-q-text">${bi(q.en, q.zh)}</p></section>`;
       if (i !== B.q) return `<section class="cb-q is-locked"><p class="cb-q-n">${bi(`Question ${i + 1}`, `第 ${i + 1} 題`)}</p><p class="cb-q-lock">${bi("Opens when the one above is solved.", "解開上一題才會打開。")}</p></section>`;
       return `<section class="cb-q is-active" id="cbQ"><p class="cb-q-n">${bi(`Question ${i + 1}`, `第 ${i + 1} 題`)}</p>
-        <p class="cb-q-text">${bi(q.en, q.zh)}</p>${q.how_en ? `<p class="cb-q-how">${bi(q.how_en, q.how_zh)}</p>` : ""}${controls(q, i)}</section>`;
+        <p class="cb-q-text">${bi(q.en, q.zh)}</p>${q.how_en ? `<p class="cb-q-how">${bi(q.how_en, q.how_zh)}</p>` : ""}${controls(q, i)}
+        ${G.help ? `<button type="button" class="cb-q-ask">${bi("Stuck? Ask the IT Assistant", "卡住了？問小幫手")}</button>` : ""}</section>`;
     }).join("");
+    // 11/27: the Help panel knows which question is open, how to answer it and how many wrong tries there were
+    if (G.help) {
+      G.help.setNow(() => boardNow(QS, B));
+      const ask = $(".cb-q-ask", box);
+      if (ask) ask.addEventListener("click", () => G.help.open());
+    }
     return box;
   }
 
@@ -784,5 +905,6 @@ const CB = (() => {
   const spoolHTML = (en, zh) => `<button type="button" class="cb-spool" id="cbSpool"><i class="cb-pin" aria-hidden="true"></i><span>${bi(en, zh)}</span></button>`;
 
   return { IMG, ICON, RULE, SFX, cap, slideHTML, slideCtl, stringFrom, spoolHTML, LV, lvIcon, lvChip, fill, mins, hhmm, pad2, caseZh, mentor, analyst, face, personHTML, say, stage, brief, title, timeskip, streak, hud, loop, pauseLayer, over,
-    board, pinIn, solvedFx, refocus, cbSay, questions, nope, qPoints, drawStrings, addClose, closed, caseHTML, medal, finale, NEXT };
+    board, pinIn, solvedFx, refocus, cbSay, questions, nope, qPoints, drawStrings, addClose, closed, caseHTML, medal, finale, NEXT,
+    goalHTML, whyHTML, askHTML, bindAsk, coach, boardNow };
 })();

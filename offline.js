@@ -247,6 +247,15 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
         write(s);
         return json({ session: sessionId(), state: state() });
       }
+      // 11/27: a mini-game's Help panel asks the assistant too (server.py /api/games/ask); this copy has no model, so it says
+      // so in the panel, where the goal, the steps for the screen and why the last move was wrong are still shown
+      if (p === "games/ask") {
+        const lang = body.lang === "zh" || body.lang === "en" ? body.lang : (hasZh(body.message) ? "zh" : "en");
+        return sse([["start", { session: sessionId(), lang }],
+          ["done", { answer: "I can't answer new questions right now: the AI runs on the presenter's laptop and it is not running. The goal, the steps for this screen and the reasons for any mistake are still shown above.\n" +
+            "我現在不能回答新的問題：AI 跑在報告用的筆電上，現在沒開。上面的任務、這個畫面要做的事和答錯的原因，還是看得到。",
+            go: [], followups: [], trace: { offline: true, tool_used: "offline", timings: { total_s: 0 } }, state: state() }]]);
+      }
       if (p.startsWith("games/")) return realFetch(`${DATA}/games/${p.slice(6)}.json`);
       if (p === "action" || p === "chat") {
         visit(body.room);

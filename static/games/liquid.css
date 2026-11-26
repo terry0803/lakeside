@@ -20,14 +20,14 @@ html, body.is-fit { background: var(--g-bg); }
   position: relative; margin: 10px 12px 0; padding: 7px 10px 7px 12px !important; border: 1px solid var(--g-edge); border-radius: 16px;
   background: var(--g-bar); box-shadow: none; color: var(--g-text); text-shadow: none;
 }
-.g-back, .g-foot summary, .g-sound, .g-top .rx-pause {
+.g-back, .g-foot summary, .g-sound, .g-help, .g-top .rx-pause {
   position: relative; overflow: hidden; border: 1px solid var(--g-edge) !important; border-radius: 999px !important; background: var(--g-pill) !important; color: var(--g-text) !important;
   transition: background-color .2s, transform .45s var(--e-spring);
 }
 .g-back { padding: 6px 14px 6px 9px !important; }
-.g-back:hover, .g-foot summary:hover, .g-sound:hover, .g-top .rx-pause:hover { background: var(--g-pill-hi) !important; }
-.g-back:active, .g-foot summary:active, .g-sound:active, .g-top .rx-pause:active { transform: scale(.95); transition-duration: .1s; }
-.g-back span, .g-foot summary span[lang], .g-sound span[lang], .g-top .rx-pause span[lang] { color: var(--g-text-2) !important; }
+.g-back:hover, .g-foot summary:hover, .g-sound:hover, .g-help:hover, .g-top .rx-pause:hover { background: var(--g-pill-hi) !important; }
+.g-back:active, .g-foot summary:active, .g-sound:active, .g-help:active, .g-top .rx-pause:active { transform: scale(.95); transition-duration: .1s; }
+.g-back span, .g-foot summary span[lang], .g-sound span[lang], .g-help span[lang], .g-top .rx-pause span[lang] { color: var(--g-text-2) !important; }
 .g-sound[aria-pressed="false"] { color: var(--g-text-2) !important; }
 .g-top .rx-pause { white-space: nowrap; }                 /* one line: Pause 暫停 */
 .g-top .rx-pause[aria-pressed="true"] { background: var(--g-text) !important; border-color: var(--g-text) !important; color: var(--g-bg) !important; }
@@ -197,7 +197,7 @@ body { background: var(--g-bg); transition: none; }
    The panel unfolds and folds back, the pills do not select their words on a double click, and the focus ring on the
    bar is the same light blue as on the main page. */
 .g-top { z-index: 10; }
-.g-back, .g-foot summary, .g-sound, .g-top .rx-pause { -webkit-user-select: none; user-select: none; }
+.g-back, .g-foot summary, .g-sound, .g-help, .g-top .rx-pause { -webkit-user-select: none; user-select: none; }
 .g-top :focus-visible { outline: 2px solid #9fd0ff; outline-offset: 2px; }
 /* opening: the panel drops in from the button; closing: it fades (only opacity on the wrapper, so the panel keeps its place) */
 .g-foot details[open] .g-foot-panel { transform-origin: 100% 0; animation: g-drop .34s var(--e-spring) both; }
@@ -238,14 +238,14 @@ body.is-fit .ir-map { flex: 1 1 auto; min-height: 0; width: auto; height: auto; 
 /* a speech bubble with a long text scrolls with a thin bar */
 .rx-say { scrollbar-width: thin; scrollbar-color: rgba(15, 23, 42, .25) transparent; }
 /* the close buttons of the reader and of a device on the map: a drawn X in a circle (the text "×" sat low) */
-.cb-reader-x, .ir-close-x {
+.cb-reader-x, .ir-close-x, .gh-x {
   display: grid; place-items: center; width: 32px; height: 32px; padding: 0 !important; border: 0; border-radius: 50%; font-size: 0 !important; color: transparent;
   background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 5l10 10M15 5 5 15' stroke='%23334155' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 15px no-repeat;
   cursor: pointer; transition: background-color .2s, transform .45s var(--e-spring);
 }
-.cb-reader-x:hover, .ir-close-x:hover { background-color: rgba(15, 23, 42, .08); }
-.cb-reader-x:active, .ir-close-x:active { transform: scale(.9); transition-duration: .1s; }
-@media (prefers-reduced-motion: reduce) { .cb-opt, .cb-btns button, .cb-flip, .cb-reader-x, .ir-close-x { transition-duration: 0s !important; } .cb-opt:hover { transform: none !important; } }
+.cb-reader-x:hover, .ir-close-x:hover, .gh-x:hover { background-color: rgba(15, 23, 42, .08); }
+.cb-reader-x:active, .ir-close-x:active, .gh-x:active { transform: scale(.9); transition-duration: .1s; }
+@media (prefers-reduced-motion: reduce) { .cb-opt, .cb-btns button, .cb-flip, .cb-reader-x, .ir-close-x, .gh-x { transition-duration: 0s !important; } .cb-opt:hover { transform: none !important; } }
 /* the casebook's log rows and the door keypad on the board: light up under the mouse, press in (like the desk phones) */
 .cb-log-row { transition: background-color .2s, box-shadow .2s, transform .16s var(--e-out); }
 .cb-log-row:active { transform: scale(.99); }
@@ -257,3 +257,216 @@ body.is-fit .ir-map { flex: 1 1 auto; min-height: 0; width: auto; height: auto; 
 .ir-steps li { border-radius: var(--r-row) !important; }
 button.ir-slot-empty { transition: background-color .2s; }
 .g-top .rx-hud b, .g-top .g-meter b { white-space: nowrap; }
+
+/* ---------------------------------------------------------------- Help 求助 (11/27): the bar button and the panel
+   The user (11/27): 「風格都要一樣是液態玻璃，UI要統一」. Nothing new here has its own look: the button is one of the bar's
+   grey pills (the shared rules at the top of this file), the panel is the frosted glass of the briefing and the pop-ups,
+   its parts are cards 16 / rows 12 / pills, the close button is the drawn X of the reader, the Ask button is the glass
+   capsule (.btn), the suggested questions are ghost capsules, the assistant speaks in a speech bubble like the people in
+   the games. The panel is outside the scaled canvas (fixed to the window); while it is open the game is paused. */
+.g-help { display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px 6px 9px; font: inherit; font-size: 12.5px; line-height: 1.2; white-space: nowrap; cursor: pointer; }
+.g-help svg { width: 16px; height: 16px; flex: none; }
+.g-help span[lang] { margin-left: 3px; }
+.g-help.is-new { animation: gh-nudge 1.1s ease-out 3; }
+@keyframes gh-nudge { 0% { box-shadow: 0 0 0 0 rgba(159, 208, 255, .85); } 100% { box-shadow: 0 0 0 12px rgba(159, 208, 255, 0); } }
+
+.gh { position: fixed; inset: 0; z-index: 80; }
+.gh[hidden] { display: none; }
+.gh-shade { position: absolute; inset: 0; background: rgba(10, 14, 22, .32); }
+.gh-panel {
+  position: absolute; top: 10px; right: 12px; bottom: 12px; width: min(440px, calc(100vw - 24px)); display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid var(--frost-rim); border-radius: var(--r-window); background: var(--frost); color: var(--ink);
+  -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter); box-shadow: var(--frost-shadow), 0 30px 70px rgba(0, 0, 0, .35);
+  font-size: 14px; line-height: 1.55; text-shadow: none;
+}
+.gh.is-in .gh-shade { animation: gh-fade .25s ease-out both; }
+.gh.is-in .gh-panel { transform-origin: 100% 0; animation: gh-drop .42s var(--e-spring) both; }
+@keyframes gh-fade { from { opacity: 0; } }
+@keyframes gh-drop { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
+.gh [lang="zh-Hant"] { color: var(--ink-3); }
+.gh-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 14px 10px 20px; }
+.gh-head h2 { margin: 0; font-size: 19px; font-weight: 700; }
+.gh-head h2 span[lang] { margin-left: 6px; font-weight: 600; }
+.gh-state { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-3); }
+.gh-state:empty { display: none; }
+.gh-x { flex: none; }
+.gh-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 0 14px 14px; scrollbar-width: thin; scrollbar-color: rgba(15, 23, 42, .25) transparent; }
+/* each part a card of frosted glass on the panel, as the speech bubbles sit on the briefing */
+.gh-sec { margin-top: 10px; padding: 12px 14px; border: 1px solid var(--frost-rim); border-radius: var(--r-card); background: rgba(255, 255, 255, .6); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); }
+.gh-sec:first-child { margin-top: 0; }
+.gh-sec h3, .gh-ask-h { margin: 0 0 6px; font-size: 14.5px; font-weight: 700; }
+.gh-sec h3 span[lang], .gh-ask-h span[lang] { margin-left: 4px; font-weight: 600; }
+.gh-sec p { margin: 0; }
+.gh-sec ol, .gh-sec ul { margin: 0; padding-left: 1.3em; }
+.gh-sec li + li { margin-top: 6px; }
+.gh-sec li [lang="zh-Hant"], .gh-sec p [lang="zh-Hant"] { display: block; }
+.gh-goal p { font-size: 15px; font-weight: 600; }
+.gh-goal p [lang="zh-Hant"] { font-weight: 500; }
+/* why it went wrong: the red edge inside the curve, like the alerts in the games */
+.gh-why { box-shadow: inset 5px 0 0 var(--alert), inset 0 1px 0 rgba(255, 255, 255, .7); padding-left: 18px; }
+.gh-why h3 { color: var(--alert); }
+.gh-why-t { font-weight: 600; margin-bottom: 6px !important; }
+.gh-why time, .gh-older time { display: inline-block; margin-right: 6px; padding: 0 8px; border-radius: 999px; background: rgba(168, 58, 40, .12); color: var(--alert); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.gh-older { margin-top: 10px; font-size: 13px; }
+.gh-older summary { cursor: pointer; color: var(--alert); }
+.gh-older-why { display: block; color: var(--ink-2); }
+.gh-now ol { counter-reset: gh; list-style: none; padding-left: 0; }
+.gh-now li { position: relative; padding-left: 30px; counter-increment: gh; }
+.gh-now li::before { content: counter(gh); position: absolute; left: 0; top: 1px; display: grid; place-items: center; width: 21px; height: 21px; border-radius: 50%;
+  background: linear-gradient(145deg, var(--glass-btn), var(--glass-btn-2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35); color: #fff; font-size: 12px; font-weight: 700; }
+.gh-rules summary { cursor: pointer; font-weight: 700; font-size: 14px; }
+.gh-rules summary span[lang] { margin-left: 4px; font-weight: 600; }
+.gh-rules ol { margin-top: 8px; }
+.gh-ask-h { margin: 16px 2px 2px; }
+.gh-ask-note { margin: 0 2px 10px; font-size: 12.5px; color: var(--ink-3); }
+.gh-ask-note [lang="zh-Hant"] { margin-left: 3px; }
+.gh-thread { display: flex; flex-direction: column; gap: 8px; }
+/* the assistant speaks in a speech bubble (pointed corner top left), your question is a glass capsule bubble */
+.gh-msg { max-width: 92%; padding: 9px 13px; overflow-wrap: anywhere; }
+.gh-msg p { margin: 0; }
+.gh-msg p + p, .gh-msg ol, .gh-msg ul { margin-top: 6px; }
+.gh-msg ol, .gh-msg ul { padding-left: 1.3em; margin-bottom: 0; }
+.gh-msg.is-bot { align-self: flex-start; border: 1px solid var(--frost-rim); border-radius: 6px var(--r-card) var(--r-card) var(--r-card); background: rgba(255, 255, 255, .78); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 6px 16px rgba(15, 23, 42, .08); }
+.gh-msg.is-you { align-self: flex-end; border: 1px solid rgba(160, 205, 255, .55); border-radius: var(--r-card) 6px var(--r-card) var(--r-card); color: #fff;
+  background: linear-gradient(145deg, var(--glass-btn), var(--glass-btn-2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 6px 16px rgba(10, 40, 110, .2); }
+.gh-msg.is-you, .gh-msg.is-bot { animation: gh-pop .38s var(--e-spring) both; }
+@keyframes gh-pop { from { opacity: 0; transform: translateY(6px) scale(.98); } }
+.gh-wait { display: flex; align-items: center; gap: 8px; color: var(--ink-3); }
+.gh-wait [lang] { margin-left: 2px; }
+.gh-dots { display: inline-flex; gap: 3px; }
+.gh-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--lake-2); animation: gh-dot 1s ease-in-out infinite; }
+.gh-dots i:nth-child(2) { animation-delay: .15s; }
+.gh-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes gh-dot { 0%, 100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+.gh-caret { display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: -2px; border-radius: 2px; background: var(--lake-2); animation: gh-blink 1s steps(2) infinite; }
+@keyframes gh-blink { 50% { opacity: 0; } }
+.gh-err { color: #b42318; font-size: 13px; }
+.gh-err [lang="zh-Hant"] { color: #b42318 !important; margin-left: 3px; }
+.gh-foot { flex: none; padding: 10px 14px 14px; border-top: 1px solid var(--frost-rim); }
+.gh-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 9px; }
+.gh-chips:empty { display: none; }
+/* suggested questions: ghost glass capsules (.btn-ghost) */
+.gh-chip { padding: 5px 12px; border: 1px solid rgba(37, 99, 235, .25); border-radius: 999px; background: rgba(255, 255, 255, .78); color: var(--lake); font: inherit; font-size: 12.5px; line-height: 1.35; text-align: left; cursor: pointer;
+  box-shadow: inset 0 1px 0 #fff; transition: background-color .2s, transform .45s var(--e-spring); }
+.gh-chip [lang="zh-Hant"] { margin-left: 3px; color: var(--ink-3); }
+.gh-chip:hover:not(:disabled) { background: rgba(255, 255, 255, .95); transform: translateY(-1px); }
+.gh-chip:active:not(:disabled) { transform: scale(.96); transition-duration: .1s; }
+.gh-chip:disabled { opacity: .5; cursor: default; }
+.gh-form { display: flex; gap: 8px; }
+.gh-form input { flex: 1; min-width: 0; padding: 9px 14px; border: 1px solid rgba(37, 99, 235, .25); border-radius: 999px; background: rgba(255, 255, 255, .78); box-shadow: inset 0 1px 0 #fff; color: var(--ink); font: inherit; font-size: 14px; transition: background-color .2s, border-color .2s; }
+.gh-form input:focus { background: rgba(255, 255, 255, .95); border-color: rgba(37, 99, 235, .45); }
+.gh-form input:focus-visible { outline: 2px solid var(--lake-2); outline-offset: 1px; }
+.gh-send.btn { flex: none; padding: 8px 16px; font-size: 13.5px; font-weight: 600; }
+.gh-send.btn span[lang] { color: #fff !important; opacity: .9; }
+.gh-send.btn:disabled { opacity: .55; cursor: default; filter: none; }
+.gh-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.gh :focus-visible { outline: 2px solid var(--lake-2); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .gh-panel { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; height: min(82vh, 640px); }
+  .gh.is-in .gh-panel { transform-origin: 50% 100%; }
+  .g-help > span > span[lang] { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-help.is-new, .gh.is-in .gh-shade, .gh.is-in .gh-panel, .gh-msg.is-you, .gh-msg.is-bot, .gh-dots i, .gh-caret { animation: none !important; }
+  .gh-chip, .gh-form input { transition-duration: 0s !important; }
+  .gh-chip:hover { transform: none !important; }
+}
+
+/* ---------------------------------------------------------------- 11/27: the goal, why it went wrong, the first-time guide
+   Same materials as everything else: frosted cards with the red or blue edge inside the curve, ghost capsules, the glass
+   capsule buttons; on the dark cut scenes a smoked card. */
+.rs-brief-goal { display: flex; flex-direction: column; gap: 1px; margin: 0 0 10px; padding: 8px 14px 9px 18px; border: 1px solid var(--frost-rim); border-radius: var(--r-card);
+  background: rgba(255, 255, 255, .6); box-shadow: inset 5px 0 0 var(--lake), inset 0 1px 0 rgba(255, 255, 255, .7); }
+.rs-brief-goal > b { font-size: 12.5px; color: var(--lake); }
+.rs-brief-goal > b span[lang] { margin-left: 4px; color: var(--lake); opacity: .85; }
+.rs-brief-goal > span { font-size: 15.5px; font-weight: 650; line-height: 1.4; color: var(--ink); }
+.rs-brief-goal > span span[lang] { display: block; margin-top: 1px; font-size: 14.5px; font-weight: 550; color: var(--ink-2); }
+
+.rs-why { margin: 12px 0 2px; padding: 10px 14px 11px 16px; border: 1px solid rgba(255, 255, 255, .18); border-radius: var(--r-row); background: rgba(255, 255, 255, .08); box-shadow: inset 4px 0 0 #ffb38a; }
+.rs-why-h { margin: 0 0 4px; font-weight: 700; color: #ffd2b8; }
+.rs-why-h span[lang] { margin-left: 4px; color: #ffd2b8 !important; opacity: .85; }
+.rs-why ul { margin: 0; padding-left: 1.2em; }
+.rs-why li { color: #fff; line-height: 1.5; }
+.rs-why li + li { margin-top: 4px; }
+.rs-why li span[lang] { display: block; color: rgba(255, 255, 255, .78) !important; }
+.rs-cut-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.rs-cut-btns .btn { margin: 0; }
+
+.cb-q-ask { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; padding: 5px 12px; border: 1px solid rgba(37, 99, 235, .25); border-radius: 999px; background: rgba(255, 255, 255, .78); color: var(--lake);
+  font: inherit; font-size: 12.5px; line-height: 1.35; cursor: pointer; box-shadow: inset 0 1px 0 #fff; transition: background-color .2s, transform .45s var(--e-spring); }
+.cb-q-ask span[lang] { margin-left: 3px; color: var(--ink-3); }
+.cb-q-ask:hover { background: rgba(255, 255, 255, .95); transform: translateY(-1px); }
+.cb-q-ask:active { transform: scale(.96); transition-duration: .1s; }
+
+.cb-coach { position: absolute; inset: 0; z-index: 8; pointer-events: none; animation: gh-fade .3s ease-out both; }
+.rs.is-paused .cb-coach { visibility: hidden; }
+.cb-coach.is-lost .cb-coach-ring, .cb-coach.is-lost .cb-coach-touch, .cb-coach.is-lost .cb-coach-note { visibility: hidden; }
+.cb-coach.is-out { opacity: 0; transition: opacity .25s ease-out; }
+.cb-coach-ring { position: absolute; border-radius: var(--r-row); box-shadow: 0 0 0 2px rgba(159, 208, 255, .95), 0 0 0 9999px rgba(8, 12, 18, .34);
+  transition: left .25s var(--e-out), top .25s var(--e-out), width .25s var(--e-out), height .25s var(--e-out); }
+.cb-coach-ring::after { content: ""; position: absolute; inset: -2px; border-radius: inherit; border: 2px solid rgba(159, 208, 255, .9); animation: cb-coach-pulse 1.6s ease-out infinite; }
+@keyframes cb-coach-pulse { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(1.08); } }
+.cb-coach-touch { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: rgba(255, 255, 255, .88);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .55), 0 6px 14px rgba(0, 0, 0, .3); }
+.cb-coach-touch i { position: absolute; inset: -3px; border-radius: 50%; border: 3px solid rgba(37, 99, 235, .55); opacity: 0; }
+.cb-coach[data-gesture="click"] .cb-coach-touch { animation: cb-tap 1.4s var(--e-out) infinite; }
+.cb-coach[data-gesture="drag-left"] .cb-coach-touch, .cb-coach[data-gesture="drag-right"] .cb-coach-touch, .cb-coach[data-gesture="drag-to"] .cb-coach-touch { animation: cb-drag 2s var(--e-out) infinite; }
+.cb-coach[data-gesture="hold"] .cb-coach-touch i { animation: cb-hold 1.6s linear infinite; }
+@keyframes cb-tap { 0%, 100% { transform: scale(1); } 30% { transform: scale(.78); } 55% { transform: scale(1.06); } }
+@keyframes cb-drag { 0% { transform: translate(0, 0) scale(1.1); opacity: 0; } 12% { opacity: 1; transform: translate(0, 0) scale(.88); } 70% { transform: translate(var(--dx), var(--dy)) scale(.88); opacity: 1; } 86%, 100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; } }
+@keyframes cb-hold { 0% { opacity: .9; transform: scale(.7); } 80% { opacity: .9; transform: scale(1.7); } 100% { opacity: 0; transform: scale(1.8); } }
+.cb-coach-note { position: absolute; width: max-content; max-width: 300px; padding: 12px 15px; border: 1px solid var(--frost-rim); border-radius: var(--r-card); background: var(--frost); color: var(--ink);
+  -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter); box-shadow: var(--frost-shadow), 0 18px 40px rgba(0, 0, 0, .3);
+  font-size: 14px; line-height: 1.5; text-shadow: none; pointer-events: none; animation: g-drop .38s var(--e-spring) both; }
+.cb-coach-step { margin: 0 0 4px; font-size: 12.5px; font-weight: 700; color: var(--lake); }
+.cb-coach-step span[lang] { margin-left: 4px; color: var(--lake) !important; opacity: .85; }
+.cb-coach-text { margin: 0; font-weight: 600; }
+.cb-coach-text span[lang] { display: block; margin-top: 2px; font-weight: 500; color: var(--ink-2); }
+.cb-coach-ok.btn { margin-top: 10px; padding: 6px 14px; font-size: 13px; pointer-events: auto; }   /* the note lets clicks through to what is under it, its button does not */
+.cb-coach-ok.btn span[lang] { color: #fff !important; opacity: .9; }
+@media (prefers-reduced-motion: reduce) {
+  .cb-coach, .cb-coach-note, .cb-coach-ring::after, .cb-coach-touch, .cb-coach-touch i { animation: none !important; }
+  .cb-coach-ring { transition: none; }
+  .cb-q-ask { transition-duration: 0s !important; }
+  .cb-q-ask:hover { transform: none; }
+}
+/* 11/27: a guide note that only asks to read (no move to show) has no touch point; the points line sits level with the buttons */
+.cb-coach[data-gesture="none"] .cb-coach-touch { display: none; }
+.rs-cut-btns .rx-pts { margin: 0; }
+/* 11/27: the cut scene's buttons are a row now (Back to work + Ask the IT Assistant). A sticky button inside the row could not
+   leave the row, so in a short window it sat below the box and had to be scrolled to (1280 x 720). The ROW now stays in sight
+   at the bottom of the box, on the same plate of the box's colour as before (game.css, 11/22 review); the button inside it is
+   an ordinary glass capsule again. Only in the cut scene: case 2 also uses the row on its light paper. */
+body.is-fit .rs-cut-text .rs-cut-btns { position: sticky; bottom: 0; z-index: 1; padding-bottom: 2px; background-color: #1b0e0f; box-shadow: 0 0 0 100vmax #1b0e0f; clip-path: inset(-14px -100vmax -100vmax); }
+body.is-fit .rs-cut-text .rs-cut-btns .rs-cut-go { position: static; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 6px 16px rgba(10, 40, 110, .25); clip-path: none; }
+/* 11/27: with the Help button the bar was too full at 1366 px and "Back to the tour" broke into two lines. The bar's words never
+   wrap, and below 1500 px the sound switch shows only its speaker (its name is in its label and tooltip, casebook.js). */
+.g-back, .g-title { white-space: nowrap; }
+@media (max-width: 1500px) {
+  .g-sound > span { display: none; }
+  .g-sound { padding-left: 9px !important; padding-right: 9px !important; }
+}
+/* 11/27: at 1280 px "Back to the tour" still touched the longest title (case 2) by 8 px: below 1320 px the Help and Sources
+   pills keep only their English word (their tooltips are bilingual) */
+@media (max-width: 1320px) {
+  .g-help > span > span[lang], .g-foot summary span[lang] { display: none; }
+}
+/* 11/27: case 2's reasons under a wrong stamp could make the stage up to 954 px tall, so the whole game shrank while they were
+   shown. The reasons now scroll inside their own box; the verdict, the points and the buttons stay in sight. */
+body.is-fit .ah-result .ah-src { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(15, 23, 42, .25) transparent; }
+/* 11/27: case 2's buttons after a wrong stamp, on the verdict's line */
+.ah-acts { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.ah-acts .btn { padding: 7px 14px; font: 600 13.5px var(--font-body); }
+.ah-acts .btn-ghost span[lang] { color: var(--ink-3); }
+.ah-src .ah-yours { font-size: 12.5px; }
+
+/* 11/27 review: a guide never shows over a cut scene (same layer level, and the guide came later) */
+.rs-cut:not([hidden]) ~ .cb-coach { visibility: hidden; }
+/* 11/27 review: between 861 and 1240 px the one-line bar no longer fit once the Help button came (the title ran over
+   "Back to the tour" and the score went past the right edge). There: back and the title on the first row, the buttons
+   and the score on a second row on the right, wrapping if they must. Phones keep their own layout (game.css). */
+@media (min-width: 861px) and (max-width: 1240px) {
+  .g-top { grid-template-columns: auto minmax(0, 1fr); row-gap: 6px; }
+  .g-title { justify-self: start; text-align: left; }
+  .g-right { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; justify-content: flex-end; flex-wrap: wrap; row-gap: 6px; min-width: 0; }
+}

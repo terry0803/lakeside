@@ -7,7 +7,9 @@
    The verdicts are unchanged: the server runs the IT Assistant's own email-check rules on each email and adds up the
    PhishingSign weights from the knowledge graph (3 or more = phishing). games.yaml → story holds the plot, the clue data
    and the puzzle answers (the tests check that each answer follows from the clues); the real cases at the end and the
-   procedures come from the knowledge graph too. */
+   procedures come from the knowledge graph too.
+   11/27 (help): the Help 求助 panel says what to do on each screen, why a move was wrong (also said on the spot, and kept on
+   screen until "Next email"), and asks the IT Assistant; the first email and the 18:52 call get a first-time guide. */
 "use strict";
 
 Games.phish = function (d, main, replay) {
@@ -137,11 +139,16 @@ Games.phish = function (d, main, replay) {
       <div class="rs-brief-clock" aria-hidden="true"><span>Awards Night <i lang="zh-Hant">頒獎晚會</i></span>
         <b>${esc(story.start || "16:00")}</b><span>Dinner ${esc(story.dinner || "19:00")} <i lang="zh-Hant">開飯</i></span>
         <span class="rs-brief-file">Case file 1 <i lang="zh-Hant">事件簿第一案</i></span></div>
-      <div class="rs-brief-main">${mentorHTML(bi(story.intro_en || "", story.intro_zh || ""), true)}
+      <div class="rs-brief-main">${CB.goalHTML()}${mentorHTML(bi(story.intro_en || "", story.intro_zh || ""), true)}
         <p class="rs-brief-after">${bi("After dinner, the SOC will need your notes to work out who sent all this.", "晚宴後，資安監控中心要用你的線索找出這些信是誰寄的。")}</p>
         <button type="button" class="btn rs-start">${bi("Start my shift", "開始值班")}</button></div>
       <div class="rs-brief-rules"><p class="rs-brief-rules-h">${bi("How to play", "怎麼玩")}</p><ol class="${tiles ? "cb-rules" : "rx-rules"}">${rules}</ol></div></section>`;
     $(".rs-start").addEventListener("click", startShift);
+    // 11/27: the goal card above (the same place CB.brief puts it), and what to do here in the Help panel
+    helpNow(() => ({ title_en: "The briefing", title_zh: "開始前的說明", ctx: { screen: "brief" }, steps: [
+      { en: "Your goal is at the top. How to play is on the right.", zh: "最上面是你的任務，右邊是怎麼玩。" },
+      { en: "Press Start my shift. The first email waits for you: the clock starts once you have decided it.", zh: "按「開始值班」。第一封信會等你，決定完時間才開始走。" },
+      { en: "Help works at any time, and the shift pauses while it is open.", zh: "任何時候都可以按「求助」，打開的時候值班會暫停。" }] }));
   }
 
   /* ------------------------------------------------------------------ an email on the laptop screen */
@@ -237,8 +244,11 @@ Games.phish = function (d, main, replay) {
     S = { clock: 0, over: false, paused: false, hold: 0, timer: null, last: 0, waves: 0, rushAt: 0, justDragged: false,
       arrived: [], fuse: {}, answers: {}, how: {}, gain: {}, found: {}, misses: {}, verified: {}, hinted: {}, seen: {}, notes: [],
       open: null, calls: sh.calls, hints: sh.hints, shields: sh.shields, points: 0, streak: 0, best: 0, losses: [], ntd: 0,
-      call: { state: "none", t: 0, result: null, asked: false } };
+      call: { state: "none", t: 0, result: null, asked: false },
+      coaches: {}, helps: {}, next: null, back: null };      // 11/27: the guide and notes on screen, their holds, "Next email"
     B = null;
+    if (G.help) G.help.clear();      // 11/27: a new shift starts with no mistakes in the Help panel
+    helpNow(shiftNow);
     setScene("rush_day", 0);
     hudInit();
     window.scrollTo({ top: 0 });
@@ -295,6 +305,7 @@ Games.phish = function (d, main, replay) {
     if (CALL && S.call.state === "none" && S.clock >= mins(CALL.time) - T0) ring();
     if (S.call.state === "ringing") { S.call.t -= dt; if (S.call.t <= 0) resolveCall("missed"); }
     for (const e of pending()) {
+      if (S.hold) break;      // 11/27 regression review: the call's note started holding the clock in this very tick
       const f = S.fuse[e.id];
       f.left -= dt;
       if (f.left <= 0) { colleagueOpens(e); if (S.over || S.hold) break; }
@@ -350,8 +361,10 @@ Games.phish = function (d, main, replay) {
   }
 
   // 11/26 (front-end review K37): the keyboard goes back to the open email's row (Enter there only opens the email, so a
-  // held Enter can't decide anything), else the first row
+  // held Enter can't decide anything), else the first row. 11/27: while a reason waits for "Next email", to that button.
   function inboxFocus() {
+    const n = $("#rsNext");
+    if (n) { n.focus({ preventScroll: true }); return; }
     const a = (S.open && rowOf(S.open)) || $("#rxList .rx-item");
     if (a) a.focus({ preventScroll: true });
   }
@@ -387,6 +400,272 @@ Games.phish = function (d, main, replay) {
     }
   }
 
+  /* ------------------------------------------------------------------ 11/27: help, the first-time guide, why a call was wrong
+     The user (11/27): 「不知道在玩甚麼…錯了也不能問小幫手」. The Help 求助 panel (common.js G.help) shows what to do on the
+     screen you are on (helpNow), the reasons for the last mistakes (G.help.mistake; the game also says them on the spot) and
+     asks the IT Assistant, which is told only ids (assistant/games.py clean_ctx). While the player reads, the shift clock
+     waits: during the first-time guide (until the first email is decided), the note on the 18:52 call (until it is answered
+     or declined, or "Got it") and the reason under a wrong call (until "Next email"). Each of these holds is taken once and
+     given back once (helpHold, helpFree). S.hold also keeps the shift from ending, so giving back the last hold ends the
+     shift when the last shield went while it was up. */
+  const firstTime = Games.phish.seen || (Games.phish.seen = {});      // first-time notes: once per page ("Play again" keeps it)
+  const helpNow = (fn) => { if (G.help) G.help.setNow(fn); };
+  const CALLRES = { right: "back", read: "read", declined: "declined", missed: "missed" };     // the call's "chosen" for the assistant
+  const emailCtx = (e) => Object.assign({ screen: "shift", item: e.id }, S.answers[e.id] ? { chosen: S.how[e.id] === "opened" ? "opened" : S.answers[e.id] } : {});
+  const codeRule = () => {      // the knowledge graph's "never read out a code" line from the call's procedure (resolveCall shows it too)
+    const proc = (CALL && d.procedures[CALL.proc]) || {}, k = (proc.dont_en || []).findIndex((x) => /code/i.test(x));
+    return k >= 0 ? { en: proc.dont_en[k], zh: (proc.dont_zh || [])[k] || "", src_en: proc.name_en || "", src_zh: proc.name_zh || "" } : null;
+  };
+  const nextLabel = () => (d.emails.some((x) => !S.answers[x.id]) ? ["Next email", "下一封"] : ["Go on", "繼續"]);
+  const CLICK_GAP = 350;      // ms: a pointer click this soon after "Next email" or the decision buttons are drawn is a double click's second half
+
+  function helpHold(k) { if (!S || S.over || S.helps[k]) return; S.helps[k] = true; S.hold += 1; }
+  function helpFree(k) {
+    if (!S || !S.helps[k]) return;
+    delete S.helps[k]; S.hold -= 1; S.last = performance.now();
+    if (!S.over && !S.hold && S.shields <= 0) gameOver();      // the last shield went while this hold was up
+  }
+  function coachOff(k) {
+    const c = S && S.coaches[k];
+    if (c) { delete S.coaches[k]; c.close(); }
+    helpFree(k);
+  }
+  function helpClear() {      // the shift is ending: the guide and notes go, their holds are given back, no "Next email"
+    if (!S) return;
+    for (const c of Object.values(S.coaches)) c.close();
+    S.coaches = {};
+    S.hold -= Object.keys(S.helps).length; S.helps = {};
+    S.next = null; S.back = null;
+    const b = $("#rsNext"); if (b) b.remove();
+  }
+
+  /* The first time the page plays the case: the first email waits, a ring shows what to read, then where to decide. The
+     player decides on the real controls; the first decision ends the guide (decide). */
+  function guide() {
+    firstTime.guide = true;
+    helpHold("guide");
+    const firstButton = () => $("#rsActions [data-a]");      // 11/27 review: after Got it the keyboard goes where step 2 points
+    // after Got it the keyboard goes into the email to read it (on Report phishing it read like a hint: e1 is phishing)
+    const theMail = () => $("#rxRead [tabindex='0']") || firstButton();
+    S.coaches.guide = CB.coach(stage, { target: () => $("#rxRead .mail"), focusAfter: theMail, gesture: "click", step_en: "Step 1 of 2", step_zh: "第 1 步，共 2 步",
+      en: "Read it first: who sent it, and where the link really goes.", zh: "先看清楚：誰寄的、連結真正連去哪。",
+      button: { en: "Got it", zh: "知道了" },
+      onOk: () => {
+        if (!S || S.over || !S.coaches.guide) return;      // already decided
+        S.coaches.guide = CB.coach(stage, { target: () => $("#rsActions"), focusAfter: firstButton, gesture: "click", step_en: "Step 2 of 2", step_zh: "第 2 步，共 2 步",
+          en: "Then decide. Phishing: Report phishing, or drag it left in the inbox. Real: Keep it, or drag it right. The clock starts after this one.",
+          zh: "再決定。釣魚信按「回報釣魚」，或在收件匣往左拖；正常的信按「留著」，或往右拖。這封決定完，時間才開始走。" });
+      } });
+  }
+
+  /* The first time a call rings on this page: what you can do with it, and the knowledge graph's rule about codes. Nothing
+     more than that (the answer stays the player's). 11/27 review: it holds the clock, so it goes as soon as the player is
+     back on the emails (mailMove), or the inbox could be worked with every fuse frozen. */
+  function callNote() {
+    if (firstTime.call || !S || S.over) return;
+    firstTime.call = true;
+    const r = codeRule();
+    helpHold("call");
+    S.coaches.call = CB.coach(stage, { target: () => $("#rsPhone .rs-handset") || $("#rsPhone"), focusAfter: () => $("#rsPhone .rs-answer"), gesture: "click",
+      step_en: "New: a phone call", step_zh: "新狀況：有人打來",
+      en: `Your phone is ringing. You can answer it or decline it.${r ? ` ${r.en}` : ""}`, zh: `手機在響，可以接，也可以拒接。${r ? r.zh : ""}`,
+      button: { en: "Got it", zh: "知道了" }, onOk: () => coachOff("call") });
+  }
+  // the player opened, dragged, clicked into or decided an email: the call's note (and the clock it holds) goes. False once
+  // the shift has ended under it (it can't: the last shield always ends with a cut, which closed the note already).
+  function mailMove() {
+    if (S && S.coaches.call) coachOff("call");
+    return !!S && !S.over;
+  }
+
+  /* After a wrong call the email stays on screen with its reason (the Why box is open) and the clock waits for "Next email";
+     it used to be replaced by the next email 1.7 s later, or by a new one landing. An email decided from the inbox or by its
+     fuse is opened to show the reason, and "Next email" goes back to the one you were reading if it is still waiting. */
+  function holdNext(e) {
+    if (!S || S.over || S.shields <= 0) return;
+    if (S.open !== e.id) {
+      S.back = S.open && !S.answers[S.open] ? S.open : null;
+      openMail(e.id, true);
+    } else S.back = null;
+    S.next = e.id;
+    helpHold("next");
+    nextBtn(true);
+    whyInView(e.id);
+  }
+  function nextBtn(focus) {
+    const act = $("#rsActions");
+    if (!act || !S.next || S.open !== S.next) return;
+    const lab = nextLabel();
+    act.innerHTML = `<button type="button" class="btn" id="rsNext">${bi(lab[0], lab[1])}</button>`;
+    const b = $("#rsNext", act), born = performance.now();
+    // 11/27 review: it appears where the decision buttons were, so the second click of a double click on them would skip the
+    // reason; pointer clicks in the first moments are ignored (a key press has detail 0 and always works)
+    b.addEventListener("click", (ev) => { if (ev.detail && performance.now() - born < CLICK_GAP) return; goNext(); });
+    // 11/26 (K37) again: a key still held down from the decision doesn't also press this
+    b.addEventListener("keydown", (ev) => { if (ev.repeat && (ev.key === "Enter" || ev.key === " ")) ev.preventDefault(); });
+    const a = document.activeElement;
+    if (focus && (!a || a === document.body || !a.isConnected || a.matches(".rx-item, .rs-cut-go"))) b.focus({ preventScroll: true });
+  }
+  function freeNext() {
+    if (!S || !S.next) return;
+    S.next = null;
+    const b = $("#rsNext"); if (b) b.remove();
+    helpFree("next");
+  }
+  function goNext() {
+    if (!S || S.over || S.paused || !S.next) return;
+    const held = S.next, back = S.back;
+    S.back = null;
+    freeNext();
+    if (S.over) return;
+    const b = back && back !== held && byId[back] && !S.answers[back] ? byId[back] : null;
+    const next = b || pending().sort((x, y) => S.fuse[x.id].left - S.fuse[y.id].left)[0];
+    if (next) openMail(next.id);      // none waiting: the next one opens by itself when it lands (arrive)
+    inboxFocus();
+  }
+  function whyInView(id) {      // the reason under a long email is below the fold of the laptop screen: glide down to it
+    setTimeout(() => {
+      if (!S || S.next !== id || S.open !== id) return;
+      const sc = $("#rsScreen"), out = sc && $(".rx-out", sc);
+      if (!out) return;
+      const k = G.k() || 1, r0 = sc.getBoundingClientRect(), r1 = out.getBoundingClientRect();
+      if (r1.top < r0.bottom - 90 * k) return;      // already in sight
+      sc.scrollTo({ top: sc.scrollTop + (r1.top - r0.top) / k - 40, behavior: reduceMotion ? "auto" : "smooth" });
+    }, reduceMotion ? 0 : 600);
+  }
+
+  /* Why a call on an email was wrong, from the game's own data: the verdict and its score, each warning sign with the words
+     it was found in and what it means (the Why box's lines), the note, the sender's reply to a false alarm, who could have
+     confirmed it. The cut scene shows the short form (the score and the three strongest signs by name), so its button stays
+     in sight; the Help panel keeps the whole list, and the email's own Why box is on screen right after the cut. */
+  const NOSIGN = { en: "No warning signs: the sender is who it says, the links stay on sites you know, and nobody asks for a password or a payment.", zh: "沒有警訊：寄件者對得上，連結都在認得的網站，也沒有人要你的密碼或要你付錢。" };
+  const fuseWhy = { en: "The fuse burnt out before you decided, so a colleague opened it.", zh: "導火線燒完了你還沒決定，同事就先點開了。" };
+  const scoreWhy = (e) => ({ en: `${e.phish ? "This one was phishing" : "This one was a real email"}. Warning score ${e.score}. ${d.threshold} or more counts as phishing.`,
+    zh: `${e.phish ? "這封是釣魚信" : "這封是正常的信"}。警訊分數 ${e.score}。${d.threshold} 分以上算釣魚信。` });
+  const signWhy = (s) => {      // the Why box's line for one sign: its name, the words it was found in, what it means
+    const g = signs[s.key] || {};
+    return { en: `${g.en || s.key}: “${s.evidence}”.${g.d_en ? ` ${g.d_en}` : ""}`, zh: `${g.zh || s.key}：「${s.evidence}」。${g.d_zh || ""}` };
+  };
+  function whoWhy(e) {
+    const c = Object.keys(e.calls || {}).map((k) => contacts.find((x) => x.key === k)).filter(Boolean);
+    return c.length ? { en: `Who could confirm it: ${c.map((x) => `${x.en} (${x.number})`).join(" · ")}`, zh: `誰可以確認：${c.map((x) => `${x.zh}（${extZh(x.number)}）`).join("、")}` } : null;
+  }
+  function whyOf(e, short) {
+    const out = [], opened = S.how[e.id] === "opened";
+    if (opened) out.push(fuseWhy);
+    out.push(scoreWhy(e));
+    if (e.phish) {
+      if (short) {      // the cut's text box is short: the names of the three strongest signs, in one line
+        const top = e.signs.slice().sort((x, y) => y.w - x.w).slice(0, 3).map((s) => signs[s.key] || {});
+        if (top.length) out.push({ en: `Signs you could see: ${top.map((g) => g.en).join("; ")}.`, zh: `看得出來的警訊：${top.map((g) => g.zh).join("、")}。` });
+        return out;
+      }
+      for (const s of e.signs) out.push(signWhy(s));
+      if (e.note_en) out.push({ en: e.note_en, zh: e.note_zh });
+      const proc = d.procedures[e.proc];
+      if (proc && proc.steps && proc.steps.length) out.push({ en: `What to do with it: ${proc.steps.slice(0, 2).map((s) => s.text_en).join(" ")}`, zh: `收到這種信怎麼辦：${proc.steps.slice(0, 2).map((s) => s.text_zh).join("")}` });
+    } else {
+      out.push(e.note_en ? { en: e.note_en, zh: e.note_zh } : NOSIGN);
+      if (opened) out.push({ en: "Nothing bad happened, but it doesn't count as one you got right.", zh: "還好沒出事，不過這封不算你答對。" });
+      else {
+        if (e.reply) out.push({ en: `${e.reply.from} wrote back: “${e.reply.en}”`, zh: `${e.reply.from_zh} 回信說：「${e.reply.zh}」` });
+        out.push({ en: "Reporting a real email only costs points, never a shield.", zh: "把正常的信回報掉只會扣分，不會少盾牌。" });
+      }
+    }
+    const who = whoWhy(e);
+    if (who) out.push(who);
+    return out;
+  }
+  function emailMistake(e) {
+    if (!G.help) return;
+    const n = e.i + 1, opened = S.how[e.id] === "opened";
+    const t = e.phish
+      ? (opened ? [`#${n} was phishing, and a colleague opened it`, `第 ${n} 封是釣魚信，被同事點開了`] : [`#${n} was phishing, and you kept it`, `第 ${n} 封是釣魚信，你卻留著`])
+      : (opened ? [`#${n} was real, but a colleague opened it before you decided`, `第 ${n} 封是正常的信，可是你還沒決定，同事就先點開了`] : [`#${n} was a real email: a false alarm`, `第 ${n} 封是正常的信：誤報`]);
+    G.help.mistake({ at: hhmm(S.clock), title_en: t[0], title_zh: t[1], why: whyOf(e), ctx: emailCtx(e) });
+  }
+  /* Reading out the code on the 18:52 call: the procedure's rule (the result card on the phone shows it too), the text
+     message's own warning, how the real Help Desk works, and the move the game wanted (the button's own words). */
+  function callWhy(short) {
+    const out = [], r = codeRule(), proc = (CALL && d.procedures[CALL.proc]) || {};
+    if (r) out.push(short ? { en: r.en, zh: r.zh } : { en: `${r.en} (From “${r.src_en}” in the knowledge graph.)`, zh: `${r.zh}（出自知識圖的流程「${r.src_zh}」）` });
+    if (!short) {
+      if (CALL.sms_en) out.push({ en: `The text message said so too: “${CALL.sms_en}”`, zh: `簡訊上也寫了：「${CALL.sms_zh}」` });
+      const step = (proc.steps || []).find((s) => s.who === "helpdesk_technician");
+      if (step) out.push({ en: step.text_en, zh: step.text_zh });
+    }
+    out.push({ en: "The right move: “Hang up and call the Help Desk yourself (ext. 2100)”.", zh: "對的做法：「掛掉，自己打服務台（分機 2100）」。" });
+    return out;
+  }
+  function callMistake() {
+    if (!G.help) return;
+    G.help.mistake({ at: hhmm(S.clock), title_en: "You read out the code to the caller", title_zh: "你把驗證碼念給打來的人", why: callWhy(false), ctx: { screen: "shift", item: "call", chosen: CALLRES.read } });
+  }
+
+  /* What the Help panel says during the shift: the thing in front of you right now (the call, the open email, or the one
+     just decided), and what is still left (calls, Mei-Ling's hint, the fuse). Read live each time the panel opens. */
+  function shiftNow() {
+    if (!S || S.over) return null;
+    const steps = [], T = (en, zh) => steps.push({ en, zh }), ctx = { screen: "shift" };
+    let chips = [];
+    const e = S.open ? byId[S.open] : null, live = !!e && !S.answers[e.id];
+    const others = pending().filter((x) => x.id !== S.open).length;
+    const waiting = () => T(`${others} more waiting in the inbox: do the one whose fuse is shortest first.`, `收件匣裡還有 ${others} 封在等，導火線最短的先處理。`);
+    const callCard = !!(CALL && S.call.state === "done" && S.call.done);      // the call's result is still on the phone
+    const callOver = () => {
+      const res = { right: ["you hung up and called the Help Desk yourself", "你掛掉，自己打給服務台"], declined: ["you declined it", "你拒接了"],
+        missed: ["you let it ring out", "你沒接，它自己停了"], read: ["you read out the code", "你念出了驗證碼"] }[S.call.result] || ["", ""];
+      T(`The ${CALL.time} call is over: ${res[0]}. Press OK on the phone to put it away.`, `${CALL.time} 那通電話結束了：${res[1]}。按手機上的「好」收起來。`);
+    };
+    if (CALL && ["ringing", "talking", "dialing"].includes(S.call.state)) {
+      ctx.item = "call";
+      if (S.call.state === "ringing") T(`Your phone is ringing: ${CALL.name_en}, ${CALL.number}. Press Answer or Decline. If you leave it, it stops ringing by itself.`, `你的手機在響：${CALL.name_zh}，${CALL.number}。可以按「接聽」或「拒接」，不接的話響一陣子就停了。`);
+      else if (S.call.state === "talking") T("You are on the call. Pick what you say from the choices on the phone. Asking which ticket it is keeps the call going; the other two choices end it.", "你正在講電話，從手機上的選項挑你要說的話。問他是哪張工單，電話還會繼續；另外兩個選項會結束這通電話。");
+      else T("Calling the Help Desk on ext. 2100…", "正在打給服務台，分機 2100…");
+      const r = codeRule();
+      if (r) T(r.en, r.zh);
+      if (S.helps.call) T("The clock waits until you answer, decline, press Got it or go back to the emails.", "你接、拒接、按「知道了」或回去處理信之前，時間不會走。");
+      chips = [{ en: "Can I trust this call?", zh: "這通電話可以相信嗎？" }];
+    } else if (live) {
+      ctx.item = e.id;
+      const s = Math.max(0, Math.ceil(S.fuse[e.id].left)), mmss = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+      T(`Email #${e.i + 1} from ${e.from_name} is open. Read it first: the sender's address, where each link really goes (hover over it and look at the bottom of the email), any attachment, a sentence that rushes you.`,
+        `第 ${e.i + 1} 封，${e.from_name} 寄來的。先看清楚：寄件地址、每個連結真正連去哪（滑鼠移上去，看信的最下面）、附件、催你的那句話。`);
+      T(`Click the words that look wrong: +${P.tell} each. In each email the first ${P.missCap} clicks on words that are not signs cost ${P.miss} points each (never below 0); clicking a plain link costs nothing.`,
+        `看到不對勁的字就點下去，一個 +${P.tell} 分。每封信前 ${P.missCap} 次點到不是警訊的字，各扣 ${P.miss} 分（不會扣到負的）；點一般的連結不扣分。`);
+      T("Then decide. Phishing: press Report phishing, or drag it in the inbox to the left. Real: press Keep it, or drag it to the right. A short drag springs back.",
+        "看完再決定。釣魚信：按「回報釣魚」，或把收件匣裡的這封往左拖。正常的信：按「留著」，或往右拖。拖太短會彈回去。");
+      T(`Keeping a phishing email costs a shield, and with all ${sh.shields} gone the shift ends. Reporting a real one only costs points, never a shield.`,
+        `釣魚信留著會少一面盾牌，${sh.shields} 面都沒了這班就結束。正常的信回報掉只會扣分，不會少盾牌。`);
+      T(`${S.calls ? `Not sure? Call to check: ${S.calls} call${S.calls > 1 ? "s" : ""} left. Pick someone who would really know; a call to someone who can't help still uses one.` : "No calls left tonight."} ${S.hints ? `Ask Mei-Ling: ${S.hints} hint${S.hints > 1 ? "s" : ""} left.` : "Mei-Ling's hint is used up."}`,
+        `${S.calls ? `不確定就打電話確認，還剩 ${S.calls} 通。挑真的會知道的人打，打給幫不上忙的人也算一通。` : "今晚的電話用完了。"}${S.hints ? `問美玲：還剩 ${S.hints} 次。` : "美玲的提示用完了。"}`);
+      if (S.helps.guide) T("This is your first email, so the clock waits until you decide it.", "這是第一封信，你決定之前時間不會走。");
+      else T(`If you don't decide, a colleague opens it in ${mmss}. Pause stops the clock.`, `不決定的話，${s} 秒後同事會點開。按「暫停」時間會停。`);
+      if (others) waiting();
+      chips = [{ en: "What should I check in this email?", zh: "這封信要看哪裡？" }];
+    } else if (e && (S.next === e.id || !callCard)) {
+      // 11/27 review: the email just decided comes before the call's result card while its reason waits for "Next email",
+      // and the assistant is told about the email
+      Object.assign(ctx, emailCtx(e));
+      const did = S.how[e.id] === "opened" ? ["a colleague opened it", "同事先點開了"] : S.answers[e.id] === "report" ? ["you reported it", "你回報了"] : ["you kept it", "你留著了"];
+      T(`Email #${e.i + 1} is done: ${did[0]}. ${isRight(e) ? "That was right." : "That was not right: the Why box under the email shows the warning signs and the score."}`,
+        `第 ${e.i + 1} 封處理完了：${did[1]}。${isRight(e) ? "這樣是對的。" : "這樣不對，信下面的「為什麼」列出了警訊和分數。"}`);
+      if (S.next === e.id) { const lab = nextLabel(); T(`The clock waits while you read. Press ${lab[0]} under the laptop to go on.`, `你在看的時候時間會停，看完按筆電下面的「${lab[1]}」繼續。`); }
+      if (callCard) callOver();
+      if (others) waiting();
+      else T("No other email is waiting. New ones show up in the inbox on the left.", "現在沒有別的信在等，新信會出現在左邊的收件匣。");
+    } else if (callCard) {
+      ctx.item = "call";
+      if (CALLRES[S.call.result]) ctx.chosen = CALLRES[S.call.result];
+      callOver();
+      if (others) waiting();
+    } else {
+      T("No email is open. New emails show up in the inbox on the left; click one to open it.", "現在沒有打開的信。新信會出現在左邊的收件匣，點一下就會打開。");
+      if (others) waiting();
+    }
+    return { title_en: "On your shift", title_zh: "值班中", steps, ctx, chips };
+  }
+
   /* ------------------------------------------------------------------ the inbox */
   function arrive(e) {
     const total = sh.fuse[e.i] || 50;
@@ -396,7 +675,8 @@ Games.phish = function (d, main, replay) {
     countInbox();
     CB.SFX.play("ding");
     if (S.arrived.length === 1) say(line(lines.first));
-    if (!S.open || S.answers[S.open]) openMail(e.id);
+    if (!S.open || S.answers[S.open]) openMail(e.id, true);
+    if (S.arrived.length === 1 && !replay && !firstTime.guide) guide();      // 11/27: the first play of the page: the first email waits
   }
 
   function countInbox() {
@@ -467,7 +747,7 @@ Games.phish = function (d, main, replay) {
       const move = (m) => {
         if (!drag) {
           if (Math.hypot(m.clientX - x0, m.clientY - y0) < 8) return;
-          if (S.answers[e.id] || S.over) return cleanup();
+          if (S.answers[e.id] || S.over || !mailMove()) return cleanup();      // 11/27 review: mailMove, the call's note goes
           drag = startDrag(btn, e, x0, y0);
         }
         moveDrag(drag, m.clientX, m.clientY);
@@ -478,6 +758,8 @@ Games.phish = function (d, main, replay) {
         const zone = endDrag(drag, u.clientX, u.clientY);
         S.justDragged = true; setTimeout(() => { S.justDragged = false; }, 60);
         if (zone && !S.answers[e.id] && !S.over) decide(e, zone, S.seen[e.id] ? "read" : "quick");
+        // 11/27: a drag that stopped short used to spring back without a word
+        else if (!zone && !S.answers[e.id] && !S.over) floatAtRow(e.id, bi("Drag it further to the left or right", "要再往左或往右拖遠一點"), "is-miss");
       };
       const cancel = () => { cleanup(); if (drag) endDrag(drag, -1, -1); };
       const cleanup = () => {
@@ -533,9 +815,12 @@ Games.phish = function (d, main, replay) {
     $("#rsActions").innerHTML = "";
   }
 
-  function openMail(id) {
+  function openMail(id, auto) {
     const e = byId[id];
-    if (!e || S.over) return;
+    // 11/27 review: back on the emails, so the call's note goes; 11/27 regression review: not when the game opens one by
+    // itself (auto), or a right call made just before 18:52 opened the next email and took the note away within 1.7 s
+    if (!e || S.over || (!auto && !mailMove())) return;
+    if (S.next && S.next !== id) { freeNext(); if (S.over) return; }      // 11/27: opening another email moves on from the reason
     S.open = id; S.seen[id] = true;
     for (const b of $$(".rx-item", $("#rxList"))) {
       const on = b.dataset.id === id;
@@ -571,15 +856,18 @@ Games.phish = function (d, main, replay) {
   function actions(e) {
     const act = $("#rsActions");
     act.innerHTML = "";
-    if (S.answers[e.id]) return;
+    if (S.answers[e.id]) { if (S.next === e.id) nextBtn(false); return; }      // 11/27: its reason is still waiting for "Next email"
     act.innerHTML = `<button type="button" class="btn btn-alert" data-a="report">${ICON.flag}${bi("Report phishing", "回報釣魚")}</button>
       <button type="button" class="btn btn-ghost" data-a="keep">${ICON.keep}${bi("Keep it", "留著")}</button>`;
-    for (const b of $$("button", act)) b.addEventListener("click", () => decide(e, b.dataset.a, "read"));
+    // 11/27 review: they are drawn where "Next email" was: the second click of a double click on it must not decide this one
+    // unread (pointer clicks only; a key press has detail 0)
+    const born = performance.now();
+    for (const b of $$("button", act)) b.addEventListener("click", (ev) => { if (ev.detail && performance.now() - born < CLICK_GAP) return; decide(e, b.dataset.a, "read"); });
   }
 
   /* ------------------------------------------------------------------ clicking around an open email */
   function inspect(ev, e) {
-    if (S.answers[e.id] || S.over) return;
+    if (S.answers[e.id] || S.over || !mailMove()) return;      // 11/27 review: mailMove, the call's note goes
     const t = ev.target.closest(".tell");
     if (t) {
       ev.preventDefault();
@@ -788,10 +1076,13 @@ Games.phish = function (d, main, replay) {
     $rs.classList.add("is-ringing");
     CB.SFX.play("ring");
     hintBtn();
+    callNote();      // 11/27: the first call on this page gets a short note (the clock waits while it is up)
   }
 
   function answerCall() {
     if (S.call.state !== "ringing") return;
+    coachOff("call");
+    if (S.over) return;
     S.call.state = "talking";
     $rs.classList.remove("is-ringing");
     const box = $("#rsPhone");
@@ -830,6 +1121,8 @@ Games.phish = function (d, main, replay) {
   async function resolveCall(result) {
     // 11/26 (front-end review K34): reading out the code after the last shield is gone can't take the shields below zero
     if (S.call.state === "done" || S.over || (result === "read" && S.shields <= 0)) return;
+    coachOff("call");      // 11/27: the call is over, and so is its note
+    if (S.over) return;
     S.call.state = "done"; S.call.result = result;
     $rs.classList.remove("is-ringing");
     const proc = d.procedures[CALL.proc] || {};
@@ -860,10 +1153,11 @@ Games.phish = function (d, main, replay) {
       S.shields -= 1; drawShields(true); hitFlash();
       const left = S.shields;
       S.losses.push({ id: "call", damage: CALL.damage });
+      callMistake();      // 11/27: why, in the Help panel; the short form on the cut
       S.hold += 1;
-      await cutScene(CALL.keep || [], CALL.damage || {}, CALL.name_en, left, CALL.name_zh);
+      await cutScene(CALL.keep || [], CALL.damage || {}, CALL.name_en, left, CALL.name_zh, { why: callWhy(true), ctx: { screen: "shift", item: "call", chosen: CALLRES.read } });
       S.hold -= 1; S.last = performance.now();
-      if (S.shields <= 0) { if (!S.hold) gameOver(); return; }
+      if (S.shields <= 0) { helpClear(); if (!S.hold) gameOver(); return; }
     }
   }
 
@@ -879,6 +1173,7 @@ Games.phish = function (d, main, replay) {
   function useHint() {
     const e = S.open ? byId[S.open] : null;
     if (!e || S.answers[e.id] || S.hints <= 0 || S.over || S.paused) return;      // 11/26 (front-end review K32): not while paused
+    if (!mailMove()) return;      // 11/27 review: the call's note goes
     if (e.phish && e.signs.length) {
       const found = S.found[e.id] || new Set();
       // 11/26 (front-end review K35): every sign already found: say so and keep the hint, don't ring a found tell in amber
@@ -904,6 +1199,9 @@ Games.phish = function (d, main, replay) {
     // 11/26 (front-end review K32, K34): nothing is decided while paused (the fuse is frozen, so the speed bonus would be free),
     // and nothing after the last shield is gone (game over is on its way; a second slip took the shields below zero)
     if (S.answers[e.id] || S.over || S.shields <= 0 || (S.paused && how !== "opened")) return;
+    coachOff("guide");      // 11/27: the first decision ends the first-time guide, and the clock starts
+    if (!mailMove()) return;      // 11/27 review: and the call's note
+    if (S.next && S.next !== e.id) { freeNext(); if (S.over) return; }      // 11/27: deciding another one moves on from the reason
     S.answers[e.id] = a; S.how[e.id] = how;
     const f = S.fuse[e.id], right = isRight(e), opened = how === "opened";
     let gain = 0;
@@ -929,6 +1227,7 @@ Games.phish = function (d, main, replay) {
       : e.phish ? (a === "report" ? line(how === "quick" ? lines.quick : lines.caught) : line(lines.missed))
         : (a === "keep" ? line(how === "quick" ? lines.quick : lines.kept) : line(lines.false_alarm));
     say(msg);
+    if (!right) emailMistake(e);      // 11/27: why, kept in the Help panel (the Why box and the cut say it on the spot)
     if (S.open === e.id) {
       const read = $("#rxRead");
       read.classList.remove("rx-hunt"); read.classList.add("rx-done");
@@ -946,17 +1245,19 @@ Games.phish = function (d, main, replay) {
       S.hold += 1;
       await wait(500);
       const theirs = opened && e.keep_opened && e.keep_opened.length;
-      await cutScene(theirs ? e.keep_opened : e.keep, damageOf(e), plainSubj(e), left, subjZh(e));
+      await cutScene(theirs ? e.keep_opened : e.keep, damageOf(e), plainSubj(e), left, subjZh(e), { why: whyOf(e, true), ctx: emailCtx(e) });
       S.hold -= 1; S.last = performance.now();
-      if (S.shields <= 0) { if (!S.hold) gameOver(); return; }
+      if (S.shields <= 0) { helpClear(); if (!S.hold) gameOver(); return; }
     } else if (e.phish && a === "report") {
       toast();
     }
+    // 11/27: after a wrong call the reason stays on screen and the clock waits for "Next email" (right calls go on as before)
+    if (!right) { holdNext(e); return; }
     if (S.open === e.id) {
       setTimeout(() => {
         if (S.over || S.open !== e.id) return;
         const next = pending().sort((x, y) => S.fuse[x.id].left - S.fuse[y.id].left)[0];
-        if (next) openMail(next.id);
+        if (next) openMail(next.id, true);
       }, reduceMotion ? 600 : 1700);
     }
   }
@@ -989,13 +1290,17 @@ Games.phish = function (d, main, replay) {
   /* What an attacker did with something you let through: the tour's own scene, the beats as subtitles, one close-up.
      11/21 night: two slips close together used to draw a second cut over the first, whose button (and done) went away,
      so the shift froze. Cuts now wait their turn; the inbox behind a cut is inert so the keyboard cannot reach it. */
+  /* 11/27: help = {why, ctx}: why it went wrong on the cut itself (CB.whyHTML, the short form) and an "Ask the IT Assistant"
+     button (CB.askHTML / CB.bindAsk) that opens the Help panel and asks about this mistake, like the other cases' cuts. */
   let cutQ = Promise.resolve();
-  function cutScene(keep, dm, subj, left, subjZh2) {
-    cutQ = cutQ.then(() => cutOne(keep, dm, subj, left, subjZh2));
+  function cutScene(keep, dm, subj, left, subjZh2, help) {
+    cutQ = cutQ.then(() => cutOne(keep, dm, subj, left, subjZh2, help));
     return cutQ;
   }
-  function cutOne(keep, dm, subj, left, subjZh2) {
+  function cutOne(keep, dm, subj, left, subjZh2, help) {
     return new Promise((done) => {
+      help = help || {};
+      coachOff("call");      // 11/27: the note on the 18:52 call would sit on top of the cut (the guide ends before any cut)
       const cut = $("#rsCut"), body = $("#rsBody");
       // 11/26 (regression R07): a cut that starts while paused (Pause pressed in the wait before it) leaves #rsBody alone,
       // or the pause card's Resume inside it goes dead behind the hidden cut; togglePause(false) makes it inert
@@ -1009,7 +1314,8 @@ Games.phish = function (d, main, replay) {
           <ol class="rx-beats rs-beats">${beats}</ol>
           <p class="rx-hit rs-cut-hit"><span>${bi(dm.en || "", dm.zh || "")}</span>${dm.ntd ? `<b class="rx-ntd" id="rsNtd">NT$ 0</b>` : ""}</p>
           <p class="rs-cut-shield">${ICON.shield(false)}${bi(left > 0 ? `Shield lost. ${left} left.` : "That was your last shield.", left > 0 ? `少了一面盾牌，還剩 ${left} 面。` : "最後一面盾牌也沒了。")}</p>
-          <button type="button" class="btn rs-cut-go">${bi(left > 0 ? "Back to the inbox" : "Continue", left > 0 ? "回到收件匣" : "繼續")}</button></div>`;
+          ${CB.whyHTML(help.why)}
+          <div class="rs-cut-btns"><button type="button" class="btn rs-cut-go">${bi(left > 0 ? "Back to the inbox" : "Continue", left > 0 ? "回到收件匣" : "繼續")}</button>${CB.askHTML("rs-cut-ask")}</div></div>`;
       cut.classList.remove("is-in"); void cut.offsetWidth; cut.classList.add("is-in");
       if (dm.ntd) setTimeout(() => countUp($("#rsNtd"), dm.ntd), reduceMotion ? 0 : 1300);
       if (dm.inset === "sent") flood($(".rs-sent ol", cut), dm.sent || 200, subj, subjZh2, dm.owner);
@@ -1021,6 +1327,8 @@ Games.phish = function (d, main, replay) {
         if (!a || a === document.body || !a.isConnected) inboxFocus();
         done();
       });
+      // 11/27: opens the Help panel and asks why (the panel pauses the shift; the cut waits behind it)
+      CB.bindAsk($(".rs-cut-ask", cut), Object.assign({}, help.ctx || {}, { mistake: true }));
     });
   }
 
@@ -1092,7 +1400,8 @@ Games.phish = function (d, main, replay) {
         <p class="rx-reply-re">Re: ${bi(plainSubj(e), e.subject_zh ? `回覆：${e.subject_zh}` : "")}</p>
         <p class="rx-reply-text">${bi(r.en || "", r.zh || "")}</p>${pts}</section>`;
     }
-    const head = S.how[e.id] === "opened" ? bi("A colleague opened it. Luckily it was real.", "同事先點開了，還好是正常的信。")
+    // 11/27: say that it doesn't count (a fuse that burnt out on a real email used to cost a point without a word)
+    const head = S.how[e.id] === "opened" ? bi("A colleague opened it before you decided. Luckily it was real, but it doesn't count as one you got right.", "你還沒決定，同事就先點開了。還好是正常的信，不過這封不算你答對。")
       : e.phish ? bi("Caught it.", "抓到了。") : bi("A real email, kept.", "正常的信，留著。");
     return `<section class="rx-good"><p class="rx-good-head">${head}</p>${pts}</section>`;
   }
@@ -1117,7 +1426,7 @@ Games.phish = function (d, main, replay) {
       <div class="vd-meter" role="img" aria-label="Warning score ${e.score}, threshold ${d.threshold}">
         <div class="vd-bar">${segs}<span class="vd-tick" style="left:${(100 * d.threshold) / total}%"></span></div>
         <p>${bi(`Warning score ${e.score}. ${d.threshold} or more counts as phishing. The signs and their weights are the IT Assistant's, the ones it uses when you paste an email.`, `警訊分數 ${e.score}。${d.threshold} 分以上算釣魚信。警訊和權重跟把信貼給 IT 小幫手檢查時用的是同一套。`)}</p></div>
-      ${list ? `<ol class="vd-signs">${list}</ol>` : `<p class="vd-none">${bi("No warning signs: the sender is who it says, the links stay on sites you know, and nobody asks for a password or a payment.", "沒有警訊：寄件者對得上，連結都在認得的網站，也沒有人要你的密碼或要你付錢。")}</p>`}
+      ${list ? `<ol class="vd-signs">${list}</ol>` : `<p class="vd-none">${bi(NOSIGN.en, NOSIGN.zh)}</p>`}
       ${who ? `<p class="rs-who">${bi(`Who could confirm it: ${who}`, `誰可以確認：${whoZh}`)}</p>` : ""}
       ${e.note_en ? `<p class="vd-note">${bi(e.note_en, e.note_zh)}</p>` : ""}
       ${steps}</section></details>`;
@@ -1138,6 +1447,7 @@ Games.phish = function (d, main, replay) {
 
   async function endShift() {
     S.over = true;
+    helpClear();      // 11/27: nothing of the guide or a held reason outlives the shift (it can't end while one is up)
     stopLoop();
     for (const g of $$(".rx-ghost")) g.remove();      // 11/23 review: an email still being dragged when the shift ends
     $rs.classList.remove("is-ringing");
@@ -1175,10 +1485,16 @@ Games.phish = function (d, main, replay) {
       startBoard();
     });
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    helpNow(() => ({ title_en: "Dinner: how your shift went", title_zh: "開飯：這班的結果", ctx: { screen: "end" }, steps: [
+      { en: "The shift is over. The numbers show how it went.", zh: "這班結束了，上面的數字就是這班的結果。" },
+      ...(wrong.length ? [{ en: `Open “${wrong.length} email${wrong.length > 1 ? "s" : ""} to look at again” to see why ${wrong.length > 1 ? "each one was" : "it was"} wrong.`,
+        zh: `打開「再看一次這 ${wrong.length} 封」，看${wrong.length > 1 ? "每一封" : "這封"}錯在哪。` }] : []),
+      { en: "Press Go to the lighthouse: on the case board there, you work out who sent tonight's emails.", zh: "按「去燈塔」，到那邊的案情板找出今晚的信是誰寄的。" }] }));
   }
 
   function gameOver() {
     S.over = true;
+    helpClear();      // 11/27: the guide, the call's note and a held reason go with the shift
     stopLoop();
     for (const g of $$(".rx-ghost")) g.remove();
     $rs.classList.remove("is-ringing", "is-paused");
@@ -1200,6 +1516,10 @@ Games.phish = function (d, main, replay) {
     $(".rs-over .btn-ghost").addEventListener("click", G.back);
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
     G.meter(`<div class="rx-hud"><div class="rx-hud-pts"><b>${S.points.toLocaleString("en-US")}</b><span>${bi("points", "分")}</span></div></div>`);
+    helpNow(() => ({ title_en: "The shift ended early", title_zh: "這班提早結束了", ctx: { screen: "end" }, steps: [
+      { en: `${gotEn} The list shows what each one did.`, zh: `${gotZh}清單上是每一次造成的損失。` },
+      { en: "The top of this panel says why your last mistakes were wrong.", zh: "這個面板最上面寫了你最近幾次錯在哪。" },
+      { en: "Press Try the shift again to play it once more.", zh: "按「重新值班」再玩一次。" }] }));
   }
 
   /* ------------------------------------------------------------------ the case board at the lighthouse */
@@ -1228,9 +1548,54 @@ Games.phish = function (d, main, replay) {
       cardClick({ target: ev.target });
     });
     $("#cbNotes").addEventListener("click", (ev) => { const n = ev.target.closest(".cb-note"); if (n) present("note:" + n.dataset.n); });
+    helpNow(boardHelp);      // 11/27
+    if (G.help) G.help.clear();      // 11/27 review: the shift's last mistake is not this board's (CB.board does the same for cases 2 to 4)
     boardHud();
     renderQs();
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  }
+
+  /* 11/27: what the Help panel says on the board (CB.boardNow for this chapter's own board): the open question, what a click
+     does on THIS question (it changes: pick a card, read it, show it as proof, mark a log line), how to answer, what a wrong
+     try costs; and what the IT Assistant is told (which question, wrong tries, solved). */
+  function boardHelp() {
+    if (!B) return null;
+    const i = B.q, q = QS[i], steps = [], T = (en, zh) => steps.push({ en, zh });
+    if (!q) return { title_en: "On the case board", title_zh: "案情板", ctx: { screen: "board" }, steps: [{ en: "Every question is solved. Press Close the case.", zh: "每一題都解開了，按「結案」。" }] };
+    T(`Question ${i + 1}: ${q.en}`, `第 ${i + 1} 題：${q.zh}`);
+    if (q.kind === "cards") {
+      T("Press Look up on a card: it flips over and shows the sender's domain record. Created is when it was registered, Registrant is who registered it, Name servers are the servers that answer lookups for the domain, and Server IP is the machine its site runs on.",
+        "按卡片上的「查網域」，卡片會翻面，顯示寄件網域的註冊資料：「建立」是什麼時候註冊的，「註冊人」是誰註冊的，「名稱伺服器」是替這個網域回應查詢的伺服器，「伺服器 IP」是網站架在哪台機器上。");
+      T("On this question a click on a card itself (not its buttons) picks it, and a second click drops it. Read opens the email. Then press Connect them.",
+        "這一題點卡片本身（不是上面的按鈕）就是選它，再點一次取消。「看信」會打開那封信。選好按「把它們連起來」。");
+      T(`Looked up so far: ${B.looked.size} of ${d.emails.length}. A wrong guess counts as a wrong try even before you have looked them up.`,
+        `目前查了 ${B.looked.size} 個網域（共 ${d.emails.length} 個）。還沒查就按，猜錯一樣算答錯一次。`);
+    } else if (q.kind === "choose" && B.step !== 1) {
+      T("Pick one of the answers under the question.", "從題目下面的答案選一個。");
+      T("The evidence is on the cork board: the email cards (click one to read it), your phone notes and Accounts' list of unpaid invoices.",
+        "證據都在軟木板上：信件卡片（點一下就能看信）、你的電話便條，還有會計的未付發票清單。");
+    } else if (q.kind === "choose") {
+      T("You picked the right answer. Now show the proof.", "答案選對了，接著要拿出證據。");
+      T("On this step a click on a card or a phone note means “this is my proof”. To read an email first, press its Read button.",
+        "這一步點卡片或電話便條，就是「拿它當證據」。想先看信，就按卡片上的「看信」。");
+    } else if (q.kind === "log") {
+      if (q.how_en) T(q.how_en, q.how_zh);
+      T("The log is pinned on the cork board. Click a line to mark it, click it again to unmark it, then press Reset these accounts.",
+        "紀錄釘在軟木板上。點一行就標起來，再點一次取消，標好按「重設這些帳號」。");
+    }
+    T("A wrong try only lowers the points for this question, it never costs a shield. After two wrong tries the IT Assistant may tell you the answer and why.",
+      "答錯只會少這一題的分數，不會少盾牌。答錯兩次之後，小幫手可以直接告訴你答案和原因。");
+    return { title_en: "On the case board", title_zh: "案情板上要做的事", steps,
+             ctx: { screen: "board", q: i, tries: B.wrong[i] || 0, solved: !!B.solved[i] },
+             chips: [{ en: "Give me a hint for this question", zh: "給我這一題的提示" }] };
+  }
+  /* A wrong try on the board: the hint the game just said (Jun-Hao's line) goes into the Help panel too. */
+  function boardMistake(en, zh) {
+    if (!G.help || !B) return;
+    const i = B.q;
+    G.help.mistake({ at: "", title_en: `Question ${i + 1}: not quite`, title_zh: `第 ${i + 1} 題：還不對`,
+      why: [{ en, zh }, { en: "A wrong try only lowers the points for this question, it never costs a shield.", zh: "答錯只會少這一題的分數，不會少盾牌。" }],
+      ctx: { screen: "board", q: i, tries: B.wrong[i] || 0, solved: false } });
   }
 
   function boardHud(pop) {
@@ -1273,11 +1638,12 @@ Games.phish = function (d, main, replay) {
     const w = (BOARD.whois || {})[dom];
     if (!w) return `<div class="cb-whois"><p class="cb-wdom">${esc(dom)}</p><p>${bi("No record found.", "查不到資料。")}</p></div>`;
     if (w.free) return `<div class="cb-whois is-free"><p class="cb-wdom">${esc(dom)}</p><p class="cb-wfree">${bi(w.en, w.zh)}</p></div>`;
+    // 11/27: the record's words, said plainly when you point at them (the Help panel says them too)
     return `<div class="cb-whois"><p class="cb-wdom">${esc(dom)}</p><dl>
-      <dt>${bi("Created", "建立")}</dt><dd>${esc(w.created)}</dd>
-      <dt>${bi("Registrant", "註冊人")}</dt><dd>${esc(w.registrant)}${w.registrant_zh ? `<span lang="zh-Hant">${esc(w.registrant_zh)}</span>` : ""}</dd>
-      <dt>${bi("Name servers", "名稱伺服器")}</dt><dd>${(w.ns || []).map(esc).join("<br>")}</dd>
-      <dt>${bi("Server IP", "伺服器 IP")}</dt><dd class="cb-ip">${esc(w.ip)}</dd></dl></div>`;
+      <dt title="When the domain was registered 網域是什麼時候註冊的">${bi("Created", "建立")}</dt><dd>${esc(w.created)}</dd>
+      <dt title="Who registered the domain 網域是誰註冊的">${bi("Registrant", "註冊人")}</dt><dd>${esc(w.registrant)}${w.registrant_zh ? `<span lang="zh-Hant">${esc(w.registrant_zh)}</span>` : ""}</dd>
+      <dt title="The servers that answer lookups for the domain 替這個網域回應查詢的伺服器">${bi("Name servers", "名稱伺服器")}</dt><dd>${(w.ns || []).map(esc).join("<br>")}</dd>
+      <dt title="The machine the site runs on 網站架在哪台機器上">${bi("Server IP", "伺服器 IP")}</dt><dd class="cb-ip">${esc(w.ip)}</dd></dl></div>`;
   }
 
   function crewHTML() {
@@ -1374,8 +1740,12 @@ Games.phish = function (d, main, replay) {
         <p class="cb-q-text">${bi(q.en, q.zh)}</p></section>`;
       if (i !== B.q) return `<section class="cb-q is-locked"><p class="cb-q-n">${bi(`Question ${i + 1}`, `第 ${i + 1} 題`)}</p><p class="cb-q-lock">${bi("Opens when the one above is solved.", "解開上一題才會打開。")}</p></section>`;
       return `<section class="cb-q is-active" id="cbQ"><p class="cb-q-n">${bi(`Question ${i + 1}`, `第 ${i + 1} 題`)}</p>
-        <p class="cb-q-text">${bi(q.en, q.zh)}</p>${q.how_en ? `<p class="cb-q-how">${bi(q.how_en, q.how_zh)}</p>` : ""}${controls(q)}</section>`;
+        <p class="cb-q-text">${bi(q.en, q.zh)}</p>${q.how_en ? `<p class="cb-q-how">${bi(q.how_en, q.how_zh)}</p>` : ""}${controls(q)}
+        ${G.help ? `<button type="button" class="cb-q-ask">${bi("Stuck? Ask the IT Assistant", "卡住了？問小幫手")}</button>` : ""}</section>`;
     }).join("");
+    // 11/27: the same "Stuck?" button as the other cases' boards (CB.questions): Help knows the open question and the tries
+    const ask = $(".cb-q-ask", box);
+    if (ask) ask.addEventListener("click", () => G.help.open());
     if (QS.length && B.solved.every(Boolean)) CB.addClose(wrapUp);      // 11/26 (front-end review K31): a redraw after the last solve keeps "Close the case"
     const q = QS[B.q];
     if (!q || B.solved[B.q]) return;
@@ -1429,6 +1799,7 @@ Games.phish = function (d, main, replay) {
       m = missing[0] === earliest ? [q.near_en, q.near_zh] : [q.compare_en, q.compare_zh];
     } else m = [q.compare_en, q.compare_zh];
     cbSay(bi(m[0], m[1]), "is-no");
+    boardMistake(m[0], m[1]);
   }
 
   function choose(q, k) {
@@ -1443,6 +1814,7 @@ Games.phish = function (d, main, replay) {
     renderQs();          // 11/26 (front-end review K46): re-render first, or the new card replaces the shaking one
     nope();
     cbSay(bi(o.why_en || "", o.why_zh || ""), "is-no");
+    boardMistake(o.why_en || "", o.why_zh || "");
     CB.refocus("#cbQ .cb-opt:not([disabled])");    // the one just tried is disabled now: the next reason
   }
 
@@ -1455,12 +1827,16 @@ Games.phish = function (d, main, replay) {
     if (what.startsWith("note:")) {
       const n = S.notes[+what.slice(5)];
       // only Ocean Fresh can say whether Ocean Fresh sent it; Accounts' answer about #9 proves nothing about their mailbox
-      if (n && n.email === q.evidence && n.contact !== "oceanfresh") { nope(); return cbSay(bi("Accounts can't tell whether Ocean Fresh sent it. Only Ocean Fresh can.", "會計沒辦法知道那封是不是 Ocean Fresh 寄的，只有 Ocean Fresh 自己知道。"), "is-no"); }
+      if (n && n.email === q.evidence && n.contact !== "oceanfresh") {
+        const m = ["Accounts can't tell whether Ocean Fresh sent it. Only Ocean Fresh can.", "會計沒辦法知道那封是不是 Ocean Fresh 寄的，只有 Ocean Fresh 自己知道。"];
+        nope(); cbSay(bi(m[0], m[1]), "is-no"); return boardMistake(m[0], m[1]);
+      }
       ok = !!n && n.email === q.evidence;
     }
     if (ok) return solve(q, what);
     nope();
     cbSay(bi(q.wrong_evidence_en, q.wrong_evidence_zh), "is-no");
+    boardMistake(q.wrong_evidence_en, q.wrong_evidence_zh);
   }
 
   function checkLog(q) {
@@ -1470,6 +1846,7 @@ Games.phish = function (d, main, replay) {
     nope();
     const m = bad.some((r) => r.kind === "open") ? [q.open_en, q.open_zh] : bad.length ? [q.address_en, q.address_zh] : [q.missing_en, q.missing_zh];
     cbSay(bi(m[0], m[1]), "is-no");
+    boardMistake(m[0], m[1]);
   }
 
   function solve(q, evidence) {
@@ -1595,6 +1972,9 @@ Games.phish = function (d, main, replay) {
     $(".cb-results", box).addEventListener("click", () => { box.remove(); finale(); });
     $(".cb-results", box).focus({ preventScroll: true });
     cbSay(bi("That's the case for tonight. Thanks, partner.", "今晚的案子就到這裡，謝啦，搭檔。"), "is-good");
+    helpNow(() => ({ title_en: "Case closed", title_zh: "結案", ctx: { screen: "closed" }, steps: [
+      { en: "On the left: the accounts the crew still holds, and what the Help Desk does now. On the right: real cases where the same moves worked.", zh: "左邊是還在歹徒手上的帳號，和服務台現在要做的事；右邊是同一招得逞過的真實案例。" },
+      { en: "Press See my results.", zh: "按「看結果」。" }] }));
   }
 
   function finale() {
@@ -1637,6 +2017,11 @@ Games.phish = function (d, main, replay) {
     if (rank.key === "gold") confetti();
     G.meter(`<div class="rx-hud"><div class="rx-hud-pts"><b>${score}/${TOTAL}</b><span>${bi("case score", "本案分數")}</span></div></div>`);
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    helpNow(() => ({ title_en: "Your results", title_zh: "你的結果", ctx: { screen: "end" }, steps: [
+      { en: `Case score ${score} of ${TOTAL}: one point for each email you got right, one for the ${CALL ? CALL.time : "18:52"} call, one for each board question solved on the first try.`,
+        zh: `本案分數 ${score} / ${TOTAL}：答對的信一封一分，${CALL ? CALL.time : "18:52"} 那通電話一分，案情板每一題第一次就答對一分。` },
+      ...(wrong.length ? [{ en: `“The ones to look at again” says why ${wrong.length > 1 ? "each one was" : "it was"} wrong.`, zh: `「再看一次這幾封」寫了${wrong.length > 1 ? "每一封" : "這封"}錯在哪。` }] : []),
+      { en: "Press Play again to try for a better rank, or open the next case file.", zh: "按「再玩一次」拚更好的名次，或打開下一個案件。" }] }));
   }
 
   function confetti() {
@@ -1663,6 +2048,10 @@ Games.phish = function (d, main, replay) {
   }
 
   if (replay) startShift();
-  else CB.title(stage, { file: 1, scene: "rush_day", title_en: "Inbox Rush", title_zh: "收件匣大作戰", time: story.start || "16:00",
-    place_en: (story.title || {}).place_en, place_zh: (story.title || {}).place_zh, hook_en: (story.title || {}).hook_en, hook_zh: (story.title || {}).hook_zh, onGo: brief });
+  else {
+    helpNow(() => ({ title_en: "The case file", title_zh: "案件封面", ctx: { screen: "title" },
+      steps: [{ en: "Press Open the case file to see your goal and how to play.", zh: "按「打開這個案件」，看你的任務和怎麼玩。" }] }));
+    CB.title(stage, { file: 1, scene: "rush_day", title_en: "Inbox Rush", title_zh: "收件匣大作戰", time: story.start || "16:00",
+      place_en: (story.title || {}).place_en, place_zh: (story.title || {}).place_zh, hook_en: (story.title || {}).hook_en, hook_zh: (story.title || {}).hook_zh, onGo: brief });
+  }
 };

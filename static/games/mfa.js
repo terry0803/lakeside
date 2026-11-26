@@ -12,7 +12,9 @@
    sign-in log and the account changes. Which code the crew typed, why the door stayed shut, and how they got in anyway.
    From the knowledge graph: the door code (the password policy's length, then the screen lock's minutes, the same as the
    door in the tour), the procedure for MFA prompts you did not start (its don'ts are the rules of the night), the
-   lost-badge procedure and the real cases. Shared helpers: casebook.js. */
+   lost-badge procedure and the real cases. Shared helpers: casebook.js.
+   11/27: Help 求助 (common.js G.help): what to do on each screen, why each wrong move was wrong (on the spot and in the
+   panel), and a first-time guide with a note the first time each new thing comes up (CB.coach). */
 "use strict";
 
 Games.mfa = function (d, main, replay) {
@@ -44,6 +46,26 @@ Games.mfa = function (d, main, replay) {
   let S = null, B = null, H = null;
   const loop = CB.loop(tick);
   window.onresize = () => { if (B) CB.drawStrings(B.strings); };
+  const READER = DOORS.find((x) => x.box === "reader") || {};     // the door alert at the badge reader (Kevin's lost badge)
+
+  /* 11/27 (the user: 「都沒說得夠清楚該怎麼玩，並且錯了也不能問小幫手」): why a move was wrong, built from the game data only:
+     the knowledge graph's procedure (its steps and don'ts), the MFA fatigue threat, the briefing's rules and the reasons
+     games.yaml gives for each option. {en, zh} lines, for st.cut, G.help.mistake and the notes on the stage. */
+  const ln = (en, zh) => (en ? { en, zh: zh || "" } : null);
+  const reasons = (...a) => a.filter((x) => x && x.en);
+  const joinEn = (a) => a.map((x) => x.en).join(" "), joinZh = (a) => a.map((x) => x.zh).join("");
+  const stepOf = (proc, phase, who) => { const s = ((proc || {}).steps || []).find((x) => x.phase === phase && (!who || x.who === who)); return s ? ln(s.text_en, s.text_zh) : null; };
+  const dontOf = (proc, i) => ln(((proc || {}).dont_en || [])[i], ((proc || {}).dont_zh || [])[i]);
+  const ruleOf = (icon) => { const r = (story.rules || []).find((x) => x.icon === icon); return r ? ln(r.en, r.zh) : null; };
+  const nodeOf = (k) => { const n = (d.nodes || {})[k]; return n ? ln(n.desc_en, n.desc_zh) : null; };
+  const whyOf = (o) => (o ? ln(o.why_en, o.why_zh) : null);
+  const optOf = (e, k) => ((e && e.options) || []).find((o) => o.k === k);
+  const rightOf = (e) => { const g = ((e && e.options) || []).find((o) => o.good); return g ? ln(`The right move: ${g.en}.`, `該做的是：${g.zh}。`) : null; };
+  const firstOf = (en, zh) => ln((/^[^.!?]*[.!?]/.exec(en || "") || [en])[0], (/^[^。！？]*[。！？]/.exec(zh || "") || [zh])[0]);     // the first sentence
+  // what the IT Assistant is told (ids only, contract in common.js G.help): the event on screen and, once you acted, what you did
+  const ctxOf = (item, chosen) => Object.assign({ screen: "shift" }, item ? { item } : {}, chosen ? { chosen } : {});
+  const setNow = (fn) => { if (G.help) G.help.setNow(fn); };
+  const oops = (m) => { if (G.help) G.help.mistake(m); };
 
   const ICON = {
     lake: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#0e4a55"/><path d="M5 15c2-1.6 4-1.6 6 0s4 1.6 6 0 2.6-1 2.6-1M7 9.5l2.5-3 2.5 3 2-2 3 3.5" fill="none" stroke="#d8bd77" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -69,9 +91,176 @@ Games.mfa = function (d, main, replay) {
       <g class="mn-arm mn-arm-badge"><path d="M27 64c10 0 22-2 33-5" fill="none" stroke-width="5.5" stroke-linecap="round"/><rect class="mn-badge-in-hand" x="60.5" y="53.5" width="5" height="7" rx="1"/></g></g>
   </svg>`;
 
+  /* ------------------------------------------------------------------ 11/27: notes on the stage
+     The first-time guide, and why a move went wrong: a ring around the control, a moving finger that shows the move, and
+     a glass note beside it (CB.coach). One note at a time; the others wait in S.noteQ (o.when: not before; o.done: no
+     longer needed). While a note is up the night's clock waits (S.note; not S.hold, which also stops the radio, the end
+     of the shift and the game over). It goes when its move is made (o.done, checked every tick) or its button is pressed;
+     a cut scene puts it back in the queue until the cut is over. The guide's notes (o.key) show once per page, so Play
+     again and Try again skip the ones already seen. */
+  const SEEN = Games.mfa.seen || (Games.mfa.seen = new Set());
+  const GOT = { en: "Got it", zh: "知道了" };
+  function want(o) {
+    if (!S || S.over || S.ending || S.clock >= TEND) return;     // 11/27 review: from 03:25 on a note could only hold up the end
+    if (o.key && (SEEN.has(o.key) || S.noteQ.some((x) => x.key === o.key))) return;
+    S.noteQ.push(o);
+    noteTick();
+  }
+  function whyNote(o) { want(Object.assign({ step_en: "Why", step_zh: "為什麼", button: GOT, gesture: "click" }, o)); }
+  function noteTick() {
+    if (!S || S.over) return;
+    const yes = (f) => { try { return !!f(); } catch { return false; } };
+    if (S.note && S.note.o.done && yes(S.note.o.done)) noteClose();
+    if (S.note || S.hold || S.paused) return;
+    if (S.clock >= TEND) { S.noteQ = []; return; }     // 11/27 review: 03:25, what still waits can no longer be done
+    for (let i = 0; i < S.noteQ.length; i++) {
+      const o = S.noteQ[i];
+      if (o.done && yes(o.done)) { S.noteQ.splice(i--, 1); continue; }     // its moment has passed
+      if (o.when && !yes(o.when)) continue;
+      S.noteQ.splice(i, 1);
+      if (o.key) SEEN.add(o.key);
+      const h = { o };
+      // focusAfter (11/27 review): where the keyboard goes after "Got it" when the ringed control is not the next one
+      h.c = CB.coach(st, { target: o.target, to: o.to, gesture: o.gesture || "click", en: o.en, zh: o.zh, step_en: o.step_en, step_zh: o.step_zh,
+        button: o.button, focusAfter: o.focusAfter, focusOk: !!o.button && !o.done, onOk: () => { if (S && S.note === h) noteClose(); } });
+      S.note = h;
+      return;
+    }
+  }
+  function noteClose() {
+    const h = S && S.note;
+    if (!h) return;
+    S.note = null;
+    h.c.close();
+    noteTick();     // the next one waiting
+  }
+  function noteSuspend() {     // a cut scene is coming: the note waits in the queue until it is over
+    if (!S || !S.note) return;
+    const h = S.note;
+    S.note = null;
+    h.c.close();
+    S.noteQ.unshift(h.o);
+  }
+  function notesOff() {
+    if (!S) return;
+    S.noteQ = [];
+    if (S.note) { const h = S.note; S.note = null; h.c.close(); }
+  }
+  /* 11/27 review: a timer in real time that must not go off while the game stands still (Pause, the Help panel, a note
+     holding the clock): when it comes due then, it tries again every 250 ms until the night runs again */
+  function later(fn, ms) {
+    const s0 = S;
+    const go = () => { if (S !== s0 || !S || S.over) return; if (S.paused || S.note) { setTimeout(go, 250); return; } fn(); };
+    setTimeout(go, ms);
+  }
+  /* after the call in Jun-Hao's name: the Phone icon, and 2199 */
+  function dialNote() {
+    want({ key: "dial", target: () => $("#mnPhoneApp"), gesture: "click", step_en: "Next step", step_zh: "下一步",
+      en: `Now call the real SOC yourself: press Phone, type ${NUM.soc} and press the green call button.`,
+      zh: `現在自己打給真的資安監控中心：按「電話」，輸入 ${NUM.soc}，再按綠色的撥號鍵。`,
+      button: GOT, when: () => !S.app, done: () => !!S.reported || !!S.soc || S.app === "dial" });
+  }
+
+  /* ------------------------------------------------------------------ 11/27: "Right now" in the Help panel, screen by screen */
+  const titleNow = () => ({ title_en: "The case file", title_zh: "案件", ctx: { screen: "title" },
+    steps: [ln("Press Open the case file to read your briefing.", "按「打開這個案件」看說明。")] });
+  const briefNow = () => ({ title_en: "The briefing", title_zh: "值班前的說明", ctx: { screen: "brief" },
+    steps: [ln("Your goal is at the top. How to play, on the right, is the whole night in four rules.", "最上面是你的任務。右邊「怎麼玩」的四條規則，就是整晚要做的事。"),
+      ln(`The on-call card has the numbers you need. The SOC is ${NUM.soc}.`, `值班卡上有要用的電話，資安監控中心是 ${NUM.soc}。`),
+      ln("Press Go to sleep to start. The night starts in the dark: your work phone will light up.", "按「去睡覺」開始。一開始房間是暗的，工作手機會亮起來。")],
+    chips: [ln("What is MFA fatigue?", "什麼是 MFA 疲勞攻擊？")] });
+  const ownChosen = () => (S.own.tries ? (S.own.last === "deny" ? "deny" : "wrong_number") : "");
+
+  /* The night: what is on the screen this moment (the open app, then a door alert, a prompt, your own sign-in), the exact
+     control and move, and what costs a shield; the IT Assistant is told which event that is, and what you did once you acted. */
+  function shiftNow() {
+    if (!S || S.over) return null;
+    const soc = NUM.soc, app = S.app, o = S.own;
+    const out = (title_en, title_zh, steps, ctx, chips) => ({ title_en, title_zh, steps: steps.filter(Boolean), ctx, chips });
+    // 11/27 review: unblocking the lost badge costs a shield only when the crew then gets through with it (after they have
+    // gone, Security blocks it again and it costs 40 points)
+    const shield = ln(`${S.shields} of ${sh.shields} shields left. You lose one each time you approve a prompt, type the code for a caller, or let the crew through the door: unlocking it, or unblocking Kevin's lost badge so they can use it.`,
+      `還剩 ${S.shields} 面盾牌（共 ${sh.shields} 面）。同意登入通知、幫來電的人按驗證碼、放歹徒進門（遠端開門，或解除凱文遺失員工證的停用讓他們刷卡），每次都會少一面。`);
+    const door = S.alerts.filter((a) => !a.doomed).slice(-1)[0], pushes = S.notifs.filter((n) => n.kind === "push");
+    const doorToo = door ? ln("A door alert is waiting too: hold the radio button on the laptop.", "門口也有通知在等：按住筆電上的無線電按鈕。") : null;
+    const lockToo = app && pushes.length ? ln("While an app covers the phone, prompts can't be swiped. Left alone they time out, and nobody gets in.", "App 開著的時候，登入通知滑不掉。沒人理的通知時間到就消失，不會讓任何人登入。") : null;
+    const callAsk = [ln("Is this really the SOC?", "這真的是資安監控中心嗎？")];
+    if (S.dark) return out("In the dark", "房間還是暗的", [ln("Click anywhere or press a key to turn on the lamp.", "點一下畫面或按任意鍵，就會開燈。"),
+      ln("Your work phone is about to light up.", "工作手機快要亮了。")], ctxOf());
+    if (app === "call") {
+      const c = S.call, back = !c || c.state === "done" || !!c.fake;
+      if (c && c.state === "ringing") return out(`A call from ${CALL.number}`, "有人打來", [
+        ln(`The screen says ${CALL.name_en}, but the number is ${CALL.number}. The SOC on your on-call card is ${soc}.`, `螢幕上寫${CALL.name_zh}，號碼卻是 ${CALL.number}。值班卡上的資安監控中心是 ${soc}。`),
+        ln("You can press Decline, or Slide to answer to hear what he wants.", "可以按「拒接」，或「滑動接聽」聽聽他要什麼。"),
+        ln("Never type or read out a code for him: that costs a shield.", "驗證碼絕對不要按給他或念給他，那會少一面盾牌。"),
+        ln(`Afterwards open Phone and dial ${soc} yourself.`, `之後打開「電話」，自己撥 ${soc}。`), doorToo, lockToo], ctxOf(CALL.id), callAsk);
+      return out(back ? `Calling back ${CALL.number}` : `On the phone with ${CALL.number}`, back ? "回撥那個號碼" : "通話中", [
+        back ? ln("The number that rang you belongs to the caller, not to the SOC.", "打來的號碼是那個人的，不是資安監控中心的。") : null,
+        whyOf(optOf(CALL, "read")),
+        ln("Press End call, the red button at the bottom, to hang up. Typing the code costs a shield.", "按最下面紅色的「掛斷」。按出驗證碼會少一面盾牌。"),
+        ln(`Then open Phone and dial ${soc} yourself.`, `然後打開「電話」，自己撥 ${soc}。`), doorToo, lockToo],
+        ctxOf(CALL.id, back ? "call_back_caller" : ""), callAsk);
+    }
+    if (app === "soc") {
+      const s = S.soc;
+      if (!s || s.state === "dialing") return out("Calling the SOC", "正在打給資安監控中心", [ln("Wait for Jun-Hao to answer.", "等俊豪接起來。"), doorToo], ctxOf("soc"));
+      if (s.state === "done") return out("Reported to the SOC", "回報完了", [ln("Jun-Hao is resetting your password and signing out every session. Press Hang up.", "俊豪正在重設你的密碼，登出所有工作階段。按「掛斷」。"), doorToo], ctxOf("soc", "report"));
+      return out("On the phone with the SOC", "正在跟資安監控中心通話", [
+        ln("Drag each thing you want to tell Jun-Hao up into the call. From the keyboard, press Enter on a line.", "把要跟俊豪說的話一句一句拖到上面的通話裡。用鍵盤的話，在那句話上按 Enter。"),
+        ln(`Tell him what happened tonight. A line that makes things worse costs ${P.bad} points, not a shield.`, `把今晚發生的事告訴他。說了會壞事的話扣 ${P.bad} 分，不會少盾牌。`),
+        ln("Press That's everything when you're done. Hanging up before you say anything reports nothing.", "說完按「就這些」。什麼都沒說就掛斷，等於沒有回報。"), doorToo, lockToo],
+        ctxOf("soc"), [ln("What should I tell the SOC?", "要跟資安監控中心說什麼？")]);
+    }
+    if (app === "dial") return out("Phone", "電話", [
+      ln(`Type ${soc} on the keypad (your keyboard works too) and press the green call button.`, `在鍵盤上輸入 ${soc}（電腦鍵盤也可以），再按綠色的撥號鍵。`),
+      ln(`${soc} is the SOC on your on-call card. Calling it yourself is how you report.`, `${soc} 是值班卡上資安監控中心的號碼，自己打過去才算回報。`),
+      S.fired[CALL.id] ? ln("Recent calls show the number that rang you. Calling it back reaches the caller, not the SOC.", "最近通話裡有剛剛打來的號碼，回撥只會打給那個人，不是資安監控中心。") : null,
+      ln("Close puts the phone away.", "按「關閉」收起電話。"), doorToo, lockToo], S.res[CALL.id] ? ctxOf(CALL.id, S.res[CALL.id]) : ctxOf());
+    if (app === "auth") return out("Your own sign-in", "你自己要登入", [
+      ln("Type the number your laptop shows into this app, then press Yes. Your keyboard works too.", "把筆電上顯示的號碼輸入這個 App，再按「是我」。電腦鍵盤也可以打。"),
+      ln("Later puts the app away, and the sign-in keeps waiting.", "按「稍後」可以先收起來，登入會繼續等你。"),
+      ln(`A wrong number or No blocks it and costs ${P.ownWrong} points.`, `號碼打錯或按「不是我」，登入會被擋下，扣 ${P.ownWrong} 分。`), doorToo, lockToo],
+      ctxOf(OWN.id, ownChosen()), [ln("What is number matching?", "什麼是號碼比對？")]);
+    if (app === "line") return out("A call to another number", "打給其他號碼", [
+      ln(`For the Banquet Hall door, use the radio on the laptop. To report, dial ${soc}.`, `宴會廳門口的事用筆電上的無線電，回報要撥 ${soc}。`),
+      ln("Press End call to hang up.", "按「掛斷」掛掉電話。"), doorToo, lockToo], ctxOf());
+    if (door) return out(door.e.alert_en, door.e.alert_zh, [
+      ln("Someone is at the Banquet Hall door: look at the camera on your laptop.", "宴會廳門口有人：看筆電上的監視器。"),
+      ln("Hold the round radio button (Hold to talk) for about a second, then let go. That tells Security.", "按住圓形的無線電按鈕（按住說話）大約一秒再放開，就會告訴安全室。"),
+      ln("Don't use Slide to unlock or Slide to unblock: that lets the crew in and costs a shield.", "不要用「滑動開門」或「滑動解除停用」：那是放歹徒進來，會少一面盾牌。"),
+      ln("Swiping the alert off your phone tells nobody.", "把手機上的通知滑掉，沒有人會知道。"),
+      pushes.length ? ln("A sign-in prompt is waiting too: swipe it to the left.", "也有登入通知在等：往左滑掉。") : null],
+      ctxOf(door.e.id), [ln("Why not just unlock the door?", "為什麼不能直接開門？")]);
+    if (pushes.length) {
+      const n = pushes[0];
+      return out("A sign-in prompt you didn't start", "不是你發起的登入通知", [
+        ln(`${n.e.where_en}. You didn't start it, so someone has your password.`, `${n.e.where_zh}。這不是你發起的，代表有人拿到你的密碼了。`),
+        ln("Swipe the card to the left to deny it. Or click the card and press Delete.", "把卡片往左滑就是拒絕。也可以點一下卡片，再按 Delete。"),
+        ln("Never use Slide to approve: approving costs a shield.", "絕對不要用「滑動同意」：同意會少一面盾牌。"),
+        pushes.some((x) => x.e.trick) ? dontOf(PROC, 0) : null],
+        ctxOf(n.id), [ln("Why should I deny it?", "為什麼要拒絕？")]);
+    }
+    if (o.state === "ready" || o.state === "prompt") return out("Your own sign-in", "你自己要登入", [
+      o.state === "ready" ? ln(o.e.ask_en, o.e.ask_zh) : ln("Your sign-in is waiting: click its card on your phone to open the app again.", "你的登入還在等：點一下手機上的登入卡片，再打開 App。"),
+      ruleOf("number"),
+      ln("This one is yours: don't swipe it away or say No.", "這次是你自己要登入，不要滑掉，也不要按「不是我」。")],
+      ctxOf(OWN.id, ownChosen()), [ln("What is number matching?", "什麼是號碼比對？")]);
+    if (S.badge === "active") return out("Kevin's lost badge is active", "凱文遺失的卡現在可以用", [firstOf(READER.ask_en, READER.ask_zh),
+      ln("Press Block it again on the laptop's door console.", "按筆電門禁控制台上的「重新停用」。"), shield], ctxOf(S.fired[READER.id] ? READER.id : "", "unblock"));
+    const started = PUSHES.some((e) => S.fired[e.id]) || !!S.fired[CALL.id];
+    const quiet = !S.reported && EV.every((e) => S.fired[e.id] && S.res[e.id]);
+    return out("Right now", "現在", [
+      ln("Nothing is waiting for you right now. Watch your phone and the door camera on the laptop.", "現在沒有事情在等你。注意手機和筆電上的門口監視器。"),
+      S.reported ? ln("You've reported to the SOC: your password is reset, so the prompts have stopped.", "你已經回報資安監控中心了：密碼重設了，通知也停了。")
+        : started ? ln(`You haven't reported yet: open Phone at the bottom of your phone and dial ${soc}.`, `你還沒回報：打開手機下方的「電話」，撥 ${soc}。`) : null,
+      quiet ? ln(`Everything else has happened, so the clock runs faster now. Only the call to ${soc} is left.`, `其他事都發生過了，時間會走得比較快，只剩打 ${soc}。`) : null,
+      shield], ctxOf());
+  }
+
   /* ------------------------------------------------------------------ the briefing: Mei-Ling's message before bed */
   function brief() {
     loop.stop();
+    setNow(briefNow);     // 11/27
     st.scene("mn_room", 0.1);
     G.meter("");
     CB.brief(st, { file: 3, start: story.start, top_en: "Later that night", top_zh: "晚會後的深夜", until_en: `on call until ${story.end}`, until_zh: `值班到 ${story.end}`, person: MENTOR,
@@ -85,11 +274,14 @@ Games.mfa = function (d, main, replay) {
     loop.stop();
     S = { clock: 0, over: false, paused: false, hold: 0, fired: {}, res: {}, notifs: [], log: [], shields: sh.shields, points: 0, losses: [],
       approved: 0, call: null, soc: null, reported: null, pwReset: false, own: { state: "idle", tries: 0, left: 0 }, endAt: 0,
-      alerts: [], badge: "blocked", app: null, dial: "", recents: [], streak: 0, calledFake: false, via: {} };
+      alerts: [], badge: "blocked", app: null, dial: "", recents: [], streak: 0, calledFake: false, via: {},
+      note: null, noteQ: [], ending: false };     // 11/27: the note on the stage, the ones waiting, and 03:25 closing what is open
     B = null;
     st.scene("mn_room", 0.18);
     H = CB.hud({ pause: true, clock: story.start, clockLabel: bi("on call", "值班中"), shields: sh.shields });
     G.onPause = () => togglePause();
+    if (G.help) G.help.clear();     // 11/27: the Help panel's mistakes are this night's
+    setNow(shiftNow);
     window.scrollTo({ top: 0 });
     st.body.innerHTML = `<div class="mn-play">
       <div class="rs-side mn-left"><section class="mn-card" aria-label="On-call card">
@@ -170,12 +362,13 @@ Games.mfa = function (d, main, replay) {
     || S.own.state === "ready" || S.own.state === "prompt";
 
   function tick(dt) {
-    if (!S || S.over || S.paused || S.hold || document.hidden) return;
+    noteTick();     // 11/27: a note on the stage goes once its move is made, and the next one waiting comes up
+    if (!S || S.over || S.paused || S.hold || S.note || document.hidden) return;     // 11/27: the clock waits while a note is up
     if (S.dark && S.wakeAt && performance.now() >= S.wakeAt) wake();
     const quiet = !S.reported && EV.every((e) => S.fired[e.id] && S.res[e.id]);     // everything has happened; only the call to 2199 is left
     const sending = !!(S.call && S.call.state === "sending");     // 11/26 (front-end review K53): the code is going down the line
     S.clock = Math.min(TEND, S.clock + dt * (busy() ? sh.rate : quiet ? sh.idle * 2 : sh.idle));
-    for (const e of EV) if (!S.fired[e.id] && S.clock >= e.at && canFire(e)) fire(e);
+    for (const e of EV) if (!S.note && !S.fired[e.id] && S.clock >= e.at && canFire(e)) fire(e);     // 11/27: nothing more fires once a note came up
     for (const n of S.notifs.slice()) { if (n.kind === "door" || n.kind === "own") continue; n.left -= dt; if (n.left <= 0) expire(n); }
     for (const a of S.alerts.slice()) { a.left -= dt; if (a.left <= 0) doorDone(a, "none"); }
     const c = S.call;
@@ -238,7 +431,16 @@ Games.mfa = function (d, main, replay) {
       if (S.dark && !S.wakeAt) {
         S.wakeAt = performance.now() + 6500;
         const w = $("#mnWake");
-        if (w) w.innerHTML = bi("The phone lights up the room. Something wants you to approve a sign-in.", "手機把房間照亮了，有東西要你核准登入。");
+        // 11/27: it said "Something wants you to approve a sign-in", which read like an instruction to approve
+        if (w) w.innerHTML = bi("The phone lights up the room: a sign-in prompt you didn't start.", "手機把房間照亮了：一則不是你發起的登入通知。");
+      }
+      // 11/27: the first-time guide. The first prompt of the night waits (the clock stops), the lamp goes on, and a ring and a
+      // finger show the swipe to the left on its card. It goes when that prompt is answered (or stopped by your report).
+      if (e === PUSHES[0] && !SEEN.has("push")) {
+        wake();
+        want({ key: "push", target: () => $(`.mn-nw[data-id="${e.id}"] .mn-n`), gesture: "drag-left",
+          en: "A sign-in you didn't start: someone has your password. Swipe it left to deny it.", zh: "不是你發起的登入：有人拿到你的密碼了。往左滑拒絕。",
+          done: () => !!S.res[e.id] });
       }
       if (e.msg_en) addNotif({ id: "msg-" + e.id, e: {}, kind: "msg", left: 10, total: 10, from_en: e.msg_from_en, from_zh: e.msg_from_zh, en: e.msg_en, zh: e.msg_zh });   // the trick comes by text, the prompt looks like any other
     } else if (e.kind === "door") doorFire(e);
@@ -247,11 +449,20 @@ Games.mfa = function (d, main, replay) {
       S.recents.unshift({ num: e.number, en: e.name_en, zh: e.name_zh, t: clockAt(S.clock), dir: "in" });
       take("call");
       callScreen();
+      // 11/27: the first call of the page: a ring on the hang-up button, and the rule (no code for a caller, dial 2199 yourself)
+      want({ key: "call", target: () => $("#mnTake [data-end], #mnTake [data-c=decline]"), gesture: "click", step_en: "A call", step_zh: "來電",
+        en: `Never type or read out the code for a caller, even one who says he is the SOC. Hang up here, then open Phone and dial ${NUM.soc} yourself.`,
+        zh: `驗證碼絕對不要按給或念給來電的人，就算他說自己是資安監控中心也一樣。在這裡掛掉，再打開「電話」自己撥 ${NUM.soc}。`,
+        button: GOT, done: () => !S.call || S.call.e !== e || S.call.state === "done" || S.call.state === "sending" });
     } else if (e.kind === "own") {
       S.own = { state: "ready", tries: 0, left: e.secs, e, typed: "" };
       addNotif({ id: "msg-" + e.id, e, kind: "msg", left: 12, total: 12, from_en: "Security · Hsu", from_zh: "安全室 許志明", en: e.ask_en, zh: e.ask_zh });
       portal();
       buzz();
+      // 11/27: the first sign-in of your own: a ring on the laptop's Sign in button, with the briefing's rule for it
+      const r = ruleOf("number") || ln("Press Sign in on the laptop, then type the number the laptop shows into the app on your phone.", "先按筆電上的「登入」，再把筆電上顯示的號碼輸入手機的 App。");
+      want({ key: "own", target: () => $("#mnSignIn"), gesture: "click", step_en: "Your own sign-in", step_zh: "你自己要登入", en: r.en, zh: r.zh,
+        button: GOT, done: () => S.own.state !== "ready" });
     }
   }
 
@@ -411,10 +622,13 @@ Games.mfa = function (d, main, replay) {
     S.approved += 1;
     CB.SFX.play("bad");
     addLog(clockAt(S.clock), bi("Approved a sign-in you didn't start.", "同意了一則不是你發起的登入。"), "is-bad");
-    await breach(story.push_damage, n.e);
+    // 11/27: why, on the cut scene and in the Help panel: the MFA fatigue threat and the procedure's don't and first step
+    await breach(story.push_damage, n.e, { ctx: ctxOf(n.id, "approve"), why: reasons(nodeOf("mfa_fatigue"), dontOf(PROC, 0), stepOf(PROC, "contain", "you")) });
   }
 
-  async function breach(dm, e) {
+  // o (11/27): {why, ctx} for the cut scene, which shows the reasons, adds the Ask button and tells the Help panel
+  async function breach(dm, e, o) {
+    noteSuspend();     // 11/27: a note on the stage waits until the cut is over
     S.shields -= 1;
     const left = S.shields;   // shields after this slip (another one may come before this cut shows; cuts queue up)
     S.losses.push({ e, dm });
@@ -425,7 +639,8 @@ Games.mfa = function (d, main, replay) {
     const base = CB.mins((dm.beats || [])[0] && dm.beats[0].time), now = T0 + S.clock;
     const beats = (dm.beats || []).map((b) => (/^\d+:\d+$/.test(b.time) ? Object.assign({}, b, { time: CB.hhmm(now + CB.mins(b.time) - base) }) : b));
     await st.cut({ scene: dm.scene || "mn_hall", beats, hit_en: dm.hit_en, hit_zh: dm.hit_zh, inset: dm.inset === "signin" ? signinInset() : "", shields: left,
-      go: left > 0 ? bi("Back to the phone", "回到手機") : bi("Continue", "繼續") });
+      go: left > 0 ? bi("Back to the phone", "回到手機") : bi("Continue", "繼續"),
+      why: (o && o.why) || [], ctx: (o && o.ctx) || ctxOf(e && e.id), at: clockAt(S.clock) });
     S.hold -= 1;
     if (S.shields <= 0 && !S.hold) gameOver();   // only after the last queued cut
   }
@@ -486,7 +701,12 @@ Games.mfa = function (d, main, replay) {
     buzz();
     camEvent(show);
     conDraw();
-    if (a.doomed) setTimeout(() => {
+    // 11/27: the first door alert of the page: a ring on the radio button and a finger that holds it; the sliders are traps
+    if (!a.doomed) want({ key: "door", target: () => $("#mnPtt"), gesture: "hold", step_en: "Someone at the door", step_zh: "門口有人",
+      en: "Someone is at the Banquet Hall door. Hold this radio button to tell Security. Swiping the alert off your phone tells nobody, and the sliders on this console let them in.",
+      zh: "宴會廳門口有人。按住這個無線電按鈕，告訴安全室。把手機上的通知滑掉，沒有人會知道。控制台上的滑桿是放他們進來的。",
+      button: GOT, done: () => !S.alerts.includes(a) });
+    if (a.doomed) later(() => {     // 11/27 review: not while paused (the cut used to play behind the Help panel)
       if (!S || S.over || !S.alerts.includes(a)) return;
       if (S.badge === "active") return doorDone(a, "bad", "before");
       // 11/22 review: blocked again during the alarm, so the reader refuses it after all: an ordinary alert again (radio works)
@@ -523,7 +743,7 @@ Games.mfa = function (d, main, replay) {
         : bi(`${e.alert_en} → you unlocked the door remotely.`, `${e.alert_zh} → 你遠端開了門。`), "is-bad");
       camOpen();
       await wait(1500);
-      await breach(dm, e);
+      await breach(dm, e, { ctx: ctxOf(e.id, via === "unlock" ? "unlock" : "unblock"), why: doorWhy(e, via) });     // 11/27
       if (S.over) return;
       camReset();
       conDraw();
@@ -533,6 +753,24 @@ Games.mfa = function (d, main, replay) {
     addLog(e.cam.slice(0, 5), bi(`${e.alert_en}: nobody told Security. ${e.miss_en || (idle && idle.why_en) || ""}`, `${e.alert_zh}：沒有人通知安全室。${e.miss_zh || (idle && idle.why_zh) || ""}`), "is-miss");
     camAway(e, false);
     conDraw();
+    if (S.ending) return;     // 03:25 closed it: not a move of yours
+    // 11/27: the alert ran out with nobody told. The same reason as the log line, on the spot by the radio button (the clock
+    // waits until "Got it"), and in the Help panel
+    const r = e.miss_en ? ln(e.miss_en, e.miss_zh) : ln(`Nobody told Security. ${(idle && idle.why_en) || ""}`.trim(), `沒有人通知安全室。${(idle && idle.why_zh) || ""}`);
+    oops({ at: e.cam.slice(0, 5), title_en: `${e.alert_en}: nobody told Security`, title_zh: `${e.alert_zh}：沒有人通知安全室`, why: reasons(r, rightOf(e)), ctx: ctxOf(e.id, "timeout") });
+    // 11/27 review: only "Got it" closes it (holding the radio now does nothing for this alert), so no moving finger; after
+    // "Got it" the keyboard goes back where it was (else to the radio button)
+    const back = document.activeElement;
+    whyNote({ target: () => $("#mnPtt"), gesture: "none", en: `${r.en} Next time, hold this radio button.`, zh: `${r.zh}下次按住這個無線電按鈕。`,
+      focusAfter: () => (back && back !== document.body && back.isConnected && !back.closest("[inert]") ? back : null) });
+  }
+
+  /* 11/27: why opening the door (or unblocking the lost badge) for them was wrong: the badge's story when it is Kevin's,
+     the reason games.yaml gives for the option that is only half right, and the right move */
+  function doorWhy(e, via) {
+    const idle = (e.options || []).find((o) => !o.good && !o.bad), at = (S.beforeAt || "").slice(0, 5);
+    return reasons(e.box === "reader" ? firstOf(e.ask_en, e.ask_zh) : null,
+      via === "before" && at ? ln(`You had unblocked it at ${at}.`, `你在 ${at} 就解除了停用。`) : null, whyOf(idle), rightOf(e));
   }
 
   function unlockDoor() {
@@ -550,8 +788,16 @@ Games.mfa = function (d, main, replay) {
     const a = S.alerts.find((x) => x.e.box === "reader");
     if (a) return doorDone(a, "bad", "unblock");
     const d3 = DOORS.find((x) => x.box === "reader");
+    // 11/27: why, from the reader alert's own story and the lost-badge procedure, in the Help panel; before the crew has
+    // tapped it, also on the spot by "Block it again" (the clock waits until it is blocked again or "Got it")
+    const blocks = stepOf(BADGE, "contain");
+    const why = reasons(firstOf(READER.ask_en, READER.ask_zh), blocks ? ln(`${BADGE.name_en}: ${blocks.en}`, `${BADGE.name_zh}：${blocks.zh}`) : null);
+    oops({ at: clockAt(S.clock), title_en: `Unblocked badge ${BADGE_ID} (${BD.en}, reported lost)`, title_zh: `解除了員工證 ${BADGE_ID}（${BD.zh}，已掛失）的停用`, why,
+      ctx: ctxOf(d3 && S.fired[d3.id] ? d3.id : "", "unblock") });
+    if (!(d3 && S.res[d3.id])) whyNote({ target: () => $("#mnReblock:not([hidden])") || $("#mnBadgeLamp"), en: `${joinEn(why)} Press Block it again.`, zh: `${joinZh(why)}按「重新停用」。`,
+      done: () => S.badge !== "active" });
     if (d3 && S.res[d3.id]) {     // the crew is gone, but a lost badge is still a lost badge
-      setTimeout(() => {
+      later(() => {     // 11/27 review: not while paused (it took the 40 points while you were in the Help panel)
         if (!S || S.over || S.badge !== "active") return;
         S.badge = "blocked";
         addPts(-P.reblock);     // 11/26 (front-end review K56)
@@ -717,6 +963,7 @@ Games.mfa = function (d, main, replay) {
     // 11/26 (second regression pass): not Escape: a slide knob marks every Escape as used, and Escape here puts the phone
     // app away (as before R10)
     if (ev.defaultPrevented && ev.key !== "Escape") return;
+    if (B) return boardKey(ev);     // 11/27: on the case board the door keypad takes the keyboard too
     if (!S || S.over || S.paused || !S.app || ev.ctrlKey || ev.metaKey || ev.altKey) return;
     const k = ev.key;
     if (S.app === "dial") {
@@ -818,11 +1065,15 @@ Games.mfa = function (d, main, replay) {
       return;
     }
     const open = c.fake ? [e.again_en, e.again_zh] : [e.open_en, e.open_zh];
+    // 11/27: under what he says, a line with the rule (the reason, on a call you rang back); "dial 2199 yourself" used to
+    // show up only in the night log after you hung up
     t.innerHTML = `<div class="mn-call is-talking is-fake"><p class="mn-call-label">${esc(e.number)} · ${bi(e.name_en, e.name_zh)}<b class="mn-call-time" id="mnCallT">00:00</b></p>
       ${c.pad ? `<p class="mn-sms is-mini">${ICON.lake}<span>${bi(`Code ${e.code} · never share it`, `驗證碼 ${e.code}・不要給任何人`)}</span></p>`
         : `<div class="mn-sms"><p class="mn-n-app">${ICON.lake}<span>${APP}</span><time>${bi("now", "現在")}</time></p>
         <p>${bi(`Your one-time code is ${e.code}. Never share it. The SOC will never ask for it.`, `你的一次性驗證碼是 ${e.code}。不要給任何人，資安監控中心不會跟你要。`)}</p></div>`}
       <div class="mn-talk" id="mnTalk"><p class="mn-bubble">“${esc(open[0])}”<span lang="zh-Hant">${esc(open[1])}</span></p></div>
+      <p class="mn-miss">${c.fake ? bi(`You rang this number back: it belongs to the caller, not to the SOC. Hang up, then dial ${NUM.soc} yourself.`, `你回撥了這個號碼：它是那個人的，不是資安監控中心的。掛掉，再自己撥 ${NUM.soc}。`)
+        : bi(`Rule: never type the code for a caller. Hang up, then dial ${NUM.soc} yourself.`, `規則：驗證碼不要按給來電的人。掛掉，再自己撥 ${NUM.soc}。`)}</p>
       <div class="mn-incall" id="mnInCall">${c.pad ? `<p class="mn-typed-row"><span class="mn-typed" id="mnTyped">${esc(c.typed) || "&nbsp;"}</span><button type="button" class="mn-pad-hide" data-ctl="hide">${bi("Hide keypad", "收起鍵盤")}</button></p>${keysHTML("mnCallKeys")}` : `<div class="mn-callctl">
         <button type="button" data-ctl="mute">${ICON.mute}<span>${bi("Mute", "靜音")}</span></button>
         <button type="button" data-ctl="pad">${ICON.pad}<span>${bi("Keypad", "鍵盤")}</span></button>
@@ -903,11 +1154,15 @@ Games.mfa = function (d, main, replay) {
       S.approved += 1;
       S.codeGiven = true;
       addLog(clockAt(S.clock), bi(`Typed the code ${e.code} for a caller using Jun-Hao's name (${e.number}).`, `替冒充俊豪的來電（${e.number}）按出了驗證碼 ${e.code}。`) + whyLine("read"), "is-bad");
-      return breach(e.damage, e);
+      // 11/27: why (the option's reason and the procedure's don't), then the Phone icon and 2199 once the cut is over
+      await breach(e.damage, e, { ctx: ctxOf(e.id, "read"), why: reasons(whyOf(optOf(CALL, "read")), dontOf(PROC, 1)) });
+      if (S && !S.over && !S.reported) dialNote();
+      return;
     }
     if (wasFake) {
       addLog(clockAt(S.clock), bi(`Called back ${e.number}: the same voice wanted the code again. The number that rang you belongs to the caller, not to the SOC.`,
         `回撥 ${e.number}：同一個聲音又要驗證碼。打來的號碼是那個人的，不是資安監控中心的。`), "is-miss");
+      if (!S.reported) dialNote();     // 11/27
       return;
     }
     S.res[e.id] = k;     // missed / declined / hang / gaveup
@@ -917,6 +1172,7 @@ Games.mfa = function (d, main, replay) {
       : bi(`Hung up on "Jun-Hao" (${e.number}).`, `掛掉「俊豪」（${e.number}）的電話。`);
     // 11/23 review: until you have called 2199 yourself, the log says what is still missing (the "hang" option's why)
     addLog(clockAt(S.clock), txt + (S.reported ? "" : whyLine("hang")), "is-miss");
+    if (!S.reported) dialNote();     // 11/27: the first time, a ring on the Phone icon: dial 2199 yourself
   }
   // the reason under a line of the night log: the "why" of one of the call's options in games.yaml
   function whyLine(k) {
@@ -927,6 +1183,10 @@ Games.mfa = function (d, main, replay) {
   function callFake() {   // you rang back the number that called you
     const t = take("call");
     S.calledFake = true;
+    // 11/27: a mistake (it reaches the caller). The reason is the night log's own line and the briefing's rule; the call
+    // screen says it too while he talks
+    oops({ at: clockAt(S.clock), title_en: `Called back ${CALL.number}`, title_zh: `回撥了 ${CALL.number}`, ctx: ctxOf(CALL.id, "call_back_caller"),
+      why: reasons(ln("The number that rang you belongs to the caller, not to the SOC.", "打來的號碼是那個人的，不是資安監控中心的。"), ruleOf("phone")) });
     const tok = outgoing(t, bi(CALL.name_en, CALL.name_zh), CALL.number, "JL", "");
     setTimeout(() => {
       if (!S || S.over || S.app !== "call" || S.outTok !== tok) return;     // 11/26 (front-end review K58)
@@ -939,7 +1199,8 @@ Games.mfa = function (d, main, replay) {
   function callSoc() {
     const t = take("soc");
     S.soc = { state: "dialing", said: new Set() };
-    const tok = outgoing(t, bi("SOC", "資安監控中心"), "ext. 2199", "SOC", "is-soc", () => { S.soc = null; });
+    // 11/27 review: hanging up while it still rings is the same as hanging up before saying anything (unless you reported already)
+    const tok = outgoing(t, bi("SOC", "資安監控中心"), "ext. 2199", "SOC", "is-soc", () => { S.soc = null; if (!S.reported) socHungUp(); });
     setTimeout(() => { if (S && !S.over && S.soc && S.soc.state === "dialing" && S.app === "soc" && S.outTok === tok) socTalk(); }, reduceMotion ? 200 : 1500);     // 11/26 (front-end review K58)
   }
 
@@ -983,8 +1244,24 @@ Games.mfa = function (d, main, replay) {
         <button type="button" class="mn-end is-small" data-end aria-label="Hang up">${ICON.hang}</button></div></div>`;
     for (const b of $$(".mn-line", t)) dragSay(b, $("#mnTalk"), () => sayLine(b));
     $("#mnTell").addEventListener("click", reportDone);
-    $("[data-end]", t).addEventListener("click", () => { if (S.soc.said.size) reportDone(); else { S.soc = null; untake(); } });
+    $("[data-end]", t).addEventListener("click", () => { if (S.soc.said.size) reportDone(); else { S.soc = null; untake(); socHungUp(); } });
     phoneFocus(".mn-line");     // 11/26 (front-end review K49): Enter says the line
+    // 11/27: the first report of the page: a ring on the first line and a finger that drags it up into the call (on the
+    // whole deck the note had no room below and covered the call itself)
+    want({ key: "soc", target: () => $("#mnDeck .mn-line:not([disabled])") || $("#mnDeck"), to: () => $("#mnTalk"), gesture: "drag-to", step_en: "Report to the SOC", step_zh: "回報資安監控中心",
+      en: "Drag what you want to tell him up into the call, one line at a time. Then press That's everything.",
+      zh: "把要跟他說的話一句一句拖到上面的通話裡，說完按「就這些」。",
+      button: GOT, when: () => S.app === "soc", done: () => !S.soc || S.soc.state !== "talking" || S.soc.said.size > 0 });
+  }
+
+  /* 11/27: you hung up on the SOC before saying anything. That used to pass in silence (nothing was reported); now the
+     night log, the Help panel and a note by the Phone icon say why it matters: the procedure's "report right away" */
+  function socHungUp() {
+    const why = reasons(ln("You hung up before you told Jun-Hao anything, so nothing was reported.", "你還沒跟俊豪說任何事就掛了，等於沒有回報。"), ln(PROC.time_en, PROC.time_zh));
+    addLog(clockAt(S.clock), bi("Hung up on the SOC before telling them anything.", "還沒跟資安監控中心說任何事就掛了。") + (PROC.time_en ? `<span class="mn-why">${bi(PROC.time_en, PROC.time_zh)}</span>` : ""), "is-miss");
+    oops({ at: clockAt(S.clock), title_en: "Hung up on the SOC without reporting", title_zh: "還沒回報就掛掉資安監控中心的電話", why, ctx: ctxOf("soc", "hang") });
+    whyNote({ target: () => $("#mnPhoneApp"), en: `${joinEn(why)} Open Phone and dial ${NUM.soc} again.`, zh: `${joinZh(why)}打開「電話」，再撥一次 ${NUM.soc}。`,
+      when: () => !S.app, done: () => !!S.reported || !!S.soc || S.app === "dial" });
   }
 
   /* Drag a line into the call to say it (Enter says it from the keyboard). A tap only nudges it up. */
@@ -1054,6 +1331,8 @@ Games.mfa = function (d, main, replay) {
     const pts = r.good ? P.good : r.bad ? -P.bad : 0;
     addPts(pts);     // 11/26 (front-end review K56)
     $("#mnTell").disabled = false;
+    // 11/27: a line that makes things worse: Jun-Hao says why in the call (below); the Help panel keeps the same reason
+    if (r.bad) oops({ at: clockAt(S.clock), title_en: `You told the SOC: “${r.en}”`, title_zh: `你跟資安監控中心說：「${r.zh}」`, why: reasons(ln(r.why_en, r.why_zh)), ctx: ctxOf("soc", r.k) });
     setTimeout(() => {
       if (!S || S.over || !S.soc || S.soc.state !== "talking") return;
       const gave = r.k === "caller" && S.res[CALL.id] === "read" && r.ack_gave_en;
@@ -1094,7 +1373,7 @@ Games.mfa = function (d, main, replay) {
     if (o.state === "idle") { box.innerHTML = `<p class="mn-portal-idle">${bi("On-call portal · signed out", "值班入口・未登入")}</p>`; return; }
     if (o.state === "ready") {
       box.innerHTML = `<div class="mn-portal-in"><p class="mn-portal-t">${bi("Sign in to lock the camera clip", "登入後鎖住監視器影片")}</p>
-        <p class="mn-portal-d">${o.tries ? bi("The last try was blocked. Sign in again.", "上一次被擋下了，再登入一次。") : bi(o.e.ask_en, o.e.ask_zh)}</p><button type="button" class="btn mn-signin" id="mnSignIn">${bi("Sign in", "登入")}</button><i class="mn-n-bar"><b id="mnOwnBar"></b></i></div>`;
+        <p class="mn-portal-d">${o.tries ? (o.blocked ? bi(`${o.blocked.en} Sign in again.`, `${o.blocked.zh}再登入一次。`) /* 11/27: why it was blocked */ : bi("The last try was blocked. Sign in again.", "上一次被擋下了，再登入一次。")) : bi(o.e.ask_en, o.e.ask_zh)}</p><button type="button" class="btn mn-signin" id="mnSignIn">${bi("Sign in", "登入")}</button><i class="mn-n-bar"><b id="mnOwnBar"></b></i></div>`;
       $("#mnSignIn").addEventListener("click", ownStart);
       return;
     }
@@ -1172,10 +1451,19 @@ Games.mfa = function (d, main, replay) {
     o.tries += 1;
     addPts(-P.ownWrong);     // 11/26 (front-end review K56)
     CB.SFX.play("bad");
-    addLog(clockAt(S.clock), x === "deny" ? bi("You denied your own sign-in. Try again.", "你拒絕了自己的登入，再試一次。")
-      : bi(`Wrong number (${x || "none"}): the sign-in was blocked. Try again.`, `號碼輸入錯誤（${x || "沒有輸入"}），登入被擋下了，再試一次。`), "is-miss");
+    // 11/27: the -30 used to come with only "Try again". Why it was blocked (number matching: the number in the app must be
+    // the one the laptop shows) goes on the portal, in the log, in the Help panel and in a note on Sign in
+    const rule = ruleOf("number");
+    o.last = x === "deny" ? "deny" : "wrong";
+    o.blocked = x === "deny" ? ln("You said no to your own sign-in, so it was blocked.", "你拒絕了自己的登入，所以被擋下了。")
+      : ln(`The app got ${x || "no number"}, but the laptop showed ${o.e.match}, so the sign-in was blocked.`, `App 收到的是 ${x || "空白"}，筆電上顯示的卻是 ${o.e.match}，所以登入被擋下了。`);
+    addLog(clockAt(S.clock), (x === "deny" ? bi("You denied your own sign-in. Try again.", "你拒絕了自己的登入，再試一次。")
+      : bi(`Wrong number (${x || "none"}): the sign-in was blocked. Try again.`, `號碼輸入錯誤（${x || "沒有輸入"}），登入被擋下了，再試一次。`)) + (rule ? `<span class="mn-why">${bi(rule.en, rule.zh)}</span>` : ""), "is-miss");
     o.state = "ready";
     portal();
+    const why = reasons(o.blocked, rule);
+    oops({ at: clockAt(S.clock), title_en: "Your own sign-in was blocked", title_zh: "你自己的登入被擋下了", why, ctx: ctxOf(OWN.id, x === "deny" ? "deny" : "wrong_number") });
+    whyNote({ target: () => $("#mnSignIn"), en: joinEn(why), zh: joinZh(why), done: () => S.own.state !== "ready" });
   }
 
   function ownResolve(k) {
@@ -1189,7 +1477,11 @@ Games.mfa = function (d, main, replay) {
       S.points += pts; H.points(S.points, S.streak, pts);
       CB.SFX.play("good");
       addLog(clockAt(S.clock), bi(`Signed in to the on-call portal (number ${o.e.match}) and locked the camera clip.`, `用號碼 ${o.e.match} 登入值班入口，鎖住了監視器影片。`), "is-ok");
-    } else addLog(clockAt(S.clock), bi("The on-call portal timed out before you signed in.", "還沒登入，值班入口就逾時了。"), "is-miss");
+    } else {
+      addLog(clockAt(S.clock), bi("The on-call portal timed out before you signed in.", "還沒登入，值班入口就逾時了。"), "is-miss");
+      // 11/27: in the Help panel too, with the briefing's rule for signing in yourself (not when 03:25 closed it)
+      if (!S.ending) oops({ at: clockAt(S.clock), title_en: "The on-call portal timed out before you signed in", title_zh: "還沒登入，值班入口就逾時了", why: reasons(ruleOf("number")), ctx: ctxOf(o.e.id, "timeout") });
+    }
     syncNotifs();
     portal();
   }
@@ -1215,6 +1507,8 @@ Games.mfa = function (d, main, replay) {
 
   async function endShift() {
     if (S.over) return;
+    S.ending = true;     // 11/27: what 03:25 closes below is not a move of yours: no notes, no mistakes
+    notesOff();
     for (const g of $$(".mn-line-ghost")) g.remove();     // 11/23 review: 03:25 came while a line was still being dragged to the SOC
     for (const a of S.alerts.slice()) doorDone(a, "none");          // 03:25: whatever is still open ends the way it stands
     if (S.call && S.call.state !== "done" && S.call.state !== "sending") callEnd(S.call.state === "ringing" ? "missed" : "gaveup");
@@ -1232,6 +1526,9 @@ Games.mfa = function (d, main, replay) {
 
   function summary() {
     st.scene("mn_room", 0.35);
+    setNow(() => ({ title_en: "03:25, the night is over", title_zh: "03:25，值班結束", ctx: { screen: "end" },     // 11/27
+      steps: [ln("The row of results shows how the night went: ✓ right, △ half right, ✗ wrong.", "下面那排是今晚的結果：✓ 做對，△ 對一半，✗ 做錯。"),
+        ln("Press 07:30, the corridor to go to the case board and find out how the crew got in.", "按「早上七點半，走廊」去案情板，查出歹徒是怎麼進來的。")] }));
     const r = right();
     const denied = PUSHES.filter((e) => S.res[e.id] === "denied").length, stopped = PUSHES.filter((e) => S.res[e.id] === "stopped").length;
     st.body.innerHTML = `<section class="rs-dinner mn-sum">
@@ -1264,8 +1561,12 @@ Games.mfa = function (d, main, replay) {
   }
 
   function gameOver() {
+    notesOff();     // 11/27
     S.over = true;
     loop.stop();
+    setNow(() => ({ title_en: "The night is lost", title_zh: "今晚輸了", ctx: { screen: "end" },     // 11/27
+      steps: [ln(`The crew got in ${S.losses.length} times. Each line in the list is one of them.`, `歹徒得逞了 ${S.losses.length} 次，清單上每一行就是其中一次。`),     // 11/27 review: a 4th can land before the 3rd cut
+        ln("Press Try the shift again to play the night again. The rules are below.", "按「重新值班」再玩一次，規則在下面。")] }));
     for (const g of $$(".mn-line-ghost")) g.remove();
     st.$rs.classList.remove("is-paused");
     st.scene("mn_hall", 0.15);
@@ -1373,7 +1674,7 @@ Games.mfa = function (d, main, replay) {
   function corkHTML() {
     const L = BOARD.door_log;
     const sign = `<div class="mn-sign" id="mnSign" style="--r:-.6deg"><i class="cb-pin" aria-hidden="true"></i><p>${bi(BOARD.sign.en, BOARD.sign.zh)}</p></div>`;
-    const keypad = `<div class="mn-keypad" id="mnKeypad"><i class="cb-pin" aria-hidden="true"></i><p class="mn-kp-t">${bi("Door keypad · test it", "門禁鍵盤・試按")}</p>
+    const keypad = `<div class="mn-keypad" id="mnKeypad" tabindex="-1"><i class="cb-pin" aria-hidden="true"></i><p class="mn-kp-t">${bi("Door keypad · test it", "門禁鍵盤・試按")}</p>
       <div class="mn-kp-lcd" id="mnLcd"><span>ENTER CODE<small lang="zh-Hant">請輸入密碼</small></span><b id="mnDigits">_ _ _ _</b></div>
       <div class="mn-kp-keys" id="mnKeys">${["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "OK"].map((k) => `<button type="button" data-k="${k}" class="${k === "OK" ? "is-ok" : k === "C" ? "is-c" : ""}" aria-label="${k === "C" ? "Clear" : k === "OK" ? "Enter" : k}">${k}</button>`).join("")}</div></div>`;
     const doorLog = `<div class="cb-doc cb-log mn-doorlog is-pinned" id="mnDoorLogDoc"><i class="cb-pin" aria-hidden="true"></i><p class="cb-doc-title">${bi(L.title_en, L.title_zh)}</p>
@@ -1446,12 +1747,30 @@ Games.mfa = function (d, main, replay) {
     B.kpBusy = true;
     lcd("WRONG CODE", "密碼錯誤", "is-bad");
     CB.cbSay(B.wrong[B.q] >= 2 ? bi(q.hint2_en, q.hint2_zh) : bi(q.hint1_en, q.hint1_zh), "is-no");
+    boardOops(`Wrong code: ${B.typed}`, `密碼錯誤：${B.typed}`, B.wrong[B.q] >= 2 ? ln(q.hint2_en, q.hint2_zh) : ln(q.hint1_en, q.hint1_zh));     // 11/27
     const b0 = B;
     await wait(900);
     b0.kpBusy = false;
     if (B !== b0) return;     // K50: the board was left (or played again) in the meantime
     B.typed = ""; digits(); lcd("ENTER CODE", "請輸入密碼");
   }
+  /* 11/27: the door keypad takes the keyboard too (it used to need the buttons on the board): digits, Backspace takes the
+     last one back, Enter is OK. 11/27 review: Enter only when the keyboard is on the page itself or on the keypad; on
+     anything else (Back to the tour, Sources, a log row, Ask) Enter stays that control's own */
+  function boardKey(ev) {
+    const q = QV()[B.q];
+    if (!q || q.kind !== "code" || B.solved[B.q] || ev.ctrlKey || ev.metaKey || ev.altKey || ev.isComposing || ev.repeat) return;
+    const k = ev.key, a = document.activeElement;
+    const kp = document.getElementById("mnKeypad");
+    const toBox = () => { if (kp && a && a !== kp && kp.contains(a)) kp.focus({ preventScroll: true }); };   // 11/27 regression review
+    if (/^[0-9]$/.test(k)) { ev.preventDefault(); toBox(); key(k); }
+    else if (k === "Backspace") { ev.preventDefault(); toBox(); if (!B.kpBusy && B.typed) { B.typed = B.typed.slice(0, -1); digits(); } }
+    // Enter is OK only from the page itself or the keypad's own box: on a focused key it presses that key (a keyboard player
+    // tabbing through the digits types with Enter), on a link or Sources it keeps its own action
+    else if (k === "Enter" && (!a || a === document.body || a.id === "mnKeypad")) { ev.preventDefault(); key("OK"); }
+  }
+  // 11/27: a wrong try on the board goes to the Help panel with the words Jun-Hao says for it (CB.boardNow tells the rest)
+  const boardOops = (title_en, title_zh, ...why) => oops({ at: "", title_en, title_zh, why: reasons(...why), ctx: { screen: "board", q: B.q, tries: B.wrong[B.q] || 0, solved: false } });
 
   /* Q2: choose, then point at the door log */
   function choose(q, k) {
@@ -1461,6 +1780,7 @@ Games.mfa = function (d, main, replay) {
     renderQs();          // 11/26 (front-end review K46): re-render first, or the new card replaces the shaking one
     CB.nope(B);
     CB.cbSay(bi(o.why_en || "", o.why_zh || ""), "is-no");
+    boardOops(`Not this one: ${o.en}`, `不是這個：${o.zh}`, whyOf(o));     // 11/27
   }
 
   function doorRow(kind, btn) {
@@ -1470,6 +1790,7 @@ Games.mfa = function (d, main, replay) {
     CB.nope(B);
     const o = q.row_hint && q.options.find((x) => x.k === q.row_hint[kind]);
     CB.cbSay(o ? bi(o.why_en, o.why_zh) : bi(q.wrong_evidence_en, q.wrong_evidence_zh), "is-no");
+    boardOops("Not that line of the door log", "門禁紀錄不是那一行", o ? whyOf(o) : ln(q.wrong_evidence_en, q.wrong_evidence_zh));     // 11/27
   }
 
   /* Q3: one line in each log */
@@ -1496,6 +1817,7 @@ Games.mfa = function (d, main, replay) {
       m = r.kind === "denied" ? [q.denied_en, q.denied_zh] : r.kind === "wrong" ? [q.wrong_en, q.wrong_zh] : [q.cleanup_en, q.cleanup_zh];
     } else m = miss.some((x) => x.startsWith("iam")) ? [q.missing_en, q.missing_zh] : [q.denied_en, q.denied_zh];
     CB.cbSay(bi(m[0], m[1]), "is-no");
+    boardOops("Not those lines yet", "標的行還不對", ln(m[0], m[1]));     // 11/27
   }
 
   function solve(q) {
@@ -1531,6 +1853,9 @@ Games.mfa = function (d, main, replay) {
 
   /* ------------------------------------------------------------------ case closed, then the results */
   function wrapUp() {
+    setNow(() => ({ title_en: "Case closed", title_zh: "結案", ctx: { screen: "closed" },     // 11/27
+      steps: [ln("On the left: what changes now. On the right: real cases with the same moves.", "左邊是接下來要改的事，右邊是用同一招的真實案例。"),
+        ln("Press See my results.", "按「看結果」。")] }));
     CB.cbSay(bi("That's the door and the phones. One approval is all they needed, though. Something is already running on the night audit PC.", "門和手機這邊結案了。不過他們只要一次同意就夠了，夜間稽核的電腦上已經有東西在跑。"), "is-good");
     const fix = PROC.steps.find((s) => s.phase === "learn"), prm = d.nodes.phish_resistant_mfa, auth = d.nodes.c_authentication;
     const badge = BADGE.steps.find((s) => s.phase === "analyze");
@@ -1544,6 +1869,9 @@ Games.mfa = function (d, main, replay) {
   }
 
   function finale() {
+    setNow(() => ({ title_en: "Your results", title_zh: "你的成績", ctx: { screen: "end" },     // 11/27
+      steps: [ln("Your rank and score for case 3, and how the night went.", "這是第三案的等級、分數，還有今晚的表現。"),
+        ln("Press Play again to try for a better rank, or open the next case file at the bottom.", "按「再玩一次」挑戰更好的等級，或打開最下面的下一個案件。")] }));
     const r = right(), firstTry = B.wrong.filter((w, i) => B.solved[i] && w === 0).length;
     const score = shiftScore() + firstTry;
     const denied = PUSHES.filter((e) => S.res[e.id] === "denied").length;
@@ -1558,6 +1886,9 @@ Games.mfa = function (d, main, replay) {
   }
 
   if (replay) startShift();
-  else CB.title(st, { file: 3, scene: "mn_room", title_en: "The MFA Door", title_zh: "多因素驗證門", time: story.start,
-    place_en: (story.title || {}).place_en, place_zh: (story.title || {}).place_zh, hook_en: (story.title || {}).hook_en, hook_zh: (story.title || {}).hook_zh, onGo: brief });
+  else {
+    setNow(titleNow);     // 11/27: the Help panel's "Right now" on the title card
+    CB.title(st, { file: 3, scene: "mn_room", title_en: "The MFA Door", title_zh: "多因素驗證門", time: story.start,
+      place_en: (story.title || {}).place_en, place_zh: (story.title || {}).place_zh, hook_en: (story.title || {}).hook_en, hook_zh: (story.title || {}).hook_zh, onGo: brief });
+  }
 };
