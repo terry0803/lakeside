@@ -76,7 +76,8 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
   // (its static copy of probe.png answers whenever the server runs, the probe.png at its root only when the AI is ready
   // too) and wait longer. 11/26 check: the address is put together in probeSrc() so that build_pages.py's path checks
   // (LEFT, ROOTISH) do not take it for a page path of the copy and stop the build.
-  const probeSrc = (local) => `${LIVE}/${local ? "static/" : ""}probe.png?t=${Date.now()}`;
+  // (a function declaration: the start-up lines above call probe() before this line runs; a const was not ready yet)
+  function probeSrc(local) { return `${LIVE}/${local ? "static/" : ""}probe.png?t=${Date.now()}`; }
   function probe(local) {
     let done = false;
     const img = new Image();
