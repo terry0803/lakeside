@@ -1289,13 +1289,14 @@ Games.ir = function (d, main, replay) {
     await (rank.saved || wait(500));   // wait for G.save to write this chapter, then read all four back (review: a fixed 500 ms raced the tunnel)
     let games = {};
     try { const res = await fetch(`/api/state?session=${encodeURIComponent(G.session)}`); games = ((await res.json()).state || {}).games || {}; } catch { /* offline: show this chapter only */ }
+    if (G.unsaved && !games[G.unsaved.game]) games[G.unsaved.game] = { best: G.unsaved.score, total: G.unsaved.total };   // 11/26: not saved, still shown
     const book = $("#irBook");
     if (!book) return;
     const files = ["phish", "access", "mfa", "ir"];
     const done = files.filter((k) => games[k]).length;
     book.innerHTML = `<h2>${bi("The Awards Night casebook", "頒獎晚會事件簿")}</h2>
       <ol class="ir-book-files">${files.map((k, i) => { const g = games[k]; return `<li class="${g ? "is-done" : ""}"><span class="ir-book-n">${i + 1}</span>
-        <a href="/lakeside/games/${k}">${bi(CB.NEXT[k][0], CB.NEXT[k][1])}</a><b>${g ? `${g.best} / ${g.total}` : bi("not played", "還沒玩")}</b></li>`; }).join("")}</ol>
+        <a href="/lakeside/games/${k}">${bi(CB.NEXT[k][0], CB.NEXT[k][1])}</a><b>${g ? `${g.best} / ${g.best_total ?? g.total}` : bi("not played", "還沒玩")}</b></li>`; }).join("")}</ol>
       <p class="g-hint">${done === 4 ? bi("All four case files closed. The balloon is waiting to take you home.", "四個案件都結案了。熱氣球在等你回家。") : bi(`${done} of 4 case files closed. The others are waiting in the tour.`, `四個案件裡結案了 ${done} 個，其他的還在導覽裡等你。`)}</p>`;
     if (done === 4 && rank.key !== "gold") st.confetti();
   }

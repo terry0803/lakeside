@@ -140,7 +140,7 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
     const state = () => {
       const s = read(), v = s.visited || [];
       return { room: s.room || null, visited: v.length, visited_keys: v, found: [], found_n: 0, total_findings: total,
-               found_items: [], model: "qwen3.5:9b", last: [], games: s.games || {} };
+               found_items: [], model: s.model || "qwen3.5:9b", last: [], games: s.games || {} };
     };
     const visit = (room) => {
       if (!room) return;
@@ -151,7 +151,10 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
     const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json" } });
     const sse = (evs) => new Response(evs.map(([e, d]) => `event: ${e}\ndata: ${JSON.stringify(d)}\n\n`).join(""),
       { headers: { "Content-Type": "text/event-stream" } });
-    const hasZh = (s) => /[㐀-鿿]/.test(s || "");
+    // 11/26 (review): the server's rule (agent.detect_lang): Chinese characters against English words not in capitals
+    const hasZh = (s) => { const cjk = (String(s || "").match(/[㐀-鿿]/g) || []).length;
+      const words = (String(s || "").match(/[A-Za-z][A-Za-z'-]*/g) || []).filter((w) => w.replace(/['-]/g, "") !== w.replace(/['-]/g, "").toUpperCase()).length;
+      return cjk > 0 && cjk > 2 * words; };
 
     async function replay(room, lang) {         // the answer recorded for this place
       const r = await realFetch(`${DATA}/overview/${lang}/${encodeURIComponent(room)}.sse`);
@@ -206,9 +209,9 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
         if (Number.isNaN(score) || Number.isNaN(tot)) return json({ error: "score and total must be numbers" }, 400);
         if (!(tot > 0 && tot <= 100 && score >= 0 && score <= tot)) return json({ error: "score out of range" }, 400);
         const s = read(); s.games = s.games || {};
-        const old = s.games[body.game] || {};
-        s.games[body.game] = { score, total: tot, best: Math.max(score, old.best ?? -1), plays: (old.plays || 0) + 1,
-                               at: new Date().toTimeString().slice(0, 5) };
+        const old = s.games[body.game] || {}, same = (old.best_total ?? old.total) === tot;   // as games.py record (11/26)
+        s.games[body.game] = { score, total: tot, best: same ? Math.max(score, old.best ?? -1) : score, best_total: tot,
+                               plays: (old.plays || 0) + 1, at: new Date().toTimeString().slice(0, 5) };
         write(s);
         return json({ session: sessionId(), state: state() });
       }

@@ -102,6 +102,7 @@ const roomNameL = (r) => L(rnEn(r), rnZh(r));
 const SEV_ZH = { Critical: "危急", High: "高", Medium: "中", Low: "低" };
 // what each read-only query was for, and how a word was matched (server text, English only): their Chinese
 const PURPOSE_ZH = {
+  "vector search skipped (Ollama is not answering)": "略過向量搜尋（Ollama 沒有回應）",
   "rooms in the area": "這個區域的房間", "everything placed in this room": "這個房間裡的所有東西", "rooms where it can be seen": "看得到它的房間",
   "description": "說明", "shortest path through the hotspots": "經過熱點的最短路線", "story position and findings left here": "劇情進度和這裡還沒找到的漏洞",
   "nearest rooms with weaknesses still to find": "最近還有漏洞的房間", "system profile": "系統資料", "who may access this data, and where it lives": "誰能存取這份資料、資料放在哪",
@@ -146,8 +147,14 @@ async function init() {
   // 11/22: in iStaging's window this page IS the assistant, also when the tour is inside our own full page. That page only
   // learns where the visitor is and steps aside (map, buttons and its own window) while this window is open, so there is
   // one assistant at a time and nothing reloads. (Before: this window handed over and asked to be closed: two at once.)
-  if (IN_FRAME && await probeOurPage(fromTour || start)) { S.inOurPage = true; popupBeat(); }
-  goTo(start, { quiet: !fromTour });
+  if (IN_FRAME && await probeOurPage(fromTour || start)) {
+    S.inOurPage = true; popupBeat();
+    // 11/26 (review): the progress and the model of our page's session, which this window now uses (the settings answer in
+    // bindUi was for this window's own session and is dropped there)
+    fetch(`/api/state?session=${encodeURIComponent(S.session)}`).then((r) => r.json()).then(updateState).catch(() => {});
+  }
+  // 11/26 (review): opening the page is not asking about the place, so it is not sent as a visit ("sky" counted on every load)
+  goTo(start, { quiet: !fromTour, record: false });
   checkHealth();
   renderTasks();
   // 11/23 (the user: "can the assistant start folded? not open by default feels better"): the full page starts with the
@@ -342,13 +349,15 @@ function roomBg(key) {
   im.src = url;
 }
 
-async function setHere(key) {
+// opt.record = false: only show it here, do not send it as a visit (see the tour's changePano below)
+async function setHere(key, opt = {}) {
   const moved = S.room !== key;
   S.room = key; store.set("room", key);
   roomBg(key);
   $("#roomSelect").value = key;
   if (moved) flashRoom();
   if (typeof Minimap !== "undefined") Minimap.update(key);
+  if (opt.record === false) return;
   const res = await post("/api/visit", { session: S.session, room: key }).catch(() => null);
   if (res) updateState(res);
 }
@@ -742,10 +751,11 @@ function bindUi() {
       S.model = b.dataset.model; store.set("model", S.model);
       check("[data-model]", b);
       try { await post("/api/settings", { session: S.session, model: S.model }); }
-      catch {          // 11/23 (review): the server did not take it: back to the model it still uses, and say so
+      catch (err) {          // 11/23 (review): the server did not take it: back to the model it still uses, and say so
         S.model = was; store.set("model", was);
         check("[data-model]", modelBtns.find((x) => x.dataset.model === was));
-        sayNear(b.closest(".seg"), LB("Could not switch the model. Check that 啟動_AI助理.bat is running.", "換不了模型，請確認 啟動_AI助理.bat 有在執行。"), { err: true });
+        // 11/26 (review): a refusal says why in the server's words (already in both languages); no answer at all: the .bat
+        sayNear(b.closest(".seg"), err && err.said ? esc(err.said) : LB("Could not switch the model. Check that 啟動_AI助理.bat is running.", "換不了模型，請確認 啟動_AI助理.bat 有在執行。"), { err: true });
       }
     });
   }
@@ -774,7 +784,11 @@ function bindUi() {
   $("#askForm").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
   $("#askInput").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(); } });
   $("#askInput").addEventListener("input", growAsk);       // the box grows with a long question (up to 200 px)
-  post("/api/settings", { session: S.session, model: S.model }).then(updateState).catch(() => { /* the status line says the server is down */ });
+  // 11/26 (review): the answer is taken only if this page still uses that session. In iStaging's window probeOurPage may
+  // take our full page's session before it comes, and a late answer put this window's own session back.
+  const sid = S.session;
+  post("/api/settings", { session: sid, model: S.model }).then((res) => { if (S.session === sid) updateState(res); })
+    .catch(() => { /* the status line says the server is down */ });
 }
 
 function showTab(name) {
@@ -826,7 +840,21 @@ function flashRoom() {
 
 async function post(url, body) {
   const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  // 11/26 (review): a refusal (429 over the visitor limit, 400, 413) came back as if it had worked, so a model switch the
+  // server did not take stayed on screen; now the callers' catch runs, with the server's own words (err.said)
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}));
+    const err = new Error(j.error || `HTTP ${r.status}`); err.said = j.error || ""; throw err;
+  }
   return r.json();
+}
+// 11/26 (review): the model buttons show the model the server answers this session with (it keeps one per session). In
+// iStaging's window the page takes our full page's session, and with it that page's model; not sent back to the server.
+function showModel(m) {
+  const all = [...document.querySelectorAll("[data-model]")], on = all.find((x) => x.dataset.model === m);
+  if (!on || (m === S.model && on.getAttribute("aria-checked") === "true")) return;
+  S.model = m; store.set("model", m);
+  for (const x of all) { x.setAttribute("aria-checked", String(x === on)); x.tabIndex = x === on ? 0 : -1; }
 }
 
 let healthTimer = null;
@@ -905,7 +933,9 @@ window.addEventListener("message", (e) => {
   const key = PANO.get(d.panoramaId);
   if (!key) return;
   tourNow = S.byKey[key].tour;
-  if (key !== S.room) setHere(key);
+  // 11/26 (review): a scene walked to with the tour's own arrows moves "you are here" but is not a place asked about (the
+  // Progress tab counts only those); the server learns the place with the next question, which carries it
+  if (key !== S.room) setHere(key, { record: false });
   else if (typeof Minimap !== "undefined") Minimap.update(key);           // the same place again: no longer "Last"
 });
 // a place in the tour shown now: iStaging's own goToPano (its usual scene change, no reload); otherwise load that tour
@@ -943,6 +973,7 @@ async function goTo(key, opt = {}) {
     toast.innerHTML = `${PIN}<span>Opening <b>${esc(r.it_en)}</b> in the tour <span lang="zh-Hant">前往${esc(r.it_zh)}</span></span>`;
     toast.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
   }
+  if (opt.record === false) return;
   const res = await post("/api/visit", { session: S.session, room: key }).catch(() => null);
   if (res) updateState(res);
 }
@@ -952,6 +983,7 @@ function updateState(res) {
   const before = S.state;
   S.state = res.state; if (res.session) S.session = res.session;
   if (res.state.total_findings) S.totalFindings = res.state.total_findings;
+  if (res.state.model) showModel(res.state.model);
   $("#progBadge").textContent = `${res.state.found_n || 0}/${S.totalFindings}`;
   const games = res.state.games || {}, played = GAMES.filter((g) => games[g[0]]).length;
   $("#dockGamesN").textContent = `${played}/${GAMES.length}`;
@@ -1005,10 +1037,10 @@ function ask(text, near) {
 }
 
 // true when it was sent; false while the last answer is still coming (the caller keeps what was typed and says so)
-function runAction(tool, target, label) {
+function runAction(tool, target, label, onSent) {
   if (S.busy) return false;
   showTab("chat");
-  stream("/api/action", { session: S.session, tool, target, label, room: S.room, lang: S.langPref }, label);
+  stream("/api/action", { session: S.session, tool, target, label, room: S.room, lang: S.langPref }, label, onSent);
   return true;
 }
 // 11/23 (review): a short line next to what was pressed, gone after a few seconds. A question while the last answer was
@@ -1029,7 +1061,8 @@ function sayNear(at, html, opt = {}) {
 }
 const busyNote = (at, before) => sayNear(at, LB("Still answering the last question. Try again when it is done.", "上一題還在回答，等它答完再按一次。"), { before });
 
-async function stream(url, body, shown) {
+// onSent: called once the server has taken the question (a pasted text is cleared only then)
+async function stream(url, body, shown, onSent) {
   S.busy = true; $("#askBtn").disabled = true;
   const th = $("#thread");
   if ($(".empty", th)) th.innerHTML = "";
@@ -1057,12 +1090,17 @@ async function stream(url, body, shown) {
   wake();
   try {
     resp = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined });
-    if (resp.status === 429 || resp.status === 503) {        // visitors through the tunnel: the limits in server.py
-      const j = await resp.json().catch(() => ({}));
-      ansEl.innerHTML = `<p class="err">${esc(j.error || "Busy. 現在忙不過來。")}</p>`; finished = true; workEl.innerHTML = L("Not now", "稍後再問");
+    // 429/503: visitors through the tunnel, the limits in server.py. 11/26 (review): every other refusal (413 too large, 400,
+    // a proxy's 502) also says what the server said; it used to end as "the answer stopped, check the .bat"
+    if (!resp.ok) {
+      const j = await resp.json().catch(() => ({})), busy = resp.status === 429 || resp.status === 503;
+      ansEl.innerHTML = `<p class="err">${j.error ? esc(j.error) : busy ? "Busy. 現在忙不過來。"
+        : LB(`The assistant could not handle this request (error ${resp.status}). Try again in a moment.`, `小幫手沒辦法處理這個要求（錯誤 ${resp.status}），等一下再試一次。`)}</p>`;
+      finished = true; workEl.innerHTML = busy ? L("Not now", "稍後再問") : L("Not answered", "沒有回答");
       return;
     }
-    if (!resp.ok || !resp.body) throw new Error("HTTP " + resp.status);
+    if (onSent) onSent();
+    if (!resp.body) throw new Error("HTTP " + resp.status);
     const reader = resp.body.getReader(); const dec = new TextDecoder(); let buf = "";
     for (;;) {
       const { value, done } = await reader.read(); if (done) break;
@@ -1118,7 +1156,9 @@ function finish(m, d, workEl) {
   const tr = d.trace || {};
   const used = tr.tool_used || (tr.route || {}).tool;
   // the saved copy's "AI is off" note took no time at all: its label alone (a "· 0 s" looked like a fault)
-  workEl.innerHTML = `<span>${TOOL[used] ? L(...TOOL[used]) : esc(used || "")}${tr.offline ? "" : ` · ${(tr.timings || {}).total_s ?? "?"} s`}</span>`;
+  // 11/26 (review): no tool at all (the model could not be reached to choose one): "Not answered", not " · ? s"
+  const total = (tr.timings || {}).total_s;
+  workEl.innerHTML = `<span>${!used && !tr.offline ? L("Not answered", "沒有回答") : TOOL[used] ? L(...TOOL[used]) : esc(used || "")}${tr.offline || total == null ? "" : ` · ${total} s`}</span>`;
   workEl.classList.add("is-done");
   let k = 0;                       // the plates, then the follow-up questions, come in one after another
   if (d.go && d.go.length) {
@@ -1213,7 +1253,7 @@ function renderSections(card, secs) {
     const typ = SEC_TYPE[s.h_en] || (s.kind === "rooms" ? "Room" : "");
     if (typ) sec.dataset.t = typ;                  // the colour of that kind of node, as in the graph
     sec.style.setProperty("--i", Math.min(i++, 8));
-    if (s.kind === "rooms") { const w = el("div", "items"); for (const r of s.items) w.appendChild(roomLink(r)); sec.appendChild(w); }
+    if (s.kind === "rooms") { const w = el("div", "items"); for (const r of s.items) w.appendChild(r.locked ? lockedStop(r) : roomLink(r)); sec.appendChild(w); }
     else if (s.kind === "flows") {
       const ul = el("ul", "flows");
       for (const f of s.items) {
@@ -1366,6 +1406,8 @@ function progressCard(card, c) {
 /* ---------------------------------------------------------------- how I found this */
 function renderTrace(tr) {
   if (tr.offline) return document.createDocumentFragment();      // the saved copy's "AI is off" answer: nothing was looked up
+  // 11/26 (review): stopped before a tool was chosen (the model down): nothing was looked up either (it showed "{}")
+  if (!tr.route && !tr.tool_used) return document.createDocumentFragment();
   const d = el("details", "trace");
   d.innerHTML = `<summary>How I found this <span lang="zh-Hant">我怎麼查到的</span></summary>`;
   // the time bar fills when it is opened, not again each time the chat is shown (11/23 review)
@@ -1531,13 +1573,16 @@ function renderTasks() {
     ["report_finding", "Report a weakness I found", "回報我發現的漏洞", "Describe what you saw and where. 說說你看到什麼、在哪裡。"]]) {
     const sec = el("section", "task-group");
     sec.innerHTML = `<h2>${esc(en)} <span lang="zh-Hant">${esc(z)}</span></h2>`;
-    const f = el("form", "paste"); f.innerHTML = `<textarea aria-label="${esc(en)}" placeholder="${esc(ph)}"></textarea><button type="submit">${tool === "check_email" ? "Check it 檢查" : "Report it 回報"}</button>`;
+    // 11/26 (review): at most 6000 characters, like the ask box (the server reads no more; a long raw email went over its
+    // 64 KB limit and was refused)
+    const f = el("form", "paste"); f.innerHTML = `<textarea maxlength="6000" aria-label="${esc(en)}" placeholder="${esc(ph)}"></textarea><button type="submit">${tool === "check_email" ? "Check it 檢查" : "Report it 回報"}</button>`;
     // 11/23 (review): cleared only once it has been sent; while the last answer is still coming the text stays, with a note
+    // 11/26 (review): and only once the server has taken it (a refusal kept nothing), unless the visitor changed it since
     f.addEventListener("submit", (e) => {
       e.preventDefault();
-      const v = $("textarea", f).value.trim();
+      const ta = $("textarea", f), v = ta.value.trim();
       if (!v) return;
-      if (runAction(tool, "", v)) $("textarea", f).value = ""; else busyNote($("button", f));
+      if (!runAction(tool, "", v, () => { if (ta.value.trim() === v) ta.value = ""; })) busyNote($("button", f));
     });
     sec.appendChild(f); box.appendChild(sec);
   }
@@ -1587,7 +1632,7 @@ function renderProgress(anim = true) {
     const r = games[k], [no, name, zname, zno] = caseParts(en, z), c = el("div", "case lg-hi" + (r ? " is-played" : ""));
     c.innerHTML = `<i class="case-no">${esc(no.toUpperCase())} <span lang="zh-Hant">${esc(zno)}</span></i>
       <span class="case-t">${esc(name)}<span lang="zh-Hant">${esc(zname)}</span></span>
-      <span class="case-res">${r ? `${L("Best", "最佳")} <b>${r.best}</b> / ${r.total}${r.plays > 1 ? ` · ${L(`${r.plays} plays`, `玩了 ${r.plays} 次`)}` : ""}` : L("Not played yet", "還沒玩")}</span>
+      <span class="case-res">${r ? `${L("Best", "最佳")} <b>${r.best}</b> / ${r.best_total ?? r.total}${r.plays > 1 ? ` · ${L(`${r.plays} plays`, `玩了 ${r.plays} 次`)}` : ""}` : L("Not played yet", "還沒玩")}</span>
       <div class="case-go"><a class="case-play" href="/lakeside/games/${k}" target="${tgt}" rel="noopener"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10 6z" fill="currentColor"/></svg>${r ? L("Play again", "再玩一次") : L("Play", "開始")}</a></div>`;
     if (S.byKey[room]) $(".case-go", c).appendChild(roomLink(S.byKey[room]));
     cs.appendChild(c);
@@ -1621,7 +1666,7 @@ function renderProgress(anim = true) {
     }
     disarm();
     try { updateState(await post("/api/settings", { session: S.session, reset: true })); renderProgress(true); }
-    catch { sayNear(reset, LB("Could not clear the progress. Check that 啟動_AI助理.bat is running.", "清不掉進度，請確認 啟動_AI助理.bat 有在執行。"), { err: true }); }
+    catch (err) { sayNear(reset, err && err.said ? esc(err.said) : LB("Could not clear the progress. Check that 啟動_AI助理.bat is running.", "清不掉進度，請確認 啟動_AI助理.bat 有在執行。"), { err: true }); }
   });
   v.appendChild(reset);
   [...v.children].forEach((c, i) => c.style.setProperty("--i", Math.min(i, 10)));

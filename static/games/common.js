@@ -31,11 +31,21 @@ const G = {
   meter(html) { $("#meter").innerHTML = html; },
 
   async save(score, total) {
+    // 11/26 (review): a refused save (busy, too many visitors) looked saved; now it says so and is kept for this page
     try {
-      await fetch("/api/games/result", { method: "POST", headers: { "Content-Type": "application/json" },
+      const r = await fetch("/api/games/result", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session: G.session, game: G.name, score, total }) });
+      if (!r.ok) throw new Error(String(r.status));
+      G.unsaved = null;
       localStorage.setItem("lia.gamesUpdated", String(Date.now()));   // the assistant page listens for this
-    } catch { /* the game still works without the server */ }
+      return true;
+    } catch {
+      G.unsaved = { game: G.name, score, total };
+      const n = document.createElement("p"); n.className = "g-error";
+      n.innerHTML = bi("Score not saved: the server is busy or off. Try again in a few minutes.", "分數沒有存到：伺服器忙或沒開，過幾分鐘再試一次。");
+      ($("#game") || document.body).appendChild(n);
+      return false;
+    }
   },
 
   /* "Where the answers come from": the read-only Cypher each game ran, or the content builder when Neo4j is off. */
