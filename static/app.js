@@ -39,6 +39,7 @@ const LABEL = {
   Department: ["Department", "部門"], Threat: ["Threat", "威脅"], Control: ["Control", "防護措施"], Standard: ["Standard", "標準法規"],
   Requirement: ["Clause", "條文"], Procedure: ["Procedure", "流程"], Concept: ["Concept", "概念"], CaseStudy: ["Real case", "真實案例"],
   Risk: ["Risks", "風險"], List: ["List", "清單"], Search: ["Search", "搜尋"], Finding: ["Weakness", "漏洞"],
+  Tag: ["Tag", "標籤"], Step: ["Step", "步驟"], PhishingSign: ["Phishing sign", "釣魚警訊"],      // 11/27: the graph map shows every type
 };
 const TOOL = {
   offline: ["Saved copy, the AI is off", "離線版，AI 沒開"],
@@ -132,6 +133,7 @@ const HOW_ZH = {
   "the report does not say what was seen (rule)": "回報沒有說看到什麼（規則判斷）",
   // 11/26 (front-end review K04): agent.py code-gate rule, feedback.py with the model down
   "asked how to get past a code gate (rule)": "問怎麼通過密碼門（規則判斷）", "rules only (the model is not answering)": "只用規則（模型沒有回應）",
+  "picked in the graph map": "在關聯圖上點的",      // 11/27: a name pressed in the graph map (agent.py turn)
 };
 const zhOf = (map, s) => { if (!s) return ""; if (map[s]) return map[s]; const m = /^redirect:(\w+)$/.exec(s); return m && LABEL[m[1]] ? `轉到${LABEL[m[1]][1]}` : ""; };
 const LTm = (map, s) => LT(s || "", zhOf(map, s));
@@ -1080,10 +1082,11 @@ function ask(text, near) {
 }
 
 // true when it was sent; false while the last answer is still coming (the caller keeps what was typed and says so)
-function runAction(tool, target, label, onSent) {
+// key (11/27): the node meant, for a name pressed in the graph map (two nodes can have the same name)
+function runAction(tool, target, label, onSent, key) {
   if (S.busy) return false;
   showTab("chat");
-  stream("/api/action", { session: S.session, tool, target, label, room: S.room, lang: S.langPref }, label, onSent);
+  stream("/api/action", { session: S.session, tool, target, label, room: S.room, lang: S.langPref, ...(key ? { key } : {}) }, label, onSent);
   return true;
 }
 // 11/23 (review): a short line next to what was pressed, gone after a few seconds. A question while the last answer was
@@ -1744,6 +1747,266 @@ function renderProgress(anim = true) {
   if (fk) { const same = fkAll(), to = same[fkNth] || same[0]; if (to) to.focus({ preventScroll: true }); }
 }
 
+/* ---------------------------------------------------------------- the graph map (How it works, 11/27)
+   The user had looked at the graph in Neo4j Browser, which only opens on the laptop: "put it in the assistant".
+   Every type of node is a button in one of two columns, and a curve between two types means they have relationships.
+   The curves stay in the channel between the columns, so no line runs behind a button. A pressed type lights its curves
+   (an arrowhead sits where a relationship ends) and, under the map, a card says what the type is and lists its
+   relationships and what is in it. The numbers are /api/schema's, the same as the two tables below the map. */
+const SCHEMA_COLS = [["Area", "Room", "Tag", "Finding", "Department", "Role", "System", "DataAsset"],
+  ["Concept", "CaseStudy", "PhishingSign", "Threat", "Control", "Requirement", "Standard", "Procedure", "Step"]];
+const SCHEMA_HEAD = [["Tour & organisation", "導覽和組織"], ["Security knowledge", "資安知識"]];
+const GMAP_SHOWN = 16;                          // names listed before "Show all"
+// the Chinese of every relationship type (the same words as the table of relationships in the report)
+const REL_ZH = {
+  IN_AREA: "在哪一區", LINKS_TO: "可以走到", CLOSEUP_OF: "近看", NEXT_IN_STORY: "故事下一站", IN_ROOM: "在哪一間", ABOUT: "講的是",
+  LOCATED_IN: "放在", SEEN_IN: "看得到", TAUGHT_IN: "教到", SHOWN_IN: "出現在", PRACTISED_IN: "演練地點", BASED_IN: "所在地",
+  EXPOSES: "暴露", LEADS_TO: "可能導致", BREAKS: "違反", FIXED_BY: "改善方法", SIGN_OF: "跡象", HAS_STEP: "有步驟", NEXT: "下一步",
+  DONE_BY: "由誰做", CONTACT: "聯絡窗口", BASED_ON: "依據", HANDLES: "應對", MEMBER_OF: "隸屬", OWNS: "負責", USES: "使用",
+  CAN_ACCESS: "可以存取", STORES: "存放", PROCESSES: "處理", SENDS_TO: "送資料到", HOSTS: "承載", PROTECTS: "保護", MITIGATES: "降低",
+  TARGETS: "針對", MEETS: "符合", PART_OF: "屬於", APPLIES_TO: "適用於", RELATED_TO: "相關", INVOLVED: "涉及", LESSON: "教訓", AFFECTED: "影響到",
+};
+// one line about each type, with examples that are in the graph
+const TYPE_INFO = {
+  Area: ["A part of the resort, such as the Clubhouse or the Old Town.", "渡假村的一區，例如會館、老城。"],
+  Room: ["A place in the 360° tour. Each one is a panorama.", "導覽裡的一個地點，每個地點是一張全景。"],
+  Tag: ["A label you click in the tour: a note, a picture, a video or a PDF.", "導覽裡點得到的標籤：便條、照片、影片或 PDF。"],
+  Finding: ["A security weakness hidden in a scene for you to find.", "藏在場景裡，等你去找的資安漏洞。"],
+  Department: ["A department of the resort, such as the Front Office or Information Technology.", "渡假村的部門，例如櫃台部、資訊部。"],
+  Role: ["A job at the resort, such as Front Desk Agent or Accountant.", "渡假村裡的職務，例如櫃台接待、會計。"],
+  System: ["A system or a device, such as the PMS, the POS or the door locks.", "系統或設備，例如飯店管理系統（PMS）、收銀系統（POS）、電子門鎖。"],
+  DataAsset: ["A kind of data the resort keeps, such as reservation records or payment card data.", "渡假村保管的一種資料，例如訂房紀錄、信用卡卡號。"],
+  Threat: ["Something that can go wrong, such as a phishing email or ransomware.", "可能出事的狀況，例如釣魚郵件、勒索軟體。"],
+  Control: ["A safeguard that lowers a risk, such as backups or multi-factor authentication.", "降低風險的做法，例如備份、多因素驗證。"],
+  Requirement: ["One clause of a standard or a law, such as ISO/IEC 27001 A.5.15.", "標準或法規裡的一條，例如 ISO/IEC 27001 A.5.15。"],
+  Standard: ["A standard or a law: ISO/IEC 27001, PCI DSS, NIST CSF, GDPR and Taiwan's Personal Data Protection Act.", "標準或法規：ISO/IEC 27001、PCI DSS、NIST CSF、GDPR、個資法。"],
+  Procedure: ["What to do when something happens, such as a lost staff badge or ransomware.", "遇到狀況時怎麼處理，例如員工證遺失、勒索軟體。"],
+  Step: ["One step of a procedure, and who does it.", "流程裡的一步，還有由誰來做。"],
+  Concept: ["An idea from the IT and security course with an example at the resort, such as Zero Trust.", "資管和資安課的觀念，附渡假村裡的例子，例如零信任。"],
+  CaseStudy: ["A real incident and its lesson, such as the Marriott guest database breach.", "真實發生過的事件和教訓，例如 Marriott 訂房資料庫外洩。"],
+  PhishingSign: ["A warning sign of a phishing email. The email check and Case 1 score a message with them.", "釣魚信的警訊，查信和第一案都用它們幫信打分數。"],
+};
+// the types whose nodes the server does not list by name (server.py SCHEMA_NAMED), and what to do instead
+const TYPE_UNLISTED = {
+  Finding: ["Their names stay hidden until you find them in the tour. The Progress tab shows how many you have found.", "名字要等你在導覽裡找到才會出現，「進度」分頁會顯示你找到幾個。"],
+  Tag: ["They are the labels of the two tours. Open the tour and click them there.", "它們是兩個導覽裡的標籤，內容要到導覽裡點開看。"],
+  Step: ["Every step belongs to a procedure. Pick Procedure, then a procedure, to read its steps in order.", "每一步都屬於一個流程。選 Procedure 再選一個流程，就能照順序看步驟。"],
+};
+
+function drawSchema(box, s) {
+  const NS = "http://www.w3.org/2000/svg";
+  const labels = s.labels || [], count = Object.fromEntries(labels.map((x) => [x.l, x.c]));
+  // the types the graph has, in the two columns; a type added to the graph later goes under the shorter column
+  const cols = SCHEMA_COLS.map((c) => c.filter((l) => count[l]));
+  for (const l of Object.keys(count)) if (!cols.some((c) => c.includes(l))) cols[cols[0].length <= cols[1].length ? 0 : 1].push(l);
+  const side = {};
+  cols.forEach((c, i) => c.forEach((l) => { side[l] = i; }));
+  const zhName = (l) => (LABEL[l] ? LABEL[l][1] : "");
+  const nf = (n) => Number(n || 0).toLocaleString("en-US");
+  const total = (xs) => xs.reduce((n, x) => n + (x.c || 0), 0);
+  const rows = (s.pattern || []).filter((p) => p.a in side && p.b in side);
+  // one curve for each pair of types with relationships between them, whichever way they point
+  const pairs = new Map(), nb = {};
+  const pk = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
+  for (const p of rows) {
+    let q = pairs.get(pk(p.a, p.b));
+    if (!q) { const [a, b] = p.a < p.b ? [p.a, p.b] : [p.b, p.a]; pairs.set(pk(a, b), q = { a, b, c: 0, fwd: false, back: false }); }
+    q.c += p.c;
+    if (p.a === q.a) q.fwd = true; else q.back = true;       // along the curve (from a to b), or against it
+    (nb[p.a] = nb[p.a] || new Set()).add(p.b);
+    (nb[p.b] = nb[p.b] || new Set()).add(p.a);
+  }
+
+  const nTypes = labels.length, nRels = (s.rels || []).length;
+  const lead = el("p", "gmap-lead", LB(
+    `${nf(total(labels))} nodes of ${nTypes} types and ${nf(total(s.rels || []))} relationships of ${nRels} types. A curve joins two types that have relationships; a thicker curve means more of them.`,
+    `${nf(total(labels))} 個節點分成 ${nTypes} 種，${nf(total(s.rels || []))} 條關係分成 ${nRels} 種。兩種節點之間有關係就連一條線，線越粗表示關係越多。`));
+
+  // ---- the map: the curves in one svg under the buttons
+  const map = el("div", "gmap");
+  map.id = "gmap";
+  const mk = (tag, cls) => { const e = document.createElementNS(NS, tag); e.setAttribute("class", cls); return e; };
+  const svg = mk("svg", "gmap-links");
+  svg.setAttribute("aria-hidden", "true");
+  map.appendChild(svg);
+  const btn = {}, arrow = {};
+  cols.forEach((c, i) => {
+    const col = el("div", "gmap-col");
+    col.appendChild(el("p", "gmap-h", L(...SCHEMA_HEAD[i])));
+    c.forEach((l, j) => {
+      const z = zhName(l);
+      const b = el("button", "gnode", `<i class="gnode-dot" aria-hidden="true"></i><b class="gnode-en">${esc(l)}</b><span class="gnode-zh" lang="zh-Hant">${esc(z)}</span><em class="gnode-c">${nf(count[l])}</em>`);
+      b.type = "button"; b.dataset.t = l;
+      b.setAttribute("aria-pressed", "false"); b.setAttribute("aria-controls", "gmapInfo");
+      b.setAttribute("aria-label", LT(`${l}, ${count[l]} nodes`, `${z || l}，${count[l]} 個節點`));
+      b.style.setProperty("--i", i * 2 + j);
+      col.appendChild(b); btn[l] = b;
+    });
+    map.appendChild(col);
+  });
+  let n = 0;
+  for (const q of pairs.values()) {
+    q.g = mk("g", "glink"); q.line = mk("path", "glink-line"); q.flow = mk("path", "glink-flow");
+    q.g.style.setProperty("--w", `${(1 + Math.min(1.9, Math.log10(q.c + 1) * 0.85)).toFixed(2)}px`);
+    q.g.style.setProperty("--j", n++);
+    q.g.appendChild(q.line); q.g.appendChild(q.flow); svg.appendChild(q.g);
+  }
+  for (const l of Object.keys(btn)) { arrow[l] = mk("path", "garrow"); arrow[l].dataset.t = l; svg.appendChild(arrow[l]); }
+
+  // where the curves run: from the inner edge of one button to the inner edge of the other. Measured with offsetLeft and
+  // offsetTop (the map is their offset parent), which a button's own animation or the window's does not change.
+  let drawn = false, raf = 0;
+  function place() {
+    const W = map.clientWidth, H = map.clientHeight;
+    if (!W || !H) return;                                    // the tab is not shown; ResizeObserver calls again when it is
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const at = {};
+    for (const l of Object.keys(btn)) {
+      const b = btn[l], sg = side[l] ? -1 : 1, x = side[l] ? b.offsetLeft : b.offsetLeft + b.offsetWidth, y = b.offsetTop + b.offsetHeight / 2;
+      at[l] = { x, y, sg };
+      arrow[l].setAttribute("d", `M${x + sg * 1.5},${y}l${sg * 7},-4.2v8.4z`);
+    }
+    const lx = cols[0].map((l) => at[l].x), rx = cols[1].map((l) => at[l].x);
+    const ch = lx.length && rx.length ? Math.max(40, Math.min(...rx) - Math.max(...lx)) : 100;      // the channel's width
+    for (const q of pairs.values()) {
+      const A = at[q.a], B = at[q.b];
+      let d;
+      if (q.a === q.b) d = `M${A.x},${A.y - 7}c${A.sg * 22},-9 ${A.sg * 22},23 0,14`;                // a type related to itself: a small loop
+      else if (A.sg === B.sg) { const k = A.sg * Math.min(ch * 0.46, 14 + Math.abs(B.y - A.y) * 0.3); d = `M${A.x},${A.y}C${A.x + k},${A.y} ${B.x + k},${B.y} ${B.x},${B.y}`; }
+      else { const k = (B.x - A.x) * 0.5; d = `M${A.x},${A.y}C${A.x + k},${A.y} ${B.x - k},${B.y} ${B.x},${B.y}`; }
+      q.line.setAttribute("d", d); q.flow.setAttribute("d", d);
+    }
+    if (!drawn) {                                            // the first time they are seen, the curves are drawn in
+      drawn = true;
+      for (const q of pairs.values()) q.line.style.setProperty("--len", Math.ceil(q.line.getTotalLength()) + 1);
+      map.classList.add("is-draw");
+      setTimeout(() => map.classList.remove("is-draw"), RM.matches ? 0 : 2400);
+    }
+  }
+  const again = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; place(); }); };
+
+  // ---- what is lit: the type under the mouse, or else the pressed one
+  let sel = null, hov = null;
+  function paint() {
+    const T = hov || sel, into = new Set();                  // into: the types a lit relationship ends at
+    map.classList.toggle("has-on", !!T);
+    for (const q of pairs.values()) {
+      const hit = !!T && (q.a === T || q.b === T);
+      q.g.classList.toggle("is-on", hit);
+      q.g.classList.toggle("is-rev", hit && q.back && !q.fwd);
+      q.g.classList.toggle("is-both", hit && q.back && q.fwd);
+      if (hit) q.g.dataset.t = q.a === T ? q.b : q.a; else delete q.g.dataset.t;      // in the colour of the type at the other end
+      if (hit && q.a !== q.b) { if (q.fwd) into.add(q.b); if (q.back) into.add(q.a); }
+    }
+    // the dots on the lit curves start again from the beginning (they run for four seconds, style.css): the class is taken
+    // off every curve, the page is measured once so the browser notes it, then put back on the lit ones
+    for (const q of pairs.values()) q.flow.classList.remove("is-go");
+    if (T) { void map.offsetWidth; for (const q of pairs.values()) if (q.g.classList.contains("is-on")) q.flow.classList.add("is-go"); }
+    for (const l of Object.keys(btn)) {
+      const on = l === T, linked = !!T && !on && !!nb[T] && nb[T].has(l);
+      btn[l].classList.toggle("is-on", on);
+      btn[l].classList.toggle("is-linked", linked);
+      btn[l].classList.toggle("is-dim", !!T && !on && !linked);
+      btn[l].setAttribute("aria-pressed", String(l === sel));
+      arrow[l].classList.toggle("is-on", into.has(l));
+    }
+  }
+  const hot = (a, b, on) => { const q = pairs.get(pk(a, b)); if (q) q.g.classList.toggle("is-hot", on); };
+  function pick(l, fromCard) { sel = l; hov = null; paint(); info(l, fromCard); }
+  for (const l of Object.keys(btn)) {
+    btn[l].addEventListener("click", () => pick(sel === l ? null : l));
+    btn[l].addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") { hov = l; paint(); } });
+    btn[l].addEventListener("pointerleave", () => { if (hov) { hov = null; paint(); } });
+  }
+
+  // ---- the card under the map
+  const infoBox = el("div", "gmap-info");
+  infoBox.id = "gmapInfo"; infoBox.setAttribute("aria-live", "polite");
+  function info(T, fromCard) {
+    for (const q of pairs.values()) q.g.classList.remove("is-hot");
+    if (!T) {
+      infoBox.replaceChildren(el("p", "gmap-hint", LB("Pick a type. Its relationships light up, and this part lists them and what is in the type.", "點一種節點，它的關係會亮起來，這裡會列出這些關係和裡面有什麼。")));
+      return;
+    }
+    const card = el("section", "card lg-hi gmap-card");
+    card.appendChild(el("div", "card-head", `<h3>${L(T, zhName(T))}</h3><span class="kind" data-t="${esc(T)}">${L(`${nf(count[T])} nodes`, `${nf(count[T])} 個節點`)}</span>`));
+    if (TYPE_INFO[T]) card.appendChild(el("p", "text", LB(...TYPE_INFO[T])));
+    let i = 0;
+    const group = (hEn, hZh, list, other, dir) => {
+      if (!list.length) return;
+      const sec = el("div", "sec");
+      sec.style.setProperty("--i", Math.min(i++, 8));
+      sec.appendChild(el("h4", "", L(hEn, hZh)));
+      const ul = el("ul", "grels");
+      for (const p of list.slice().sort((x, y) => y.c - x.c || x.t.localeCompare(y.t))) {
+        // a long name may break after an underscore (NEXT_IN_ / STORY), never inside a word
+        const o = other(p), li = el("li", "grel", `<span class="grel-n"><b>${esc(p.t).replace(/_/g, "_<wbr>")}</b>${REL_ZH[p.t] ? `<span lang="zh-Hant">${esc(REL_ZH[p.t])}</span>` : ""}</span><span class="grel-d" aria-hidden="true">${dir}</span>`);
+        const b = el(o === T ? "span" : "button", o === T ? "chip gtype is-plain" : "chip gtype", L(o, zhName(o)));
+        b.dataset.t = o;
+        if (o !== T) { b.type = "button"; b.title = LT(`Show ${o}`, `看${zhName(o) || o}`); b.addEventListener("click", () => pick(o, true)); }
+        li.appendChild(b);
+        li.appendChild(el("em", "grel-c", nf(p.c)));
+        li.addEventListener("pointerenter", () => hot(T, o, true));
+        li.addEventListener("pointerleave", () => hot(T, o, false));
+        ul.appendChild(li);
+      }
+      sec.appendChild(ul); card.appendChild(sec);
+    };
+    group("From this type to others", "從這一種連出去", rows.filter((p) => p.a === T && p.b !== T), (p) => p.b, "→");
+    group("From others to this type", "從別種連進來", rows.filter((p) => p.b === T && p.a !== T), (p) => p.a, "←");
+    group("Between two of this type", "同一種之間", rows.filter((p) => p.a === T && p.b === T), () => T, "→");
+
+    const names = (s.names || {})[T], sec = el("div", "sec");
+    sec.dataset.t = T; sec.style.setProperty("--i", Math.min(i++, 8));
+    if (names && names.length) {
+      // a pressed name asks the assistant about that very node (its key goes along); the saved copy has no AI, and a
+      // phishing sign is not something the assistant looks up by name, so there the names are only listed
+      const live = !window.LAKESIDE_OFFLINE && T !== "PhishingSign";
+      sec.appendChild(el("h4", "", L(`What is in it (${nf(names.length)})`, `裡面有什麼（${nf(names.length)} 個）`)));
+      const w = el("div", "items gnames");
+      names.forEach((x, k) => {
+        // a clause is written with its standard and number in front, once ("ISO/IEC 27001 A.5.15 Access control 存取控制")
+        const en = x.pre ? `${x.pre} ${x.en}` : x.en, shown = both({ en, zh: x.zh });
+        let c;
+        if (live) {
+          c = el("button", "chip", shown); c.type = "button";
+          // the words in the chat follow the language setting as the starters and the tasks do (11/27 review: after a reload with
+          // 中文 chosen the bubble said "Tell me about ..." over a Chinese answer)
+          c.addEventListener("click", () => { if (!runAction("explain", en || x.zh, zh() || S.langPref === "zh" ? `說明${x.pre ? x.pre + " " : ""}${x.zh || x.en}` : `Tell me about ${en}`, undefined, x.k)) busyNote(w); });
+        } else c = el("span", "chip is-plain", shown);
+        if (k >= GMAP_SHOWN) c.classList.add("is-more");
+        w.appendChild(c);
+      });
+      sec.appendChild(w);
+      if (names.length > GMAP_SHOWN) {
+        const more = el("button", "chip gmore");
+        more.type = "button";
+        const set = (open) => {
+          w.classList.toggle("is-open", open); more.setAttribute("aria-expanded", String(open));
+          more.innerHTML = open ? L("Show fewer", "收起來") : L(`Show all ${nf(names.length)}`, `顯示全部 ${nf(names.length)} 個`);
+        };
+        more.addEventListener("click", () => set(!w.classList.contains("is-open")));
+        set(false); sec.appendChild(more);
+      }
+      if (live) sec.appendChild(el("p", "refs", LB("Press a name and the assistant tells you about it in Chat.", "按名字，小幫手會在「對話」說明它。")));
+      else if (window.LAKESIDE_OFFLINE && T !== "PhishingSign") sec.appendChild(el("p", "refs", LB("This is the saved copy and its AI is off, so the names are only listed.", "這是離線版，AI 沒開，名字只能看。")));
+      card.appendChild(sec);
+    } else if (TYPE_UNLISTED[T]) {
+      sec.appendChild(el("h4", "", L("What is in it", "裡面有什麼")));
+      sec.appendChild(el("p", "note", LB(...TYPE_UNLISTED[T])));
+      card.appendChild(sec);
+    }
+    infoBox.replaceChildren(enter(card, 900));
+    if (fromCard) { card.tabIndex = -1; card.focus({ preventScroll: true }); }      // the pressed button is gone with the old card
+  }
+
+  box.appendChild(lead); box.appendChild(map); box.appendChild(infoBox);
+  info(null);
+  enter(map, 1500);                                          // the buttons rise in once (style.css .gmap.is-in)
+  place();
+  if (window.ResizeObserver) new ResizeObserver(again).observe(map); else window.addEventListener("resize", again);
+}
+
 /* ---------------------------------------------------------------- how it works */
 async function renderHow() {
   const v = $("#howView");
@@ -1788,6 +2051,8 @@ async function renderHow() {
     const t2 = el("table", "kv"); t2.innerHTML = `<tr><th>${L("Relationship (from → to)", "關係（從 → 到）")}</th><th>${L("Count", "數量")}</th></tr>` + s.pattern.map((x) => `<tr><td>${esc(x.a)} –${esc(x.t)}→ ${esc(x.b)}</td><td>${x.c}</td></tr>`).join("");
     const box = $("#schemaBox");
     box.innerHTML = `<h2>What is in the graph <span lang="zh-Hant">知識圖裡有什麼</span></h2>`;
+    // 11/27: the graph map above the two tables; if it cannot be drawn the tables are still there
+    try { drawSchema(box, s); } catch (e) { console.error("graph map:", e); }
     box.appendChild(t1); box.appendChild(t2);
   } catch {
     // 11/23 (review): a short note instead of "Loading…" for ever; the tab is drawn again the next time it is opened
@@ -1808,8 +2073,8 @@ async function renderHow() {
 (() => {
   const FINE = window.matchMedia ? window.matchMedia("(hover: hover) and (pointer: fine)").matches : false;
   const TILT = ".dock-btn, .mm-mini, .case, .plate";
-  const RIPPLE = ".dock-btn, .mm-mini, .mm-pill, .mm-hide, .mm-x, .mm-zoom button, .win-btn, .seg button, .tabs [role=tab], .chip, .roomlink, .plate, " +
-    "details.trace summary, .ask button, .task, .paste button, .case-play, .btn-plain";
+  const RIPPLE = ".dock-btn, .mm-mini, .mm-pill, .mm-hide, .mm-x, .mm-zoom button, .win-btn, .seg button, .tabs [role=tab], .chip:not(.is-plain), .roomlink, .plate, " +
+    "details.trace summary, .ask button, .task, .paste button, .case-play, .btn-plain, .gnode";
   let last = null, raf = 0, tilted = null;
   const untilt = () => { if (tilted) { tilted.style.removeProperty("--rx"); tilted.style.removeProperty("--ry"); tilted = null; } };
   // the glass's light, made the first time the pointer comes over it
@@ -1847,8 +2112,8 @@ async function renderHow() {
     }, { passive: true });
   }
   // the release wobbles the glass back like jelly (added on top of its own transform, so a tilt or a CSS entrance keeps going)
-  const JELLY = ".dock-btn, .mm-pill, .win-btn, .chip, .roomlink, .plate, .ask button, .case-play, .paste button, .btn-plain, .seg button, " +
-    ".tabs [role=tab], .mm-zoom button, .mm-x, details.trace summary";
+  const JELLY = ".dock-btn, .mm-pill, .win-btn, .chip:not(.is-plain), .roomlink, .plate, .ask button, .case-play, .paste button, .btn-plain, .seg button, " +
+    ".tabs [role=tab], .mm-zoom button, .mm-x, details.trace summary, .gnode";
   document.addEventListener("pointerup", (e) => {
     if (RM.matches || e.button > 0) return;
     const b = e.target instanceof Element ? e.target.closest(JELLY) : null;

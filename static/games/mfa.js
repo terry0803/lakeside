@@ -299,7 +299,7 @@ Games.mfa = function (d, main, replay) {
         <div class="mn-takeover" id="mnTake" hidden></div></div></div></div>
       <div class="rs-side mn-right"><div class="mn-laptop"><div class="mn-lap-screen">
           <p class="mn-lap-bar"><span>${bi("Lakeside on-call", "值班系統")}</span><span>CAM 3 · ${bi("Banquet Hall door", "宴會廳門口")}</span></p>
-          <div class="mn-cam" id="mnCam"><img src="${CB.IMG}mn_cam.jpg" alt="The Banquet Hall door camera at night: the code plates, the badge reader and the door. 宴會廳門口的夜間監視器畫面。">
+          <div class="mn-cam" id="mnCam"><img src="${CB.IMG}mn_cam.webp" alt="The Banquet Hall door camera at night: the code plates, the badge reader and the door. 宴會廳門口的夜間監視器畫面。">
             ${SCENE}<span class="mn-light" id="mnLight" aria-hidden="true"></span><span class="mn-led" id="mnLed" aria-hidden="true"></span>
             <span class="mn-cam-rec"><i></i>REC <span lang="zh-Hant">錄影中</span></span><span class="mn-cam-ts" id="mnCamTs">${esc(story.start)}:00</span><span class="mn-cam-box" id="mnCamBox" hidden></span>
             <span class="mn-cam-say" id="mnCamSay" hidden></span><i class="mn-cam-bar" id="mnCamBar" hidden><b></b></i></div>

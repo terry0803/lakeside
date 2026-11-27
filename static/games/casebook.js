@@ -6,6 +6,7 @@
 "use strict";
 
 const CB = (() => {
+  // 11/27: the scenes are asked for as WebP, about a third smaller than the JPEG beside each one (pages/make_webp.py makes them)
   const IMG = "/lakeside/static/games/img/scenes/";
   const fill = (s, map) => String(s || "").replace(/\{(\w+)\}/g, (_, k) => (k in map ? map[k] : ""));
   const mins = (t) => { const m = /^(\d+):(\d+)/.exec(t || ""); return m ? +m[1] * 60 + +m[2] : 0; };
@@ -332,7 +333,7 @@ const CB = (() => {
     G.watchFit();
     const st = {
       $rs, body: $("#rsBody"),
-      scene(name, dusk) { $("#rsBg").style.backgroundImage = `url(${IMG}${name}.jpg)`; st.dusk(dusk || 0); },
+      scene(name, dusk) { $("#rsBg").style.backgroundImage = `url(${IMG}${name}.webp)`; st.dusk(dusk || 0); },
       dusk(v) { $("#rsDusk").style.opacity = String(v || 0); },
       mood(cls) { $rs.dataset.mood = cls || ""; },
       banner(w) {
@@ -350,7 +351,7 @@ const CB = (() => {
       toast(img, html, ms) {
         const t = $("#rsToast");
         t.hidden = false;
-        t.innerHTML = `${img ? `<img src="${IMG}${img}.jpg" alt="">` : ""}<p>${html}</p>`;
+        t.innerHTML = `${img ? `<img src="${IMG}${img}.webp" alt="">` : ""}<p>${html}</p>`;
         t.classList.toggle("is-noimg", !img);
         t.classList.remove("is-in"); void t.offsetWidth; t.classList.add("is-in");
         clearTimeout(t._h);
@@ -396,7 +397,7 @@ const CB = (() => {
           const beats = (o.beats || []).map((k) => `<li><time>${esc(k.time)}${k.time_zh ? ` <span lang="zh-Hant">${esc(k.time_zh)}</span>` : ""}</time><p>${bi(k.en, k.zh)}</p></li>`).join("");
           const left = o.shields;
           cut.hidden = false;
-          cut.innerHTML = `<div class="rs-cut-bg" style="background-image:url(${IMG}${esc(o.scene || "rush_soc")}.jpg)"></div><div class="rs-cut-shade"></div>
+          cut.innerHTML = `<div class="rs-cut-bg" style="background-image:url(${IMG}${esc(o.scene || "rush_soc")}.webp)"></div><div class="rs-cut-shade"></div>
             <div class="rs-cut-inset">${o.inset || ""}</div>
             <div class="rs-cut-text"><p class="rs-cut-kicker">${bi("What happened next", "接下來發生了什麼")}</p>
               <ol class="rx-beats rs-beats">${beats}</ol>

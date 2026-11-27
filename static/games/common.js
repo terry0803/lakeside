@@ -7,6 +7,17 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const bi = (en, zh) => `${esc(en)}${zh ? ` <span lang="zh-Hant">${esc(zh)}</span>` : ""}`;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait = (ms) => new Promise((r) => setTimeout(r, reduceMotion ? Math.min(ms, 80) : ms));
+/* 11/27 afternoon (the user: in iStaging's pop-up the window's ✕ and the Help panel's ✕ sit side by side): when the page
+   right around this one is another site's (iStaging's tour with this page in its pop-up window), that window draws its
+   own ✕ over this page's top right corner. html.in-pop then keeps the bar clear of the corner and opens the Help panel on
+   the left (liquid.css). Our own page around the game (the assistant's game window) is read without an error and changes
+   nothing. The page right around, not the one at the very top: the tour can itself sit inside our full page, and then the
+   top page is ours (readable) while the pop-up and its ✕ are still iStaging's (11/27 check). */
+const IN_POP = (() => {
+  if (window.self === window.parent) return false;
+  try { void window.parent.location.href; return false; } catch { return true; }
+})();
+if (IN_POP) document.documentElement.classList.add("in-pop");
 
 function el(tag, cls = "", html = "") {
   const e = document.createElement(tag);
@@ -281,10 +292,12 @@ G.help = (() => {
     if (H.root) return H.root;
     const root = el("div", "gh");
     root.id = "gh"; root.hidden = true;
+    // 11/27 afternoon: the assistant window's glass and parts (liquid.css .gh): its round window button with a drawn X,
+    // its ask box and button (the arrow, "Ask 送出")
     root.innerHTML = `<div class="gh-shade" data-gh-close></div>
-      <aside class="gh-panel" role="dialog" aria-modal="true" aria-labelledby="ghTitle">
-        <header class="gh-head"><div><h2 id="ghTitle">${bi("Help", "求助")}</h2><p class="gh-state" id="ghState"></p></div>
-          <button type="button" class="gh-x" data-gh-close aria-label="Close help 關閉求助"></button></header>
+      <aside class="gh-panel lg-hi" role="dialog" aria-modal="true" aria-labelledby="ghTitle">
+        <header class="gh-head"><div class="gh-brand"><h2 id="ghTitle">${bi("Help", "求助")}</h2><p class="gh-state" id="ghState"></p></div>
+          <button type="button" class="gh-x" data-gh-close aria-label="Close help 關閉求助" title="Close 關閉"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></header>
         <div class="gh-scroll" id="ghScroll"><div id="ghInfo"></div>
           <h3 class="gh-ask-h">${bi("Ask the IT Assistant", "問小幫手")}</h3>
           <p class="gh-ask-note">${bi("It knows which case you are in and what is on your screen.", "它知道你在玩哪一案、畫面上是什麼。")}</p>
@@ -292,10 +305,15 @@ G.help = (() => {
         <div class="gh-foot"><div class="gh-chips" id="ghChips"></div>
           <form class="gh-form" id="ghForm" autocomplete="off"><label class="gh-sr" for="ghIn">Your question 你的問題</label>
             <input id="ghIn" type="text" maxlength="500" placeholder="Type a question 輸入你的問題">
-            <button type="submit" class="btn gh-send">${bi("Ask", "問")}</button></form></div>
+            <button type="submit" class="gh-send"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 10h11M10.5 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${bi("Ask", "送出")}</span></button></form></div>
       </aside>`;
     document.body.appendChild(root);
-    for (const x of $$("[data-gh-close]", root)) x.addEventListener("click", close);
+    // 11/27 review: a double click on Help (or on an "Ask the IT Assistant" button) opened the panel and shut it at once:
+    // the bar is inert by the second click, which landed on the shade. The shade takes no click in the first 400 ms.
+    for (const x of $$("[data-gh-close]", root)) x.addEventListener("click", () => {
+      if (x.classList.contains("gh-shade") && performance.now() - (H.openedAt || 0) < 400) return;
+      close();
+    });
     $("#ghForm", root).addEventListener("submit", (e) => {
       e.preventDefault();
       const inp = $("#ghIn", root), q = inp.value.trim();
@@ -326,7 +344,7 @@ G.help = (() => {
   }
   const KEYS = ["keydown", "keyup", "keypress"];
 
-  function sec(cls, h, body) { return `<section class="gh-sec ${cls}"><h3>${h}</h3>${body}</section>`; }
+  function sec(cls, h, body) { return `<section class="gh-sec lg-hi ${cls}"><h3>${h}</h3>${body}</section>`; }
 
   function render() {
     const s = story(), n = nowInfo(), m = H.mistakes[0];
@@ -344,7 +362,9 @@ G.help = (() => {
     }
     const rules = lines(s.rules);
     if (rules.length) {
-      html += `<details class="gh-sec gh-rules"${n && lines(n.steps).length ? "" : " open"}><summary>${bi("All the rules of this case", "這一案的全部規則")}</summary><ol>${rules.map((r) => `<li>${bi(r.en, r.zh)}</li>`).join("")}</ol></details>`;
+      // the card is a section around the <details>: the pointer's light is a child of the card, and a child of a closed
+      // <details> is not shown, so the closed rules card stayed dark under the pointer while the other cards lit up (11/27 check)
+      html += `<section class="gh-sec lg-hi"><details class="gh-rules"${n && lines(n.steps).length ? "" : " open"}><summary>${bi("All the rules of this case", "這一案的全部規則")}</summary><ol>${rules.map((r) => `<li>${bi(r.en, r.zh)}</li>`).join("")}</ol></details></section>`;
     }
     $("#ghInfo", H.root).innerHTML = html;
     $("#ghState", H.root).innerHTML = H.ours ? bi("The game is paused while this is open.", "這個打開時，遊戲會暫停。") : "";
@@ -466,31 +486,72 @@ G.help = (() => {
       if (H.pending && H.open) { const q = H.pending; H.pending = null; ask(q.text, q.extra); return; }   // else it waits for the next open
       // the keyboard back to the box (Chrome drops the focus from a button that was disabled while the answer came)
       const f = document.activeElement;
-      if (H.open && (!f || f === document.body)) $("#ghIn", H.root).focus({ preventScroll: true });
+      if (H.open && !touch() && (!f || f === document.body)) $("#ghIn", H.root).focus({ preventScroll: true });
     }
   }
 
+  /* 11/27 afternoon (the user: one glass, and the animations the same everywhere): like the assistant's game window, the
+     panel grows out of the button that opened it (liquid.css gh-grow, from that button's place) and, when closed, shrinks
+     back into the Help button of the bar, which gives a small bounce as it lands. Before, closing just made it vanish. */
+  let anims = [];
+  const centre = (e) => { const r = e && e.isConnected && e !== document.body ? e.getBoundingClientRect() : null; return r && (r.width || r.height) ? [r.left + r.width / 2, r.top + r.height / 2] : null; };
+  function from(e) {      // the panel grows from, or shrinks into, the middle of this element (the Help button if it has no place)
+    const p = $(".gh-panel", H.root), c = centre(e) || centre(document.getElementById("gHelp"));
+    p.style.transformOrigin = c ? `${Math.round(c[0] - p.offsetLeft)}px ${Math.round(c[1] - p.offsetTop)}px` : "50% 0";
+    return p;
+  }
+  function fold() {
+    const root = H.root, btn = document.getElementById("gHelp");
+    const done = () => { for (const a of anims) a.cancel(); anims = []; root.hidden = true; root.inert = false; root.classList.remove("is-closing"); };
+    if (reduceMotion || typeof root.animate !== "function") { done(); return; }
+    root.inert = true; root.classList.add("is-closing");       // the game under it can be used at once
+    const p = from(btn);
+    const mine = anims = [
+      p.animate([{ transform: "scale(1)", opacity: 1 }, { opacity: 1, offset: 0.4 }, { transform: "scale(.12)", opacity: 0 }], { duration: 400, easing: "cubic-bezier(.45, 0, .25, 1)", fill: "forwards" }),
+      $(".gh-shade", root).animate([{ opacity: 1 }, { opacity: 0 }], { duration: 340, delay: 60, easing: "ease-out", fill: "forwards" }),
+    ];
+    Promise.all(mine.map((a) => a.finished)).then(() => {
+      if (anims !== mine) return;
+      done();
+      if (btn && btn.animate) btn.animate([{ transform: "scale(.92)" }, { transform: "scale(1.04)", offset: 0.6 }, { transform: "scale(1)" }], { duration: 340, easing: "ease-out", composite: "add" });
+    }).catch(() => { /* opened again halfway */ });
+    setTimeout(() => { if (anims === mine) done(); }, 1200);   // a backstop: animations do not run in a tab in the background
+  }
+
+  const touch = () => !!window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+
   function open(o) {
     o = o || {};
+    let opened = false;
     build();
     if (!H.open) {
       H.opener = document.activeElement;
+      H.openedAt = performance.now();
+      opened = true;
       // pause first: the pause card takes the keyboard when it opens, the panel takes it back below
       if (pauseBtn() && !paused() && G.onPause) { G.onPause(); H.ours = paused(); }
       H.open = true;
       for (const k of KEYS) window.addEventListener(k, keyGuard, true);
+      for (const a of anims) a.cancel();                       // opened again while it was folding away
+      anims = [];
+      H.root.classList.remove("is-closing"); H.root.inert = false;
       H.root.hidden = false;
+      from(H.opener);
       for (const x of [$(".g-top"), $("#game")]) if (x) x.inert = true;
       H.root.classList.remove("is-in"); void H.root.offsetWidth; H.root.classList.add("is-in");
     }
     render();
+    // 11/27 review: opened again, the panel was where it had been left (often at the end of the last chat), so a new
+    // "Why that went wrong" at the top was out of sight. It opens at the top; a question asked below scrolls to itself.
+    if (opened) $("#ghScroll", H.root).scrollTop = 0;
     // a question that waited while the panel was closed goes first (11/27 check: it was lost)
     if (H.pending && !H.busy) { const q = H.pending; H.pending = null; ask(q.text, q.extra); }
     if (o.ask) ask(zhFirst() ? o.ask.zh || o.ask.en : o.ask.en || o.ask.zh, o.ctx);
     const why = o.focus === "why" && $(".gh-why", H.root);
-    if (why) why.scrollIntoView({ block: "start" });
-    // on a touch screen a question asked from a button keeps the on-screen keyboard down (it covered the answer)
-    (o.ask && window.matchMedia("(pointer: coarse)").matches ? $(".gh-x", H.root) : $("#ghIn", H.root)).focus({ preventScroll: true });
+    if (why) $("#ghScroll", H.root).scrollTop = Math.max(0, why.offsetTop - 8);      // the text area only (scrollIntoView moved the panel too)
+    // on a touch screen the on-screen keyboard stays down until the box itself is tapped: it covered the answer to a
+    // question asked from a button, and (11/27 review) most of the panel when Help was only opened to read
+    (touch() ? $(".gh-x", H.root) : $("#ghIn", H.root)).focus({ preventScroll: true });
   }
 
   function close() {
@@ -502,9 +563,10 @@ G.help = (() => {
     // chapters' resume puts the keyboard back where it was), then, if nothing took it, a cut scene's button or the control
     // that opened the panel gets it; an opener that was the page itself leaves it there (11/27 checks: Enter re-opened Help)
     if (H.root.contains(document.activeElement)) document.activeElement.blur();
-    H.root.hidden = true;
     if (H.ours && paused() && G.onPause) G.onPause();
     H.ours = false;
+    fold();    // after the game is running again (the bar is redrawn by then: the panel folds into where the Help button now is);
+               // hidden when it has shrunk away (at once with reduced motion)
     const back = H.opener;
     H.opener = null;
     const a = document.activeElement;
@@ -536,14 +598,55 @@ G.help = (() => {
     right.insertBefore(b, right.firstChild);
   }
 
-  return { open, close, mistake, ask, setNow(fn) { H.now = fn; }, clear() { H.mistakes = []; }, isOpen: () => H.open };
+  // clear(): a new shift. The mistakes go, and so does a question that was still waiting for the last answer when the
+  // panel was closed (11/27 review: it would have been asked in the next shift, about a screen that is gone)
+  return { open, close, mistake, ask, setNow(fn) { H.now = fn; }, clear() { H.mistakes = []; H.pending = null; }, isOpen: () => H.open };
 })();
+
+/* 11/27 afternoon: the Help panel is the assistant window's glass, so it behaves like it too (the assistant page's app.js):
+   a soft light follows the pointer over the panel and over the card under the pointer. One update per frame, every box
+   measured first and only then moved; nothing on touch screens or with "reduce motion". */
+(() => {
+  const fine = window.matchMedia ? window.matchMedia("(hover: hover) and (pointer: fine)").matches : false;
+  if (!fine || reduceMotion) return;
+  let last = null, raf = 0;
+  const glowOf = (g) => {
+    let s = g.querySelector(":scope > .lg-glow");
+    if (!s) { s = el("span", "lg-glow"); s.setAttribute("aria-hidden", "true"); g.appendChild(s); }
+    return s;
+  };
+  document.addEventListener("pointermove", (e) => {
+    if (!G.help.isOpen()) return;
+    last = e;
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const n = last && last.target instanceof Element ? last.target : null;
+      if (!n) return;
+      const lit = [];
+      for (let g = n.closest(".gh .lg-hi"); g && lit.length < 2; g = g.parentElement ? g.parentElement.closest(".gh .lg-hi") : null) lit.push([g, g.getBoundingClientRect()]);
+      for (const [g, r] of lit) glowOf(g).style.transform = `translate(${Math.round(last.clientX - r.left)}px, ${Math.round(last.clientY - r.top)}px)`;
+    });
+  }, { passive: true });
+})();
+
+/* What gives under a press: the bar's pills, the games' buttons and the Help panel's controls. A ripple of light starts
+   where it is pressed (below), and on release it wobbles back like jelly, as every button of the assistant page does
+   (11/27 afternoon; added on top of the button's own transform, so a hover lift or an entrance keeps going). */
+const PRESSABLE = ".btn, .g-back, .g-sound, .g-help, .cb-title-go, .rs-next-case, .g-foot summary, .gh-chip, .gh-send, .gh-x";
+document.addEventListener("pointerup", (e) => {
+  if (reduceMotion || e.button > 0) return;
+  const b = e.target instanceof Element ? e.target.closest(PRESSABLE) : null;
+  if (!b || b.disabled || typeof b.animate !== "function") return;
+  b.animate([{ transform: "scale(.95, .92)" }, { transform: "scale(1.05, .97)", offset: .32 }, { transform: "scale(.98, 1.03)", offset: .56 },
+    { transform: "scale(1.012, .993)", offset: .78 }, { transform: "scale(1)" }], { duration: 540, easing: "ease-out", composite: "add" });
+}, { passive: true });
 
 /* 11/22 afternoon: a ripple of light from where a button is pressed (liquid.css). Inside the scaled stage the button's own
    pixels are the canvas pixels, so the pointer position is divided by the stage's scale. */
 document.addEventListener("pointerdown", (e) => {
   if (reduceMotion || e.button > 0) return;
-  const b = e.target instanceof Element ? e.target.closest(".btn, .g-back, .g-sound, .g-help, .cb-title-go, .rs-next-case, .g-foot summary") : null;
+  const b = e.target instanceof Element ? e.target.closest(PRESSABLE) : null;
   if (!b || b.disabled) return;
   const r = b.getBoundingClientRect(), k = b.closest(".rs-body") ? G.k() || 1 : 1;
   if (getComputedStyle(b).position === "static") b.style.position = "relative";

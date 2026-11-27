@@ -54,7 +54,7 @@ Games.phish = function (d, main, replay) {
   const $rs = $("#rs");
   G.watchFit();
   const setScene = (name, dusk) => {
-    $("#rsBg").style.backgroundImage = `url(${IMG}${name}.jpg)`;
+    $("#rsBg").style.backgroundImage = `url(${IMG}${name}.webp)`;      // 11/27: WebP (pages/make_webp.py)
     $("#rsDusk").style.opacity = String(dusk || 0);
   };
   const stage = { scene: setScene, $rs, body: $("#rsBody") };     // enough of a casebook stage for the title card and the time skip
@@ -1281,7 +1281,7 @@ Games.phish = function (d, main, replay) {
   function toast() {   // a reported phish goes to the SOC at the lighthouse
     const t = $("#rsToast");
     t.hidden = false;
-    t.innerHTML = `<img src="${IMG}rush_soc.jpg" alt=""><p>${bi("SOC at the lighthouse: removed from every mailbox.", "燈塔的資安監控中心：已經從每個信箱拿掉了。")}</p>`;
+    t.innerHTML = `<img src="${IMG}rush_soc.webp" alt=""><p>${bi("SOC at the lighthouse: removed from every mailbox.", "燈塔的資安監控中心：已經從每個信箱拿掉了。")}</p>`;
     t.classList.remove("is-in"); void t.offsetWidth; t.classList.add("is-in");
     clearTimeout(t._h);
     t._h = setTimeout(() => { t.hidden = true; }, 3600);
@@ -1308,7 +1308,7 @@ Games.phish = function (d, main, replay) {
       if (body && !paused) body.inert = true;
       const beats = (keep || []).map((k) => `<li><time>${esc(k.time)}${k.time_zh ? ` <span lang="zh-Hant">${esc(k.time_zh)}</span>` : ""}</time><p>${bi(k.en, k.zh)}</p></li>`).join("");
       cut.hidden = false;
-      cut.innerHTML = `<div class="rs-cut-bg" style="background-image:url(${IMG}${esc(dm.scene || "rush_day")}.jpg)"></div><div class="rs-cut-shade"></div>
+      cut.innerHTML = `<div class="rs-cut-bg" style="background-image:url(${IMG}${esc(dm.scene || "rush_day")}.webp)"></div><div class="rs-cut-shade"></div>
         <div class="rs-cut-inset">${inset(dm, subj)}</div>
         <div class="rs-cut-text"><p class="rs-cut-kicker">${bi("What happened next", "接下來發生了什麼")}</p>
           <ol class="rx-beats rs-beats">${beats}</ol>

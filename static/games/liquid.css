@@ -25,11 +25,16 @@ html, body.is-fit { background: var(--g-bg); }
   transition: background-color .2s, transform .45s var(--e-spring);
 }
 .g-back { padding: 6px 14px 6px 9px !important; }
+/* 11/27 afternoon (the user: in iStaging's pop-up its ✕ and ours sit side by side): that window draws its own ✕ over this
+   page's top right corner, about 40 px square. Nothing of the bar goes under it (html.in-pop is set by common.js when the
+   page around this one is another site's); the Help panel opens on the left there (the .gh rules below). */
+.in-pop .g-top { padding-right: 46px !important; }
 .g-back:hover, .g-foot summary:hover, .g-sound:hover, .g-help:hover, .g-top .rx-pause:hover { background: var(--g-pill-hi) !important; }
 .g-back:active, .g-foot summary:active, .g-sound:active, .g-help:active, .g-top .rx-pause:active { transform: scale(.95); transition-duration: .1s; }
 .g-back span, .g-foot summary span[lang], .g-sound span[lang], .g-help span[lang], .g-top .rx-pause span[lang] { color: var(--g-text-2) !important; }
 .g-sound[aria-pressed="false"] { color: var(--g-text-2) !important; }
-.g-top .rx-pause { white-space: nowrap; }                 /* one line: Pause 暫停 */
+.g-top .rx-pause { white-space: nowrap; min-width: 118px; justify-content: center; }   /* one line: Pause 暫停. 11/27 check: as wide as
+   "Resume 繼續" (117.8 px), so the bar's other buttons no longer slide 11 px sideways each time the game is paused */
 .g-top .rx-pause[aria-pressed="true"] { background: var(--g-text) !important; border-color: var(--g-text) !important; color: var(--g-bg) !important; }
 .g-top .rx-pause[aria-pressed="true"] span[lang] { color: var(--g-bg) !important; }
 .g-title { color: var(--g-text); }
@@ -80,14 +85,14 @@ body.is-fit .g-main.is-stage { width: auto; margin: 10px 12px 12px; overflow: hi
 @keyframes g-ripple { to { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
 
 /* ---------------------------------------------------------------- the briefing, pop-ups, toasts: frosted glass, dark text */
-.rs-brief { border: 1px solid rgba(255, 255, 255, .6); border-radius: 20px; background: rgba(255, 255, 255, .78) !important; -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%); box-shadow: 0 20px 50px rgba(0, 0, 0, .28); }
+.rs-brief { border: 1px solid rgba(255, 255, 255, .6); border-radius: 20px; background: rgba(255, 255, 255, .78) !important; -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter); box-shadow: 0 20px 50px rgba(0, 0, 0, .28); }
 .rs-brief-clock { background: rgba(29, 78, 216, .9) !important; }
 .rs-brief-clock i { color: #dbe7ff !important; }
 .rs-brief-file { color: #dbe7ff !important; }
 .rs-brief-main .rx-say { background: rgba(255, 255, 255, .6) !important; }
 .rs-toast { border: 1px solid rgba(255, 255, 255, .6); border-radius: 20px !important; background: rgba(255, 255, 255, .84) !important; -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); box-shadow: 0 14px 34px rgba(0, 0, 0, .28) !important; }
 .rs-paused > div { border: 1px solid rgba(255, 255, 255, .6); border-radius: 20px !important; background: rgba(255, 255, 255, .84) !important; -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); }
-.rs-finale .g-end { border: 1px solid rgba(255, 255, 255, .6) !important; border-radius: 20px !important; background: rgba(255, 255, 255, .84) !important; -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%); }
+.rs-finale .g-end { border: 1px solid rgba(255, 255, 255, .6) !important; border-radius: 20px !important; background: rgba(255, 255, 255, .84) !important; -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter); }
 .rs-cut-text, .rs-over-text { border-radius: 20px !important; }
 .rs-next-case { border: 1px solid rgba(160, 205, 255, .45); border-radius: 20px !important; background: rgba(29, 78, 216, .88) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 10px 24px rgba(10, 40, 110, .3) !important; transition: transform .45s var(--e-spring), filter .2s; }
 .rs-next-case:hover { filter: brightness(1.08); transform: translateY(-2px); }
@@ -238,14 +243,14 @@ body.is-fit .ir-map { flex: 1 1 auto; min-height: 0; width: auto; height: auto; 
 /* a speech bubble with a long text scrolls with a thin bar */
 .rx-say { scrollbar-width: thin; scrollbar-color: rgba(15, 23, 42, .25) transparent; }
 /* the close buttons of the reader and of a device on the map: a drawn X in a circle (the text "×" sat low) */
-.cb-reader-x, .ir-close-x, .gh-x {
+.cb-reader-x, .ir-close-x {
   display: grid; place-items: center; width: 32px; height: 32px; padding: 0 !important; border: 0; border-radius: 50%; font-size: 0 !important; color: transparent;
   background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 5l10 10M15 5 5 15' stroke='%23334155' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 15px no-repeat;
   cursor: pointer; transition: background-color .2s, transform .45s var(--e-spring);
 }
-.cb-reader-x:hover, .ir-close-x:hover, .gh-x:hover { background-color: rgba(15, 23, 42, .08); }
-.cb-reader-x:active, .ir-close-x:active, .gh-x:active { transform: scale(.9); transition-duration: .1s; }
-@media (prefers-reduced-motion: reduce) { .cb-opt, .cb-btns button, .cb-flip, .cb-reader-x, .ir-close-x, .gh-x { transition-duration: 0s !important; } .cb-opt:hover { transform: none !important; } }
+.cb-reader-x:hover, .ir-close-x:hover { background-color: rgba(15, 23, 42, .08); }
+.cb-reader-x:active, .ir-close-x:active { transform: scale(.9); transition-duration: .1s; }
+@media (prefers-reduced-motion: reduce) { .cb-opt, .cb-btns button, .cb-flip, .cb-reader-x, .ir-close-x { transition-duration: 0s !important; } .cb-opt:hover { transform: none !important; } }
 /* the casebook's log rows and the door keypad on the board: light up under the mouse, press in (like the desk phones) */
 .cb-log-row { transition: background-color .2s, box-shadow .2s, transform .16s var(--e-out); }
 .cb-log-row:active { transform: scale(.99); }
@@ -259,116 +264,228 @@ button.ir-slot-empty { transition: background-color .2s; }
 .g-top .rx-hud b, .g-top .g-meter b { white-space: nowrap; }
 
 /* ---------------------------------------------------------------- Help 求助 (11/27): the bar button and the panel
-   The user (11/27): 「風格都要一樣是液態玻璃，UI要統一」. Nothing new here has its own look: the button is one of the bar's
-   grey pills (the shared rules at the top of this file), the panel is the frosted glass of the briefing and the pop-ups,
-   its parts are cards 16 / rows 12 / pills, the close button is the drawn X of the reader, the Ask button is the glass
-   capsule (.btn), the suggested questions are ghost capsules, the assistant speaks in a speech bubble like the people in
-   the games. The panel is outside the scaled canvas (fixed to the window); while it is open the game is paused. */
+   The button is one of the bar's grey pills (the shared rules at the top of this file).
+   The panel (11/27 afternoon, the user: 「現在幫助的框跟我們外面的小幫手的這種液態玻璃效果不一樣，我想要統一液態玻璃效果」)
+   is the assistant window itself, rule for rule from web/style.css: the clear dark glass (.desk), its title bar and round
+   window button (.win-btn), its cards (.card), numbered steps (ol.steps), warning box (.dont), chips (.chip), chat (the blue
+   bubble for your question, the answer written on the glass, the three dots, the caret) and ask box (.ask). It opens and
+   closes like the assistant's game window: out of the button that was pressed, back into the Help button (common.js).
+   The panel is outside the scaled canvas (fixed to the window); while it is open the game is paused. */
 .g-help { display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px 6px 9px; font: inherit; font-size: 12.5px; line-height: 1.2; white-space: nowrap; cursor: pointer; }
 .g-help svg { width: 16px; height: 16px; flex: none; }
 .g-help span[lang] { margin-left: 3px; }
 .g-help.is-new { animation: gh-nudge 1.1s ease-out 3; }
 @keyframes gh-nudge { 0% { box-shadow: 0 0 0 0 rgba(159, 208, 255, .85); } 100% { box-shadow: 0 0 0 12px rgba(159, 208, 255, 0); } }
 
-.gh { position: fixed; inset: 0; z-index: 80; }
-.gh[hidden] { display: none; }
-.gh-shade { position: absolute; inset: 0; background: rgba(10, 14, 22, .32); }
-.gh-panel {
-  position: absolute; top: 10px; right: 12px; bottom: 12px; width: min(440px, calc(100vw - 24px)); display: flex; flex-direction: column; overflow: hidden;
-  border: 1px solid var(--frost-rim); border-radius: var(--r-window); background: var(--frost); color: var(--ink);
-  -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter); box-shadow: var(--frost-shadow), 0 30px 70px rgba(0, 0, 0, .35);
-  font-size: 14px; line-height: 1.55; text-shadow: none;
+.gh {
+  position: fixed; inset: 0; z-index: 80;
+  /* the assistant window's own tokens (web/style.css :root), the same values: one glass for that window and this panel */
+  --g-sheen: rgba(255, 255, 255, .05); --g-filter: blur(14px) saturate(170%) contrast(.62) brightness(.6); --g-rim: rgba(255, 255, 255, .34);
+  --g-layer: rgba(255, 255, 255, .06); --g-line: rgba(255, 255, 255, .13); --g-inner: inset 0 1px 0 rgba(255, 255, 255, .4); --g-shadow: 0 18px 44px rgba(0, 0, 0, .24);
+  --tx: #fff; --tx-2: #f0f4f8; --tx-3: #dfe7ef; --btn-1: rgba(44, 112, 226, .86); --btn-2: rgba(28, 82, 196, .9);
+  --e-liquid: cubic-bezier(.2, .9, .2, 1);
+  interpolate-size: allow-keywords;      /* 11/27 review: without it the rules card jumped open instead of growing (height 0 to auto) */
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+  --font-head: "Segoe UI Variable Display", "Segoe UI", "Microsoft JhengHei UI", "Microsoft JhengHei", sans-serif;
+  --font-num: "Segoe UI Variable Display", "Segoe UI", "Bahnschrift", sans-serif;
+  --font-zh: "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
 }
-.gh.is-in .gh-shade { animation: gh-fade .25s ease-out both; }
-.gh.is-in .gh-panel { transform-origin: 100% 0; animation: gh-drop .42s var(--e-spring) both; }
+.gh[hidden] { display: none; }
+.gh.is-closing { pointer-events: none; }
+.gh-shade { position: absolute; inset: 0; background: rgba(10, 14, 22, .32); }
+/* the window itself: the assistant's .desk (same place, width, corner, rim, blur and sheen) */
+.gh-panel {
+  position: absolute; top: 12px; right: 12px; bottom: 12px; width: min(460px, calc(100vw - 24px)); display: flex; flex-direction: column; min-height: 0; overflow: hidden; overflow: clip;
+  border: 1px solid var(--g-rim); border-radius: 20px; background: var(--g-sheen); color: var(--tx);
+  -webkit-backdrop-filter: var(--g-filter); backdrop-filter: var(--g-filter); box-shadow: var(--g-inner), var(--g-shadow);
+  font: 15px/1.55 var(--font-ui); text-shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 0 1px rgba(0, 0, 0, .35); --hr: 340px; --ha: .09;
+}
+.gh-panel > :not(.lg-glow) { position: relative; z-index: 1; }
+/* (overflow: clip after hidden, on the panel and its cards, 11/27 review: with hidden a script could still scroll them,
+   because the pointer's light is a large layer inside; scrolling a card into view then pushed the title bar and the ✕
+   out of the panel) */
+/* inside another site's window (iStaging's pop-up, html.in-pop from common.js) that window's own ✕ sits on this page's top
+   right corner: the panel opens on the left, so its ✕ is nowhere near that one */
+.in-pop .gh-panel { right: auto; left: 12px; }
+/* a soft light follows the pointer over the glass (the assistant page's .lg-hi; the span is added by common.js) */
+.gh .lg-hi > span.lg-glow {
+  position: absolute; left: calc(var(--hr, 220px) * -1); top: calc(var(--hr, 220px) * -1); z-index: 0; width: calc(var(--hr, 220px) * 2); height: calc(var(--hr, 220px) * 2);
+  pointer-events: none; opacity: 0; transition: opacity .5s var(--e-out);
+  background: radial-gradient(circle closest-side, rgba(255, 255, 255, var(--ha, .16)), rgba(255, 255, 255, 0) 70%);
+}
+.gh .lg-hi:hover > span.lg-glow { opacity: 1; will-change: transform; }
+/* open: it grows out of the button that opened it; close: common.js folds it back into the Help button (as the assistant's
+   game window does) */
+.gh.is-in .gh-shade { animation: gh-fade .26s var(--e-out) both; }
+.gh.is-in .gh-panel { animation: gh-grow .46s var(--e-out) both; }
 @keyframes gh-fade { from { opacity: 0; } }
-@keyframes gh-drop { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
-.gh [lang="zh-Hant"] { color: var(--ink-3); }
-.gh-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 14px 10px 20px; }
-.gh-head h2 { margin: 0; font-size: 19px; font-weight: 700; }
-.gh-head h2 span[lang] { margin-left: 6px; font-weight: 600; }
-.gh-state { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-3); }
+@keyframes gh-grow { from { opacity: 0; transform: scale(.6); } 55% { opacity: 1; } }
+.gh [lang="zh-Hant"] { font-family: var(--font-zh); color: var(--tx-2); }
+.gh :focus-visible { outline: 2px solid #9fd0ff; outline-offset: 2px; }
+/* the head: the assistant's title bar and its round window button */
+.gh-head { flex: none; display: flex; align-items: flex-start; gap: 8px; padding: 15px 12px 10px 20px; border-bottom: 1px solid var(--g-line); }
+.gh-brand { flex: 1; min-width: 0; }
+.gh-head h2 { margin: 0; font: 650 19px/1.2 var(--font-head); color: #fff; letter-spacing: .1px; }
+.gh-head h2 span[lang] { margin-left: 6px; font: 600 14.5px var(--font-zh); color: #e6f1ff; }
+.gh-state { margin: 4px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--tx-2); }
 .gh-state:empty { display: none; }
-.gh-x { flex: none; }
-.gh-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 0 14px 14px; scrollbar-width: thin; scrollbar-color: rgba(15, 23, 42, .25) transparent; }
-/* each part a card of frosted glass on the panel, as the speech bubbles sit on the briefing */
-.gh-sec { margin-top: 10px; padding: 12px 14px; border: 1px solid var(--frost-rim); border-radius: var(--r-card); background: rgba(255, 255, 255, .6); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); }
+.gh-state [lang="zh-Hant"] { margin-left: .3em; }
+.gh-x {
+  position: relative; flex: none; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, .26); border-radius: 50%;
+  background: rgba(255, 255, 255, .1); color: var(--tx-2); cursor: pointer; transition: background-color .2s, color .2s, transform .45s var(--e-spring);
+}
+.gh-x svg { width: 17px; height: 17px; transition: transform .45s var(--e-spring); }
+.gh-x:hover { background: rgba(255, 255, 255, .22); color: #fff; }
+.gh-x:hover svg { transform: rotate(90deg); }
+.gh-x:active { transform: scale(.9); transition-duration: .1s; }
+.gh-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 18px 12px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .3) transparent; }
+/* each part: a card of the assistant (a hairline layer on the glass, 16px corners) */
+.gh-sec { position: relative; margin-top: 12px; padding: 15px 16px; overflow: hidden; overflow: clip; border: 1px solid rgba(255, 255, 255, .16); border-radius: 16px; background: var(--g-layer); --hr: 260px; --ha: .1; }
+.gh-sec > :not(.lg-glow) { position: relative; z-index: 1; }
 .gh-sec:first-child { margin-top: 0; }
-.gh-sec h3, .gh-ask-h { margin: 0 0 6px; font-size: 14.5px; font-weight: 700; }
-.gh-sec h3 span[lang], .gh-ask-h span[lang] { margin-left: 4px; font-weight: 600; }
-.gh-sec p { margin: 0; }
-.gh-sec ol, .gh-sec ul { margin: 0; padding-left: 1.3em; }
+.gh.is-in .gh-sec { animation: gh-rise .45s var(--e-out) backwards; animation-delay: calc(140ms + var(--i, 0) * 50ms); }
+.gh-sec:nth-child(2) { --i: 1; } .gh-sec:nth-child(3) { --i: 2; } .gh-sec:nth-child(4) { --i: 3; } .gh-sec:nth-child(n + 5) { --i: 4; }
+@keyframes gh-rise { from { opacity: 0; transform: translateY(8px); } }
+.gh-sec h3, .gh-ask-h { margin: 0 0 6px; font: 650 16px/1.3 var(--font-head); color: #fff; letter-spacing: 0; }
+.gh-sec h3 span[lang], .gh-ask-h span[lang] { margin-left: 4px; font: 600 14px var(--font-zh); color: var(--tx-2); }
+.gh-sec p { margin: 0; color: #fff; }
+.gh-sec ol, .gh-sec ul { margin: 0; padding-left: 22px; }
+.gh-sec li { color: #fff; }
 .gh-sec li + li { margin-top: 6px; }
-.gh-sec li [lang="zh-Hant"], .gh-sec p [lang="zh-Hant"] { display: block; }
-.gh-goal p { font-size: 15px; font-weight: 600; }
-.gh-goal p [lang="zh-Hant"] { font-weight: 500; }
-/* why it went wrong: the red edge inside the curve, like the alerts in the games */
-.gh-why { box-shadow: inset 5px 0 0 var(--alert), inset 0 1px 0 rgba(255, 255, 255, .7); padding-left: 18px; }
-.gh-why h3 { color: var(--alert); }
+.gh-sec li::marker { color: #9fd0ff; font-weight: 600; }
+.gh-sec li [lang="zh-Hant"], .gh-sec p [lang="zh-Hant"] { display: block; margin-top: 2px; font-weight: 500; font-size: .94em; }
+.gh-goal p { font-size: 15.5px; font-weight: 600; }
+/* why it went wrong: the assistant's warm warning box */
+.gh-why { border-color: rgba(255, 156, 136, .4); background: rgba(255, 120, 95, .16); }
+.gh-why h3 { color: #ffd2c8; }
+.gh-why h3 span[lang] { color: #ffd2c8; opacity: .9; }
 .gh-why-t { font-weight: 600; margin-bottom: 6px !important; }
-.gh-why time, .gh-older time { display: inline-block; margin-right: 6px; padding: 0 8px; border-radius: 999px; background: rgba(168, 58, 40, .12); color: var(--alert); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.gh-why time, .gh-older time { display: inline-block; margin-right: 7px; padding: 0 9px; border: 1px solid rgba(255, 255, 255, .22); border-radius: 999px; background: rgba(255, 255, 255, .1); color: var(--tx-2); font: 600 11.5px/1.7 var(--font-num); font-variant-numeric: tabular-nums; }
 .gh-older { margin-top: 10px; font-size: 13px; }
-.gh-older summary { cursor: pointer; color: var(--alert); }
-.gh-older-why { display: block; color: var(--ink-2); }
-.gh-now ol { counter-reset: gh; list-style: none; padding-left: 0; }
-.gh-now li { position: relative; padding-left: 30px; counter-increment: gh; }
-.gh-now li::before { content: counter(gh); position: absolute; left: 0; top: 1px; display: grid; place-items: center; width: 21px; height: 21px; border-radius: 50%;
-  background: linear-gradient(145deg, var(--glass-btn), var(--glass-btn-2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35); color: #fff; font-size: 12px; font-weight: 700; }
-.gh-rules summary { cursor: pointer; font-weight: 700; font-size: 14px; }
-.gh-rules summary span[lang] { margin-left: 4px; font-weight: 600; }
-.gh-rules ol { margin-top: 8px; }
-.gh-ask-h { margin: 16px 2px 2px; }
-.gh-ask-note { margin: 0 2px 10px; font-size: 12.5px; color: var(--ink-3); }
-.gh-ask-note [lang="zh-Hant"] { margin-left: 3px; }
-.gh-thread { display: flex; flex-direction: column; gap: 8px; }
-/* the assistant speaks in a speech bubble (pointed corner top left), your question is a glass capsule bubble */
-.gh-msg { max-width: 92%; padding: 9px 13px; overflow-wrap: anywhere; }
-.gh-msg p { margin: 0; }
-.gh-msg p + p, .gh-msg ol, .gh-msg ul { margin-top: 6px; }
-.gh-msg ol, .gh-msg ul { padding-left: 1.3em; margin-bottom: 0; }
-.gh-msg.is-bot { align-self: flex-start; border: 1px solid var(--frost-rim); border-radius: 6px var(--r-card) var(--r-card) var(--r-card); background: rgba(255, 255, 255, .78); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 6px 16px rgba(15, 23, 42, .08); }
-.gh-msg.is-you { align-self: flex-end; border: 1px solid rgba(160, 205, 255, .55); border-radius: var(--r-card) 6px var(--r-card) var(--r-card); color: #fff;
-  background: linear-gradient(145deg, var(--glass-btn), var(--glass-btn-2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 6px 16px rgba(10, 40, 110, .2); }
-.gh-msg.is-you, .gh-msg.is-bot { animation: gh-pop .38s var(--e-spring) both; }
-@keyframes gh-pop { from { opacity: 0; transform: translateY(6px) scale(.98); } }
-.gh-wait { display: flex; align-items: center; gap: 8px; color: var(--ink-3); }
-.gh-wait [lang] { margin-left: 2px; }
-.gh-dots { display: inline-flex; gap: 3px; }
-.gh-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--lake-2); animation: gh-dot 1s ease-in-out infinite; }
-.gh-dots i:nth-child(2) { animation-delay: .15s; }
-.gh-dots i:nth-child(3) { animation-delay: .3s; }
-@keyframes gh-dot { 0%, 100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
-.gh-caret { display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: -2px; border-radius: 2px; background: var(--lake-2); animation: gh-blink 1s steps(2) infinite; }
-@keyframes gh-blink { 50% { opacity: 0; } }
-.gh-err { color: #b42318; font-size: 13px; }
-.gh-err [lang="zh-Hant"] { color: #b42318 !important; margin-left: 3px; }
-.gh-foot { flex: none; padding: 10px 14px 14px; border-top: 1px solid var(--frost-rim); }
-.gh-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 9px; }
+.gh-older summary { cursor: pointer; color: #ffd2c8; }
+.gh-older-why { display: block; color: var(--tx-2); }
+/* what to do right now: the assistant's numbered steps */
+.gh-now ol { counter-reset: gh; margin-top: 4px; padding-left: 0; list-style: none; }
+/* (the number sits in the left padding: the English and the Chinese of a step are two pieces of text, and as a grid the
+   Chinese fell into the 28 px number column, one character a line) */
+.gh-now li { position: relative; min-height: 46px; padding: 9px 0 9px 40px; border-top: 1px solid rgba(255, 255, 255, .09); counter-increment: gh; }
+.gh-now li + li { margin-top: 0; }
+.gh-now li:first-child { border-top: 0; }
+.gh-now li::before {
+  content: counter(gh); position: absolute; left: 0; top: 9px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: #fff; font: 650 13px/1 var(--font-num);
+  background: linear-gradient(145deg, #60a5fa, #1d4ed8); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 3px 10px rgba(0, 0, 0, .3); text-shadow: none;
+}
+/* all the rules: opens like "How I found this" */
+.gh-rules summary { display: flex; align-items: center; gap: 8px; min-height: 30px; margin: -5px 0; font: 650 15px/1.3 var(--font-head); color: #fff; list-style: none; cursor: pointer; }
+.gh-rules summary::-webkit-details-marker { display: none; }
+.gh-rules summary::before { content: ""; flex: none; width: 6px; height: 6px; margin: 0 3px 2px 2px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .4s var(--e-spring); }
+.gh-rules[open] summary::before { transform: rotate(45deg); margin-bottom: 4px; }
+.gh-rules summary span[lang] { font: 600 13.5px var(--font-zh); color: var(--tx-2); }
+.gh-rules ol { padding-top: 10px; }      /* padding, not margin: a margin stuck out of the folded part and the card jumped 10 px after closing */
+.gh-rules::details-content { block-size: 0; overflow: clip; transition: block-size .45s var(--e-liquid), content-visibility .45s allow-discrete; }
+.gh-rules[open]::details-content { block-size: auto; }
+/* ask the assistant: your question in the blue glass bubble, the answer written on the glass (the assistant's chat) */
+.gh-ask-h { margin: 18px 2px 2px; }
+.gh-ask-note { margin: 0 2px 12px; font-size: 12.5px; line-height: 1.5; color: var(--tx-3); }
+.gh-ask-note [lang="zh-Hant"] { margin-left: .3em; color: var(--tx-3); }
+.gh-thread { display: flex; flex-direction: column; gap: 14px; }
+.gh-msg { overflow-wrap: anywhere; }
+.gh-msg p { margin: 0 0 8px; }
+.gh-msg p:last-child { margin-bottom: 0; }
+.gh-msg ol, .gh-msg ul { margin: 0 0 8px; padding-left: 22px; }
+.gh-msg li { margin-bottom: 3px; }
+.gh-msg li::marker { color: #9fd0ff; font-weight: 600; }
+.gh-msg strong { color: #fff; font-weight: 650; }
+.gh-msg.is-bot { align-self: stretch; color: #fff; animation: gh-msg-in .45s var(--e-out) backwards; }
+.gh-msg.is-you {
+  align-self: flex-end; max-width: 85%; padding: 9px 15px; border: 1px solid rgba(255, 255, 255, .35); border-radius: 16px 16px 6px 16px; color: #fff; white-space: pre-wrap;
+  background: rgba(40, 112, 224, .68); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3); transform-origin: 100% 100%; animation: gh-bubble-in .5s var(--e-spring) backwards;
+}
+@keyframes gh-msg-in { from { opacity: 0; transform: translateY(12px); } }
+@keyframes gh-bubble-in { from { opacity: 0; transform: translateY(14px) scale(.9); } }
+.gh-wait { display: flex; align-items: center; gap: 8px; min-height: 20px; font-size: 12.5px; color: var(--tx-2); }
+.gh-wait [lang] { margin-left: .3em; }
+.gh-dots { display: inline-flex; gap: 4px; }
+.gh-dots i { width: 6px; height: 6px; border-radius: 50%; background: #93c5fd; box-shadow: 0 0 8px rgba(147, 197, 253, .9); animation: gh-wave 1.2s ease-in-out infinite; }
+.gh-dots i:nth-child(2) { animation-delay: .15s; background: #c4b5fd; box-shadow: 0 0 8px rgba(196, 181, 253, .9); }
+.gh-dots i:nth-child(3) { animation-delay: .3s; background: #67e8f9; box-shadow: 0 0 8px rgba(103, 232, 249, .9); }
+@keyframes gh-wave { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-5px); opacity: 1; } }
+.gh-caret { display: inline-block; width: 7px; height: 15px; margin-left: 1px; vertical-align: -2px; border-radius: 2px; background: #9fd0ff; box-shadow: 0 0 8px rgba(159, 208, 255, .8); animation: gh-blink 1s steps(2, start) infinite; }
+@keyframes gh-blink { to { visibility: hidden; } }
+.gh-busy-note .gh-wait { color: #ffd98a; }
+.gh-err { margin: 6px 0 0 !important; color: #ffc1b5; font-size: 13px; }
+.gh-err [lang="zh-Hant"] { color: #ffc1b5; margin-left: .3em; }
+/* the foot: suggested questions (the assistant's chips), the ask box and its button */
+.gh-foot { flex: none; padding: 10px 14px 14px; border-top: 1px solid var(--g-line); }
+/* two to a row, the English with the Chinese under it, like the questions the assistant offers at the start of a chat
+   (.starter .chip): five of them in a row each left little room for the text above */
+.gh-chips { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 7px; margin-bottom: 10px; }
 .gh-chips:empty { display: none; }
-/* suggested questions: ghost glass capsules (.btn-ghost) */
-.gh-chip { padding: 5px 12px; border: 1px solid rgba(37, 99, 235, .25); border-radius: 999px; background: rgba(255, 255, 255, .78); color: var(--lake); font: inherit; font-size: 12.5px; line-height: 1.35; text-align: left; cursor: pointer;
-  box-shadow: inset 0 1px 0 #fff; transition: background-color .2s, transform .45s var(--e-spring); }
-.gh-chip [lang="zh-Hant"] { margin-left: 3px; color: var(--ink-3); }
-.gh-chip:hover:not(:disabled) { background: rgba(255, 255, 255, .95); transform: translateY(-1px); }
+.gh-chip {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; width: 100%; padding: 8px 12px; overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .22); border-radius: 16px; background: rgba(255, 255, 255, .1);
+  color: #fff; font: inherit; font-size: 13px; line-height: 1.35; text-align: left; text-shadow: inherit; cursor: pointer;
+  transition: border-color .2s, background-color .2s, transform .4s var(--e-spring), box-shadow .2s;
+}
+.gh-chip:last-child:nth-child(odd) { grid-column: 1 / -1; }      /* an odd one out takes the whole row */
+.gh-chip [lang="zh-Hant"] { margin-left: 0; color: var(--tx-3); font-size: 12px; }
+.gh-chip:hover:not(:disabled) { border-color: color-mix(in srgb, #9fd0ff 65%, transparent); background: color-mix(in srgb, #9fd0ff 22%, rgba(255, 255, 255, .06)); transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .24), 0 6px 16px rgba(0, 0, 0, .25); }
 .gh-chip:active:not(:disabled) { transform: scale(.96); transition-duration: .1s; }
 .gh-chip:disabled { opacity: .5; cursor: default; }
+.gh.is-in .gh-chip { animation: gh-rise .5s var(--e-spring) backwards; animation-delay: calc(220ms + var(--i, 0) * 60ms); }
+.gh-chip:nth-child(2) { --i: 1; } .gh-chip:nth-child(3) { --i: 2; } .gh-chip:nth-child(4) { --i: 3; } .gh-chip:nth-child(5) { --i: 4; }
 .gh-form { display: flex; gap: 8px; }
-.gh-form input { flex: 1; min-width: 0; padding: 9px 14px; border: 1px solid rgba(37, 99, 235, .25); border-radius: 999px; background: rgba(255, 255, 255, .78); box-shadow: inset 0 1px 0 #fff; color: var(--ink); font: inherit; font-size: 14px; transition: background-color .2s, border-color .2s; }
-.gh-form input:focus { background: rgba(255, 255, 255, .95); border-color: rgba(37, 99, 235, .45); }
-.gh-form input:focus-visible { outline: 2px solid var(--lake-2); outline-offset: 1px; }
-.gh-send.btn { flex: none; padding: 8px 16px; font-size: 13.5px; font-weight: 600; }
-.gh-send.btn span[lang] { color: #fff !important; opacity: .9; }
-.gh-send.btn:disabled { opacity: .55; cursor: default; filter: none; }
+.gh-form input {
+  flex: 1; min-width: 0; min-height: 46px; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, .26); border-radius: 16px; background: rgba(255, 255, 255, .1); color: #fff;
+  font: inherit; line-height: 1.4; text-shadow: inherit; transition: border-color .2s, box-shadow .3s, background-color .2s;
+}
+.gh-form input::placeholder { color: var(--tx-3); font-size: 13.5px; }
+.gh-form input:hover { background: rgba(255, 255, 255, .14); }
+.gh-form input:focus, .gh-form input:focus-visible { outline: none; border-color: #9fd0ff; background: rgba(255, 255, 255, .16); box-shadow: 0 0 0 3px rgba(159, 208, 255, .28), 0 0 24px rgba(159, 208, 255, .2); }
+.gh-send {
+  position: relative; flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 0 17px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .4); border-radius: 16px;
+  background: linear-gradient(145deg, var(--btn-1), var(--btn-2)); color: #fff; font: 600 14px var(--font-head); text-shadow: inherit; cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 8px 20px rgba(0, 0, 0, .3); transition: filter .2s, transform .45s var(--e-spring), box-shadow .3s;
+}
+.gh-send svg { width: 16px; height: 16px; flex: none; transition: transform .45s var(--e-spring); }
+.gh-send span[lang] { margin-left: .3em; font-family: var(--font-zh); font-weight: 500; color: #fff; }
+.gh-send:hover:not(:disabled) { filter: brightness(1.1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 10px 26px rgba(29, 78, 216, .5); }
+.gh-send:hover:not(:disabled) svg { transform: translateX(3px); }
+.gh-send:active:not(:disabled) { transform: scale(.95); transition-duration: .1s; }
+.gh-send:disabled { filter: saturate(.25) brightness(.9); cursor: wait; }
+.gh-send:disabled svg { display: none; }
+.gh-send:disabled::before { content: ""; flex: none; width: 14px; height: 14px; border: 2px solid rgba(255, 255, 255, .4); border-top-color: #fff; border-radius: 50%; animation: gh-spin .8s linear infinite; }
+@keyframes gh-spin { to { transform: rotate(360deg); } }
 .gh-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.gh :focus-visible { outline: 2px solid var(--lake-2); outline-offset: 2px; }
+/* touch screens and narrow windows: less blur (as the assistant's window), and the panel comes up from the bottom */
+@media (hover: none), (max-width: 700px) {
+  .gh-panel { -webkit-backdrop-filter: blur(10px) saturate(160%) contrast(.62) brightness(.6); backdrop-filter: blur(10px) saturate(160%) contrast(.62) brightness(.6); }
+}
 @media (max-width: 640px) {
-  .gh-panel { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; height: min(82vh, 640px); }
-  .gh.is-in .gh-panel { transform-origin: 50% 100%; }
+  .gh-panel, .in-pop .gh-panel { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; height: min(82vh, 640px); }
   .g-help > span > span[lang] { display: none; }
 }
+/* a phone, or a short window (11/27 review: a phone held sideways, a short pop-up; with five questions in three rows the
+   text above them had 28 to 66 px left, and in a 330 px high pop-up the ask box was cut off): the questions in one row
+   that slides sideways (its right end fades out, as the assistant's tabs do), so the height goes to the text. The row has
+   5 px of its own above and below, or the keyboard's focus ring around a question was cut off there. */
+@media (max-width: 640px), (max-height: 560px) {
+  .gh-chips { display: flex; flex-wrap: nowrap; gap: 6px; margin: -5px -14px 5px; padding: 5px 14px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent); }
+  .gh-chips::-webkit-scrollbar { display: none; }
+  .gh-chip, .gh-chip:last-child:nth-child(odd) { flex: none; width: auto; max-width: min(78vw, 300px); }
+}
+@media (max-height: 560px) {
+  .gh-state { display: none; }                       /* "the game is paused while this is open": the pause card behind says so */
+  .gh-head { padding-top: 10px; padding-bottom: 8px; }
+  .gh-scroll { padding-top: 10px; padding-bottom: 8px; }
+  .gh-foot { padding-top: 8px; padding-bottom: 10px; }
+}
+/* 4. a touch screen: 16 px in the ask box, or iPhones zoom the whole page in when it is tapped (11/27 review) */
+@media (pointer: coarse) { .gh-form input { font-size: 16px; } }
 @media (prefers-reduced-motion: reduce) {
-  .g-help.is-new, .gh.is-in .gh-shade, .gh.is-in .gh-panel, .gh-msg.is-you, .gh-msg.is-bot, .gh-dots i, .gh-caret { animation: none !important; }
-  .gh-chip, .gh-form input { transition-duration: 0s !important; }
+  .g-help.is-new, .gh.is-in .gh-shade, .gh.is-in .gh-panel, .gh.is-in .gh-sec, .gh.is-in .gh-chip, .gh-msg.is-you, .gh-msg.is-bot, .gh-dots i, .gh-caret, .gh-send:disabled::before { animation: none !important; }
+  .gh-chip, .gh-form input, .gh-x, .gh-x svg, .gh-send, .gh-send svg, .gh-rules summary::before, .gh-rules::details-content, .gh .lg-hi > span.lg-glow { transition-duration: 0s !important; }
   .gh-chip:hover { transform: none !important; }
 }
 
@@ -448,8 +565,25 @@ body.is-fit .rs-cut-text .rs-cut-btns .rs-cut-go { position: static; box-shadow:
 }
 /* 11/27: at 1280 px "Back to the tour" still touched the longest title (case 2) by 8 px: below 1320 px the Help and Sources
    pills keep only their English word (their tooltips are bilingual) */
-@media (max-width: 1320px) {
+@media (max-width: 1346px) {
   .g-help > span > span[lang], .g-foot summary span[lang] { display: none; }
+}
+/* 11/27 review: measured with the fullest bar (case 2, a four-digit score and a streak badge), "Back to the tour" still ran
+   over the title between 1241 and 1272 px and between 1321 and 1335 px, more so since the pause button keeps one width; in
+   iStaging's pop-up the bar has 36 px less (the corner kept clear) and it happened up to 1308 and 1371 px. The limits are
+   now 1279 and 1346 px (one row needs that much), 1315 and 1382 px in a pop-up. And as a last guard the back button keeps
+   its width whatever happens: if a bar is ever fuller than measured, the title is cut short instead of being covered. */
+@media (max-width: 1382px) {
+  .in-pop .g-help > span > span[lang], .in-pop .g-foot summary span[lang] { display: none; }
+}
+.g-back { min-width: max-content; }
+body.is-fit .g-title { min-width: 0; overflow: hidden; }
+/* between 1330 and 1346 px (the assistant's game window on a 1366 px screen is 1336 px wide) the two Chinese words stay,
+   and the bar finds the few pixels in its gaps instead: 8 px between the buttons (10 elsewhere), 11 px in the score area (14) */
+@media (min-width: 1330px) and (max-width: 1346px) {
+  .g-help > span > span[lang], .g-foot summary span[lang] { display: inline; }
+  .g-right { gap: 8px; }
+  body.is-fit .rx-hud { gap: 11px; }
 }
 /* 11/27: case 2's reasons under a wrong stamp could make the stage up to 954 px tall, so the whole game shrank while they were
    shown. The reasons now scroll inside their own box; the verdict, the points and the buttons stay in sight. */
@@ -465,8 +599,22 @@ body.is-fit .ah-result .ah-src { overflow-y: auto; overscroll-behavior: contain;
 /* 11/27 review: between 861 and 1240 px the one-line bar no longer fit once the Help button came (the title ran over
    "Back to the tour" and the score went past the right edge). There: back and the title on the first row, the buttons
    and the score on a second row on the right, wrapping if they must. Phones keep their own layout (game.css). */
-@media (min-width: 861px) and (max-width: 1240px) {
+@media (min-width: 861px) and (max-width: 1279px) {
   .g-top { grid-template-columns: auto minmax(0, 1fr); row-gap: 6px; }
   .g-title { justify-self: start; text-align: left; }
   .g-right { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; justify-content: flex-end; flex-wrap: wrap; row-gap: 6px; min-width: 0; }
+}
+@media (min-width: 861px) and (max-width: 1315px) {      /* the same in iStaging's pop-up, where the bar has 36 px less */
+  .in-pop .g-top { grid-template-columns: auto minmax(0, 1fr); row-gap: 6px; }
+  .in-pop .g-title { justify-self: start; text-align: left; }
+  .in-pop .g-right { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; justify-content: flex-end; flex-wrap: wrap; row-gap: 6px; min-width: 0; }
+}
+/* 11/27 check (the real iStaging pop-up, about 1230 px wide on a 1366 px laptop): in that two-row bar the second row has
+   room again, yet "Help" and "Sources" stayed English only next to "Pause 暫停". From 960 px up they get their Chinese
+   word back (below that the row would wrap into a third one). */
+@media (min-width: 960px) and (max-width: 1279px) {
+  .g-help > span > span[lang], .g-foot summary span[lang] { display: inline; }
+}
+@media (min-width: 960px) and (max-width: 1315px) {
+  .in-pop .g-help > span > span[lang], .in-pop .g-foot summary span[lang] { display: inline; }
 }

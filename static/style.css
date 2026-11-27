@@ -68,6 +68,11 @@ button, select, textarea, input { font: inherit; color: inherit; }
 [data-t="Procedure"] { --c: var(--t-procedure); }
 [data-t="Concept"] { --c: var(--t-concept); }
 [data-t="CaseStudy"] { --c: var(--t-case); }
+/* 11/27: the graph map shows every type. Here with the others (11/27 review: written further down they also coloured the
+   count pill of a card, which is neutral for every other type) */
+[data-t="Tag"] { --c: var(--t-room); }
+[data-t="Step"] { --c: var(--t-procedure); }
+[data-t="PhishingSign"] { --c: var(--t-threat); }
 
 /* ---------------------------------------------------------------- the glass itself
    .lg-hi: a soft highlight that follows the mouse, --hr wide and --ha bright. 11/23 (review): it is a small layer of its
@@ -771,6 +776,10 @@ details.trace.is-in[open] .tl-bar { animation: reveal .9s var(--e-liquid) .12s b
 .progress-view.no-anim > *, .how.no-anim > * { animation: none; }
 
 .how p { max-width: 70ch; margin: 0 0 10px; color: var(--tx-2); }
+/* 11/27 review: the note "the last answer is still coming" under the graph map's names was a paragraph of this tab and
+   lost its own colour and gap */
+.how .near-note { max-width: none; margin: 6px 0 0; color: #ffd98a; }
+.how .near-note.is-err { color: #ffc1b5; }
 .how h2 { margin-top: 22px; }
 .how h2:first-child { margin-top: 0; }
 .arch { display: block; width: 100%; max-width: 460px; height: auto; margin: 10px 0 16px; }
@@ -948,3 +957,104 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 .tl-legend b .zl { flex-basis: 100%; padding-left: 13px; font: 500 11px var(--font-zh); color: var(--tx-3); }
 .case-go .roomlink { flex-wrap: wrap; }                 /* in the small case cards the Chinese place name goes under the English */
 .case-go .roomlink .zl { flex-basis: 100%; margin-left: 16px; }
+
+/* ---------------------------------------------------------------- 11/27: the graph map in How it works (app.js drawSchema)
+   Every type of node is a button in one of two columns; the curves in the channel between them join the types that have
+   relationships, so no line runs behind a button. A pressed type lights its curves in the colours of the types at the
+   other end, an arrowhead sits where a relationship ends, and a card under the map lists the relationships and the names.
+   The look is the window's own: hairline layers, 16px card and 12px row corners, the node-type colours of the cards. */
+/* (the colours of Tag, Step and PhishingSign are with the other types' near the top of this file) */
+.how .gmap-lead { margin-bottom: 0; }
+.gmap {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) clamp(60px, 27%, 230px) minmax(0, 1fr); margin: 12px 0 10px; padding: 12px 10px 14px;
+  border: 1px solid rgba(255, 255, 255, .12); border-radius: 16px; background: rgba(0, 0, 0, .12); container-type: inline-size;
+}
+.gmap-links { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.gmap-col { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.gmap-col + .gmap-col { grid-column: 3; }
+.how .gmap-h { margin: 0 0 2px; max-width: none; overflow: hidden; font: 600 11.5px/1.35 var(--font-head); color: var(--tx-3); letter-spacing: .2px; white-space: nowrap; text-overflow: ellipsis; }
+.gmap-h .zl { display: block; margin-left: 0; font-weight: 500; color: var(--tx-3); }
+.gmap-col + .gmap-col .gmap-h { text-align: right; }
+.gnode {
+  position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "dot en c" "dot zh c"; align-items: center; column-gap: 7px;
+  min-height: 42px; padding: 4px 10px 4px 9px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .22); border-radius: 12px; background: rgba(255, 255, 255, .1);
+  color: #fff; text-align: left; cursor: pointer;
+  transition: border-color .2s, background-color .2s, opacity .25s, box-shadow .2s, transform .4s var(--e-spring);
+}
+.gnode-dot { grid-area: dot; width: 8px; height: 8px; border-radius: 50%; background: var(--c, #b8c4cc); box-shadow: 0 0 6px var(--c, transparent); }
+.gnode-en { grid-area: en; align-self: end; min-width: 0; overflow: hidden; font: 600 12.5px/1.25 var(--font-head); text-overflow: ellipsis; white-space: nowrap; }
+.gnode-zh { grid-area: zh; align-self: start; min-width: 0; overflow: hidden; font-size: 11.5px; line-height: 1.25; color: var(--tx-2); text-overflow: ellipsis; white-space: nowrap; }
+.gnode-c { grid-area: c; font: 600 12px var(--font-num); font-style: normal; font-variant-numeric: tabular-nums; color: var(--tx-2); }
+.gnode:hover, .gnode.is-on { border-color: color-mix(in srgb, var(--c, #9fd0ff) 70%, transparent); background: color-mix(in srgb, var(--c, #9fd0ff) 22%, rgba(255, 255, 255, .06)); }
+.gnode:hover { transform: translateY(-1px); }
+.gnode.is-on { box-shadow: 0 0 0 1px color-mix(in srgb, var(--c, #9fd0ff) 60%, transparent), 0 6px 16px rgba(0, 0, 0, .22); }
+.gnode.is-on .gnode-c, .gnode.is-on .gnode-zh { color: #fff; }
+.gnode.is-linked { border-color: color-mix(in srgb, var(--c, #9fd0ff) 55%, transparent); }
+.gnode.is-dim { opacity: .36; }
+.gnode:active { transform: scale(.97); transition-duration: .1s; }
+.gmap.is-in .gnode { animation: rise .45s var(--e-out) backwards; animation-delay: calc(var(--i, 0) * 28ms); }
+/* the curves: quiet until a type is lit */
+.glink-line { fill: none; stroke: rgba(255, 255, 255, .3); stroke-width: var(--w, 1.2px); stroke-linecap: round; transition: stroke .25s, opacity .25s, stroke-width .25s; }
+.glink-flow { fill: none; stroke: #fff; stroke-width: 1.7px; stroke-linecap: round; stroke-dasharray: 1.5 11; opacity: 0; }
+.gmap.has-on .glink:not(.is-on) .glink-line { opacity: .22; }
+.glink.is-on .glink-line { stroke: var(--c, #fff); stroke-width: calc(var(--w, 1.2px) + .8px); }
+/* the dots run along a lit curve for four seconds and fade away (11/27 performance check: they ran for as long as a type
+   stayed pressed, and moving a dash is redrawn on every frame: about a tenth of a processor core for nothing new to see).
+   app.js starts them again (.is-go) each time the lit type changes. */
+.glink.is-on .glink-flow.is-go { opacity: .9; animation: gflow .8s linear 5, gflow-rest .5s ease-out 3.6s forwards; }
+.glink.is-on.is-rev .glink-flow.is-go { animation-direction: reverse, normal; }
+.glink.is-on.is-both .glink-flow.is-go { opacity: 0; animation: none; }
+.glink.is-hot .glink-line { stroke-width: calc(var(--w, 1.2px) + 2.4px); }
+.garrow { fill: var(--c, #fff); opacity: 0; transition: opacity .2s; }
+.garrow.is-on { opacity: 1; }
+.gmap.is-draw .glink-line { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: gdraw .8s var(--e-out) forwards; animation-delay: calc(.2s + var(--j, 0) * 14ms); }
+@keyframes gdraw { to { stroke-dashoffset: 0; } }
+@keyframes gflow { to { stroke-dashoffset: -12.5; } }
+@keyframes gflow-rest { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .glink-flow { display: none; } }
+/* the wide window: the two names of a type on one line */
+@container (min-width: 600px) {
+  .gnode { grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-areas: "dot en zh c"; min-height: 36px; }
+  .gnode-en, .gnode-zh { align-self: center; }
+  .gnode-zh { font-size: 12px; }
+}
+/* a phone: the count goes under the name, next to the Chinese */
+@container (max-width: 372px) {
+  .gnode { grid-template-areas: "dot en en" "dot zh c"; column-gap: 6px; padding: 4px 7px; }
+  .gnode-c { align-self: start; font-size: 11.5px; line-height: 1.25; }
+}
+/* 11/27 review: narrower still (a window under about 345 px; at 360 px everything fits as it is): the longest names (PhishingSign, Requirement, Department) ended
+   in an ellipsis. Tighter buttons and slightly smaller names; the channel between the columns may shrink to 60 px (above). */
+@container (max-width: 290px) {
+  .gnode { column-gap: 4px; padding: 4px 5px; }
+  .gnode-dot { width: 7px; height: 7px; }
+  .gnode-en { font-size: 11.5px; letter-spacing: -.15px; }
+  .gnode-zh, .gnode-c { font-size: 11px; }
+}
+/* under the map: a hint, or the card of the pressed type (the cards' own look) */
+.gmap-info { margin-bottom: 18px; }
+.how .gmap-hint { margin: 0; max-width: none; font-size: 13px; color: var(--tx-3); }
+.gmap-info .card { margin-top: 0; }
+.gmap-card:focus { outline: none; }
+.gmap-card .sec h4 { margin-bottom: 4px; }
+.grels { margin: 0; padding: 0; list-style: none; }
+.grel { display: grid; grid-template-columns: minmax(86px, 1fr) 16px minmax(0, 158px) 40px; align-items: center; column-gap: 7px; padding: 4px 0; border-bottom: 1px solid rgba(255, 255, 255, .07); transition: background-color .2s; }
+.grel > .chip { justify-self: start; max-width: 100%; }
+.grel:last-child { border-bottom: 0; }
+.grel:hover { background: rgba(255, 255, 255, .05); }
+.grel-n { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 6px; min-width: 0; }
+.grel-n b { font: 600 12px/1.4 var(--font-head); letter-spacing: .3px; color: #fff; }
+.grel-n span { font-size: 12px; color: var(--tx-2); }
+.grel-d { color: var(--tx-3); font-size: 13px; text-align: center; }
+.grel-c { font: 600 12.5px var(--font-num); font-style: normal; font-variant-numeric: tabular-nums; color: var(--tx-2); text-align: right; }
+.chip.gtype { padding: 3px 10px; font-size: 12.5px; }
+.chip.gtype .zl { white-space: nowrap; }                /* on a narrow phone the Chinese goes to the next line whole */
+.chip.gtype::before { content: ""; display: inline-block; flex: none; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--c, #b8c4cc); box-shadow: 0 0 6px var(--c, transparent); vertical-align: 1px; }
+.chip.is-plain { cursor: default; }
+.chip.is-plain:hover { border-color: rgba(255, 255, 255, .22); background: rgba(255, 255, 255, .1); transform: none; box-shadow: none; }
+.chip.is-plain:active { transform: none; }
+.gnames:not(.is-open) > .is-more { display: none; }
+.chip.gmore { margin-top: 7px; border-style: dashed; color: var(--tx-2); }
+.sec[data-t] .chip.gmore::before { content: none; }
+.gmap-card .refs { margin: 8px 0 0; max-width: none; font-size: 12.5px; color: var(--tx-3); }
+.gmap-card .refs .zh-line { color: inherit; }

@@ -340,7 +340,10 @@ const Minimap = (() => {
   /* ------------------------------------------------------------------ drawing */
   const el = (tag, attrs, html) => { const n = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs || {})) if (v != null) n.setAttribute(k, v); if (html) n.innerHTML = html; return n; };
   const pts = (list) => list.map(([x, y]) => P(x, y).join(",")).join(" ");
-  const imgs = (g, list) => { for (const im of list || []) { const b = im.box, [x, y] = P(b[0], b[3]); g.appendChild(el("image", { href: IMG + im.src, x, y, width: b[2] - b[0], height: b[3] - b[1], preserveAspectRatio: "none", class: "mm-img" })); } };
+  // 11/27: the top views are asked for as WebP, about a third smaller than the JPEG the map data names (the two the page
+  // loads first were 594 kB of a 712 kB first visit; pages/make_webp.py makes a .webp beside every top_*.jpg)
+  const webp = (src) => String(src).replace(/\.jpe?g$/i, ".webp");
+  const imgs = (g, list) => { for (const im of list || []) { const b = im.box, [x, y] = P(b[0], b[3]); g.appendChild(el("image", { href: IMG + webp(im.src), x, y, width: b[2] - b[0], height: b[3] - b[1], preserveAspectRatio: "none", class: "mm-img" })); } };
 
   function render(again) {
     if (M.state !== "open" || !M.data) return;
