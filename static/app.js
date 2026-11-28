@@ -1038,9 +1038,16 @@ function moveTour(r) {
   }
   showTour(r.url);
 }
+/* iStaging's viewer turns the picture by itself five seconds after it is left alone (a full turn in 200 s), again on
+   every scene: the thing a player was sent to look at is out of view half a minute later (11/28, a first-time player;
+   the user: 「關掉iStaging自動旋轉」). The editor has no setting for it. The viewer's own code leaves the turning out when
+   its address carries autorotate=false (measured in both tours: 1.8 degrees a second without it, none with it), so
+   every address this page loads the tour with carries it. */
+const stillTour = (url) => (/[?&]autorotate=/.test(url) ? url : url + (url.includes("?") ? "&" : "?") + "autorotate=false");
 function showTour(url) {
   const fr = $("#tour");
-  tourUrl = url;
+  tourUrl = url;                   // the place's own address: what goTo compares with
+  url = stillTour(url);
   // 11/26 (front-end review K01): which tour the frame shows is unknown until the new one reports a scene, so moveTour
   // loads by address until then (a goToPano for the old tour went into the other one and was lost)
   tourNow = null;
@@ -1060,7 +1067,7 @@ async function goTo(key, opt = {}) {
     // our own page around the tour moves its tour instead. 11/26 (front-end review K00): this window moves to that place too
     // (questions carry it, the room picture); not sent as a visit here, the page around does that with the same session
     if (S.inOurPage) { setHere(key, { record: false }); askAncestors({ type: "lakeside:goto", room: key }); return; }
-    try { window.top.location.href = r.url; } catch { window.open(r.url, "_blank", "noopener"); }
+    try { window.top.location.href = stillTour(r.url); } catch { window.open(stillTour(r.url), "_blank", "noopener"); }
     return;
   }
   const moved = S.room !== null && S.room !== key;
