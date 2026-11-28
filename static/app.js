@@ -1037,10 +1037,18 @@ window.addEventListener("message", (e) => {
   else if (typeof Minimap !== "undefined") Minimap.update(key);           // the same place again: no longer "Last"
 });
 // a place in the tour shown now: iStaging's own goToPano (its usual scene change, no reload); otherwise load that tour
+let moveSeq = 0;
 function moveTour(r) {
-  const fr = $("#tour");
+  const fr = $("#tour"), my = ++moveSeq;
   if (tourTalks && r.pano && tourNow === r.tour && fr && fr.contentWindow) {
-    try { fr.contentWindow.postMessage(JSON.stringify({ event: "goToPano", panoramaId: r.pano }), TOUR_ORIGIN); tourUrl = r.url; return; } catch { /* load it instead */ }
+    const send = () => { try { fr.contentWindow.postMessage(JSON.stringify({ event: "goToPano", panoramaId: r.pano }), TOUR_ORIGIN); return true; } catch { return false; } };
+    // 11/28 evening: the viewer keeps the up-and-down direction across goToPano. After the page had turned the view down
+    // to the fireplace's tablet, the bar opened looking at the floor. A view the page tilted is levelled first (Quest
+    // level, 0.25 s) and the scene changes right after; a newer move in between takes over
+    let lev = false;
+    try { lev = Quest.level(); } catch { /* the tracker is not built yet */ }
+    if (lev) { tourUrl = r.url; setTimeout(() => { if (my === moveSeq && !send()) showTour(r.url); }, 320); return; }
+    if (send()) { tourUrl = r.url; return; }
   }
   showTour(r.url);
 }
@@ -2181,7 +2189,7 @@ const Quest = (() => {
      is here (either may come first). A second asking would take the view out of the player's hands, so there is none.
      Where the tour does not listen, the label over the thing says which way to look, in place of "Look at"
      (describe). It was a line of its own for an hour: on a 360 x 640 phone it pushed the Quest journal row out of sight. */
-  let tourAt = null, turned = "", intro = false, introTimer = null, heard = false;
+  let tourAt = null, turned = "", intro = false, introTimer = null, heard = false, tilted = null;
   const canTurn = () => !!tourTalks && !EMBED && !window.LAKESIDE_OFFLINE;
   /* Which way to look is said only where the tour will not be turned. Never inside iStaging's own window: the player
      walked there by the tour's arrows, and the arrows of the close-ups face the thing. And on the one address of ours
@@ -2203,9 +2211,25 @@ const Quest = (() => {
       if (intro) { turned = ""; return; }                                  // the frame was loaded anew meanwhile: asked after its opening move
       if (!plan || plan.here !== here || S.room !== here) return;          // moved on meanwhile
       const fr = $("#tour");
-      try { fr.contentWindow.postMessage(JSON.stringify({ event: "rotateTo", h: view[0], v: view[1], duration: 1.2 }), TOUR_ORIGIN); }
-      catch { turned = ""; }                                              // the frame is being loaded: asked again at its next scene
+      try {
+        fr.contentWindow.postMessage(JSON.stringify({ event: "rotateTo", h: view[0], v: view[1], duration: 1.2 }), TOUR_ORIGIN);
+        if (view[1]) tilted = { room: here, h: view[0] };                  // the view no longer looks level here (level, below)
+      } catch { turned = ""; }                                            // the frame is being loaded: asked again at its next scene
     }, wait);                                                             // 0.7 s: the scene's own arrival has settled
+  }
+  /* The viewer keeps the up-and-down direction when the scene is changed with goToPano (left and right go to the new
+     scene's own direction). After the page had turned the view down to the fireplace's tablet (55 degrees), the bar
+     opened looking at the floor and every scene after it was tilted too; the plaques at the banquet door were not where
+     they are when the scene opens level (11/28 evening, found by playing the whole game again on the final build). The
+     tour's own arrows are not affected: each one that leaves a turned place sets its arrival direction. So before the
+     page itself changes the scene (app.js moveTour), a view the page tilted is brought back to level in 0.25 s; true
+     tells moveTour to change the scene right after that. */
+  function level() {
+    const t = tilted; tilted = null;
+    if (!t || t.room !== tourAt || !canTurn()) return false;
+    try { $("#tour").contentWindow.postMessage(JSON.stringify({ event: "rotateTo", h: t.h, v: 0, duration: 0.25 }), TOUR_ORIGIN); }
+    catch { return false; }
+    return true;
   }
   /* A frame loaded anew (the page opens, or the other tour is loaded) plays the viewer's own opening move: it looks
      straight down and, from its "liveTourReady" message on, rises to the horizon (measured four times: the view stops
@@ -2213,11 +2237,12 @@ const Quest = (() => {
      villa's TV, 12 degrees up, ended at 0 (found by tests/browser/check_quest_turn.mjs, which reads the view inside the
      tour's frame). So after a new frame the turn waits for "liveTourReady" and 1.5 s more; if that message does not
      come, 6 s from the first scene. A scene change inside a tour has no opening move. */
-  function fresh() { intro = true; tourAt = null; turned = ""; clearTimeout(introTimer); introTimer = null; }
+  function fresh() { intro = true; tourAt = null; turned = ""; tilted = null; clearTimeout(introTimer); introTimer = null; }
   function introOver() { clearTimeout(introTimer); introTimer = null; if (!intro) return; intro = false; if (plan) turnTo(plan, 0); }
   function ready() { if (!intro) return; clearTimeout(introTimer); introTimer = setTimeout(introOver, 1500); }
   // the tour says which scene it shows now (app.js, the tour's messages)
   function at(key) {
+    if (tilted && tilted.room !== key) tilted = null;                     // walked on by the tour's own arrow: its arrival direction is level
     tourAt = key;
     if (intro && !introTimer) introTimer = setTimeout(introOver, 6000);
     if (!heard) { heard = true; if (silent) relabel(); }                  // its first word: a label that said which way to look goes back to "Look at"
@@ -3188,7 +3213,7 @@ const Quest = (() => {
     }
   }
 
-  return { refresh, block, again, report, reported, endReport, fillJournal, journalRow, lift, settle, openJournal, closeJournal, at, fresh, ready, reporting: () => reporting, plan: () => plan };
+  return { refresh, block, again, report, reported, endReport, fillJournal, journalRow, lift, settle, openJournal, closeJournal, at, fresh, ready, level, reporting: () => reporting, plan: () => plan };
 })();
 
 /* ---------------------------------------------------------------- how it works */
