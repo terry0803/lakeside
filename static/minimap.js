@@ -53,7 +53,7 @@ const Minimap = (() => {
       <button type="button" class="mm-pill lg-hi" id="mmPill" title="Show the mini map 顯示小地圖" aria-label="Show the mini map" hidden><span class="mm-pill-ico">${ICON_MAP}</span><span class="dock-t"><b>Map</b><small lang="zh-Hant">地圖</small></span></button>
       <section class="mm-panel lg-hi" id="mmPanel" hidden aria-label="Map">
         <header class="mm-head"><nav class="mm-crumbs" id="mmCrumbs" aria-label="Where on the map"></nav>
-          <button type="button" class="mm-x" id="mmClose" aria-label="Close the map">${ICON_X}</button></header>
+          <button type="button" class="mm-x" id="mmClose" title="Close 關閉" aria-label="Close the map">${ICON_X}</button></header>
         <div class="mm-view" id="mmView">
           <svg class="mm-svg" id="mmSvg" role="group" aria-label="Map of the tour. Each place is a button."><g id="mmImgs"></g><g id="mmMarks"></g></svg>
           <div class="mm-tip" id="mmTip" hidden></div>
@@ -124,7 +124,7 @@ const Minimap = (() => {
       clipPath: `inset(0px 0px ${cut.toFixed(1)}px 0px round ${(20 / s).toFixed(1)}px)` };
     // the open end leaves room for the panel's shadow, so nothing changes when the animation lets go
     const big = { transform: "translate(0px, 0px) scale(1)", clipPath: "inset(-70px -70px -70px -70px round 90px)" };
-    const T = opening ? 540 : 440;
+    const T = opening ? 560 : 440;                          // 11/28: the windows' opening time (it was 20 ms short)
     const anims = [panel.animate(opening ? [small, big] : [big, small],
       { duration: T, easing: opening ? "cubic-bezier(.2, .9, .25, 1)" : "cubic-bezier(.4, 0, .2, 1)", fill: "forwards" })];
     anims.push(panel.animate(opening ? [{ opacity: 0.35 }, { opacity: 1 }] : [{ opacity: 1 }, { opacity: 0 }],
@@ -170,7 +170,8 @@ const Minimap = (() => {
       mini.setAttribute("aria-expanded", "true");
       const sc = q("#mmScrim"); if (sc) sc.classList.add("is-on");
       focusRoom(M.room, true); render(); q("#mmClose").focus({ preventScroll: true });
-      const anims = morphMap(panel, r, true, shown([mini, hide, ...document.querySelectorAll(".dock-btn")]));
+      // 11/28 (ui review F2, code review F7): the quest tracker and its first-time note too (the note stayed lit on top of the map)
+      const anims = morphMap(panel, r, true, shown([mini, hide, ...document.querySelectorAll(".dock-btn, .quest, .q-coach")]));
       if (anims) { runMorph(anims, () => apply(true)); return; }
       apply(true); return;
     }
@@ -252,6 +253,9 @@ const Minimap = (() => {
       const d0 = before[i] - b.getBoundingClientRect().top;
       if (Math.abs(d0) > 0.5) anims.push(b.animate([{ transform: `translateY(${d0.toFixed(1)}px)` }, { transform: "translateY(0px)" }], o));
     });
+    // 11/27 night: the quest tracker under the two buttons goes with them, on the same clock (app.js Quest.settle). It
+    // glided by its own before, faster one way and slower the other, and ran into the buttons on the way.
+    if (typeof Quest !== "undefined" && Quest.settle) Quest.settle(o);
     runMorph(anims, () => {
       from.hidden = true; clean(from); clean(to);
       if (toPill) { hide.hidden = true; clean(hide); }

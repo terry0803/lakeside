@@ -225,6 +225,52 @@ html.lk-probing.lk-slow::after { content: "Connecting\\2026\\A 連線中\\2026\\
         return json(j);
       }
       if (p === "minimap" || p === "schema") return realFetch(`${DATA}/${p}.json`);
+      // 11/27 evening: the quest tracker. One saved plan per place, for a player who has found nothing: this copy cannot
+      // take reports, so nothing is ever found here. It still shows the way and says where to look.
+      if (p === "quest") {
+        const room = url.searchParams.get("room") || "";
+        const r = await realFetch(`${DATA}/quest/${/^[a-z0-9_]{1,40}$/.test(room) ? room : "sky"}.json`);
+        if (!r.ok) return r;
+        // 11/28 (review): what this copy does know of the player goes into the saved plan: the games played here, the
+        // doors gone through (the tracker said "Play Inbox Rush" beside a casebook that said "Best 9 / 10", and a door
+        // was shut again when the player walked back to it)
+        const plan = await r.json(), st = read(), played = Object.keys(st.games || {}), seen = new Set(st.visited || []);
+        const isPlayed = (c) => !!c && played.includes(c.game);
+        for (const x of [...(plan.stops || []), ...(plan.side_rooms || [])]) if (x.case && isPlayed(x.case)) x.case.played = true;
+        if (plan.cases) plan.cases.played = Math.max(plan.cases.played || 0, played.length);
+        if (isPlayed(plan.also)) plan.also = null;
+        const order = (plan.stops || []).map((x) => x.room);
+        // the furthest stop opened: been in it, or in one of its other views (11/28 review: been only to the Banquet TV,
+        // a close-up behind the door, the door was shut again from the front)
+        const inStop = (x) => seen.has(x.room) || x.room === plan.here || (x.cluster || []).some((r) => seen.has(r) || r === plan.here);
+        const far = Math.max(-1, ...(plan.stops || []).map((x, i) => (inStop(x) ? i : -1)));
+        let shut = false;
+        (plan.stops || []).forEach((x, i) => {
+          if (i <= far) x.seen = true;                           // 11/28: reached (the page ticks a stop from this, from what is found and from its door)
+          if (x.gate && far > i) x.gate = false;                 // been behind it: the door is open
+          if (x.state === "locked" && !shut) x.state = "todo";
+          if (x.gate) shut = true;                               // what lies behind a door still shut stays locked
+        });
+        // 11/28: every stop lists what there is to do in it. The stops behind a door the player went through get their
+        // lines from the plan saved for the furthest stop opened; then a case played here is ticked and that door is open.
+        if (far >= 0 && (plan.stops || []).some((x) => x.state !== "locked" && !(x.tasks || []).length)) {
+          const r2 = await realFetch(`${DATA}/quest/${order[far]}.json`);
+          if (r2.ok) {
+            const by = Object.fromEntries(((await r2.json()).stops || []).map((x) => [x.room, x]));
+            for (const x of plan.stops) if (x.state !== "locked" && !(x.tasks || []).length && by[x.room] && (by[x.room].tasks || []).length) x.tasks = by[x.room].tasks;
+          }
+        }
+        (plan.stops || []).forEach((x, i) => { for (const t of x.tasks || []) if (t.kind === "gate" && far > i) t.open = true; });
+        for (const x of [...(plan.stops || []), ...(plan.side_rooms || [])]) for (const t of x.tasks || []) if (t.kind === "case" && played.includes(t.game)) t.played = true;
+        // 11/28 (review): the note about a door's numbers goes once the player has been behind a door (it stayed)
+        if (plan.tip && (plan.stops || []).some((x, i) => x.gate === false && far > i)) plan.tip = null;
+        const n = plan.now || {};
+        // "N more for the award": this copy cannot count a report, so it does not ask for one: the way on instead
+        if (n.kind === "go" && n.why === "need") { plan.now = plan.skip && plan.skip.room !== plan.here ? plan.skip : { kind: "done", room: plan.here }; plan.skip = null; }
+        else if ((n.kind === "case" || (n.kind === "go" && n.why === "case")) && isPlayed(n)) { plan.now = plan.skip || { kind: "done", room: plan.here }; plan.skip = null; }
+        else if (n.kind === "gate" && order.includes(n.through) && far >= order.indexOf(n.through)) plan.now = { kind: "go", why: "next", room: n.through, hops: 1 };
+        return json(plan);
+      }
       if (p === "health") {
         const r = await realFetch(`${DATA}/health.json`);
         return json({ ...(r.ok ? await r.json() : {}), offline: true, saved: SAVED });
