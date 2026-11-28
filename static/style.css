@@ -172,7 +172,10 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .dock-tip span { display: block; margin-top: 3px; color: var(--tx-2); font-size: 12.5px; }
 
 /* ---------------------------------------------------------------- the small map and the big map */
-.mm { position: relative; display: grid; justify-items: start; gap: 8px; animation: side-in .6s var(--e-liquid) .06s backwards; }
+.mm { position: relative; display: grid; justify-items: start; gap: 8px; }
+/* 11/28 13:40 (the user: the tracker is black for half a second after a reload): glass inside a holder that fades has
+   nothing behind it to blur, so the entrance belongs to the glass itself. Once: minimap.js sets is-quiet. */
+.mm:not(.is-quiet) > :is(.mm-mini, .mm-hide, .mm-pill) { animation: side-in .6s var(--e-liquid) .06s backwards; }
 .mm-mini {
   position: relative; display: block; width: var(--colw); height: calc(var(--colw) * 2 / 3 + 8px); padding: 4px; overflow: hidden; border: 1px solid var(--g-rim); border-radius: 20px;
   background: var(--g-sheen); -webkit-backdrop-filter: var(--g-filter-sm); backdrop-filter: var(--g-filter-sm); cursor: zoom-in; box-shadow: var(--g-inner), var(--g-shadow-sm);
@@ -1088,8 +1091,13 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
    short: numbers and distances are small tags, longer words (where to look, how a door opens) unfold on a button, and
    the first-time note stands beside it, not in it. */
 .side:has(.mm[data-state="open"]) .quest-wrap { display: none; }
-.quest-wrap { position: relative; width: var(--colw); animation: side-in .6s var(--e-liquid) .38s backwards; }
-.quest-wrap.is-quiet { animation: none; }          /* it came in once (app.js paint) */
+/* The entrance is the tracker's own, not its wrapper's (11/28 13:35, the user: after a reload the tracker is black for
+   about half a second, then turns into glass). While a wrapper FADES, the glass inside it has nothing behind it to blur:
+   with the entrance held still the tracker's glass measured 27 where the button beside it, the same recipe, was 46, and
+   it jumped to 46 when the entrance ended. A wrapper that only moves does not do that (the glides are the wrapper's),
+   and neither does the glass fading itself (the two buttons always did). It plays once: app.js paint sets is-quiet. */
+.quest-wrap { position: relative; width: var(--colw); }
+.quest-wrap:not(.is-quiet) > .quest { animation: side-in .6s var(--e-liquid) .38s backwards; }
 /* the Progress tab's row for the journal (app.js Quest.journalRow): the slim line of iStaging's window, two lines here */
 .q-strip.journal-row { width: 100%; margin: 0 0 22px; padding: 10px 14px; border-radius: 16px; }      /* the cards' corners */
 .prog-top:has(+ .journal-row) { margin-bottom: 10px; }
@@ -1401,7 +1409,7 @@ html.game-open .side, html.game-open .desk, html.game-open .tour-toast, html.gam
 .rt-done .zl { margin-left: .3em; color: #a9d8b6; }
 .rt-here .zl { margin-left: .3em; }
 @media (prefers-reduced-motion: reduce) {
-  .quest-wrap, .q-now.is-in, .q-won, .q-coach, .q-bar i.is-new, .rt-stop.is-here .rt-dot { animation: none; }
+  .quest-wrap:not(.is-quiet) > .quest, .q-now.is-in, .q-won, .q-coach, .q-bar i.is-new, .rt-stop.is-here .rt-dot { animation: none; }
   .q-coach { transition: none; }
   .q-fold, .q-short, .q-chev, .q-btn, .q-body-in { transition: none; }
 }

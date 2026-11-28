@@ -64,6 +64,9 @@ const Minimap = (() => {
     const side = q("#side");          // the column under iStaging's buttons: the map first, the assistant's buttons under it
     if (EMBEDDED() && q("#mapHost")) { box.classList.add("is-pane"); q("#mapHost").appendChild(box); }      // inside iStaging's window: the Map tab
     else if (side) side.prepend(box); else tour.appendChild(box);
+    // the entrance (style.css, on the small map, its hide button and the pill themselves) plays once: these are shown
+    // and hidden by the folding, and a thing that is shown again would start its entrance again
+    setTimeout(() => box.classList.add("is-quiet"), 900);
     // 11/22 afternoon: a click anywhere outside the open big map shrinks it back. The tour is in iStaging's frame and its clicks
     // never reach this page, so while the map is open a clear layer lies over the tour to catch them.
     if (!EMBEDDED() && q("#layout")) {
