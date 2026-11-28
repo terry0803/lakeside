@@ -962,7 +962,9 @@ async function checkHealth() {
     const loaded = (h.loaded || []).join(", ") || LT("loading models…", "模型載入中…");
     // 11/23 (checklist A3): the line ended "… · qwe…" in the normal window; now two lines, the graph, then the chat model
     // (every loaded model stays in the tooltip)
-    const chat = (h.loaded || []).find((m) => !/embed|bge|nomic|minilm/i.test(m)) || (h.loaded || [])[0] || LT("loading models…", "模型載入中…");
+    // 11/28 (seen while the whole game was played): with only the embedding model loaded as the page opened, the line said
+    // "Local model: bge-m3:latest". It names the model this session talks to
+    const chat = (h.loaded || []).find((m) => !/embed|bge|nomic|minilm/i.test(m)) || S.model || (h.models && h.models.chat) || LT("loading models…", "模型載入中…");
     el.innerHTML = ok ? `${L(`Knowledge graph: ${n} nodes`, `知識圖 ${n} 個節點`)}<br>${L("Local model", "本機模型")}: ${esc(chat)}`
       : L(`Not ready: ${!h.neo4j ? "Neo4j" : "Ollama"} is not running. Start it with 啟動_AI助理.bat`, `還沒準備好：${!h.neo4j ? "Neo4j" : "Ollama"} 沒有啟動，請執行 啟動_AI助理.bat`);
     el.title = ok ? LT(`Neo4j and the local models are running (${loaded})`, "Neo4j 和本機模型都在運作") : el.textContent;
@@ -1015,11 +1017,15 @@ window.addEventListener("message", (e) => {
   if (!fr || e.source !== fr.contentWindow) return;
   let d = e.data;
   if (typeof d === "string") { try { d = JSON.parse(d); } catch { return; } }
+  // 11/28: "liveTourReady" comes as the viewer starts its own opening move in a frame loaded anew (it looks straight
+  // down, then rises to the horizon in about a second). The tracker waits for that before it asks for a turn (Quest ready)
+  if (d && d.event === "liveTourReady") { Quest.ready(); return; }
   if (!d || d.event !== "changePano" || !d.panoramaId) return;
   tourTalks = true;
   const key = PANO.get(d.panoramaId);
   if (!key) return;
   tourNow = S.byKey[key].tour;
+  Quest.at(key);                   // 11/28: the tracker asks the tour to turn to the thing it names there (Quest turnTo)
   // 11/26 (review): a scene walked to with the tour's own arrows moves "you are here" but is not a place asked about (the
   // Progress tab counts only those asked about here or opened from this page: the map, the place list, a Go to button;
   // 11/26 front-end review D01); the server learns the place with the next question, which carries it
@@ -1051,6 +1057,7 @@ function showTour(url) {
   // 11/26 (front-end review K01): which tour the frame shows is unknown until the new one reports a scene, so moveTour
   // loads by address until then (a goToPano for the old tour went into the other one and was lost)
   tourNow = null;
+  try { Quest.fresh(); } catch { /* the tracker is not built yet */ }      // 11/28: the viewer will play its opening move; a turn waits for it
   if (!fr.getAttribute("src")) { fr.setAttribute("src", url); return; }
   // 11/26 (front-end review C00): a new frame with the same attributes instead of location.replace. A load started by this
   // page's script takes this page's no-referrer, so iStaging saw no address and stopped talking (changePano, goToPano);
@@ -2166,6 +2173,56 @@ const Quest = (() => {
   const clueOn = (p) => !!(clueFor && p && p.now && p.here === clueFor.clue);
   const nowOf = (p) => (clueOn(p) ? { kind: "clue", room: p.here, door: clueFor.door, say: clueFor.say || (p.tip ? { en: p.tip.en, zh: p.tip.zh } : { en: "", zh: "" }) } : p.now);
   const toClue = (door, clue, say) => { clueFor = { door, clue, say: say || null }; jump(clue); };
+  /* The tour turns to the thing (11/28 afternoon, found while the whole game was played with the model: at the fireplace
+     close-up the scene opens on the far wall and the tablet is behind and below it; the villa's TV, the greenhouse's
+     screen and the farm's grey box likewise). The tour's own viewer takes { event: "rotateTo", h, v, duration } from a
+     page at http://localhost:3000 (read in its code; no other address is listened to). So where the page hears the tour
+     it also asks it to turn: once for each thing, when the tour has said it is at that place and the plan for the place
+     is here (either may come first). A second asking would take the view out of the player's hands, so there is none.
+     Where the tour does not listen, the label over the thing says which way to look, in place of "Look at"
+     (describe). It was a line of its own for an hour: on a 360 x 640 phone it pushed the Quest journal row out of sight. */
+  let tourAt = null, turned = "", intro = false, introTimer = null, heard = false;
+  const canTurn = () => !!tourTalks && !EMBED && !window.LAKESIDE_OFFLINE;
+  /* Which way to look is said only where the tour will not be turned. Never inside iStaging's own window: the player
+     walked there by the tour's arrows, and the arrows of the close-ups face the thing. And on the one address of ours
+     the viewer listens to, only if the tour has said nothing 8 s after the page opened (its first word comes about 3 s
+     after a reload: the label said "Look behind you" until then, and changed to "Look at" as the view was turned). */
+  let silent = location.origin !== "http://localhost:3000";
+  const saysWhere = () => !EMBED && silent && !canTurn();
+  const whereOf = (p) => { const h = p && p.now && p.now.kind === "look" && p.now.n === 1 ? (p.now.hints || [])[0] : null; return h && h.where ? h.where : null; };
+  const relabel = () => { if (whereOf(plan) && box && !winTimer) { paint(false); fillJournal(); } };
+  if (!silent) setTimeout(() => { silent = true; if (!tourTalks) relabel(); }, 8000);
+  function turnTo(p, wait = 700) {
+    const h = p && p.now && p.now.kind === "look" ? (p.now.hints || [])[0] : null;
+    const key = h && Array.isArray(h.view) ? `${p.here}|${h.en}` : "";
+    if (!key) { turned = ""; return; }
+    if (key === turned || intro || !canTurn() || tourAt !== p.here) return;
+    turned = key;
+    const here = p.here, view = h.view;
+    setTimeout(() => {
+      if (intro) { turned = ""; return; }                                  // the frame was loaded anew meanwhile: asked after its opening move
+      if (!plan || plan.here !== here || S.room !== here) return;          // moved on meanwhile
+      const fr = $("#tour");
+      try { fr.contentWindow.postMessage(JSON.stringify({ event: "rotateTo", h: view[0], v: view[1], duration: 1.2 }), TOUR_ORIGIN); }
+      catch { turned = ""; }                                              // the frame is being loaded: asked again at its next scene
+    }, wait);                                                             // 0.7 s: the scene's own arrival has settled
+  }
+  /* A frame loaded anew (the page opens, or the other tour is loaded) plays the viewer's own opening move: it looks
+     straight down and, from its "liveTourReady" message on, rises to the horizon (measured four times: the view stops
+     1.0 to 1.4 s after that message). A turn asked before that kept its left and right and lost its up and down: the
+     villa's TV, 12 degrees up, ended at 0 (found by tests/browser/check_quest_turn.mjs, which reads the view inside the
+     tour's frame). So after a new frame the turn waits for "liveTourReady" and 1.5 s more; if that message does not
+     come, 6 s from the first scene. A scene change inside a tour has no opening move. */
+  function fresh() { intro = true; tourAt = null; turned = ""; clearTimeout(introTimer); introTimer = null; }
+  function introOver() { clearTimeout(introTimer); introTimer = null; if (!intro) return; intro = false; if (plan) turnTo(plan, 0); }
+  function ready() { if (!intro) return; clearTimeout(introTimer); introTimer = setTimeout(introOver, 1500); }
+  // the tour says which scene it shows now (app.js, the tour's messages)
+  function at(key) {
+    tourAt = key;
+    if (intro && !introTimer) introTimer = setTimeout(introOver, 6000);
+    if (!heard) { heard = true; if (silent) relabel(); }                  // its first word: a label that said which way to look goes back to "Look at"
+    if (plan) turnTo(plan);
+  }
   const keyOf = (p) => { const n = p && p.now ? nowOf(p) : null; return n ? [p.here, n.kind, n.why || "", n.room || "", n.n || 0].join("|") : ""; };
 
   // ---- the words. Places carry the names the page uses everywhere (the map, the "Go to" buttons).
@@ -2195,7 +2252,11 @@ const Quest = (() => {
     if (n.kind === "look") {
       // 11/28 (the user: players do not know where to look or what to say): the thing to look at, said outright
       const h = (n.hints || [])[0] || {};
-      return { icon: "look", label: n.n > 1 ? [`Look at (${n.n} things here)`, `看這個（這裡有 ${n.n} 個）`] : ["Look at", "看這個"], en: cap(h.en) || "What is not safe here", zh: h.zh || "這裡不安全的地方" };
+      // 11/28 afternoon: a thing the scene does not open on, at an address where the tour will not be turned to it
+      // (saysWhere): the label says which way to look ("Look behind you, on the right"), from content/findings.yaml
+      const wh = n.n > 1 || !saysWhere() ? null : h.where;
+      return { icon: "look", label: n.n > 1 ? [`Look at (${n.n} things here)`, `看這個（這裡有 ${n.n} 個）`] : wh && wh.en ? [wh.en, wh.zh || wh.en] : ["Look at", "看這個"],
+        en: cap(h.en) || "What is not safe here", zh: h.zh || "這裡不安全的地方" };
     }
     if (n.kind === "case") {
       const [te, tz] = caseTitle(n.game);
@@ -2497,7 +2558,10 @@ const Quest = (() => {
       // a neighbouring close-up of this stop is named by the thing in it, as the list names it ("Skip to: Fireplace
       // Close-up · Ordering Tablet" was a name the list does not have)
       const th = p.skip.why === "closer" ? thingsAt(p.skip, p)[0] : null;
-      const s = opt.wide ? (th && (th.en || th.zh) ? btn("is-quiet", `Skip to another thing in this stop: ${th.en || th.zh}`, `先看這一站的另一個：${th.zh || th.en}`, () => jump(p.skip.room))
+      // at the award nothing is skipped: the way on is the flight home, the story's last stop (it was a quiet "Skip")
+      const won = n.kind === "award", home = won && ((p.stops || []).slice(-1)[0] || {}).room === p.skip.room;
+      const s = won ? btn("is-main", home ? "Fly home" : "Go on", home ? "搭熱氣球回家" : "繼續", () => jump(p.skip.room))
+        : opt.wide ? (th && (th.en || th.zh) ? btn("is-quiet", `Skip to another thing in this stop: ${th.en || th.zh}`, `先看這一站的另一個：${th.zh || th.en}`, () => jump(p.skip.room))
         : btn("is-quiet", `${to[0]}: ${rnEn(r)}`, `${to[1]}：${rnZh(r)}`, () => jump(p.skip.room)))
         : btn("is-quiet", back ? "Back" : "Skip", back ? "回主線" : "先跳過", () => jump(p.skip.room));
       s.title = LT(`${back ? "Back to the story" : next ? "The next stop" : award ? "Collect the award" : "Elsewhere"}: ${rnEn(r)}`, `${back ? "回主線" : next ? "下一站" : award ? "去領獎" : "先去別的地方"}：${rnZh(r)}`);
@@ -2893,7 +2957,7 @@ const Quest = (() => {
     const opened = !won && plan && plan.now && plan.now.kind === "gate" && p && p.now && p.now.kind !== "gate" && (p.here === plan.now.through || (p.stops || []).some((x) => x.room === plan.now.room && x.gate === false));
     if (clueFor && p && p.here !== clueFor.clue && p.here !== clueFor.door) clueFor = null;
     plan = p;
-    if (p) lastFound = p.found;
+    if (p) { lastFound = p.found; turnTo(p); }
     const live = (won || opened) && box && !wrap.hidden && !RM.matches && wrap.offsetParent !== null;   // not while it is away in the journal's window
     // counted, but the objective stays (the weakness belongs to another place): the bar lights and the count nods; "Found"
     // is not stamped on what is still to do
@@ -3124,7 +3188,7 @@ const Quest = (() => {
     }
   }
 
-  return { refresh, block, again, report, reported, endReport, fillJournal, journalRow, lift, settle, openJournal, closeJournal, reporting: () => reporting, plan: () => plan };
+  return { refresh, block, again, report, reported, endReport, fillJournal, journalRow, lift, settle, openJournal, closeJournal, at, fresh, ready, reporting: () => reporting, plan: () => plan };
 })();
 
 /* ---------------------------------------------------------------- how it works */
